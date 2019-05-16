@@ -27,9 +27,7 @@ class SolrCoreService
 
         $action->setCore($core);
 
-        // Hardcoded path for now
         $action->setInstanceDir($instancedir);
-//        $action->setSchema('schema.xml');
 
         $coreAdmin->setAction($action);
 

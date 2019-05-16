@@ -20,6 +20,16 @@ class BaseQuery
     protected $rows = 10;
 
     /**
+     * @var string|null
+     */
+    protected $fields;
+
+    /**
+     * @var array
+     */
+    protected $sort = [];
+
+    /**
      * @var array
      */
     protected $facets = [];
@@ -68,6 +78,44 @@ class BaseQuery
     public function setRows($rows)
     {
         $this->rows = $rows;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param string|null $fields
+     * @return BaseQuery
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @param array $sort
+     * @return BaseQuery
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
 
         return $this;
     }

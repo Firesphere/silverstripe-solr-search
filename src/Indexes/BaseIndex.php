@@ -5,6 +5,8 @@ namespace Firesphere\SearchConfig\Indexes;
 
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Services\SolrCoreService;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Dev\Debug;
 use SilverStripe\FullTextSearch\Solr\Stores\SolrConfigStore;
 use SilverStripe\View\ViewableData;
 use Solarium\Core\Client\Client;
@@ -22,20 +24,29 @@ abstract class BaseIndex extends ViewableData
      */
     public function doSearch($query)
     {
-        list($q) = $this->buildSolrQuery($query);
+        $q = $this->buildSolrQuery($query);
 
-        $client = new Client();
+        // Solarium
+        $config = Config::inst()->get(SolrCoreService::class, 'config');
+        $client = new Client($config);
 
         $solariumQuery = $client->createSelect([
-            'query' => $q,
+            'query' => trim(implode(' ', $q)),
             'start' => $query->getStart(),
-            'rows'  => $query->getRows()
+            'rows'  => $query->getRows(),
+            'fields' => $query->getFields() ?: '*,score',
+            'sort' => $query->getSort() ?: ''
         ]);
+
+        $result = $client->select($solariumQuery);
+
+        Debug::dump($result);
     }
 
 
     public function getExtrasPath()
     {
+        // @todo configurable but with default to the current absolute path
         $dir = __DIR__;
         $dir = rtrim(substr($dir, 0, strpos($dir, 'searchconfig') + strlen('searchconfig')), '/');
 
@@ -51,6 +62,7 @@ abstract class BaseIndex extends ViewableData
      */
     public function uploadConfig($store, $id)
     {
+        // @todo use types/schema/elevate rendering
 //        // Upload the config files for this index
 //        $store->uploadString(
 //            $this->getIndexName(),
@@ -67,7 +79,7 @@ abstract class BaseIndex extends ViewableData
     }
 
     /**
-     * @param $query
+     * @param BaseQuery $query
      * @return array
      */
     protected function buildSolrQuery($query)
@@ -81,11 +93,13 @@ abstract class BaseIndex extends ViewableData
 
             $fuzzy = $search['fuzzy'] ? '~' : '';
 
+            // @todo simplify
             $fields = isset($search['fields']) ? $search['fields'] : [];
             if (isset($search['boost'])) {
                 $fields = array_merge($fields, array_keys($search['boost']));
             }
 
+            // @todo use Solarium filterQuery instead if there are multiple queries with different fields
             foreach ($parts[0] as $part) {
                 if ($fields) {
                     $searchq = [];
@@ -104,6 +118,6 @@ abstract class BaseIndex extends ViewableData
             }
         }
 
-        return array($q, $parts);
+        return count($q) ? $q : ['*'];
     }
 }
