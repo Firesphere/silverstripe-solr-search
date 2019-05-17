@@ -21,6 +21,13 @@ use SilverStripe\FullTextSearch\Utils\Logging\SearchLogFactory;
 
 class SolrConfigureTask extends BuildTask
 {
+    private static $segment = 'SolrConfigureTask';
+
+    protected $title = 'Configure or reload an existing Solr core';
+
+    protected $description
+        = 'Create or reload a Solr Core by adding or reloading a configuration.';
+
     protected $logger;
 
     public function __construct()
@@ -105,7 +112,7 @@ class SolrConfigureTask extends BuildTask
         // Then tell Solr to use those config files
         /** @var SolrCoreService $service */
         $service = Injector::inst()->get(SolrCoreService::class);
-        
+
         // Assuming a core that doesn't exist doesn't have uptime, as per Solr docs
         // And it has a start time.
         // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!

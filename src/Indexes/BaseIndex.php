@@ -8,11 +8,22 @@ use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Services\SolrCoreService;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\Debug;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ViewableData;
 use Solarium\Core\Client\Client;
 
 abstract class BaseIndex extends ViewableData
 {
+    /**
+     * @var array
+     */
+    protected $fulltextFields = [];
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->init();
+    }
 
     /**
      * @param BaseQuery $query
@@ -90,12 +101,14 @@ abstract class BaseIndex extends ViewableData
     public function uploadConfig($store)
     {
         // @todo use types/schema/elevate rendering
-//        // Upload the config files for this index
-//        $store->uploadString(
-//            $this->getIndexName(),
-//            'schema.xml',
-//            (string)$this->generateSchema()
-//        );
+        // Upload the config files for this index
+        // Create a default schema which we can manage later
+        $schema = (string)$this->generateSchema();
+        $store->uploadString(
+            $this->getIndexName(),
+            'schema.xml',
+            $schema
+        );
 
         // Upload additional files
         foreach (glob($this->getExtrasPath() . '/*') as $file) {
@@ -103,6 +116,48 @@ abstract class BaseIndex extends ViewableData
                 $store->uploadFile($this->getIndexName(), $file);
             }
         }
+    }
+
+    public function getFieldDefinitions()
+    {
+        $return = ArrayList::create();
+        foreach ($this->fulltextFields as $field) {
+            $isRelation = substr_count('_', $field);
+            $item = [
+                'Field' => $field,
+                'Type' => 'text',
+                'Indexed' => 'true',
+                'Stored' => 'false',
+                'MultiValued' => $isRelation > 1 ? 'true' : 'false'
+            ];
+
+            $return->push($item);
+        }
+
+        return $return;
+    }
+
+    public function getCopyFieldDefinitions()
+    {
+        $return = ArrayList::create();
+        foreach ($this->fulltextFields as $field) {
+            $item = [
+                'Field'       => $field,
+                'Destination' => '_text'
+            ];
+            $return->push($item);
+        }
+
+        return $return;
+    }
+
+    public function generateSchema()
+    {
+        // @todo configurable but with default to the current absolute path
+        $dir = __DIR__;
+        $dir = rtrim(substr($dir, 0, strpos($dir, 'searchconfig') + strlen('searchconfig')), '/');
+
+        return $this->renderWith($dir . '/Solr/5/templates/schema.ss');
     }
 
     public function getExtrasPath()
@@ -117,7 +172,48 @@ abstract class BaseIndex extends ViewableData
     }
 
     /**
+     * Stub for backward compatibility
+     * Required to initialise the fields if not from config.
+     * @return mixed
+     * @todo work from config first
+     */
+    public function init()
+    {
+        // no-op
+    }
+
+    /**
      * @return string
      */
     abstract public function getIndexName();
+
+    /**
+     * @param array $fulltextFields
+     * @return BaseIndex
+     */
+    public function setFulltextFields($fulltextFields)
+    {
+        $this->fulltextFields = $fulltextFields;
+
+        return $this;
+    }
+
+    /**
+     * @param string $fulltextField
+     * @return BaseIndex
+     */
+    public function addFulltextField($fulltextField)
+    {
+        $this->fulltextFields[] = str_replace('.', '_', $fulltextField);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFulltextFields()
+    {
+        return $this->fulltextFields;
+    }
 }
