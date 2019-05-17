@@ -24,6 +24,7 @@ abstract class BaseIndex extends ViewableData
      */
     public function doSearch($query)
     {
+        // @todo make filterQuerySelects instead of a single query
         $q = $this->buildSolrQuery($query);
 
         // Solarium
