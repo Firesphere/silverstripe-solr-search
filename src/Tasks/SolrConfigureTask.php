@@ -11,6 +11,7 @@ use Firesphere\SearchConfig\Stores\FileConfigStore;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
@@ -22,6 +23,19 @@ class SolrConfigureTask extends BuildTask
 {
     protected $logger;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $name = get_class($this);
+        $verbose = Controller::curr()->getRequest()->getVar('verbose');
+
+        // Set new logger
+        $logger = $this
+            ->getLoggerFactory()
+            ->getOutputLogger($name, $verbose);
+        $this->setLogger($logger);
+    }
+
     /**
      * Implement this method in the task subclass to
      * execute via the TaskRunner
@@ -32,20 +46,7 @@ class SolrConfigureTask extends BuildTask
      */
     public function run($request)
     {
-        $name = get_class($this);
-        $verbose = $request->getVar('verbose');
-
-        // Set new logger
-        $logger = $this
-            ->getLoggerFactory()
-            ->getOutputLogger($name, $verbose);
-        $this->setLogger($logger);
-        parent::run($request);
-
         $this->extend('onBeforeSolrConfigureTask', $request);
-
-        // Find the IndexStore handler, which will handle uploading config files to Solr
-        $store = Injector::inst()->get(FileConfigStore::class);
 
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         foreach ($indexes as $instance) {
@@ -92,6 +93,7 @@ class SolrConfigureTask extends BuildTask
 
         // Upload the config files for this index
         $this->getLogger()->info('Uploading configuration ...');
+        // @todo load from config
         $config = [
             'mode' => 'file',
             'path' => Director::baseFolder() . '/.solr'
@@ -103,8 +105,12 @@ class SolrConfigureTask extends BuildTask
         // Then tell Solr to use those config files
         /** @var SolrCoreService $service */
         $service = Injector::inst()->get(SolrCoreService::class);
-        $service->coreCreate($index, $configStore->instanceDir($index));
-        if ($service->coreIsActive($index)) {
+        
+        // Assuming a core that doesn't exist doesn't have uptime, as per Solr docs
+        // And it has a start time.
+        // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
+        $status = $service->coreStatus($index);
+        if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             $this->getLogger()->info('Reloading core ...');
             $service->coreReload($index);
         } else {
@@ -112,7 +118,7 @@ class SolrConfigureTask extends BuildTask
             $service->coreCreate($index, $configStore->instanceDir($index));
         }
 
-        $this->getLogger()->info("Done");
+        $this->getLogger()->info('Done');
     }
 
     /**

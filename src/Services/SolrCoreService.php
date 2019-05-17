@@ -17,10 +17,16 @@ class SolrCoreService
      */
     protected $client;
 
+    /**
+     * @var Query
+     */
+    protected $admin;
+
     public function __construct()
     {
         $config = static::config()->get('config');
-        $client = new Client($config);
+        $this->client = new Client($config);
+        $this->admin = $this->client->createCoreAdmin();
     }
 
     /**
@@ -31,19 +37,15 @@ class SolrCoreService
      */
     public function coreCreate($core, $instancedir)
     {
-
-        /** @var Query $coreAdmin */
-        $coreAdmin = $this->client->createCoreAdmin();
-
-        $action = $coreAdmin->createCreate();
+        $action = $this->admin->createCreate();
 
         $action->setCore($core);
 
         $action->setInstanceDir($instancedir);
 
-        $coreAdmin->setAction($action);
+        $this->admin->setAction($action);
 
-        $response = $this->client->coreAdmin($coreAdmin);
+        $response = $this->client->coreAdmin($this->admin);
 
         return $response->getStatusResult();
     }
@@ -54,11 +56,12 @@ class SolrCoreService
      */
     public function coreReload($core)
     {
-        $coreAdmin = $this->client->createCoreAdmin();
-        $reload = $coreAdmin->createReload();
+        $reload = $this->admin->createReload();
         $reload->setCore($core);
 
-        $response = $this->client->coreAdmin($coreAdmin);
+        $this->admin->setAction($reload);
+
+        $response = $this->client->coreAdmin($this->admin);
 
         return $response->getStatusResult();
     }
@@ -70,8 +73,6 @@ class SolrCoreService
      */
     public function coreIsActive($core)
     {
-        Deprecation::notice('2.0', 'Use SolrCoreService::coreStatus($core) instead');
-
         return $this->coreStatus($core);
     }
 
@@ -81,12 +82,31 @@ class SolrCoreService
      */
     public function coreStatus($core)
     {
-        $admin = $this->client->createCoreAdmin();
-        $status = $admin->createStatus();
+        $status = $this->admin->createStatus();
         $status->setCore($core);
 
-        $response = $this->client->coreAdmin($admin);
+        $this->admin->setAction($status);
+        $response = $this->client->coreAdmin($this->admin);
 
         return $response->getStatusResult();
+    }
+
+    /**
+     * @param Client $client
+     * @return SolrCoreService
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }
