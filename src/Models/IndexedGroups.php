@@ -9,7 +9,7 @@ class IndexedGroups extends DataObject
     private static $table_name = 'IndexedGroups';
 
     private static $db = [
-        'MaxGroup' => 'Int',
+        'MaxGroup'  => 'Int',
         'LastIndex' => 'Datetime'
     ];
 }

@@ -3,21 +3,16 @@
 
 namespace Firesphere\SearchConfig\Indexes;
 
+use Firesphere\SearchConfig\Interfaces\ConfigStore;
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Services\SolrCoreService;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\Debug;
-use SilverStripe\FullTextSearch\Solr\Stores\SolrConfigStore;
 use SilverStripe\View\ViewableData;
 use Solarium\Core\Client\Client;
 
 abstract class BaseIndex extends ViewableData
 {
-
-    /**
-     * @return string
-     */
-    abstract public function getIndexName();
 
     /**
      * @param BaseQuery $query
@@ -32,51 +27,16 @@ abstract class BaseIndex extends ViewableData
         $client = new Client($config);
 
         $solariumQuery = $client->createSelect([
-            'query' => trim(implode(' ', $q)),
-            'start' => $query->getStart(),
-            'rows'  => $query->getRows(),
+            'query'  => trim(implode(' ', $q)),
+            'start'  => $query->getStart(),
+            'rows'   => $query->getRows(),
             'fields' => $query->getFields() ?: '*,score',
-            'sort' => $query->getSort() ?: ''
+            'sort'   => $query->getSort() ?: ''
         ]);
 
         $result = $client->select($solariumQuery);
 
         Debug::dump($result);
-    }
-
-
-    public function getExtrasPath()
-    {
-        // @todo configurable but with default to the current absolute path
-        $dir = __DIR__;
-        $dir = rtrim(substr($dir, 0, strpos($dir, 'searchconfig') + strlen('searchconfig')), '/');
-
-        $confDirs = SolrCoreService::config()->get('paths');
-
-        return sprintf($confDirs['extras'], $dir);
-    }
-
-    /**
-     * Upload config for this index to the given store
-     *
-     * @param SolrConfigStore $store
-     */
-    public function uploadConfig($store, $id)
-    {
-        // @todo use types/schema/elevate rendering
-//        // Upload the config files for this index
-//        $store->uploadString(
-//            $this->getIndexName(),
-//            'schema.xml',
-//            (string)$this->generateSchema()
-//        );
-
-        // Upload additional files
-        foreach (glob($this->getExtrasPath() . '/*') as $file) {
-            if (is_file($file)) {
-                $store->uploadFile($this->getIndexName() . $id, $file);
-            }
-        }
     }
 
     /**
@@ -121,4 +81,43 @@ abstract class BaseIndex extends ViewableData
 
         return count($q) ? $q : ['*'];
     }
+
+    /**
+     * Upload config for this index to the given store
+     *
+     * @param ConfigStore $store
+     */
+    public function uploadConfig($store)
+    {
+        // @todo use types/schema/elevate rendering
+//        // Upload the config files for this index
+//        $store->uploadString(
+//            $this->getIndexName(),
+//            'schema.xml',
+//            (string)$this->generateSchema()
+//        );
+
+        // Upload additional files
+        foreach (glob($this->getExtrasPath() . '/*') as $file) {
+            if (is_file($file)) {
+                $store->uploadFile($this->getIndexName(), $file);
+            }
+        }
+    }
+
+    public function getExtrasPath()
+    {
+        // @todo configurable but with default to the current absolute path
+        $dir = __DIR__;
+        $dir = rtrim(substr($dir, 0, strpos($dir, 'searchconfig') + strlen('searchconfig')), '/');
+
+        $confDirs = SolrCoreService::config()->get('paths');
+
+        return sprintf($confDirs['extras'], $dir);
+    }
+
+    /**
+     * @return string
+     */
+    abstract public function getIndexName();
 }

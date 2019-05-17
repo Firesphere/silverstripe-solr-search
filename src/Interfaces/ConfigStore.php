@@ -3,7 +3,6 @@
 
 namespace Firesphere\SearchConfig\Interfaces;
 
-
 interface ConfigStore
 {
     /**

@@ -16,7 +16,7 @@ class SearchField extends DataObject
 
     private static $db = [
         'Field' => 'Varchar(255)',
-        'Type' => 'Enum("Fulltext,Filter,Sort","Fulltext")'
+        'Type'  => 'Enum("Fulltext,Filter,Sort","Fulltext")'
     ];
 
     private static $has_one = [

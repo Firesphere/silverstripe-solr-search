@@ -198,10 +198,10 @@ class BaseQuery
     public function addTerm($term, $fields = null, $boost = [], $fuzzy = false)
     {
         $this->terms[] = [
-            'text' => $term,
-            'fields' => $fields ? (array) $fields : null,
-            'boost' => $boost,
-            'fuzzy' => $fuzzy
+            'text'   => $term,
+            'fields' => $fields ? (array)$fields : null,
+            'boost'  => $boost,
+            'fuzzy'  => $fuzzy
         ];
 
         return $this;
