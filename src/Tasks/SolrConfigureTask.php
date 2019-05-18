@@ -44,6 +44,14 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * @return SearchLogFactory
+     */
+    protected function getLoggerFactory()
+    {
+        return Injector::inst()->get(SearchLogFactory::class);
+    }
+
+    /**
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
@@ -78,14 +86,6 @@ class SolrConfigureTask extends BuildTask
         }
 
         $this->extend('onAfterSolrConfigureTask', $request);
-    }
-
-    /**
-     * @return SearchLogFactory
-     */
-    protected function getLoggerFactory()
-    {
-        return Injector::inst()->get(SearchLogFactory::class);
     }
 
     /**

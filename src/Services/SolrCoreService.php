@@ -3,7 +3,6 @@
 namespace Firesphere\SearchConfig\Services;
 
 use SilverStripe\Core\Config\Configurable;
-use SilverStripe\Dev\Deprecation;
 use Solarium\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
@@ -92,6 +91,14 @@ class SolrCoreService
     }
 
     /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * @param Client $client
      * @return SolrCoreService
      */
@@ -100,13 +107,5 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @return Client
-     */
-    public function getClient()
-    {
-        return $this->client;
     }
 }
