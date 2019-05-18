@@ -147,7 +147,7 @@ abstract class BaseIndex
      */
     public function addFulltextField($fulltextField)
     {
-        $this->fulltextFields[str_replace('.', '_', $fulltextField)] = [];
+        $this->fulltextFields[] = str_replace('.', '_', $fulltextField);
 
         return $this;
     }

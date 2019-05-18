@@ -9,6 +9,8 @@ use SilverStripe\View\ViewableData;
 
 class SchemaService extends ViewableData
 {
+
+    protected $store = false;
     /**
      * @var string Path to template
      */
@@ -46,7 +48,7 @@ class SchemaService extends ViewableData
                 'Field'       => $field,
                 'Type'        => 'text',
                 'Indexed'     => 'true',
-                'Stored'      => 'false',
+                'Stored'      => $this->store ? 'true' : 'false',
                 'MultiValued' => $isRelation > 1 ? 'true' : 'false'
             ];
 
@@ -110,5 +112,24 @@ class SchemaService extends ViewableData
         $confDirs = SolrCoreService::config()->get('paths');
 
         return sprintf($confDirs['extras'], $dir);
+    }
+
+    /**
+     * @param bool $store
+     * @return SchemaService
+     */
+    public function setStore($store)
+    {
+        $this->store = $store;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStore()
+    {
+        return $this->store;
     }
 }
