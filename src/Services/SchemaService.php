@@ -9,10 +9,12 @@ use SilverStripe\View\ViewableData;
 
 class SchemaService extends ViewableData
 {
-
+    /**
+     * @var bool
+     */
     protected $store = false;
     /**
-     * @var string Path to template
+     * @var string ABSOLUTE Path to template
      */
     protected $template;
     /**
@@ -115,6 +117,14 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * @return bool
+     */
+    public function getStore()
+    {
+        return $this->store;
+    }
+
+    /**
      * @param bool $store
      * @return SchemaService
      */
@@ -123,13 +133,5 @@ class SchemaService extends ViewableData
         $this->store = $store;
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStore()
-    {
-        return $this->store;
     }
 }
