@@ -10,10 +10,9 @@ use Firesphere\SearchConfig\Services\SolrCoreService;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
-use SilverStripe\View\ViewableData;
 use Solarium\Core\Client\Client;
 
-abstract class BaseIndex extends ViewableData
+abstract class BaseIndex
 {
     /**
      * @var array
@@ -27,8 +26,9 @@ abstract class BaseIndex extends ViewableData
 
     public function __construct()
     {
-        parent::__construct();
         $this->schemaService = Injector::inst()->get(SchemaService::class);
+        $this->schemaService->setIndex($this);
+
         $this->init();
     }
 
@@ -40,7 +40,7 @@ abstract class BaseIndex extends ViewableData
      */
     public function init()
     {
-        // no-op
+        // @no-op
     }
 
     /**
@@ -147,7 +147,24 @@ abstract class BaseIndex extends ViewableData
      */
     public function addFulltextField($fulltextField)
     {
-        $this->fulltextFields[] = str_replace('.', '_', $fulltextField);
+        $this->fulltextFields[str_replace('.', '_', $fulltextField)] = [];
+
+        return $this;
+    }
+
+    public function addBoostedField($field, $extraOptions = [], $boost = 2)
+    {
+        $field = str_replace('.', '_', $field);
+        // Blarg the options together. Smashing!
+        $options = array_merge($extraOptions, ['boost' => $boost]);
+
+        $fields = $this->getFulltextFields();
+        // Merge if the key is an array, otherwise, make it an arraynn
+        if (array_key_exists($field, $fields) && is_array($fields[$field])) {
+            $fields[$field] = array_merge($fields[$field], $options);
+        } else {
+            $fields[$field] = $options;
+        }
 
         return $this;
     }

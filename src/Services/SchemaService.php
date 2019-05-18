@@ -40,7 +40,7 @@ class SchemaService extends ViewableData
     public function getFieldDefinitions()
     {
         $return = ArrayList::create();
-        foreach ($this->fulltextFields as $field) {
+        foreach ($this->index->getFulltextFields() as $field => $options) {
             $isRelation = substr_count('_', $field);
             $item = [
                 'Field'       => $field,
@@ -59,7 +59,7 @@ class SchemaService extends ViewableData
     public function getCopyFieldDefinitions()
     {
         $return = ArrayList::create();
-        foreach ($this->fulltextFields as $field) {
+        foreach ($this->index->getFulltextFields() as $field) {
             $item = [
                 'Field'       => $field,
                 'Destination' => '_text'
