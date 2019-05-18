@@ -451,14 +451,18 @@
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
         <field name='_text' type='htmltext' indexed='true' stored='true' multiValued='true'/>
 
-        <% loop $FieldDefinitions %>
+        <% loop $FulltextFieldDefinitions %>
+            <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
+        <% end_loop %>
+
+        <% loop $FilterFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
 
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
     </fields>
 
-    <% loop $CopyFieldDefinitions %>
+    <% loop $FulltextFieldDefinitions %>
         <copyField source='$Field' dest='$Destination'/>
     <% end_loop %>
 

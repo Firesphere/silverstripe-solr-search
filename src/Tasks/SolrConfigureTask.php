@@ -119,7 +119,11 @@ class SolrConfigureTask extends BuildTask
         $status = $service->coreStatus($index);
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             $this->getLogger()->info('Reloading core ...');
-            $service->coreReload($index);
+            try {
+                $service->coreReload($index);
+            } catch (Exception $e) {
+                $service->coreCreate($index, $configStore->instanceDir($index));
+            }
         } else {
             $this->getLogger()->info('Creating core ...');
             $service->coreCreate($index, $configStore->instanceDir($index));

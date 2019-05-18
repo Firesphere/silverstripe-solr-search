@@ -7,9 +7,11 @@ use Firesphere\SearchConfig\Interfaces\ConfigStore;
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Services\SchemaService;
 use Firesphere\SearchConfig\Services\SolrCoreService;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
+use SilverStripe\Dev\Deprecation;
 use Solarium\Core\Client\Client;
 
 abstract class BaseIndex
@@ -17,7 +19,37 @@ abstract class BaseIndex
     /**
      * @var array
      */
+    protected $class = [];
+
+    /**
+     * @var array
+     */
     protected $fulltextFields = [];
+
+    /**
+     * @var array
+     */
+    protected $boostedFields = [];
+
+    /**
+     * @var array
+     */
+    protected $filterFields = [];
+
+    /**
+     * @var array
+     */
+    protected $sortFields = [];
+
+    /**
+     * @var array
+     */
+    protected $facetFields = [];
+
+    /**
+     * @var string
+     */
+    protected $copyField = '_text';
 
     /**
      * @var SchemaService
@@ -28,6 +60,7 @@ abstract class BaseIndex
     {
         $this->schemaService = Injector::inst()->get(SchemaService::class);
         $this->schemaService->setIndex($this);
+        $this->schemaService->setStore(Director::isDev());
 
         $this->init();
     }
@@ -38,10 +71,7 @@ abstract class BaseIndex
      * @return mixed
      * @todo work from config first
      */
-    public function init()
-    {
-        // @no-op
-    }
+    abstract public function init();
 
     /**
      * @param BaseQuery $query
@@ -142,28 +172,91 @@ abstract class BaseIndex
     abstract public function getIndexName();
 
     /**
-     * @param string $fulltextField
-     * @return BaseIndex
+     * $options is not used anymore, added for backward compatibility
+     * @param $class
+     * @param array $options
+     * @return $this
      */
-    public function addFulltextField($fulltextField)
+    public function addClass($class, $options = array())
     {
-        $this->fulltextFields[] = str_replace('.', '_', $fulltextField);
+        if (count($options)) {
+            Deprecation::notice('5', 'Options are not used anymore');
+        }
+        $this->class[] = $class;
 
         return $this;
     }
 
+    /**
+     * @param string $fulltextField
+     * @return $this
+     */
+    public function addFulltextField($fulltextField)
+    {
+        $this->fulltextFields[] = $fulltextField;
+
+        return $this;
+    }
+
+    /**
+     * @param $filterField
+     * @return $this
+     */
+    public function addFilterField($filterField)
+    {
+        $this->filterFields[] = $filterField;
+
+        return $this;
+    }
+
+    /**
+     * Extra options is not used, it's here for backward compatibility
+     * @param $field
+     * @param array $extraOptions
+     * @param int $boost
+     * @return $this
+     */
     public function addBoostedField($field, $extraOptions = [], $boost = 2)
     {
-        $field = str_replace('.', '_', $field);
-        // Blarg the options together. Smashing!
-        $options = array_merge($extraOptions, ['boost' => $boost]);
-
         $fields = $this->getFulltextFields();
-        // Merge if the key is an array, otherwise, make it an arraynn
-        if (array_key_exists($field, $fields) && is_array($fields[$field])) {
-            $fields[$field] = array_merge($fields[$field], $options);
-        } else {
-            $fields[$field] = $options;
+
+        if (!in_array($field, $fields, false)) {
+            $fields[] = $field;
+        }
+
+        $this->setFulltextFields($fields);
+        $boostedFields = $this->getBoostedFields();
+        $boostedFields[$field] = $boost;
+        $this->setBoostedFields($boostedFields);
+
+        return $this;
+    }
+
+    /**
+     * @param $sortField
+     * @return $this
+     */
+    public function addSortField($sortField)
+    {
+        $this->addFulltextField($sortField);
+
+        $this->sortFields[] = $sortField;
+
+        $this->setSortFields(array_unique($this->getSortFields()));
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @return $this
+     */
+    public function addFacetField($field)
+    {
+        $this->facetFields[] = $field;
+
+        if (!in_array($field, $this->getFulltextFields(), false)) {
+            $this->addFulltextField($field);
         }
 
         return $this;
@@ -179,12 +272,126 @@ abstract class BaseIndex
 
     /**
      * @param array $fulltextFields
-     * @return BaseIndex
+     * @return $this
      */
     public function setFulltextFields($fulltextFields)
     {
         $this->fulltextFields = $fulltextFields;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostedFields()
+    {
+        return $this->boostedFields;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return $this
+     */
+    public function setBoostedFields($boostedFields)
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
+    }
+
+    /**
+     * @param array $filterFields
+     * @return $this
+     */
+    public function setFilterFields($filterFields)
+    {
+        $this->filterFields = $filterFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterFields()
+    {
+        return $this->filterFields;
+    }
+
+    /**
+     * @param array $sortFields
+     * @return BaseIndex
+     */
+    public function setSortFields($sortFields)
+    {
+        $this->sortFields = $sortFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortFields()
+    {
+        return $this->sortFields;
+    }
+
+    /**
+     * @param array $class
+     * @return BaseIndex
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param array $facetFields
+     * @return BaseIndex
+     */
+    public function setFacetFields($facetFields)
+    {
+        $this->facetFields = $facetFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFacetFields()
+    {
+        return $this->facetFields;
+    }
+
+    /**
+     * @param string $copyField
+     * @return BaseIndex
+     */
+    public function setCopyField($copyField)
+    {
+        $this->copyField = $copyField;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCopyField()
+    {
+        return $this->copyField;
     }
 }
