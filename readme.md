@@ -2,6 +2,9 @@
 
 Readme and docs to be completed at a later stage. Currently under heavy development.
 
+Solarium documentation:
+https://solarium.readthedocs.io
+
 ## Schema management
 
 This module uses a managed schema.

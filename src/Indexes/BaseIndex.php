@@ -188,17 +188,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @param string $fulltextField
-     * @return $this
-     */
-    public function addFulltextField($fulltextField)
-    {
-        $this->fulltextFields[] = $fulltextField;
-
-        return $this;
-    }
-
-    /**
      * @param $filterField
      * @return $this
      */
@@ -228,36 +217,6 @@ abstract class BaseIndex
         $boostedFields = $this->getBoostedFields();
         $boostedFields[$field] = $boost;
         $this->setBoostedFields($boostedFields);
-
-        return $this;
-    }
-
-    /**
-     * @param $sortField
-     * @return $this
-     */
-    public function addSortField($sortField)
-    {
-        $this->addFulltextField($sortField);
-
-        $this->sortFields[] = $sortField;
-
-        $this->setSortFields(array_unique($this->getSortFields()));
-
-        return $this;
-    }
-
-    /**
-     * @param $field
-     * @return $this
-     */
-    public function addFacetField($field)
-    {
-        $this->facetFields[] = $field;
-
-        if (!in_array($field, $this->getFulltextFields(), false)) {
-            $this->addFulltextField($field);
-        }
 
         return $this;
     }
@@ -301,12 +260,27 @@ abstract class BaseIndex
     }
 
     /**
-     * @param array $filterFields
+     * @param $sortField
      * @return $this
      */
-    public function setFilterFields($filterFields)
+    public function addSortField($sortField)
     {
-        $this->filterFields = $filterFields;
+        $this->addFulltextField($sortField);
+
+        $this->sortFields[] = $sortField;
+
+        $this->setSortFields(array_unique($this->getSortFields()));
+
+        return $this;
+    }
+
+    /**
+     * @param string $fulltextField
+     * @return $this
+     */
+    public function addFulltextField($fulltextField)
+    {
+        $this->fulltextFields[] = $fulltextField;
 
         return $this;
     }
@@ -314,9 +288,9 @@ abstract class BaseIndex
     /**
      * @return array
      */
-    public function getFilterFields()
+    public function getSortFields()
     {
-        return $this->filterFields;
+        return $this->sortFields;
     }
 
     /**
@@ -331,11 +305,45 @@ abstract class BaseIndex
     }
 
     /**
+     * @param $field
+     * @return $this
+     */
+    public function addFacetField($field)
+    {
+        $this->facetFields[] = $field;
+
+        if (!in_array($field, $this->getFulltextFields(), false)) {
+            $this->addFulltextField($field);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
-    public function getSortFields()
+    public function getFilterFields()
     {
-        return $this->sortFields;
+        return $this->filterFields;
+    }
+
+    /**
+     * @param array $filterFields
+     * @return $this
+     */
+    public function setFilterFields($filterFields)
+    {
+        $this->filterFields = $filterFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClass()
+    {
+        return $this->class;
     }
 
     /**
@@ -352,9 +360,9 @@ abstract class BaseIndex
     /**
      * @return array
      */
-    public function getClass()
+    public function getFacetFields()
     {
-        return $this->class;
+        return $this->facetFields;
     }
 
     /**
@@ -369,11 +377,11 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getFacetFields()
+    public function getCopyField()
     {
-        return $this->facetFields;
+        return $this->copyField;
     }
 
     /**
@@ -385,13 +393,5 @@ abstract class BaseIndex
         $this->copyField = $copyField;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCopyField()
-    {
-        return $this->copyField;
     }
 }

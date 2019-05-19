@@ -23,7 +23,7 @@ class SolrConfigureTask extends BuildTask
 {
     private static $segment = 'SolrConfigureTask';
 
-    protected $title = 'Configure or reload an existing Solr core';
+    protected $title = 'Configure Solr cores';
 
     protected $description
         = 'Create or reload a Solr Core by adding or reloading a configuration.';
