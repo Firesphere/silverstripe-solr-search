@@ -449,8 +449,9 @@
         <field name='ID' type='tint' indexed='true' stored='true' required='true'/>
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-        <field name='_text' type='htmltext' indexed='true' stored='true' multiValued='true'/>
-
+        <% loop $CopyFields %>
+            <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
+        <% end_loop %>
         <% loop $FulltextFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
@@ -462,7 +463,7 @@
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
     </fields>
 
-    <% loop $FulltextFieldDefinitions %>
+    <% loop $CopyFieldDefinitions %>
         <copyField source='$Field' dest='$Destination'/>
     <% end_loop %>
 

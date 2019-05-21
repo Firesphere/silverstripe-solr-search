@@ -47,9 +47,15 @@ abstract class BaseIndex
     protected $facetFields = [];
 
     /**
-     * @var string
+     * @var array
      */
-    protected $copyField = '_text';
+    protected $copyFields = [
+        '_text' => [
+            '*'
+        ],
+    ];
+
+    protected $defaultField = '_text';
 
     /**
      * @var SchemaService
@@ -207,13 +213,10 @@ abstract class BaseIndex
      */
     public function addBoostedField($field, $extraOptions = [], $boost = 2)
     {
-        $fields = $this->getFulltextFields();
-
-        if (!in_array($field, $fields, false)) {
-            $fields[] = $field;
+        if (!in_array($field, $this->getFulltextFields(), true)) {
+            $this->addFulltextField($field);
         }
 
-        $this->setFulltextFields($fields);
         $boostedFields = $this->getBoostedFields();
         $boostedFields[$field] = $boost;
         $this->setBoostedFields($boostedFields);
@@ -236,6 +239,17 @@ abstract class BaseIndex
     public function setFulltextFields($fulltextFields)
     {
         $this->fulltextFields = $fulltextFields;
+
+        return $this;
+    }
+
+    /**
+     * @param string $fulltextField
+     * @return $this
+     */
+    public function addFulltextField($fulltextField)
+    {
+        $this->fulltextFields[] = $fulltextField;
 
         return $this;
     }
@@ -275,17 +289,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @param string $fulltextField
-     * @return $this
-     */
-    public function addFulltextField($fulltextField)
-    {
-        $this->fulltextFields[] = $fulltextField;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getSortFields()
@@ -312,7 +315,23 @@ abstract class BaseIndex
     {
         $this->facetFields[] = $field;
 
-        if (!in_array($field, $this->getFulltextFields(), false)) {
+        if (!in_array($field, $this->getFulltextFields(), true)) {
+            $this->addFulltextField($field);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $field Name of the copyfield
+     * @param array $options Array of all fields that should be copied to this copyfield
+     * @return $this
+     */
+    public function addCopyField($field, $options)
+    {
+        $this->copyFields[$field] = $options;
+
+        if (!in_array($field, $this->getFulltextFields(), true)) {
             $this->addFulltextField($field);
         }
 
@@ -377,20 +396,39 @@ abstract class BaseIndex
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getCopyField()
+    public function getCopyFields()
     {
-        return $this->copyField;
+        return $this->copyFields;
     }
 
     /**
-     * @param string $copyField
+     * @param array $copyField
+     * @return $this
+     */
+    public function setCopyFields($copyField)
+    {
+        $this->copyFields = $copyField;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultField()
+    {
+        return $this->defaultField;
+    }
+
+    /**
+     * @param string $defaultField
      * @return BaseIndex
      */
-    public function setCopyField($copyField)
+    public function setDefaultField($defaultField)
     {
-        $this->copyField = $copyField;
+        $this->defaultField = $defaultField;
 
         return $this;
     }

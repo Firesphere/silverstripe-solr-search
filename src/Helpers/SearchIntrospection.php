@@ -13,12 +13,12 @@ use SilverStripe\ORM\DataObject;
  */
 class SearchIntrospection
 {
+    protected static $ancestry = array();
+    protected static $hierarchy = array();
     /**
      * @var BaseIndex
      */
     protected $index;
-    protected static $ancestry = array();
-    protected static $hierarchy = array();
 
     /**
      * Add classes to list, keeping only the parent when parent & child are both in list after add
@@ -295,5 +295,4 @@ class SearchIntrospection
 
         return $this;
     }
-
 }

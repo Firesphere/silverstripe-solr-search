@@ -91,6 +91,7 @@ class SolrConfigureTask extends BuildTask
     /**
      * Update the index on the given store
      *
+     * @todo make this a tad cleaner, it's a bit unreadable
      * @param BaseIndex $instance Instance
      */
     protected function updateIndex($instance)
@@ -105,6 +106,7 @@ class SolrConfigureTask extends BuildTask
             'mode' => 'file',
             'path' => Director::baseFolder() . '/.solr'
         ];
+        /** @todo make stores configurable */
         /** @var ConfigStore $configStore */
         $configStore = Injector::inst()->create(FileConfigStore::class, $config);
         $instance->uploadConfig($configStore);

@@ -54,7 +54,7 @@ class BaseQuery
 
     /**
      * @param int $start
-     * @return BaseQuery
+     * @return $this
      */
     public function setStart($start)
     {
@@ -73,7 +73,7 @@ class BaseQuery
 
     /**
      * @param int $rows
-     * @return BaseQuery
+     * @return $this
      */
     public function setRows($rows)
     {
@@ -92,7 +92,7 @@ class BaseQuery
 
     /**
      * @param string|null $fields
-     * @return BaseQuery
+     * @return $this
      */
     public function setFields($fields)
     {
@@ -111,7 +111,7 @@ class BaseQuery
 
     /**
      * @param array $sort
-     * @return BaseQuery
+     * @return $this
      */
     public function setSort($sort)
     {
@@ -130,7 +130,7 @@ class BaseQuery
 
     /**
      * @param mixed $facets
-     * @return BaseQuery
+     * @return $this
      */
     public function setFacets($facets)
     {
@@ -160,7 +160,7 @@ class BaseQuery
 
     /**
      * @param mixed $facetsMinCount
-     * @return BaseQuery
+     * @return $this
      */
     public function setFacetsMinCount($facetsMinCount)
     {
@@ -179,7 +179,7 @@ class BaseQuery
 
     /**
      * @param array $terms
-     * @return BaseQuery
+     * @return $this
      */
     public function setTerms($terms)
     {
@@ -193,7 +193,7 @@ class BaseQuery
      * @param null|string $fields
      * @param array $boost
      * @param bool $fuzzy
-     * @return BaseQuery
+     * @return $this
      */
     public function addTerm($term, $fields = null, $boost = [], $fuzzy = false)
     {

@@ -5,34 +5,15 @@ namespace Firesphere\SearchConfig\Services;
 
 use Exception;
 use Firesphere\SearchConfig\Helpers\SearchIntrospection;
+use Firesphere\SearchConfig\Helpers\Statics;
 use Firesphere\SearchConfig\Indexes\BaseIndex;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ViewableData;
 
 class SchemaService extends ViewableData
 {
 
-    /**
-     * @var array map SilverStripe DB types to Solr types
-     */
-    protected static $typeMap = [
-        '*'           => 'text',
-        'HTMLVarchar' => 'htmltext',
-        'Varchar'     => 'string',
-        'Text'        => 'string',
-        'HTMLText'    => 'htmltext',
-        'Boolean'     => 'boolean',
-        'Date'        => 'tdate',
-        'Datetime'    => 'tdate',
-        'ForeignKey'  => 'tint',
-        'Int'         => 'tint',
-        'Float'       => 'tfloat',
-        'Double'      => 'tdouble'
-    ];
     /**
      * @var bool
      */
@@ -84,7 +65,7 @@ class SchemaService extends ViewableData
 
     public function getDefaultField()
     {
-        return $this->index->getCopyField();
+        return $this->index->getDefaultField();
     }
 
     /**
@@ -106,20 +87,62 @@ class SchemaService extends ViewableData
      * @param ArrayList $return
      * @throws Exception
      */
-    protected function getFieldDefinition($field, &$return)
+    protected function getFieldDefinition($field, &$return, $copyField = null)
     {
         $field = $this->introspection->getFieldIntrospection($field);
+        $typeMap = Statics::getTypeMap();
         foreach ($field as $name => $options) {
             $item = [
                 'Field'       => $name,
-                'Type'        => static::$typeMap[$options['type']],
+                'Type'        => $typeMap[$options['type']],
                 'Indexed'     => 'true',
                 'Stored'      => $this->store ? 'true' : 'false',
                 'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
-                'Destination' => $this->index->getCopyField(),
             ];
             $return->push($item);
         }
+    }
+
+    public function getCopyFields()
+    {
+        $return = ArrayList::create();
+        foreach (array_keys($this->index->getCopyFields()) as $copyField) {
+            $item = [
+                'Field' => $copyField
+            ];
+
+            $return->push($item);
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return ArrayList
+     */
+    public function getCopyFieldDefinitions()
+    {
+        $copyFields = $this->index->getCopyFields();
+
+        $return = ArrayList::create();
+
+        foreach ($copyFields as $field => $fields) {
+            // Allow all fields to be in a copyfield via a shorthand
+            if ($fields[0] === '*') {
+                $fields = $this->index->getFulltextFields();
+            }
+
+            foreach ($fields as $copyField) {
+                $item = [
+                    'Field'       => str_replace('.', '_', $copyField),
+                    'Destination' => $field
+                ];
+
+                $return->push($item);
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -198,6 +221,14 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * @return SearchIntrospection
+     */
+    public function getIntrospection()
+    {
+        return $this->introspection;
+    }
+
+    /**
      * @param SearchIntrospection $introspection
      * @return SchemaService
      */
@@ -206,13 +237,5 @@ class SchemaService extends ViewableData
         $this->introspection = $introspection;
 
         return $this;
-    }
-
-    /**
-     * @return SearchIntrospection
-     */
-    public function getIntrospection()
-    {
-        return $this->introspection;
     }
 }

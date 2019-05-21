@@ -3,34 +3,36 @@
 
 namespace Firesphere\SearchConfig\Tasks;
 
-
+use Exception;
+use Firesphere\SearchConfig\Factories\DocumentFactory;
 use Firesphere\SearchConfig\Helpers\SearchIntrospection;
 use Firesphere\SearchConfig\Indexes\BaseIndex;
 use Firesphere\SearchConfig\Services\SolrCoreService;
+use ReflectionClass;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\DataObjectInterface;
 use SilverStripe\Versioned\Versioned;
-use Solarium\Client;
-use Solarium\QueryType\Update\Query\Document\Document;
-use Solarium\QueryType\Update\Query\Query;
+use Solarium\Core\Client\Client;
 
 class SolrIndexTask extends BuildTask
 {
+    /**
+     * @var string
+     */
     private static $segment = 'SolrIndexTask';
 
+    /**
+     * @var string
+     */
     protected $title = 'Solr Index update';
 
-    protected $description = 'Add or update documents to an existing Solr core.';
-
     /**
-     * @var Client
+     * @var string
      */
-    protected $client;
+    protected $description = 'Add or update documents to an existing Solr core.';
 
     /**
      * @var SearchIntrospection
@@ -38,69 +40,65 @@ class SolrIndexTask extends BuildTask
     protected $introspection;
 
     /**
+     * @var DocumentFactory
+     */
+    protected $factory;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->factory = Injector::inst()->get(DocumentFactory::class);
+    }
+
+    /**
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
      * @param HTTPRequest $request
-     * @return
-     * @throws \Exception
+     * @throws Exception
      */
     public function run($request)
     {
+        print_r(date('Y-m-d H:i:s' . "\n"));
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
-        $this->client = (new SolrCoreService())->getClient();
+
         $this->introspection = new SearchIntrospection();
-        $update = $this->client->createUpdate();
 
-        $class = $request->getVar('class');
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
-        $index = $request->getVar('index');
+        foreach ($indexes as $index) {
 
-        /** @var BaseIndex $index */
-        $index = Injector::inst()->get($index);
+            // Skip the abstract base
+            $ref = new ReflectionClass($index);
+            if (!$ref->isInstantiable()) {
+                continue;
+            }
 
-        $classes = $index->getClass();
+            /** @var BaseIndex $index */
+            $index = Injector::inst()->get($index);
+            $config = Config::inst()->get(SolrCoreService::class, 'config');
+            $config['endpoint']['localhost']['core'] = $index->getIndexName();
+            $client = new Client($config);
 
-        $fields = array_merge(
-            $index->getFulltextFields(),
-            $index->getSortFields(),
-            $index->getFilterFields(),
-            $index->getBoostedFields()
-        );
+            $update = $client->createUpdate();
 
-        foreach ($fields as $field) {
-            $fieldList[] = $this->introspection->getFieldIntrospection($field);
+            $classes = $index->getClass();
+
+            foreach ($classes as $class) {
+                $fields = array_merge(
+                    $index->getFulltextFields(),
+                    $index->getSortFields(),
+                    $index->getFilterFields()
+                );
+                $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update);
+                $update->addDocuments($docs, true);
+                $update->addCommit();
+                $client->update($update);
+            }
         }
-        foreach ($classes as $class) {
-
-        }
-        $this->buildItem($fieldList);
-    }
-
-    protected function buildItem($fieldList)
-    {
-        $item = [];
-        foreach ($fieldList as $field => $properties) {
-            $item[$field] = $field['class']::get();
-        }
-    }
-
-    /**
-     * @param DataObject $object
-     * @param Query $update
-     * @return Document mixed
-     */
-    protected function createDocument($object, $update)
-    {
-        /** @var Document $doc */
-        $doc = $update->createDocument();
-        $doc->setKey($object->ClassName . '-' . $object->ID);
-        $doc->addField('ID', $object->ID);
-        $doc->addField('ClassName', $object->ClassName);
-        $doc->addField('ClassHierarchy', ClassInfo::ancestry($object));
-
-        return $doc;
+        print_r(date('Y-m-d H:i:s' . "\n"));
+        print_r("done!\n");
     }
 }
