@@ -178,6 +178,21 @@ abstract class BaseIndex
     abstract public function getIndexName();
 
     /**
+     * Build a full config for all given endpoints
+     * This is to add the current index to e.g. an index or select
+     * @param array $endpoints
+     * @return array
+     */
+    public function getConfig($endpoints)
+    {
+        foreach ($endpoints as $host => $endpoint) {
+            $endpoints[$host]['core'] = $this->getIndexName();
+        }
+
+        return $endpoints;
+    }
+
+    /**
      * $options is not used anymore, added for backward compatibility
      * @param $class
      * @param array $options

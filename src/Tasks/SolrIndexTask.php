@@ -79,7 +79,8 @@ class SolrIndexTask extends BuildTask
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($index);
             $config = Config::inst()->get(SolrCoreService::class, 'config');
-            $config['endpoint']['localhost']['core'] = $index->getIndexName();
+            $config['endpoint'] = $index->getConfig($config['endpoint']);
+
             $client = new Client($config);
 
             $update = $client->createUpdate();

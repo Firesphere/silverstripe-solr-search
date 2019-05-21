@@ -8,6 +8,7 @@ use Firesphere\SearchConfig\Helpers\SearchIntrospection;
 use Firesphere\SearchConfig\Helpers\Statics;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\SS_List;
@@ -30,7 +31,7 @@ class DocumentFactory
      * @return array
      * @throws Exception
      */
-    public function buildItems($class, $fields, $index, $update)
+    public function buildItems($class, $fields, $index, $update, $debug = false)
     {
         $this->introspection = Injector::inst()->get(SearchIntrospection::class);
         $this->introspection->setIndex($index);
@@ -42,6 +43,7 @@ class DocumentFactory
 
         // @todo this is intense and could hopefully be simplified?
         foreach ($items as $item) {
+            $debug[] = "Adding $item->ClassName with ID $ID\n";
             $doc = $update->createDocument();
             $doc->setKey($item->ClassName . '-' . $item->ID);
             $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
@@ -57,6 +59,10 @@ class DocumentFactory
             $item->destroy();
 
             $docs[] = $doc;
+        }
+
+        if ($debug) {
+            Debug::dump($debug);
         }
 
         return $docs;
