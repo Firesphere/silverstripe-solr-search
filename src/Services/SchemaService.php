@@ -53,7 +53,8 @@ class SchemaService extends ViewableData
     public function setIndex($index)
     {
         $this->index = $index;
-        // Add the index to the introspection as well
+        // Add the index to the introspection as well, there's no need for a separate call here
+        // We're loading this core, why would we want the introspection from a different index?
         $this->introspection->setIndex($index);
 
         return $this;

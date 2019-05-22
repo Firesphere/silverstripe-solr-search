@@ -10,6 +10,11 @@ namespace Firesphere\SearchConfig\Queries;
 class BaseQuery
 {
     /**
+     * @var string|array The actual query to be executed
+     */
+    protected $query;
+
+    /**
      * @var int
      */
     protected $start = 0;
@@ -205,5 +210,24 @@ class BaseQuery
         ];
 
         return $this;
+    }
+
+    /**
+     * @param array|string $query
+     * @return BaseQuery
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getQuery()
+    {
+        return $this->query;
     }
 }

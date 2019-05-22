@@ -4,6 +4,15 @@ namespace Firesphere\SearchConfig\Models;
 
 use SilverStripe\ORM\DataObject;
 
+/**
+ * Class SearchClass to be populated by default from config
+ *
+ * @package Firesphere\SearchConfig\Models
+ * @property string $Name
+ * @property int $SearchFieldID
+ * @method SearchField SearchField()
+ * @method DataList|SearchField[] SearchFields()
+ */
 class SearchClass extends DataObject
 {
     private static $table_name = 'SearchClass';

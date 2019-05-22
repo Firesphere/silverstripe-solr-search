@@ -56,6 +56,8 @@ class SolrIndexTask extends BuildTask
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
+     * @todo make this properly use groups and maybe background tasks
+     * @todo add a queued job
      * @param HTTPRequest $request
      * @throws Exception
      */
@@ -98,7 +100,6 @@ class SolrIndexTask extends BuildTask
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
                 }
                 $groups = ceil($class::get()->count() / 2500);
-                $groups = 1;
                 $group = 0;
                 $fields = array_merge(
                     $index->getFulltextFields(),

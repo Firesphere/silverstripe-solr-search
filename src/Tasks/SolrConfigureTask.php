@@ -124,6 +124,9 @@ class SolrConfigureTask extends BuildTask
             try {
                 $service->coreReload($index);
             } catch (Exception $e) {
+                $this->getLogger()->info('Reload failed, trying to re-instantiate core ...');
+                // Possibly a file error, try to unload and recreate the core
+                $service->coreUnload($index);
                 $service->coreCreate($index, $configStore->instanceDir($index));
             }
         } else {

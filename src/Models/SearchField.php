@@ -10,6 +10,15 @@ namespace Firesphere\SearchConfig\Models;
 
 use SilverStripe\ORM\DataObject;
 
+/**
+ * Class \Firesphere\SearchConfig\Models\SearchField
+ *
+ * @property string $Field
+ * @property string $Type
+ * @property int $ParentID
+ * @method SearchClass Parent()
+ * @method DataList|SearchClass[] Children()
+ */
 class SearchField extends DataObject
 {
     private static $table_name = 'SearchField';

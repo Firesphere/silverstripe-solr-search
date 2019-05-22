@@ -59,11 +59,7 @@ class DocumentFactory
             $debugString .= "$item->ID, ";
             /** @var Document $doc */
             $doc = $update->createDocument();
-            $doc->setKey($item->ClassName . '-' . $item->ID);
-            $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
-            $doc->addField('ID', $item->ID);
-            $doc->addField('ClassName', $item->ClassName);
-            $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
+            $this->addDefaultFields($doc, $item);
 
             foreach ($fields as $field) {
                 $fieldData = $this->introspection->getFieldIntrospection($field);
@@ -194,5 +190,18 @@ class DocumentFactory
         }
 
         return $object;
+    }
+
+    /**
+     * @param Document $doc
+     * @param DataObject $item
+     */
+    protected function addDefaultFields(Document $doc, DataObject $item)
+    {
+        $doc->setKey($item->ClassName . '-' . $item->ID);
+        $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
+        $doc->addField('ID', $item->ID);
+        $doc->addField('ClassName', $item->ClassName);
+        $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
     }
 }

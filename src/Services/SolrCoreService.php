@@ -91,6 +91,22 @@ class SolrCoreService
     }
 
     /**
+     * Remove a core from Solr
+     * @param string $core core name
+     * @return StatusResult|null A result is successful
+     */
+    public function coreUnload($core)
+    {
+        $unload = $this->admin->createUnload();
+        $unload->setCore($core);
+
+        $this->admin->setAction($unload);
+        $response = $this->client->coreAdmin($this->admin);
+
+        return $response->getStatusResult();
+    }
+
+    /**
      * @return Client
      */
     public function getClient()
