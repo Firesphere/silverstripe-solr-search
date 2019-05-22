@@ -53,16 +53,23 @@ class SchemaService extends ViewableData
     public function setIndex($index)
     {
         $this->index = $index;
+        // Add the index to the introspection as well
         $this->introspection->setIndex($index);
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getIndexName()
     {
         return $this->index->getIndexName();
     }
 
+    /**
+     * @return string
+     */
     public function getDefaultField()
     {
         return $this->index->getDefaultField();
@@ -83,26 +90,8 @@ class SchemaService extends ViewableData
     }
 
     /**
-     * @param $field
-     * @param ArrayList $return
-     * @throws Exception
+     * @return ArrayList
      */
-    protected function getFieldDefinition($field, &$return, $copyField = null)
-    {
-        $field = $this->introspection->getFieldIntrospection($field);
-        $typeMap = Statics::getTypeMap();
-        foreach ($field as $name => $options) {
-            $item = [
-                'Field'       => $name,
-                'Type'        => $typeMap[$options['type']],
-                'Indexed'     => 'true',
-                'Stored'      => $this->store ? 'true' : 'false',
-                'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
-            ];
-            $return->push($item);
-        }
-    }
-
     public function getCopyFields()
     {
         $return = ArrayList::create();
@@ -119,6 +108,7 @@ class SchemaService extends ViewableData
 
     /**
      * @return ArrayList
+     * @throws Exception
      */
     public function getCopyFieldDefinitions()
     {
@@ -133,12 +123,7 @@ class SchemaService extends ViewableData
             }
 
             foreach ($fields as $copyField) {
-                $item = [
-                    'Field'       => str_replace('.', '_', $copyField),
-                    'Destination' => $field
-                ];
-
-                $return->push($item);
+                $this->getFieldDefinition($copyField, $return, $field);
             }
         }
 
@@ -157,6 +142,29 @@ class SchemaService extends ViewableData
         }
 
         return $return;
+    }
+
+
+    /**
+     * @param $field
+     * @param ArrayList $return
+     * @throws Exception
+     */
+    protected function getFieldDefinition($field, &$return, $copyField = null)
+    {
+        $field = $this->introspection->getFieldIntrospection($field);
+        $typeMap = Statics::getTypeMap();
+        foreach ($field as $name => $options) {
+            $item = [
+                'Field'       => $name,
+                'Type'        => $typeMap[$options['type']],
+                'Indexed'     => 'true',
+                'Stored'      => $this->store ? 'true' : 'false',
+                'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
+                'Destination' => $copyField
+            ];
+            $return->push($item);
+        }
     }
 
     public function generateSchema()

@@ -6,9 +6,11 @@ namespace Firesphere\SearchConfig\Factories;
 use Exception;
 use Firesphere\SearchConfig\Helpers\SearchIntrospection;
 use Firesphere\SearchConfig\Helpers\Statics;
+use Firesphere\SearchConfig\Indexes\BaseIndex;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\SS_List;
@@ -23,27 +25,39 @@ class DocumentFactory
      */
     protected $introspection;
 
+    public function __construct()
+    {
+        $this->introspection = Injector::inst()->get(SearchIntrospection::class);
+    }
+
     /**
-     * @param $classes
+     * @todo this should be cleaner
+     * @param $class
      * @param $fields
-     * @param $index
+     * @param BaseIndex $index
      * @param Query $update
+     * @param $group
+     * @param bool $debug
      * @return array
      * @throws Exception
      */
-    public function buildItems($class, $fields, $index, $update, $debug = false)
+    public function buildItems($class, $fields, $index, $update, $group, $debug = false)
     {
-        $this->introspection = Injector::inst()->get(SearchIntrospection::class);
         $this->introspection->setIndex($index);
         $docs = [];
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
-        $items = $baseClass::get()->limit(10)
-            ->limit(5000);
+        /** @var DataList|DataObject[] $items */
+        // This limit is scientifically determined by keeping on trying until it didn't break anymore
+        $items = $baseClass::get()
+            ->sort('ID ASC')
+            ->limit(2500, ($group * 2500));
 
+        $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
         // @todo this is intense and could hopefully be simplified?
         foreach ($items as $item) {
-            $debug[] = "Adding $item->ClassName with ID $ID\n";
+            $debugString .= "$item->ID, ";
+            /** @var Document $doc */
             $doc = $update->createDocument();
             $doc->setKey($item->ClassName . '-' . $item->ID);
             $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
@@ -62,7 +76,7 @@ class DocumentFactory
         }
 
         if ($debug) {
-            Debug::dump($debug);
+            Debug::message(rtrim($debugString, ', ') . "]\n", false);
         }
 
         return $docs;
@@ -163,6 +177,7 @@ class DocumentFactory
                         $item = $item->$property;
                     }
 
+                    // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
                     if ($item instanceof SS_List) {
                         $next = array_merge($next, $item->toArray());
                     } elseif (is_array($item)) {

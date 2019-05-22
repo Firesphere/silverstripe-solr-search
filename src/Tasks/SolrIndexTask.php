@@ -9,11 +9,13 @@ use Firesphere\SearchConfig\Helpers\SearchIntrospection;
 use Firesphere\SearchConfig\Indexes\BaseIndex;
 use Firesphere\SearchConfig\Services\SolrCoreService;
 use ReflectionClass;
+use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Versioned\Versioned;
 use Solarium\Core\Client\Client;
 
@@ -59,7 +61,11 @@ class SolrIndexTask extends BuildTask
      */
     public function run($request)
     {
+        $debug = $request->getVar('debug') ? true : false;
+        $debug = Director::isDev() || $debug;
+
         print_r(date('Y-m-d H:i:s' . "\n"));
+        $start = time();
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
@@ -80,26 +86,39 @@ class SolrIndexTask extends BuildTask
             $index = Injector::inst()->get($index);
             $config = Config::inst()->get(SolrCoreService::class, 'config');
             $config['endpoint'] = $index->getConfig($config['endpoint']);
-
-            $client = new Client($config);
-
-            $update = $client->createUpdate();
+            $config['timeout'] = 10000;
 
             $classes = $index->getClass();
+            $client = new Client($config);
+
+
 
             foreach ($classes as $class) {
+                if ($debug) {
+                    Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
+                }
+                $groups = ceil($class::get()->count() / 2500);
+                $groups = 1;
+                $group = 0;
                 $fields = array_merge(
                     $index->getFulltextFields(),
                     $index->getSortFields(),
                     $index->getFilterFields()
                 );
-                $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update);
-                $update->addDocuments($docs, true);
-                $update->addCommit();
-                $client->update($update);
+                while ($group <= $groups) {
+                    $update = $client->createUpdate();
+                    $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $debug);
+                    $update->addDocuments($docs, true);
+                    $client->update($update);
+                    $update = null;
+                    $group++;
+                    print_r(date('Y-m-d H:i:s' . "\n"));
+                }
             }
         }
-        print_r(date('Y-m-d H:i:s' . "\n"));
+        $end = time();
+
+        Debug::message("It took me %s seconds to do all the indexing\n", ($end - $start), false);
         print_r("done!\n");
     }
 }
