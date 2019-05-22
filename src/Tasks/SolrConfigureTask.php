@@ -34,7 +34,18 @@ class SolrConfigureTask extends BuildTask
     public function __construct()
     {
         parent::__construct();
-        // @todo add logger
+
+        // Set new logger
+        $logger = $this->getLoggerFactory();
+        $this->setLogger($logger);
+    }
+
+    /**
+     * @return SearchLogFactory
+     */
+    protected function getLoggerFactory()
+    {
+        return Injector::inst()->get(LoggerInterface::class);
     }
 
     /**

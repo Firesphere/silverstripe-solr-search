@@ -93,7 +93,6 @@ class SolrIndexTask extends BuildTask
             $classes = $index->getClass();
             $client = new Client($config);
 
-
             foreach ($classes as $class) {
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);

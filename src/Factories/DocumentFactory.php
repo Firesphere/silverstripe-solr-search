@@ -57,19 +57,37 @@ class DocumentFactory
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
         // @todo this is intense and could hopefully be simplified?
+
+        $dbFields = DataObject::getSchema()->databaseFields($class, true);
         foreach ($items as $item) {
             $debugString .= "$item->ID, ";
             /** @var Document $doc */
             $doc = $update->createDocument();
             $this->addDefaultFields($doc, $item);
-
-            foreach ($fields as $field) {
-                $fieldData = $this->introspection->getFieldIntrospection($field);
-                $fieldName = ClassInfo::shortName($class) . '_' . str_replace('.', '_', $field);
-                $this->addField($doc, $item, $fieldData[$fieldName]);
+            $map = array_intersect_key($item->toMap(), array_flip($fields));
+            $dbFields = array_intersect_key($dbFields, array_flip($fields));
+            foreach ($dbFields as $column => $fieldType) {
+                if (in_array($fieldType, ['PrimaryKey'])
+                    || !isset($map[$column])
+                ) {
+                    continue;
+                }
+                if ($fieldType === 'ForeignKey') {
+                    $field = Injector::inst()->create($fieldType, $column, $item);
+                    $map[$column] = (int) $map[$column];
+                } else {
+                    $field = Injector::inst()->create($fieldType);
+                }
+                $formField = $field->scaffoldFormField();
+                if ($formField instanceof UploadField) {
+                    $map[$column] = (int) $map[$column];
+                } else {
+                    $formField->setValue($map[$column]);
+                    $map[$column] = $formField->dataValue();
+                }
+                $doc->addField(ClassInfo::shortName($class) . '_' . $column, $map[$column]);
             }
             $item->destroy();
-
             $docs[] = $doc;
         }
 
@@ -87,8 +105,7 @@ class DocumentFactory
      */
     protected function addDefaultFields(Document $doc, DataObject $item)
     {
-        $doc->setKey($item->ClassName . '-' . $item->ID);
-        $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
+        $doc->setKey('_documentid', $item->ClassName . '-' . $item->ID);
         $doc->addField('ID', $item->ID);
         $doc->addField('ClassName', $item->ClassName);
         $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
