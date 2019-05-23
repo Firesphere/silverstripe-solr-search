@@ -89,9 +89,13 @@ class SchemaService extends ViewableData
     public function getFulltextFieldDefinitions()
     {
         $return = ArrayList::create();
+        $originalStore = $this->store;
+        $this->store = true;
         foreach ($this->index->getFulltextFields() as $field) {
             $this->getFieldDefinition($field, $return);
         }
+
+        $this->store = $originalStore;
 
         return $return;
     }
