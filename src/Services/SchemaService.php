@@ -239,8 +239,8 @@ class SchemaService extends ViewableData
     public function getExtrasPath()
     {
         // @todo configurable but with default to the current absolute path
-        $dir = __DIR__;
-        $dir = rtrim(substr($dir, 0, strpos($dir, 'searchconfig') + strlen('searchconfig')), '/');
+        $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
+        $this->setTemplate($dir . '/Solr/5/templates/schema.ss');
 
         $confDirs = SolrCoreService::config()->get('paths');
 

@@ -9,6 +9,12 @@ namespace Firesphere\SearchConfig\Queries;
  */
 class BaseQuery
 {
+
+    /**
+     * @var array
+     */
+    protected $classes = [];
+
     /**
      * @var string|array The actual query to be executed
      */
@@ -47,6 +53,11 @@ class BaseQuery
      * @var array
      */
     protected $facets = [];
+
+    /**
+     * @var array
+     */
+    protected $facetFields = [];
 
     /**
      * @var int
@@ -295,5 +306,64 @@ class BaseQuery
     public function getExclude()
     {
         return $this->exclude;
+    }
+
+    /**
+     * @param array $facetFields
+     * @return BaseQuery
+     */
+    public function setFacetFields($facetFields)
+    {
+        $this->facetFields = $facetFields;
+
+        return $this;
+    }
+
+    /**
+     * Add a facet field. Format:
+     *
+     * @param string $class The ClassName that's supposed to be faceted
+     * @param array $options
+     * @return BaseQuery
+     */
+    public function addFacetField($class, $options)
+    {
+        $this->facetFields[$class] = $options;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFacetFields()
+    {
+        return $this->facetFields;
+    }
+
+    /**
+     * @param array $classes
+     * @return BaseQuery
+     */
+    public function setClasses($classes)
+    {
+        $this->classes = $classes;
+
+        return $this;
+    }
+
+    public function addClass($class)
+    {
+        $this->classes[] = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClasses()
+    {
+        return $this->classes;
     }
 }

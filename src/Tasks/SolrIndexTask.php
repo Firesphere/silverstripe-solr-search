@@ -108,7 +108,7 @@ class SolrIndexTask extends BuildTask
                 while ($group <= $groups) {
                     $update = $client->createUpdate();
                     $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $debug);
-                    $update->addDocuments($docs, true);
+                    $update->addDocuments($docs, true, 10);
                     $client->update($update);
                     $update = null;
                     $group++;

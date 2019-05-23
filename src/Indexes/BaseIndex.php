@@ -14,6 +14,8 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use Solarium\Core\Client\Client;
+use Solarium\QueryType\Select\Query\Query;
+use Solarium\QueryType\Select\Result\Result;
 
 abstract class BaseIndex
 {
@@ -86,44 +88,34 @@ abstract class BaseIndex
     public function doSearch($query)
     {
         // @todo make filterQuerySelects instead of a single query
-        $q = $this->buildSolrQuery($query);
 
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $client = new Client($config);
 
-        $clientQuery = $client->createSelect([
-            'query' => $query->search[0]['text']
-        ]);
+        $clientQuery = $this->buildSolrQuery($query, $client);
+        $this->buildClassFilter($query, $clientQuery);
         $facets = $clientQuery->getFacetSet();
-        foreach (SlackQuery::$facet_fields as $field => $config) {
+        foreach ($query->getFacetFields() as $field => $config) {
             $facets->createFacetField($config['Title'])->setField($config['Field']);
         }
         $facets->setMinCount($query->getFacetsMinCount());
-        $result = $client->execute($clientQuery);
+        $result = $client->select($clientQuery);
 
         Debug::dump($result->getData());
-        // Solarium
-
-        $solariumQuery = $client->createSelect([
-            'query'  => trim(implode(' ', $q)),
-            'start'  => $query->getStart(),
-            'rows'   => $query->getRows(),
-            'fields' => $query->getFields() ?: '*,score',
-            'sort'   => $query->getSort() ?: ''
-        ]);
-
-        $result = $client->select($solariumQuery);
-
-        Debug::dump($result);
+        $this->buildResultSet($result);
+        exit;
     }
 
     /**
      * @param BaseQuery $query
-     * @return array
+     * @param Client $client
+     * @return Query
      */
-    protected function buildSolrQuery($query)
+    protected function buildSolrQuery($query, $client)
     {
+        $clientQuery = $client->createSelect();
+
         $q = [];
         $hlq = [];
         foreach ($query->getTerms() as $search) {
@@ -139,26 +131,52 @@ abstract class BaseIndex
                 $fields = array_merge($fields, array_keys($search['boost']));
             }
 
-            // @todo use Solarium filterQuery instead if there are multiple queries with different fields
+            // @todo use Solarium filterQuery instead if there are multiple queries with different fields?
             foreach ($parts[0] as $part) {
                 if ($fields) {
                     $searchq = [];
                     foreach ($fields as $field) {
                         $boost = isset($search['boost'][$field]) ? '^' . $search['boost'][$field] : '';
                         // Escape namespace separators in class names
-                        $field = str_replace('\\', '\\\\', $field);
-
                         $searchq[] = "{$field}:{$part}{$fuzzy}{$boost}";
                     }
-                    $q[] = '+(' . implode(' OR ', $searchq) . ')';
+//                    $q[] = '+(' . implode(' OR ', $searchq) . ')';
+                    $clientQuery->setQuery($q);
                 } else {
-                    $q[] = ' ' . $part . $fuzzy;
+                    $clientQuery->setQuery($part);
+//                    $q[] = ' ' . $part . $fuzzy;
                 }
                 $hlq[] = $part;
             }
         }
 
-        return count($q) ? $q : ['*'];
+        return $clientQuery;
+    }
+
+    /**
+     * Add filtered queries based on class hierarchy
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return Query
+     */
+    public function buildClassFilter($query, $clientQuery)
+    {
+        foreach ($query->getClasses() as $class) {
+            $clientQuery->createFilterQuery('classes')
+                ->setQuery('ClassHierarchy:' . str_replace('\\', '\\\\', $class));
+        }
+
+        return $clientQuery;
+    }
+
+    /**
+     * @param Result $results
+     */
+    protected function buildResultSet($results)
+    {
+        $data = $results->getData();
+
+
     }
 
     /**
