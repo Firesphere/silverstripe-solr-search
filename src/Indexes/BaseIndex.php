@@ -7,6 +7,7 @@ use Firesphere\SearchConfig\Interfaces\ConfigStore;
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Services\SchemaService;
 use Firesphere\SearchConfig\Services\SolrCoreService;
+use Firesphere\StripeSlack\Indexes\SlackQuery;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -87,9 +88,22 @@ abstract class BaseIndex
         // @todo make filterQuerySelects instead of a single query
         $q = $this->buildSolrQuery($query);
 
-        // Solarium
         $config = Config::inst()->get(SolrCoreService::class, 'config');
+        $config['endpoint'] = $this->getConfig($config['endpoint']);
         $client = new Client($config);
+
+        $clientQuery = $client->createSelect([
+            'query' => $query->search[0]['text']
+        ]);
+        $facets = $clientQuery->getFacetSet();
+        foreach (SlackQuery::$facet_fields as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
+        $result = $client->execute($clientQuery);
+
+        Debug::dump($result->getData());
+        // Solarium
 
         $solariumQuery = $client->createSelect([
             'query'  => trim(implode(' ', $q)),

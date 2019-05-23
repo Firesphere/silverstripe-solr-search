@@ -15,6 +15,15 @@ class BaseQuery
     protected $query;
 
     /**
+     * @var array
+     */
+    protected $filter = [];
+
+    /**
+     * @var array 
+     */
+    protected $exclude = [];
+    /**
      * @var int
      */
     protected $start = 0;
@@ -222,12 +231,69 @@ class BaseQuery
 
     /**
      * @param array|string $query
-     * @return BaseQuery
+     * @return $this
      */
     public function setQuery($query)
     {
         $this->query = $query;
 
         return $this;
+    }
+
+    /**
+     * @param array $filter
+     * @return $this
+     */
+    public function setFilter($filter)
+    {
+        $this->filter = $filter;
+
+        return $this;
+    }
+
+    public function addFilter($field, $value)
+    {
+        $this->filter[$field] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilter()
+    {
+        return $this->filter;
+    }
+
+    /**
+     * @param array $exclude
+     * @return $this
+     */
+    public function setExclude($exclude)
+    {
+        $this->exclude = $exclude;
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @param $value
+     * @return $this
+     */
+    public function addExclude($field, $value)
+    {
+        $this->exclude[$field] = $value;
+        
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExclude()
+    {
+        return $this->exclude;
     }
 }
