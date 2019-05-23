@@ -208,59 +208,6 @@ class SearchIntrospection
         return $found;
     }
 
-    public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key)
-    {
-        $options['lookup_chain'][] = array(
-            'call'       => 'method',
-            'method'     => $lookup,
-            'through'    => $type,
-            'class'      => $dataClass,
-            'otherclass' => $class,
-            'foreignkey' => $key
-        );
-
-        return $options;
-    }
-
-    /**
-     * @param $dataClass
-     * @param $lookup
-     * @param $relation
-     * @return bool
-     */
-    public function checkRelationList($dataClass, $lookup, $relation)
-    {
-        // we only want to include base class for relation, omit classes that inherited the relation
-        $relationList = Config::inst()->get($dataClass, $relation, Config::UNINHERITED);
-        $relationList = ($relationList !== null) ? $relationList : [];
-
-        return (!array_key_exists($lookup, $relationList));
-    }
-
-    /**
-     * This is used to clean the source name from suffix
-     * suffixes are needed to support multiple relations with the same name on different page types
-     * @param string $source
-     * @return string
-     */
-    protected function getSourceName($source)
-    {
-        $source = explode('_|_', $source);
-
-        return $source[0];
-    }
-
-    /**
-     * @param mixed $index
-     * @return SearchIntrospection
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
-
-        return $this;
-    }
-
     /**
      * @param $source
      * @param $lookup
@@ -285,8 +232,14 @@ class SearchIntrospection
                 }
 
                 $class = $hasOne;
-                $options = $this->getLookupChain($options, $lookup, 'has_one', $dataClass, $class,
-                    $lookup . 'ID');
+                $options = $this->getLookupChain(
+                    $options,
+                    $lookup,
+                    'has_one',
+                    $dataClass,
+                    $class,
+                    $lookup . 'ID'
+                );
             } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
                 if ($this->checkRelationList($dataClass, $lookup, 'has_many')) {
                     continue;
@@ -303,8 +256,14 @@ class SearchIntrospection
 
                 $class = $manyMany['childClass'];
                 $options['multi_valued'] = true;
-                $options = $this->getLookupChain($options, $lookup, 'many_many', $dataClass, $class,
-                    $manyMany);
+                $options = $this->getLookupChain(
+                    $options,
+                    $lookup,
+                    'many_many',
+                    $dataClass,
+                    $class,
+                    $manyMany
+                );
             }
 
             if (is_string($class) && $class) {
@@ -319,5 +278,58 @@ class SearchIntrospection
         }
 
         return [$class, $singleton, $next];
+    }
+
+    /**
+     * This is used to clean the source name from suffix
+     * suffixes are needed to support multiple relations with the same name on different page types
+     * @param string $source
+     * @return string
+     */
+    protected function getSourceName($source)
+    {
+        $source = explode('_|_', $source);
+
+        return $source[0];
+    }
+
+    /**
+     * @param $dataClass
+     * @param $lookup
+     * @param $relation
+     * @return bool
+     */
+    public function checkRelationList($dataClass, $lookup, $relation)
+    {
+        // we only want to include base class for relation, omit classes that inherited the relation
+        $relationList = Config::inst()->get($dataClass, $relation, Config::UNINHERITED);
+        $relationList = ($relationList !== null) ? $relationList : [];
+
+        return (!array_key_exists($lookup, $relationList));
+    }
+
+    public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key)
+    {
+        $options['lookup_chain'][] = array(
+            'call'       => 'method',
+            'method'     => $lookup,
+            'through'    => $type,
+            'class'      => $dataClass,
+            'otherclass' => $class,
+            'foreignkey' => $key
+        );
+
+        return $options;
+    }
+
+    /**
+     * @param mixed $index
+     * @return SearchIntrospection
+     */
+    public function setIndex($index)
+    {
+        $this->index = $index;
+
+        return $this;
     }
 }

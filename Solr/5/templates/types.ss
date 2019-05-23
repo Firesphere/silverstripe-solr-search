@@ -136,7 +136,6 @@
         <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1"
                 catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
     </analyzer>
     <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -152,6 +151,7 @@
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="false"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -175,6 +175,7 @@
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -193,6 +194,7 @@
              possible with WordDelimiterFilter in conjuncton with stemming. -->
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="false"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -204,6 +206,7 @@
         <filter class="solr.LengthFilterFactory" min="4" max="20"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -216,6 +219,7 @@
         <filter class="solr.LengthFilterFactory" min="4" max="20"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -227,6 +231,7 @@
         <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1"
                 catenateNumbers="1" catenateAll="0" splitOnCaseChange="0"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
     <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -239,6 +244,7 @@
                 catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -255,6 +261,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.ReversedWildcardFilterFactory" withOriginal="true"
                 maxPosAsterisk="3" maxPosQuestion="2" maxFractionAsterisk="0.33"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
     <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -267,6 +274,7 @@
                 catenateNumbers="0" catenateAll="0" splitOnCaseChange="0"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -310,6 +318,7 @@
         <filter class="solr.PatternReplaceFilterFactory"
                 pattern="([^a-z])" replacement="" replace="all"
         />
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 
@@ -343,6 +352,7 @@
     <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
 

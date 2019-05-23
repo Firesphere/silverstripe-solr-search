@@ -213,6 +213,14 @@ class BaseQuery
     }
 
     /**
+     * @return array|string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
      * @param array|string $query
      * @return BaseQuery
      */
@@ -221,13 +229,5 @@ class BaseQuery
         $this->query = $query;
 
         return $this;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getQuery()
-    {
-        return $this->query;
     }
 }

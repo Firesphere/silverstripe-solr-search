@@ -8,6 +8,7 @@ use Firesphere\SearchConfig\Helpers\SearchIntrospection;
 use Firesphere\SearchConfig\Helpers\Statics;
 use Firesphere\SearchConfig\Indexes\BaseIndex;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ViewableData;
 
@@ -22,6 +23,11 @@ class SchemaService extends ViewableData
      * @var string ABSOLUTE Path to template
      */
     protected $template;
+
+    /**
+     * @var string ABSOLUTE Path to types.ss template
+     */
+    protected $typesTemplate;
     /**
      * @var BaseIndex
      */
@@ -91,6 +97,28 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * @param $field
+     * @param ArrayList $return
+     * @throws Exception
+     */
+    protected function getFieldDefinition($field, &$return, $copyField = null)
+    {
+        $field = $this->introspection->getFieldIntrospection($field);
+        $typeMap = Statics::getTypeMap();
+        foreach ($field as $name => $options) {
+            $item = [
+                'Field'       => $name,
+                'Type'        => $typeMap[$options['type']],
+                'Indexed'     => 'true',
+                'Stored'      => $this->store ? 'true' : 'false',
+                'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
+                'Destination' => $copyField
+            ];
+            $return->push($item);
+        }
+    }
+
+    /**
      * @return ArrayList
      */
     public function getCopyFields()
@@ -145,35 +173,40 @@ class SchemaService extends ViewableData
         return $return;
     }
 
+    public function getTypes()
+    {
+        if (!$this->typesTemplate) {
+            // @todo configurable but with default to the current absolute path
+            $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
+            $this->setTypesTemplate($dir . '/Solr/5/templates/types.ss');
+        }
+
+        return $this->renderWith($this->getTypesTemplate());
+    }
 
     /**
-     * @param $field
-     * @param ArrayList $return
-     * @throws Exception
+     * @return string
      */
-    protected function getFieldDefinition($field, &$return, $copyField = null)
+    public function getTypesTemplate()
     {
-        $field = $this->introspection->getFieldIntrospection($field);
-        $typeMap = Statics::getTypeMap();
-        foreach ($field as $name => $options) {
-            $item = [
-                'Field'       => $name,
-                'Type'        => $typeMap[$options['type']],
-                'Indexed'     => 'true',
-                'Stored'      => $this->store ? 'true' : 'false',
-                'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
-                'Destination' => $copyField
-            ];
-            $return->push($item);
-        }
+        return $this->typesTemplate;
+    }
+
+    /**
+     * @param string $typesTemplate
+     * @return SchemaService
+     */
+    public function setTypesTemplate($typesTemplate)
+    {
+        $this->typesTemplate = $typesTemplate;
+
+        return $this;
     }
 
     public function generateSchema()
     {
         if (!$this->template) {
-            // @todo configurable but with default to the current absolute path
-            $dir = __DIR__;
-            $dir = rtrim(substr($dir, 0, strpos($dir, 'searchconfig') + strlen('searchconfig')), '/');
+            $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
             $this->setTemplate($dir . '/Solr/5/templates/schema.ss');
         }
 

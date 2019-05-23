@@ -26,8 +26,11 @@ If you run in to trouble updating, add the following to `/etc/apt/apt.conf`:
 
 ## Downloading and installing
 
+Taken from https://lucene.apache.org/solr/guide/7_7/taking-solr-to-production.html
+
+Update to match the required version.
 ```bash
-wget http://www.apache.org/dyn/closer.lua/lucene/solr/8.1.0/solr-8.1.0.tgz
+wget http://www.apache.org/dyn/closer.lua/lucene/solr/8.1.0/solr-8.1.0.tgz # find your local URL manually
 tar xvf solr-8.1.0.tgz solr-8.1.0/bin/install_solr_service.sh --strip-components=2
 sudo bash ./install_solr_service.sh solr-8.1.0.tgz
 ```
@@ -45,7 +48,7 @@ This will install Solr 8.1 as a service on your (virtual) machine
 
 ## Supports
 
-Solr 5.7 or higher
+Solr6 or higher
 
 # Cow?
 

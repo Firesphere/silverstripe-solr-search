@@ -31,7 +31,6 @@ class DocumentFactory
     }
 
     /**
-     * @todo this should be cleaner
      * @param $class
      * @param $fields
      * @param BaseIndex $index
@@ -40,6 +39,7 @@ class DocumentFactory
      * @param bool $debug
      * @return array
      * @throws Exception
+     * @todo this should be cleaner
      */
     public function buildItems($class, $fields, $index, $update, $group, $debug = false)
     {
@@ -76,6 +76,19 @@ class DocumentFactory
         }
 
         return $docs;
+    }
+
+    /**
+     * @param Document $doc
+     * @param DataObject $item
+     */
+    protected function addDefaultFields(Document $doc, DataObject $item)
+    {
+        $doc->setKey($item->ClassName . '-' . $item->ID);
+        $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
+        $doc->addField('ID', $item->ID);
+        $doc->addField('ClassName', $item->ClassName);
+        $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
     }
 
     /**
@@ -190,18 +203,5 @@ class DocumentFactory
         }
 
         return $object;
-    }
-
-    /**
-     * @param Document $doc
-     * @param DataObject $item
-     */
-    protected function addDefaultFields(Document $doc, DataObject $item)
-    {
-        $doc->setKey($item->ClassName . '-' . $item->ID);
-        $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
-        $doc->addField('ID', $item->ID);
-        $doc->addField('ClassName', $item->ClassName);
-        $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
     }
 }

@@ -11,13 +11,11 @@ use Firesphere\SearchConfig\Stores\FileConfigStore;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\FullTextSearch\Utils\Logging\SearchLogFactory;
 
 class SolrConfigureTask extends BuildTask
 {
@@ -25,30 +23,18 @@ class SolrConfigureTask extends BuildTask
 
     protected $title = 'Configure Solr cores';
 
-    protected $description
-        = 'Create or reload a Solr Core by adding or reloading a configuration.';
+    protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
 
+    /**
+     * @todo load the logger :)
+     * @var LoggerInterface
+     */
     protected $logger;
 
     public function __construct()
     {
         parent::__construct();
-        $name = get_class($this);
-        $verbose = Controller::curr()->getRequest()->getVar('verbose');
-
-        // Set new logger
-        $logger = $this
-            ->getLoggerFactory()
-            ->getOutputLogger($name, $verbose);
-        $this->setLogger($logger);
-    }
-
-    /**
-     * @return SearchLogFactory
-     */
-    protected function getLoggerFactory()
-    {
-        return Injector::inst()->get(SearchLogFactory::class);
+        // @todo add logger
     }
 
     /**
@@ -75,9 +61,7 @@ class SolrConfigureTask extends BuildTask
                 $this->updateIndex($instance);
             } catch (Exception $e) {
                 // We got an exception. Warn, but continue to next index.
-                $this
-                    ->getLogger()
-                    ->error('Failure: ' . $e->getMessage());
+                var_dump($e);
             }
         }
 
@@ -97,10 +81,7 @@ class SolrConfigureTask extends BuildTask
     protected function updateIndex($instance)
     {
         $index = $instance->getIndexName();
-        $this->getLogger()->info("Configuring $index.");
 
-        // Upload the config files for this index
-        $this->getLogger()->info('Uploading configuration ...');
         // @todo load from config
         $config = [
             'mode' => 'file',
@@ -120,21 +101,17 @@ class SolrConfigureTask extends BuildTask
         // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
         $status = $service->coreStatus($index);
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
-            $this->getLogger()->info('Reloading core ...');
             try {
                 $service->coreReload($index);
             } catch (Exception $e) {
-                $this->getLogger()->info('Reload failed, trying to re-instantiate core ...');
+                var_dump($e);
                 // Possibly a file error, try to unload and recreate the core
                 $service->coreUnload($index);
                 $service->coreCreate($index, $configStore->instanceDir($index));
             }
         } else {
-            $this->getLogger()->info('Creating core ...');
             $service->coreCreate($index, $configStore->instanceDir($index));
         }
-
-        $this->getLogger()->info('Done');
     }
 
     /**
