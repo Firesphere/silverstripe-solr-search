@@ -9,6 +9,31 @@ https://solarium.readthedocs.io
 
 This module uses a managed schema.
 
+# Installing Solr
+
+## Debian Jessie
+
+Debian Jessie needs backports to get Java 8 working:
+```bash
+echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+apt-get update
+apt-get install -t jessie-backports openjdk-8-jre
+```
+
+If you run in to trouble updating, add the following to `/etc/apt/apt.conf`:
+`Acquire::Check-Valid-Until "false";`
+
+
+## Downloading and installing
+
+```bash
+wget http://www.apache.org/dyn/closer.lua/lucene/solr/8.1.0/solr-8.1.0.tgz
+tar xvf solr-8.1.0.tgz solr-8.1.0/bin/install_solr_service.sh --strip-components=2
+sudo bash ./install_solr_service.sh solr-8.1.0.tgz
+```
+
+This will install Solr 8.1 as a service on your (virtual) machine
+
 ### Pros
 
 - Schema can be altered on the fly
