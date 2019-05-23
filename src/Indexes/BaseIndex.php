@@ -344,8 +344,8 @@ abstract class BaseIndex
     {
         $this->facetFields[] = $field;
 
-        if (!in_array($field, $this->getFulltextFields(), true)) {
-            $this->addFulltextField($field);
+        if (!in_array($field, $this->getFilterFields(), true)) {
+            $this->addFilterField($field);
         }
 
         return $this;
