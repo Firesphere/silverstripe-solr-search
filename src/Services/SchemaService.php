@@ -99,6 +99,7 @@ class SchemaService extends ViewableData
     /**
      * @param $field
      * @param ArrayList $return
+     * @param null|string $copyField
      * @throws Exception
      */
     protected function getFieldDefinition($field, &$return, $copyField = null)
@@ -116,23 +117,6 @@ class SchemaService extends ViewableData
             ];
             $return->push($item);
         }
-    }
-
-    /**
-     * @return ArrayList
-     */
-    public function getCopyFields()
-    {
-        $return = ArrayList::create();
-        foreach (array_keys($this->index->getCopyFields()) as $copyField) {
-            $item = [
-                'Field' => $copyField
-            ];
-
-            $return->push($item);
-        }
-
-        return $return;
     }
 
     /**

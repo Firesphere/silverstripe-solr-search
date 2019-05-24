@@ -55,7 +55,7 @@ class SolrConfigureTask extends BuildTask
             if (!$ref->isInstantiable()) {
                 continue;
             }
-            $instance = singleton($instance);
+            $instance = Injector::inst()->createWithArgs($instance, [true]);
 
             try {
                 $this->updateIndex($instance);

@@ -80,15 +80,22 @@ abstract class BaseIndex
 
     /**
      * BaseIndex constructor.
+     * @param bool $schema
      */
-    public function __construct()
+    public function __construct($schema = false)
     {
+        // Set up the client
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
-        $this->schemaService = Injector::inst()->get(SchemaService::class);
-        $this->schemaService->setIndex($this);
-        $this->schemaService->setStore(Director::isDev());
         $this->client = new Client($config);
+
+        if ($schema) {
+            // Set up the schema service, only used in the generation of the schema
+            $schemaService  = Injector::inst()->get(SchemaService::class);
+            $schemaService->setIndex($this);
+            $schemaService->setStore(Director::isDev());
+            $this->schemaService = $schemaService;
+        }
 
         $this->init();
     }

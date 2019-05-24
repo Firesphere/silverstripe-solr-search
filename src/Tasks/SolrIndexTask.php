@@ -88,7 +88,7 @@ class SolrIndexTask extends BuildTask
             $index = Injector::inst()->get($index);
             $config = Config::inst()->get(SolrCoreService::class, 'config');
             $config['endpoint'] = $index->getConfig($config['endpoint']);
-            $config['timeout'] = 10000;
+            $config['timeout'] = 10000; // doesn't seem to be working?
 
             $classes = $index->getClass();
             $client = new Client($config);
