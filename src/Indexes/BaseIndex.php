@@ -162,6 +162,7 @@ abstract class BaseIndex
 
         $clientQuery->setQuery($term);
 
+        // Create filter queries for fields set on the query
         foreach ($query->getFields() as $field => $value) {
             $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
         }
@@ -171,6 +172,7 @@ abstract class BaseIndex
 
     /**
      * Add filtered queries based on class hierarchy
+     * We only need the class itself, since the hierarchy will take care of the rest
      * @param BaseQuery $query
      * @param Query $clientQuery
      * @return Query

@@ -39,7 +39,7 @@ class BaseQuery
     protected $rows = 10;
 
     /**
-     * @var string|null
+     * @var array
      */
     protected $fields = [];
 
@@ -117,7 +117,7 @@ class BaseQuery
     }
 
     /**
-     * @return string|null
+     * @return array
      */
     public function getFields()
     {
@@ -135,6 +135,11 @@ class BaseQuery
         return $this;
     }
 
+    /**
+     * @param string $field fieldname
+     * @param string $query search filter on field name
+     * @return $this
+     */
     public function addField($field, $query)
     {
         $this->fields[$field] = $query;
