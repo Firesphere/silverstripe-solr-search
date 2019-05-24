@@ -124,13 +124,6 @@ class BaseQuery
         return $this->fields;
     }
 
-    public function addField($field, $query)
-    {
-        $this->fields[$field] = $query;
-
-        return $this;
-    }
-
     /**
      * @param array $fields
      * @return $this
@@ -138,6 +131,13 @@ class BaseQuery
     public function setFields($fields)
     {
         $this->fields = $fields;
+
+        return $this;
+    }
+
+    public function addField($field, $query)
+    {
+        $this->fields[$field] = $query;
 
         return $this;
     }
@@ -267,17 +267,6 @@ class BaseQuery
         return $this;
     }
 
-    /**
-     * @param array $filter
-     * @return $this
-     */
-    public function setFilter($filter)
-    {
-        $this->filter = $filter;
-
-        return $this;
-    }
-
     public function addFilter($field, $value)
     {
         $this->filter[$field] = $value;
@@ -294,12 +283,12 @@ class BaseQuery
     }
 
     /**
-     * @param array $exclude
+     * @param array $filter
      * @return $this
      */
-    public function setExclude($exclude)
+    public function setFilter($filter)
     {
-        $this->exclude = $exclude;
+        $this->filter = $filter;
 
         return $this;
     }
@@ -325,12 +314,12 @@ class BaseQuery
     }
 
     /**
-     * @param array $facetFields
-     * @return BaseQuery
+     * @param array $exclude
+     * @return $this
      */
-    public function setFacetFields($facetFields)
+    public function setExclude($exclude)
     {
-        $this->facetFields = $facetFields;
+        $this->exclude = $exclude;
 
         return $this;
     }
@@ -358,12 +347,12 @@ class BaseQuery
     }
 
     /**
-     * @param array $classes
+     * @param array $facetFields
      * @return BaseQuery
      */
-    public function setClasses($classes)
+    public function setFacetFields($facetFields)
     {
-        $this->classes = $classes;
+        $this->facetFields = $facetFields;
 
         return $this;
     }
@@ -384,12 +373,12 @@ class BaseQuery
     }
 
     /**
-     * @param array $highlight
+     * @param array $classes
      * @return BaseQuery
      */
-    public function setHighlight($highlight)
+    public function setClasses($classes)
     {
-        $this->highlight = $highlight;
+        $this->classes = $classes;
 
         return $this;
     }
@@ -411,5 +400,16 @@ class BaseQuery
     public function getHighlight()
     {
         return $this->highlight;
+    }
+
+    /**
+     * @param array $highlight
+     * @return BaseQuery
+     */
+    public function setHighlight($highlight)
+    {
+        $this->highlight = $highlight;
+
+        return $this;
     }
 }

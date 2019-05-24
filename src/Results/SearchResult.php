@@ -3,7 +3,6 @@
 
 namespace Firesphere\SearchConfig\Results;
 
-
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -56,15 +55,20 @@ class SearchResult
     }
 
     /**
-     * @param Result $result
+     * @return int
+     */
+    public function getTotalItems()
+    {
+        return $this->totalItems;
+    }
+
+    /**
+     * @param int $totalItems
      * @return SearchResult
      */
-    protected function setMatches($result)
+    public function setTotalItems($totalItems)
     {
-        $data = $result->getData();
-
-        $docs = ArrayList::create($data['response']['docs']);
-        $this->matches = $docs;
+        $this->totalItems = $totalItems;
 
         return $this;
     }
@@ -82,6 +86,53 @@ class SearchResult
     public function getMatches()
     {
         return $this->matches;
+    }
+
+    /**
+     * @param Result $result
+     * @return SearchResult
+     */
+    protected function setMatches($result)
+    {
+        $data = $result->getData();
+
+        $docs = ArrayList::create($data['response']['docs']);
+        $this->matches = $docs;
+
+        return $this;
+    }
+
+    public function getHighlight($docID)
+    {
+        if ($this->highlight) {
+            $hl = [];
+            foreach ($this->highlight->getResult($docID) as $field => $highlight) {
+                $hl[] = implode(' (...) ', $highlight);
+            }
+
+            return implode(' (...) ', $hl);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Result $result
+     * @return SearchResult
+     */
+    public function setHighlight($result)
+    {
+        $this->highlight = $result->getHighlighting();
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacets()
+    {
+        return $this->facets;
     }
 
     /**
@@ -113,59 +164,5 @@ class SearchResult
         $this->facets = ArrayData::create($facetArray);
 
         return $this;
-    }
-
-    public function getHighlight($docID)
-    {
-        if ($this->highlight) {
-            $hl = [];
-            foreach ($this->highlight->getResult($docID) as $field => $highlight) {
-
-                $hl[] = implode(' (...) ', $highlight);
-            }
-
-            return implode(' (...) ', $hl);
-        }
-
-        return null;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getFacets()
-    {
-        return $this->facets;
-    }
-
-    /**
-     * @param Result $result
-     * @return SearchResult
-     */
-    public function setHighlight($result)
-    {
-        $this->highlight = $result->getHighlighting();
-
-        return $this;
-    }
-
-    /**
-     * @param int $totalItems
-     * @return SearchResult
-     */
-    public function setTotalItems($totalItems)
-    {
-        $this->totalItems = $totalItems;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalItems()
-    {
-        return $this->totalItems;
     }
 }

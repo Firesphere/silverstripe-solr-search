@@ -12,15 +12,22 @@ use Firesphere\SearchConfig\Services\SolrCoreService;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
+/**
+ * Class BaseIndex
+ * @package Firesphere\SearchConfig\Indexes
+ */
 abstract class BaseIndex
 {
+    /**
+     * @var Client
+     */
+    protected $client;
     /**
      * @var array
      */
@@ -60,6 +67,9 @@ abstract class BaseIndex
         ],
     ];
 
+    /**
+     * @var string
+     */
     protected $defaultField = '_text';
 
     /**
@@ -67,14 +77,40 @@ abstract class BaseIndex
      */
     protected $schemaService;
 
+    /**
+     * BaseIndex constructor.
+     */
     public function __construct()
     {
+        $config = Config::inst()->get(SolrCoreService::class, 'config');
+        $config['endpoint'] = $this->getConfig($config['endpoint']);
         $this->schemaService = Injector::inst()->get(SchemaService::class);
         $this->schemaService->setIndex($this);
         $this->schemaService->setStore(Director::isDev());
+        $this->client = new Client($config);
 
         $this->init();
     }
+
+    /**
+     * Build a full config for all given endpoints
+     * This is to add the current index to e.g. an index or select
+     * @param array $endpoints
+     * @return array
+     */
+    public function getConfig($endpoints)
+    {
+        foreach ($endpoints as $host => $endpoint) {
+            $endpoints[$host]['core'] = $this->getIndexName();
+        }
+
+        return $endpoints;
+    }
+
+    /**
+     * @return string
+     */
+    abstract public function getIndexName();
 
     /**
      * Stub for backward compatibility
@@ -90,14 +126,8 @@ abstract class BaseIndex
      */
     public function doSearch($query)
     {
-        // @todo make filterQuerySelects instead of a single query
-
-        $config = Config::inst()->get(SolrCoreService::class, 'config');
-        $config['endpoint'] = $this->getConfig($config['endpoint']);
-        $client = new Client($config);
-
         // Build the actual query parameters
-        $clientQuery = $this->buildSolrQuery($query, $client);
+        $clientQuery = $this->buildSolrQuery($query);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
         // Add highlighting
@@ -105,7 +135,7 @@ abstract class BaseIndex
         // Setup the facets
         $this->buildFacets($query, $clientQuery);
 
-        $result = $client->select($clientQuery);
+        $result = $this->client->select($clientQuery);
 
         $result = new SearchResult($result, $query);
 
@@ -114,12 +144,11 @@ abstract class BaseIndex
 
     /**
      * @param BaseQuery $query
-     * @param Client $client
      * @return Query
      */
-    protected function buildSolrQuery($query, $client)
+    protected function buildSolrQuery($query)
     {
-        $clientQuery = $client->createSelect();
+        $clientQuery = $this->client->createSelect();
 
         $q = [];
         foreach ($query->getTerms() as $search) {
@@ -163,6 +192,19 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
+    }
+
+    /**
+     * @param $query
+     * @param Query $clientQuery
+     */
+    protected function buildFacets($query, Query $clientQuery)
+    {
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
     }
 
     /**
@@ -212,26 +254,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @return string
-     */
-    abstract public function getIndexName();
-
-    /**
-     * Build a full config for all given endpoints
-     * This is to add the current index to e.g. an index or select
-     * @param array $endpoints
-     * @return array
-     */
-    public function getConfig($endpoints)
-    {
-        foreach ($endpoints as $host => $endpoint) {
-            $endpoints[$host]['core'] = $this->getIndexName();
-        }
-
-        return $endpoints;
-    }
-
-    /**
      * $options is not used anymore, added for backward compatibility
      * @param $class
      * @param array $options
@@ -243,17 +265,6 @@ abstract class BaseIndex
             Deprecation::notice('5', 'Options are not used anymore');
         }
         $this->class[] = $class;
-
-        return $this;
-    }
-
-    /**
-     * @param $filterField
-     * @return $this
-     */
-    public function addFilterField($filterField)
-    {
-        $this->filterFields[] = $filterField;
 
         return $this;
     }
@@ -377,22 +388,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @param string $field Name of the copyfield
-     * @param array $options Array of all fields that should be copied to this copyfield
-     * @return $this
-     */
-    public function addCopyField($field, $options)
-    {
-        $this->copyFields[$field] = $options;
-
-        if (!in_array($field, $this->getFulltextFields(), true)) {
-            $this->addFulltextField($field);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getFilterFields()
@@ -407,6 +402,33 @@ abstract class BaseIndex
     public function setFilterFields($filterFields)
     {
         $this->filterFields = $filterFields;
+
+        return $this;
+    }
+
+    /**
+     * @param $filterField
+     * @return $this
+     */
+    public function addFilterField($filterField)
+    {
+        $this->filterFields[] = $filterField;
+
+        return $this;
+    }
+
+    /**
+     * @param string $field Name of the copyfield
+     * @param array $options Array of all fields that should be copied to this copyfield
+     * @return $this
+     */
+    public function addCopyField($field, $options)
+    {
+        $this->copyFields[$field] = $options;
+
+        if (!in_array($field, $this->getFulltextFields(), true)) {
+            $this->addFulltextField($field);
+        }
 
         return $this;
     }
@@ -485,18 +507,5 @@ abstract class BaseIndex
         $this->defaultField = $defaultField;
 
         return $this;
-    }
-
-    /**
-     * @param $query
-     * @param Query $clientQuery
-     */
-    protected function buildFacets($query, Query $clientQuery)
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
     }
 }

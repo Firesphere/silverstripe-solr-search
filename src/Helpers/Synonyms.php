@@ -10,7 +10,6 @@ namespace Firesphere\SearchConfig\Helpers;
  */
 class Synonyms
 {
-
     public static $uk_us = [
         0    =>
             [
