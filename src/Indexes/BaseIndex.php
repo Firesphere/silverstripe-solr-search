@@ -14,6 +14,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
@@ -173,6 +174,23 @@ abstract class BaseIndex
                 $store->uploadFile($this->getIndexName(), $file);
             }
         }
+
+        $synonyms = $this->getSynonyms();
+
+        $store->uploadString(
+            $this->getIndexName(),
+            'synonyms.txt',
+            $synonyms
+        );
+    }
+
+    /**
+     * Add synonyms. Public to be extendable
+     * @return string
+     */
+    public function getSynonyms()
+    {
+        return SiteConfig::current_site_config()->SearchSynonyms;
     }
 
     /**
