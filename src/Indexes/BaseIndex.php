@@ -85,6 +85,7 @@ abstract class BaseIndex
 
     /**
      * @param BaseQuery $query
+     * @return SearchResult|Result
      */
     public function doSearch($query)
     {
@@ -99,7 +100,7 @@ abstract class BaseIndex
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
         // Add highlighting
-//        $clientQuery->getHighlighting()->setFields($query->getHighlight());
+        $clientQuery->getHighlighting()->setFields($query->getHighlight());
         // Setup the facets
         $this->buildFacets($query, $clientQuery);
 
@@ -107,9 +108,7 @@ abstract class BaseIndex
 
         $result = new SearchResult($result, $query);
 
-        Debug::dump($result->getMatches());
-
-        exit;
+        return $result;
     }
 
     /**

@@ -6,6 +6,8 @@ namespace Firesphere\SearchConfig\Results;
 
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\PaginatedList;
+use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -20,6 +22,11 @@ class SearchResult
      * @var ArrayList
      */
     protected $matches;
+
+    /**
+     * @var int
+     */
+    protected $totalItems;
 
     /**
      * @var ArrayList
@@ -37,6 +44,15 @@ class SearchResult
         $this->setMatches($result);
         $this->setFacets($result);
         $this->setHighlight($result);
+        $this->setTotalItems($result->getNumFound());
+    }
+
+    public function getPaginatedMatches($request)
+    {
+        $paginated = PaginatedList::create($this->matches, $request);
+        $paginated->setTotalItems($this->getTotalItems());
+
+        return $paginated;
     }
 
     /**
@@ -53,8 +69,15 @@ class SearchResult
         return $this;
     }
 
+    public function overrideMatches($matches)
+    {
+        $this->matches = $matches;
+
+        return $matches;
+    }
+
     /**
-     * @return SearchResult
+     * @return ArrayList
      */
     public function getMatches()
     {
@@ -67,7 +90,8 @@ class SearchResult
      */
     protected function setFacets($facets)
     {
-        $resultSet = ArrayList::create();
+        // @todo clean up this mess
+        $facetArray = [];
         if ($facets = $facets->getFacetSet()) {
             $facetTypes = $this->query->getFacetFields();
             foreach ($facetTypes as $class => $options) {
@@ -83,12 +107,10 @@ class SearchResult
                     $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
                 }
                 $facetArray[$options['Title']] = $results;
-                $resultSet->push($facetArray);
             }
-
         }
 
-        $this->facets = $resultSet;
+        $this->facets = ArrayData::create($facetArray);
 
         return $this;
     }
@@ -126,5 +148,24 @@ class SearchResult
         $this->highlight = $result->getHighlighting();
 
         return $this;
+    }
+
+    /**
+     * @param int $totalItems
+     * @return SearchResult
+     */
+    public function setTotalItems($totalItems)
+    {
+        $this->totalItems = $totalItems;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalItems()
+    {
+        return $this->totalItems;
     }
 }
