@@ -12,6 +12,7 @@ use Firesphere\SearchConfig\Services\SolrCoreService;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
@@ -125,7 +126,21 @@ abstract class BaseIndex
             $q[] = $search['text'];
         }
 
-        $clientQuery->setQuery(implode(' ', $q));
+        $searchTerm = implode(' ', $q);
+        $term = [];
+
+        // Escape special characters where needed. Except for quoted parts, those should be phrased
+        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
+        $helper = $clientQuery->getHelper();
+        foreach ($parts[0] as $part) {
+            if (substr_count($part, '"') === 2) {
+                $term[] = $helper->escapePhrase($part);
+            } else {
+                $term[] = $helper->escapeTerm($part);
+            }
+        }
+
+        $clientQuery->setQuery(implode(' ', $term));
 
         foreach ($query->getFields() as $field => $value) {
             $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
@@ -176,7 +191,7 @@ abstract class BaseIndex
             'synonyms.txt',
             $synonyms
         );
-        
+
         // Upload additional files
         foreach (glob($this->schemaService->getExtrasPath() . '/*') as $file) {
             if (is_file($file)) {
