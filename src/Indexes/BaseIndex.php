@@ -102,7 +102,7 @@ abstract class BaseIndex
         $facets->setMinCount($query->getFacetsMinCount());
         $result = $client->select($clientQuery);
 
-        Debug::dump($result->getData());
+//        Debug::dump($result->getData());
         $this->buildResultSet($result);
         exit;
     }
@@ -117,38 +117,15 @@ abstract class BaseIndex
         $clientQuery = $client->createSelect();
 
         $q = [];
-        $hlq = [];
         foreach ($query->getTerms() as $search) {
-            $text = $search['text'];
-            // Split the query on parts between double quotes and rest of the text, to keep quoted parts as one
-            preg_match_all('/"[^"]*"|\S+/', $text, $parts);
-
-            $fuzzy = $search['fuzzy'] ? '~' : '';
-
-            // @todo simplify
-            $fields = isset($search['fields']) ? $search['fields'] : [];
-            if (isset($search['boost'])) {
-                $fields = array_merge($fields, array_keys($search['boost']));
-            }
-
-            // @todo use Solarium filterQuery instead if there are multiple queries with different fields?
-            foreach ($parts[0] as $part) {
-                if ($fields) {
-                    $searchq = [];
-                    foreach ($fields as $field) {
-                        $boost = isset($search['boost'][$field]) ? '^' . $search['boost'][$field] : '';
-                        // Escape namespace separators in class names
-                        $searchq[] = "{$field}:{$part}{$fuzzy}{$boost}";
-                    }
-//                    $q[] = '+(' . implode(' OR ', $searchq) . ')';
-                    $clientQuery->setQuery($q);
-                } else {
-                    $clientQuery->setQuery($part);
-//                    $q[] = ' ' . $part . $fuzzy;
-                }
-                $hlq[] = $part;
-            }
+            $q[] = $search['text'];
         }
+
+        foreach ($query->getFields() as $field => $value) {
+            $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
+        }
+
+        $clientQuery->setQuery(implode(' ', $q));
 
         return $clientQuery;
     }
@@ -174,9 +151,11 @@ abstract class BaseIndex
      */
     protected function buildResultSet($results)
     {
-        $data = $results->getData();
+        $docs = $results->getData();
 
+        $docs = $docs['response']['docs'];
 
+        Debug::dump($docs);
     }
 
     /**

@@ -3,6 +3,9 @@
 
 namespace Firesphere\SearchConfig\Queries;
 
+use Firesphere\StripeSlack\Models\Channel;
+use Firesphere\StripeSlack\Models\SlackUser;
+
 /**
  * Class BaseQuery
  * @package Firesphere\SearchConfig\Queries
@@ -42,7 +45,7 @@ class BaseQuery
     /**
      * @var string|null
      */
-    protected $fields;
+    protected $fields = [];
 
     /**
      * @var array
@@ -55,6 +58,11 @@ class BaseQuery
     protected $facets = [];
 
     /**
+     * Format:
+     * SiteTree::class   => [
+     *      'Field' => 'SiteTree_ChannelID',
+     *      'Title' => 'Channel'
+     * ],
      * @var array
      */
     protected $facetFields = [];
@@ -68,6 +76,11 @@ class BaseQuery
      * @var array
      */
     protected $terms = [];
+
+    /**
+     * @var bool
+     */
+    protected $highlight = true;
 
     /**
      * @return int
@@ -115,8 +128,15 @@ class BaseQuery
         return $this->fields;
     }
 
+    public function addField($field, $query)
+    {
+        $this->fields[$field] = $query;
+
+        return $this;
+    }
+
     /**
-     * @param string|null $fields
+     * @param array $fields
      * @return $this
      */
     public function setFields($fields)
@@ -365,5 +385,24 @@ class BaseQuery
     public function getClasses()
     {
         return $this->classes;
+    }
+
+    /**
+     * @param bool $highlight
+     * @return BaseQuery
+     */
+    public function setHighlight($highlight)
+    {
+        $this->highlight = $highlight;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHighlight()
+    {
+        return $this->highlight;
     }
 }
