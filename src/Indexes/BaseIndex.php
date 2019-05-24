@@ -3,6 +3,7 @@
 
 namespace Firesphere\SearchConfig\Indexes;
 
+use Firesphere\SearchConfig\Helpers\Synonyms;
 use Firesphere\SearchConfig\Interfaces\ConfigStore;
 use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Results\SearchResult;
@@ -190,7 +191,10 @@ abstract class BaseIndex
      */
     public function getSynonyms()
     {
-        return SiteConfig::current_site_config()->SearchSynonyms;
+        $engSynonyms = Synonyms::getSynonymsAsString();
+        $synonyms = $engSynonyms . SiteConfig::current_site_config()->SearchSynonyms;
+
+        return $synonyms;
     }
 
     /**
