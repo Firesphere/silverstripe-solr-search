@@ -113,6 +113,7 @@ class SolrIndexTask extends BuildTask
                     $update = null;
                     $group++;
                     print_r(date('Y-m-d H:i:s' . "\n"));
+                    gc_collect_cycles();
                 }
             }
         }
