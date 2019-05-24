@@ -8698,6 +8698,10 @@ class Synonyms
             ],
     ];
 
+    /**
+     * Make the uk to us spelling synonyms
+     * @return string
+     */
     public static function getSynonymsAsString()
     {
         $result = '';

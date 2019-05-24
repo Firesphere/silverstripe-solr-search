@@ -15,6 +15,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
+use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -149,27 +150,17 @@ abstract class BaseIndex
     protected function buildSolrQuery($query)
     {
         $clientQuery = $this->client->createSelect();
+        $helper = $clientQuery->getHelper();
 
         $q = [];
         foreach ($query->getTerms() as $search) {
-            $q[] = $search['text'];
+            $term = $search['text'];
+            $q[] = $this->escapeSearch($term, $helper);
         }
 
-        $searchTerm = implode(' ', $q);
-        $term = [];
+        $term = implode(' ', $q);
 
-        // Escape special characters where needed. Except for quoted parts, those should be phrased
-        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
-        $helper = $clientQuery->getHelper();
-        foreach ($parts[0] as $part) {
-            if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
-            } else {
-                $term[] = $helper->escapeTerm($part);
-            }
-        }
-
-        $clientQuery->setQuery(implode(' ', $term));
+        $clientQuery->setQuery($term);
 
         foreach ($query->getFields() as $field => $value) {
             $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
@@ -507,5 +498,26 @@ abstract class BaseIndex
         $this->defaultField = $defaultField;
 
         return $this;
+    }
+
+    /**
+     * @param string $searchTerm
+     * @param Helper $helper
+     * @return array
+     */
+    protected function escapeSearch($searchTerm, $helper)
+    {
+        $term = [];
+        // Escape special characters where needed. Except for quoted parts, those should be phrased
+        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
+        foreach ($parts[0] as $part) {
+            if (substr_count($part, '"') === 2) {
+                $term[] = $helper->escapePhrase($part);
+            } else {
+                $term[] = $helper->escapeTerm($part);
+            }
+        }
+
+        return implode(' ', $term);
     }
 }
