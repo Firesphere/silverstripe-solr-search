@@ -5,14 +5,15 @@ namespace Firesphere\SearchConfig\Indexes;
 
 use Firesphere\SearchConfig\Interfaces\ConfigStore;
 use Firesphere\SearchConfig\Queries\BaseQuery;
+use Firesphere\SearchConfig\Results\SearchResult;
 use Firesphere\SearchConfig\Services\SchemaService;
 use Firesphere\SearchConfig\Services\SolrCoreService;
-use Firesphere\StripeSlack\Indexes\SlackQuery;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\ORM\ArrayList;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
@@ -93,17 +94,21 @@ abstract class BaseIndex
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $client = new Client($config);
 
+        // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query, $client);
+        // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
+        // Add highlighting
+//        $clientQuery->getHighlighting()->setFields($query->getHighlight());
+        // Setup the facets
+        $this->buildFacets($query, $clientQuery);
+
         $result = $client->select($clientQuery);
 
-//        Debug::dump($result->getData());
-        $this->buildResultSet($result);
+        $result = new SearchResult($result, $query);
+
+        Debug::dump($result->getMatches());
+
         exit;
     }
 
@@ -121,11 +126,11 @@ abstract class BaseIndex
             $q[] = $search['text'];
         }
 
+        $clientQuery->setQuery(implode(' ', $q));
+
         foreach ($query->getFields() as $field => $value) {
             $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
         }
-
-        $clientQuery->setQuery(implode(' ', $q));
 
         return $clientQuery;
     }
@@ -144,18 +149,6 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
-    }
-
-    /**
-     * @param Result $results
-     */
-    protected function buildResultSet($results)
-    {
-        $docs = $results->getData();
-
-        $docs = $docs['response']['docs'];
-
-        Debug::dump($docs);
     }
 
     /**
@@ -337,7 +330,7 @@ abstract class BaseIndex
      * @param $field
      * @return $this
      */
-    public function addFacetField($field)
+    public function addFacetField($field, $options)
     {
         $this->facetFields[] = $field;
 
@@ -457,5 +450,18 @@ abstract class BaseIndex
         $this->defaultField = $defaultField;
 
         return $this;
+    }
+
+    /**
+     * @param $query
+     * @param Query $clientQuery
+     */
+    protected function buildFacets($query, Query $clientQuery)
+    {
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
     }
 }

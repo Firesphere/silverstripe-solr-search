@@ -3,18 +3,14 @@
 
 namespace Firesphere\SearchConfig\Queries;
 
-use Firesphere\StripeSlack\Models\Channel;
-use Firesphere\StripeSlack\Models\SlackUser;
-
 /**
  * Class BaseQuery
  * @package Firesphere\SearchConfig\Queries
  */
 class BaseQuery
 {
-
     /**
-     * @var array
+     * @var array classes to be searched through
      */
     protected $classes = [];
 
@@ -29,7 +25,7 @@ class BaseQuery
     protected $filter = [];
 
     /**
-     * @var array 
+     * @var array
      */
     protected $exclude = [];
     /**
@@ -78,9 +74,9 @@ class BaseQuery
     protected $terms = [];
 
     /**
-     * @var bool
+     * @var array
      */
-    protected $highlight = true;
+    protected $highlight = [];
 
     /**
      * @return int
@@ -316,7 +312,7 @@ class BaseQuery
     public function addExclude($field, $value)
     {
         $this->exclude[$field] = $value;
-        
+
         return $this;
     }
 
@@ -388,7 +384,7 @@ class BaseQuery
     }
 
     /**
-     * @param bool $highlight
+     * @param array $highlight
      * @return BaseQuery
      */
     public function setHighlight($highlight)
@@ -399,9 +395,20 @@ class BaseQuery
     }
 
     /**
-     * @return bool
+     * @param $field
+     * @return $this
      */
-    public function isHighlight()
+    public function addHighlight($field)
+    {
+        $this->highlight[] = $field;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHighlight()
     {
         return $this->highlight;
     }
