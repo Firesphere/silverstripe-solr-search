@@ -12,9 +12,7 @@ use Firesphere\SearchConfig\Services\SolrCoreService;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Select\Query\Query;
@@ -169,20 +167,22 @@ abstract class BaseIndex
             $schema
         );
 
+
+        $synonyms = $this->getSynonyms();
+
+        // Upload synonyms
+        $store->uploadString(
+            $this->getIndexName(),
+            'synonyms.txt',
+            $synonyms
+        );
+        
         // Upload additional files
         foreach (glob($this->schemaService->getExtrasPath() . '/*') as $file) {
             if (is_file($file)) {
                 $store->uploadFile($this->getIndexName(), $file);
             }
         }
-
-        $synonyms = $this->getSynonyms();
-
-        $store->uploadString(
-            $this->getIndexName(),
-            'synonyms.txt',
-            $synonyms
-        );
     }
 
     /**
@@ -192,9 +192,8 @@ abstract class BaseIndex
     public function getSynonyms()
     {
         $engSynonyms = Synonyms::getSynonymsAsString();
-        $synonyms = $engSynonyms . SiteConfig::current_site_config()->SearchSynonyms;
 
-        return $synonyms;
+        return $engSynonyms . SiteConfig::current_site_config()->SearchSynonyms;
     }
 
     /**
