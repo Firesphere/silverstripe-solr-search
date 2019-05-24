@@ -119,7 +119,7 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        Debug::message("It took me %s seconds to do all the indexing\n", ($end - $start), false);
+        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)));
         print_r("done!\n");
     }
 }
