@@ -102,7 +102,7 @@ class DocumentFactory
     protected function addField($doc, $object, $field)
     {
         $typeMap = Statics::getTypeMap();
-        if (!$this->classIs(ClassInfo::shortName($object), $field['origin'])) {
+        if (!$this->classIs(ClassInfo::shortName($object), $field['class'])) {
             return;
         }
 
