@@ -98,7 +98,7 @@ class SolrIndexTask extends BuildTask
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
-                $groups = ceil($class::get()->count() / 2500);
+                $groups = ceil($class::get()->count() / DocumentFactory::config()->get('batchLength'));
                 // @todo allow indexing of just a specific group
                 $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
                 $count = 0;

@@ -9,6 +9,7 @@ use Firesphere\SearchConfig\Helpers\Statics;
 use Firesphere\SearchConfig\Indexes\BaseIndex;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -19,6 +20,7 @@ use Solarium\QueryType\Update\Query\Query;
 
 class DocumentFactory
 {
+    use Configurable;
 
     /**
      * @var SearchIntrospection
@@ -49,10 +51,11 @@ class DocumentFactory
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
+        $batchLength = $this->config()->get('batchLength');
         // This limit is scientifically determined by keeping on trying until it didn't break anymore
         $items = $baseClass::get()
             ->sort('ID ASC')
-            ->limit(2500, ($group * 2500));
+            ->limit($batchLength, ($group * $batchLength));
         $count += $items->count();
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
