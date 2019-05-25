@@ -109,7 +109,7 @@ class SolrIndexTask extends BuildTask
                 while ($group >= 0) { // Run from newest to oldest item
                     list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
                 }
-                // @todo finish new items that have been added after the max count already was calculated
+                // Yeps, this will generate duplicates, but that's fine. It's a safer approach and works
                 $group = $groups - 2; // You'd have to try real hard getting 5k items in within 2 minutes!
                 while ($group <= $class::get()->count() / 2500) {
                     list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
