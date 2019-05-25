@@ -95,7 +95,7 @@ class DocumentFactory
      */
     protected function addDefaultFields(Document $doc, DataObject $item)
     {
-        $doc->setKey('_documentid', $item->ClassName . '-' . $item->ID);
+        $doc->setKey('id', $item->ClassName . '-' . $item->ID);
         $doc->addField('ID', $item->ID);
         $doc->addField('ClassName', $item->ClassName);
         $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
@@ -109,7 +109,7 @@ class DocumentFactory
     protected function addField($doc, $object, $field)
     {
         $typeMap = Statics::getTypeMap();
-        if (!$this->classIs(ClassInfo::shortName($object), $field['origin'])) {
+        if (!$this->classIs(ClassInfo::shortName($object), $field['class'])) {
             return;
         }
 

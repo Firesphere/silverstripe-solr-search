@@ -810,7 +810,7 @@
         <lst name="defaults">
             <str name="echoParams">explicit</str>
             <int name="rows">10</int>
-            <str name="df">_text</str>
+            <str name="df">text</str>
         </lst>
         <!-- In addition to defaults, "appends" params can be specified
              to identify values which should be appended to the list of
@@ -876,7 +876,7 @@
             <str name="echoParams">explicit</str>
             <str name="wt">json</str>
             <str name="indent">true</str>
-            <str name="df">_text</str>
+            <str name="df">text</str>
         </lst>
     </requestHandler>
 
@@ -918,7 +918,7 @@
                 text^0.5 features^1.0 name^1.2 sku^1.5 id^10.0 manu^1.1 cat^1.4
                 title^10.0 description^5.0 keywords^5.0 author^2.0 resourcename^1.0
             </str>
-            <str name="df">_text</str>
+            <str name="df">text</str>
             <str name="mm">100%</str>
             <str name="q.alt">*:*</str>
             <str name="rows">10</str>
@@ -1258,7 +1258,7 @@
         <!-- a spellchecker built from a field of the main index -->
         <lst name="spellchecker">
             <str name="name">default</str>
-            <str name="field">_text</str>
+            <str name="field">text</str>
             <str name="classname">solr.DirectSolrSpellChecker</str>
             <!-- the spellcheck distance measure used, the default is the internal levenshtein -->
             <str name="distanceMeasure">internal</str>
@@ -1307,7 +1307,7 @@
         <lst name="spellchecker">
             <str name="name">wordbreak</str>
             <str name="classname">solr.WordBreakSolrSpellChecker</str>
-            <str name="field">_text</str>
+            <str name="field">text</str>
             <str name="combineWords">true</str>
             <str name="breakWords">true</str>
             <int name="maxChanges">10</int>
@@ -1367,7 +1367,7 @@
       -->
     <requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
         <lst name="defaults">
-            <str name="df">_text</str>
+            <str name="df">text</str>
             <!-- Solr will use suggestions from both the 'default' spellchecker
                  and from the 'wordbreak' spellchecker and combine them.
                  collations (re-written queries) can include a combination of
@@ -1404,7 +1404,7 @@
       -->
     <requestHandler name="/tvrh" class="solr.SearchHandler" startup="lazy">
         <lst name="defaults">
-            <str name="df">_text</str>
+            <str name="df">text</str>
             <bool name="tv">true</bool>
         </lst>
         <arr name="last-components">
@@ -1551,7 +1551,7 @@
       -->
     <searchComponent name="elevator" class="solr.QueryElevationComponent">
         <!-- pick a fieldType to analyze queries -->
-        <str name="queryFieldType">string</str>
+        <str name="queryFieldType">text</str>
         <str name="config-file">elevate.xml</str>
     </searchComponent>
 

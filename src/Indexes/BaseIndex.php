@@ -70,7 +70,7 @@ abstract class BaseIndex
      * @var array
      */
     protected $copyFields = [
-        '_text' => [
+        'text' => [
             '*'
         ],
     ];
@@ -78,7 +78,7 @@ abstract class BaseIndex
     /**
      * @var string
      */
-    protected $defaultField = '_text';
+    protected $defaultField = 'text';
 
     /**
      * @var SchemaService

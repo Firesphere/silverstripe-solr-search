@@ -51,8 +51,8 @@
 
     <fields>
         <%-- Default fields, needed for all items --%>
-        <field name='_documentid' type='string' indexed='true' stored='true' required='true'/>
-        <field name='ID' type='tint' indexed='true' stored='true' required='true'/>
+        <field name='id' type='string' indexed='true' stored='true' required='true' multiValued='false'/>
+        <field name='ID' type='tint' indexed='true' stored='true' required='true' multiValued='false'/>
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
         <% loop $CopyFields %>
@@ -61,11 +61,9 @@
         <% loop $FulltextFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
-
         <% loop $FilterFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
-
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
     </fields>
 
@@ -73,7 +71,7 @@
         <copyField source='$Field' dest='$Destination'/>
     <% end_loop %>
 
-    <uniqueKey>_documentid</uniqueKey>
+    <uniqueKey>id</uniqueKey>
 
     <df>$DefaultField</df>
 
