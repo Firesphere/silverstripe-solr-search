@@ -99,6 +99,7 @@ class SolrIndexTask extends BuildTask
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
                 $groups = ceil($class::get()->count() / 2500);
+                // @todo allow indexing of just a specific group
                 $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
                 $count = 0;
                 $fields = array_merge(
