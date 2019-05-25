@@ -87,8 +87,7 @@ class DocumentFactory
      */
     protected function addDefaultFields(Document $doc, DataObject $item)
     {
-        $doc->setKey($item->ClassName . '-' . $item->ID);
-        $doc->addField('_documentid', $item->ClassName . '-' . $item->ID);
+        $doc->setKey('_documentid', $item->ClassName . '-' . $item->ID);
         $doc->addField('ID', $item->ID);
         $doc->addField('ClassName', $item->ClassName);
         $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
