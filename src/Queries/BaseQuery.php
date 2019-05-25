@@ -56,11 +56,6 @@ class BaseQuery
     protected $sort = [];
 
     /**
-     * @var array
-     */
-    protected $facets = [];
-
-    /**
      * Format:
      * SiteTree::class   => [
      *      'Field' => 'SiteTree_ChannelID',
@@ -169,36 +164,6 @@ class BaseQuery
     public function setSort($sort)
     {
         $this->sort = $sort;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFacets()
-    {
-        return $this->facets;
-    }
-
-    /**
-     * @param mixed $facets
-     * @return $this
-     */
-    public function setFacets($facets)
-    {
-        $this->facets = $facets;
-
-        return $this;
-    }
-
-    /**
-     * @param $field
-     * @return $this
-     */
-    public function addFacet($field)
-    {
-        $this->facets[] = str_replace('.', '_', $field);
 
         return $this;
     }

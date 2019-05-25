@@ -8,8 +8,8 @@ use Firesphere\SearchConfig\Helpers\SearchIntrospection;
 use Firesphere\SearchConfig\Helpers\Statics;
 use Firesphere\SearchConfig\Indexes\BaseIndex;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -59,6 +59,7 @@ class DocumentFactory
         $count += $items->count();
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
+        $boostFields = $index->getBoostedFields();
         // @todo this is intense and could hopefully be simplified?
         foreach ($items as $item) {
             $debugString .= "$item->ID, ";
@@ -70,6 +71,9 @@ class DocumentFactory
                 $fieldData = $this->introspection->getFieldIntrospection($field);
                 $fieldName = ClassInfo::shortName($class) . '_' . str_replace('.', '_', $field);
                 $this->addField($doc, $item, $fieldData[$fieldName]);
+                if (in_array($field, $boostFields, true)) {
+                    $doc->setFieldBoost($fieldName, $boostFields[$field]);
+                }
             }
             $item->destroy();
 

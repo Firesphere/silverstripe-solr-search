@@ -38,6 +38,14 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * @return Monolog log channel
+     */
+    protected function getLoggerFactory()
+    {
+        return Injector::inst()->get(LoggerInterface::class);
+    }
+
+    /**
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
@@ -132,13 +140,5 @@ class SolrConfigureTask extends BuildTask
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * @return Monolog log channel
-     */
-    protected function getLoggerFactory()
-    {
-        return Injector::inst()->get(LoggerInterface::class);
     }
 }

@@ -14,6 +14,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\SiteConfig\SiteConfig;
+use Solarium\Component\ReRankQuery;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -40,6 +41,9 @@ abstract class BaseIndex
     protected $fulltextFields = [];
 
     /**
+     * [
+     *     'FieldName' => 2,
+     * ]
      * @var array
      */
     protected $boostedFields = [];
@@ -91,7 +95,7 @@ abstract class BaseIndex
 
         if ($schema) {
             // Set up the schema service, only used in the generation of the schema
-            $schemaService  = Injector::inst()->get(SchemaService::class);
+            $schemaService = Injector::inst()->get(SchemaService::class);
             $schemaService->setIndex($this);
             $schemaService->setStore(Director::isDev());
             $this->schemaService = $schemaService;
@@ -165,6 +169,9 @@ abstract class BaseIndex
         foreach ($query->getTerms() as $search) {
             $term = $search['text'];
             $q[] = $this->escapeSearch($term, $helper);
+            foreach ($this->getBoostedFields() as $boostedField => $weight) {
+                $q[] = $boostedField . ':' . $term . '^' . $weight;
+            }
         }
 
         $term = implode(' ', $q);
@@ -176,7 +183,66 @@ abstract class BaseIndex
             $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
         }
 
+        $this->buildBoosts($clientQuery);
+
         return $clientQuery;
+    }
+
+    /**
+     * @param string $searchTerm
+     * @param Helper $helper
+     * @return array
+     */
+    protected function escapeSearch($searchTerm, $helper)
+    {
+        $term = [];
+        // Escape special characters where needed. Except for quoted parts, those should be phrased
+        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
+        foreach ($parts[0] as $part) {
+            // As we split the parts, everything with two quotes is a phrase
+            if (substr_count($part, '"') === 2) {
+                $term[] = $helper->escapePhrase($part);
+            } else {
+                $term[] = $helper->escapeTerm($part);
+            }
+        }
+
+        return implode(' ', $term);
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostedFields()
+    {
+        return $this->boostedFields;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return $this
+     */
+    public function setBoostedFields($boostedFields)
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
+    }
+
+    protected function buildBoosts(Query $clientQuery)
+    {
+        $boostedFields = $this->getBoostedFields();
+
+        $term = $clientQuery->getQuery();
+
+        foreach ($boostedFields as $boostField => $weight) {
+            /** @var ReRankQuery $rerank */
+            $rerank = $clientQuery->getReRankQuery();
+            $boostField = str_replace('.', '_', $boostField);
+            $rerank->setQuery($boostField . ':' . $term);
+            $rerank->setWeight($weight);
+        }
+//        $clientQuery->addParam('bf', );
     }
 
     /**
@@ -220,35 +286,12 @@ abstract class BaseIndex
         foreach ($filters as $field => $value) {
             if (is_array($value)) {
                 foreach ($value as $key => $item) {
-                    $clientQuery->createFilterQuery($field . $key)
+                    $clientQuery->createFilterQuery($field . '_' . $key)
                         ->setQuery($field . ':' . $item);
                 }
             } else {
                 $clientQuery->createFilterQuery($field)
                     ->setQuery($field . ':' . $value);
-            }
-        }
-
-        return $clientQuery;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return Query
-     */
-    protected function buildExcludes($query, Query $clientQuery)
-    {
-        $filters = $query->getExclude();
-        foreach ($filters as $field => $value) {
-            if (is_array($value)) {
-                foreach ($value as $key => $item) {
-                    $clientQuery->createFilterQuery($field . $key)
-                        ->setQuery('-' . $field . ':' . $item);
-                }
-            } else {
-                $clientQuery->createFilterQuery($field)
-                    ->setQuery('-' . $field . ':' . $value);
             }
         }
 
@@ -330,9 +373,7 @@ abstract class BaseIndex
             $this->addFulltextField($field);
         }
 
-        $boostedFields = $this->getBoostedFields();
-        $boostedFields[$field] = $boost;
-        $this->setBoostedFields($boostedFields);
+        $this->boostedFields[$field] = $boost;
 
         return $this;
     }
@@ -363,25 +404,6 @@ abstract class BaseIndex
     public function addFulltextField($fulltextField)
     {
         $this->fulltextFields[] = $fulltextField;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBoostedFields()
-    {
-        return $this->boostedFields;
-    }
-
-    /**
-     * @param array $boostedFields
-     * @return $this
-     */
-    public function setBoostedFields($boostedFields)
-    {
-        $this->boostedFields = $boostedFields;
 
         return $this;
     }
@@ -422,11 +444,12 @@ abstract class BaseIndex
 
     /**
      * @param $field
+     * @param array $options
      * @return $this
      */
     public function addFacetField($field, $options)
     {
-        $this->facetFields[] = $field;
+        $this->facetFields[$field] = $options;
 
         if (!in_array($field, $this->getFilterFields(), true)) {
             $this->addFilterField($field);
@@ -558,23 +581,25 @@ abstract class BaseIndex
     }
 
     /**
-     * @param string $searchTerm
-     * @param Helper $helper
-     * @return array
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return Query
      */
-    protected function escapeSearch($searchTerm, $helper)
+    protected function buildExcludes($query, Query $clientQuery)
     {
-        $term = [];
-        // Escape special characters where needed. Except for quoted parts, those should be phrased
-        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
-        foreach ($parts[0] as $part) {
-            if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
+        $filters = $query->getExclude();
+        foreach ($filters as $field => $value) {
+            if (is_array($value)) {
+                foreach ($value as $key => $item) {
+                    $clientQuery->createFilterQuery($field . $key)
+                        ->setQuery('-' . $field . ':' . $item);
+                }
             } else {
-                $term[] = $helper->escapeTerm($part);
+                $clientQuery->createFilterQuery($field)
+                    ->setQuery('-' . $field . ':' . $value);
             }
         }
 
-        return implode(' ', $term);
+        return $clientQuery;
     }
 }

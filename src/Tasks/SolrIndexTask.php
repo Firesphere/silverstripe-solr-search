@@ -108,12 +108,14 @@ class SolrIndexTask extends BuildTask
                     $index->getFilterFields()
                 );
                 while ($group >= 0) { // Run from newest to oldest item
-                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
+                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count,
+                        $debug);
                 }
                 // Yeps, this will generate duplicates, but that's fine. It's a safer approach and works
                 $group = $groups - 2; // You'd have to try real hard getting 5k items in within 2 minutes!
                 while ($group <= $class::get()->count() / 2500) {
-                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
+                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count,
+                        $debug);
                     $group += 2; // The doReindex reduces the group by 1, so we need to add 2 to up it :)
                 }
             }
@@ -137,8 +139,16 @@ class SolrIndexTask extends BuildTask
      * @return array[int, int]
      * @throws Exception
      */
-    protected function doReindex($group, $groups, Client $client, $class, array $fields, BaseIndex $index, &$count, $debug)
-    {
+    protected function doReindex(
+        $group,
+        $groups,
+        Client $client,
+        $class,
+        array $fields,
+        BaseIndex $index,
+        &$count,
+        $debug
+    ) {
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
         $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
