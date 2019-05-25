@@ -55,17 +55,13 @@
         <field name='ID' type='tint' indexed='true' stored='true' required='true'/>
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-        <% loop $CopyFieldDefinitions %>
-            <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
-        <% end_loop %>
+        <field name="_text" type="text" indexed="true" stored="true" multiValued='true'/>
         <% loop $FulltextFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
-
         <% loop $FilterFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
-
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
     </fields>
 
