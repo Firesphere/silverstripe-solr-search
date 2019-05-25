@@ -142,6 +142,8 @@ abstract class BaseIndex
         $clientQuery->getHighlighting()->setFields($query->getHighlight());
         // Setup the facets
         $this->buildFacets($query, $clientQuery);
+        // Add filters
+        $this->buildFilters($query, $clientQuery);
 
         $result = $this->client->select($clientQuery);
 
@@ -195,7 +197,7 @@ abstract class BaseIndex
     }
 
     /**
-     * @param $query
+     * @param BaseQuery $query
      * @param Query $clientQuery
      */
     protected function buildFacets($query, Query $clientQuery)
@@ -205,6 +207,52 @@ abstract class BaseIndex
             $facets->createFacetField($config['Title'])->setField($config['Field']);
         }
         $facets->setMinCount($query->getFacetsMinCount());
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return Query
+     */
+    protected function buildFilters($query, Query $clientQuery)
+    {
+        $filters = $query->getFilter();
+        foreach ($filters as $field => $value) {
+            if (is_array($value)) {
+                foreach ($value as $key => $item) {
+                    $clientQuery->createFilterQuery($field . $key)
+                        ->setQuery($field . ':' . $item);
+                }
+            } else {
+                $clientQuery->createFilterQuery($field)
+                    ->setQuery($field . ':' . $value);
+            }
+        }
+
+        return $clientQuery;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return Query
+     */
+    protected function buildExcludes($query, Query $clientQuery)
+    {
+        $filters = $query->getExclude();
+        foreach ($filters as $field => $value) {
+            if (is_array($value)) {
+                foreach ($value as $key => $item) {
+                    $clientQuery->createFilterQuery($field . $key)
+                        ->setQuery('-' . $field . ':' . $item);
+                }
+            } else {
+                $clientQuery->createFilterQuery($field)
+                    ->setQuery('-' . $field . ':' . $value);
+            }
+        }
+
+        return $clientQuery;
     }
 
     /**

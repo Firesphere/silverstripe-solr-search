@@ -36,12 +36,13 @@ class DocumentFactory
      * @param BaseIndex $index
      * @param Query $update
      * @param $group
+     * @param int $count
      * @param bool $debug
      * @return array
      * @throws Exception
      * @todo this should be cleaner
      */
-    public function buildItems($class, $fields, $index, $update, $group, $debug = false)
+    public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $debug = false)
     {
         $this->introspection->setIndex($index);
         $docs = [];
@@ -52,6 +53,7 @@ class DocumentFactory
         $items = $baseClass::get()
             ->sort('ID ASC')
             ->limit(2500, ($group * 2500));
+        $count += $items->count();
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
         // @todo this is intense and could hopefully be simplified?
@@ -73,6 +75,7 @@ class DocumentFactory
 
         if ($debug) {
             Debug::message(rtrim($debugString, ', ') . "]\n", false);
+            Debug::message(sprintf("Total added items: %s\n", $count), false);
         }
 
         return $docs;

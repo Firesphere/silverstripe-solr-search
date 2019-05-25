@@ -10,6 +10,11 @@ namespace Firesphere\SearchConfig\Queries;
 class BaseQuery
 {
     /**
+     * @var array
+     */
+    protected $history = [];
+
+    /**
      * @var array classes to be searched through
      */
     protected $classes = [];
@@ -20,6 +25,8 @@ class BaseQuery
     protected $query;
 
     /**
+     * Key-value pairs of fields and what to filter against
+     *
      * @var array
      */
     protected $filter = [];

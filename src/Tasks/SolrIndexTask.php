@@ -96,30 +96,58 @@ class SolrIndexTask extends BuildTask
 
             foreach ($classes as $class) {
                 if ($debug) {
-                    Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
+                    Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
                 $groups = ceil($class::get()->count() / 2500);
-                $group = 0;
+                $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
+                $count = 0;
                 $fields = array_merge(
                     $index->getFulltextFields(),
                     $index->getSortFields(),
                     $index->getFilterFields()
                 );
-                while ($group <= $groups) {
-                    $update = $client->createUpdate();
-                    $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $debug);
-                    $update->addDocuments($docs, true, 10);
-                    $client->update($update);
-                    $update = null;
-                    $group++;
-                    print_r(date('Y-m-d H:i:s' . "\n"));
-                    gc_collect_cycles();
+                while ($group >= 0) { // Run from newest to oldest item
+                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
+                }
+                // @todo finish new items that have been added after the max count already was calculated
+                $group = $groups - 2; // You'd have to try real hard getting 5k items in within 2 minutes!
+                while ($group <= $class::get()->count() / 2500) {
+                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
+                    $group += 2; // The doReindex reduces the group by 1, so we need to add 2 to up it :)
                 }
             }
         }
         $end = time();
 
-        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)));
-        print_r("done!\n");
+        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
+        Debug::message("done!\n", false);
+        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
+    }
+
+    /**
+     * @param int $group
+     * @param int $groups
+     * @param Client $client
+     * @param string $class
+     * @param array $fields
+     * @param BaseIndex $index
+     * @param int $count
+     * @param bool $debug
+     * @return array[int, int]
+     * @throws Exception
+     */
+    protected function doReindex($group, $groups, Client $client, $class, array $fields, BaseIndex $index, &$count, $debug)
+    {
+        Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
+        $update = $client->createUpdate();
+        $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
+        $update->addDocuments($docs, true, 10);
+        $client->update($update);
+        $update = null; // clear out the update set for memory reasons
+        $group--;
+        Debug::message(date('Y-m-d H:i:s' . "\n"), false);
+        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
+
+        return [$count, $group];
     }
 }
