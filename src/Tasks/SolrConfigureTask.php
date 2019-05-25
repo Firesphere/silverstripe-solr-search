@@ -34,7 +34,7 @@ class SolrConfigureTask extends BuildTask
     public function __construct()
     {
         parent::__construct();
-        // @todo add logger
+        $this->setLogger($this->getLoggerFactory());
     }
 
     /**
@@ -132,5 +132,13 @@ class SolrConfigureTask extends BuildTask
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @return Monolog log channel
+     */
+    protected function getLoggerFactory()
+    {
+        return Injector::inst()->get(LoggerInterface::class);
     }
 }
