@@ -21,7 +21,7 @@ jobs:
         - MYSQL_ROOT_PASSWORD=ubuntu
         - MYSQL_DATABASE=circle_test
         - MYSQL_HOST=127.0.0.1
-# @todo add a java container with Solr, because, well, this is about Solr isn't it?
+
     working_directory: ~/var/www
 
     steps:
@@ -30,11 +30,9 @@ jobs:
       - restore_cache:
           keys:
             - cache-{{ checksum "composer.lock" }}-v1
-            # fallback to using the latest cache if no exact match is found
             - cache-
         - run: composer install -n --prefer-dist --ignore-platform-reqs
         - run: composer vendor-expose
-        # Save all dependencies to cache
         - save_cache:
             key: cache-{{ checksum "composer.lock" }}-{{ checksum "yarn.lock" }}-v1
             paths:
