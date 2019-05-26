@@ -1,3 +1,5 @@
+Firesphere\SearchConfig\Factories\DocumentFactory:
+  batchLength: 500
 Firesphere\SearchConfig\Services\SolrCoreService:
   config:
     endpoint:
@@ -7,28 +9,3 @@ Firesphere\SearchConfig\Services\SolrCoreService:
   paths:
     schema: '%s/Solr/5/templates'
     extras: '%s/Solr/5/extras'
-  classes:
-    - Firesphere\StripeSlack\Message
-  fulltext_fields:
-    fields:
-      default:
-        - Title
-        - Content
-        - Message
-      Channel:
-        - Title
-        - SlackId
-      Attachments:
-        - Title
-        - Text
-        - Fallback
-      Files:
-        - Title
-        - Preview
-        - FileData
-  filter_fields:
-    - UserID
-    - ChannelID
-    - WorkspaceID
-  sort_fields:
-    - FormattedPostdate

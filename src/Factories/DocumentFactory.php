@@ -73,7 +73,7 @@ class DocumentFactory
                 $fieldName = array_keys($fieldData)[0];
                 $this->addField($doc, $item, $fieldData[$fieldName]);
                 if (array_key_exists($field, $boostFields)) {
-                    $doc->setFieldBoost($fieldName, $boostFields[$fieldName]);
+                    $doc->setFieldBoost($fieldName, $boostFields[$field]);
                 }
             }
             $item->destroy();
