@@ -4,6 +4,7 @@
 namespace Firesphere\SearchConfig\Results;
 
 use Firesphere\SearchConfig\Queries\BaseQuery;
+use SilverStripe\Control\Controller;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
@@ -16,6 +17,11 @@ class SearchResult
      * @var BaseQuery
      */
     protected $query;
+
+    /**
+     * @var Controller
+     */
+    protected $controller;
 
     /**
      * @var ArrayList
@@ -37,19 +43,23 @@ class SearchResult
      */
     protected $highlight;
 
-    public function __construct(Result $result, $query)
+    public function __construct(Result $result, $query, $controller)
     {
         $this->query = $query;
         $this->setMatches($result);
         $this->setFacets($result);
         $this->setHighlight($result);
         $this->setTotalItems($result->getNumFound());
+        $this->setController($controller);
     }
 
     public function getPaginatedMatches($request)
     {
+        $start = $this->controller->getRequest()->getVar('start');
+        $pageNum =  $start ? $start / $this->query->getRows() : 0;
         $paginated = PaginatedList::create($this->matches, $request);
         $paginated->setTotalItems($this->getTotalItems());
+        $paginated->setCurrentPage($pageNum);
 
         return $paginated;
     }
@@ -164,5 +174,24 @@ class SearchResult
         $this->facets = ArrayData::create($facetArray);
 
         return $this;
+    }
+
+    /**
+     * @param Controller $controller
+     * @return SearchResult
+     */
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+
+        return $this;
+    }
+
+    /**
+     * @return Controller
+     */
+    public function getController()
+    {
+        return $this->controller;
     }
 }

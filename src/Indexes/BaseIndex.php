@@ -135,13 +135,16 @@ abstract class BaseIndex
 
     /**
      * @param BaseQuery $query
+     * @param Controller $controller
      * @return SearchResult|Result
      */
-    public function doSearch($query)
+    public function doSearch($query, $controller)
     {
+        $start = $controller->getRequest()->getVar('start') ?: 0;
         $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
+        $clientQuery->setStart($start);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
         // Add highlighting
@@ -163,7 +166,7 @@ abstract class BaseIndex
 
         $result = $this->client->select($clientQuery);
 
-        $result = new SearchResult($result, $query);
+        $result = new SearchResult($result, $query, $controller);
 
         $this->extend('updateSearchResults', $result);
         $this->extend('onAfterSearch', $result);
