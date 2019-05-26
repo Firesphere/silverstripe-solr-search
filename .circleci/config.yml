@@ -1,0 +1,31 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  docker:
+    - image: brettt89/silverstripe-web:7.1-platform
+      environment:
+        - SS_DATABASE_SERVER=127.0.0.1
+        - SS_DATABASE_USERNAME=root
+        - SS_DATABASE_PASSWORD=ubuntu
+        - SS_DATABASE_NAME=circle_test
+        - SS_ENVIRONMENT_TYPE=test
+        - SS_DEFAULT_ADMIN_USERNAME=admin
+        - SS_DEFAULT_ADMIN_PASSWORD=password
+        - DEBUGBAR_DISABLE=true
+    - image: circleci/mysql:5.7
+      environment:
+        - MYSQL_USER=root
+        - MYSQL_ROOT_PASSWORD=ubuntu
+        - MYSQL_DATABASE=circle_test
+        - MYSQL_HOST=127.0.0.1
+# @todo add a java container with Solr, because, well, this is about Solr isn't it?
+    working_directory: ~/var/www
+
+    steps:
+      - run: cd ~/var/www
+      - checkout
+      - run: vendor/bin/sake dev/build
+
