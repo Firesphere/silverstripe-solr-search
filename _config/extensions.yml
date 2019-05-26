@@ -1,4 +1,4 @@
 # Enable the following for extensive debug output
-#Firesphere\SearchConfig\Indexes\BaseIndex:
+#Firesphere\SolrSearch\Indexes\BaseIndex:
 #  extensions:
-#    - Firesphere\SearchConfig\Extensions\BaseIndexExtension
+#    - Firesphere\SolrSearch\Extensions\BaseIndexExtension

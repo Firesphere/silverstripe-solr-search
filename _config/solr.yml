@@ -1,6 +1,6 @@
-Firesphere\SearchConfig\Factories\DocumentFactory:
+Firesphere\SolrSearch\Factories\DocumentFactory:
   batchLength: 500
-Firesphere\SearchConfig\Services\SolrCoreService:
+Firesphere\SolrSearch\Services\SolrCoreService:
   config:
     endpoint:
       localhost:
