@@ -1,3 +1,6 @@
+---
+Name: SolrSearch
+---
 Firesphere\SolrSearch\Factories\DocumentFactory:
   batchLength: 500
 Firesphere\SolrSearch\Services\SolrCoreService:
