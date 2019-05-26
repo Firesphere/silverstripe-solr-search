@@ -27,8 +27,8 @@ jobs:
 
     steps:
       - run: cd ~/var/www
-      - run: composer create-project silverstripe/installer .
       - checkout
+      - run: composer install .
       - restore_cache:
           keys:
             - cache-{{ checksum "composer.lock" }}-v1
