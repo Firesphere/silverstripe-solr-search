@@ -146,6 +146,11 @@ abstract class BaseIndex
         // Add filters
         $this->buildFilters($query, $clientQuery);
 
+        // Filter out the fields we want to see if they're set
+        if (count($query->getFields())) {
+            $clientQuery->setFields($query->getFields());
+        }
+
         $result = $this->client->select($clientQuery);
 
         $result = new SearchResult($result, $query);
