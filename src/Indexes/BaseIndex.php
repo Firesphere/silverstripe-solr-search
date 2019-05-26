@@ -356,12 +356,11 @@ abstract class BaseIndex
      */
     public function addBoostedField($field, $extraOptions = [], $boost = 2)
     {
-        $fieldName = $this->schemaService->getIntrospection()->getFieldIntrospection($field);
-        if (!in_array(array_keys($fieldName)[0], $this->getFulltextFields(), true)) {
-            $this->addFulltextField(array_keys($fieldName)[0]);
+        if (!in_array($field, $this->getFulltextFields(), true)) {
+            $this->addFulltextField($field);
         }
 
-        $this->boostedFields[array_keys($fieldName)[0]] = $boost;
+        $this->boostedFields[$field] = $boost;
 
         return $this;
     }
