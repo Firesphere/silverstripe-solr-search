@@ -32,7 +32,7 @@ jobs:
           keys:
             - cache-{{ checksum "composer.lock" }}-v1
             - cache-
-      - run: composer install -n --prefer-dist --ignore-platform-reqs .
+      - run: composer install -n --prefer-dist --ignore-platform-reqs
       - save_cache:
           key: cache-{{ checksum "composer.lock" }}-v1
           paths:
