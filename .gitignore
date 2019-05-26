@@ -1,0 +1,4 @@
+/vendor
+/app
+/.php_cs.cache
+/resources

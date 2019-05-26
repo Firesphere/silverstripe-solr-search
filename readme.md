@@ -85,6 +85,10 @@ Happy searching after that... once this is done
 
 # FAQ
 
+### Whats with the composer.lock file?
+
+It's needed for caching in CircleCI
+
 ### Why index from bottom to top?
 
 More recent items are often more important than old items. Therefore, it makes sense to make sure
