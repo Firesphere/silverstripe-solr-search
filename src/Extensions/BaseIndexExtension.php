@@ -17,7 +17,11 @@ class BaseIndexExtension extends DataExtension
     public function onAfterSearch($results)
     {
         if (Director::isDev() && Controller::curr()->getRequest()->getVar('debugquery')) {
-            Debug::dump($results->getDebug());
+            $results = $results->getDebug();
+            Debug::dump($results->getQueryString());
+            Debug::dump($results->getParsedQuery());
+            Debug::dump($results->getQueryParser());
+            Debug::dump($results->getExplain());
         }
     }
 }
