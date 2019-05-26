@@ -55,7 +55,7 @@
         <field name='ID' type='tint' indexed='true' stored='true' required='true'/>
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-        <% loop $CopyFieldDefinitions %>
+        <% loop $CopyFields %>
             <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
         <% end_loop %>
         <% loop $FulltextFieldDefinitions %>

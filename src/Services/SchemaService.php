@@ -122,6 +122,23 @@ class SchemaService extends ViewableData
         }
     }
 
+    public function getCopyFields()
+    {
+        $fields = $this->index->getCopyFields();
+
+        $return = ArrayList::create();
+        foreach ($fields as $field => $copyFields)
+        {
+            $item = [
+                'Field' => $field
+            ];
+
+            $return->push($item);
+        }
+
+        return $return;
+    }
+
     /**
      * @return ArrayList
      * @throws Exception
