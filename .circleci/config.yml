@@ -26,15 +26,13 @@ jobs:
     working_directory: ~/var/www
 
     steps:
-      - run: cd ~/var/www
+      - run: cd ~/var/www\
       - checkout
-      - run: composer install .
       - restore_cache:
           keys:
             - cache-{{ checksum "composer.lock" }}-v1
             - cache-
-      - run: composer install -n --prefer-dist --ignore-platform-reqs
-      - run: composer vendor-expose
+      - run: composer install -n --prefer-dist --ignore-platform-reqs .
       - save_cache:
           key: cache-{{ checksum "composer.lock" }}-v1
           paths:
