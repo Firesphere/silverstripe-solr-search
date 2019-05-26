@@ -108,7 +108,8 @@ class SolrIndexTask extends BuildTask
                     $index->getFilterFields()
                 );
                 while ($group >= 0) { // Run from newest to oldest item
-                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count,
+                    list($count, $group) = $this->doReindex(
+                        $group, $groups, $client, $class, $fields, $index, $count,
                         $debug);
                 }
                 // Yeps, this will generate duplicates, but that's fine. It's a safer approach and works

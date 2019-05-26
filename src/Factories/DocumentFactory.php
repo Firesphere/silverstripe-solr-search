@@ -51,7 +51,7 @@ class DocumentFactory
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
-        $batchLength = $this->config()->get('batchLength');
+        $batchLength = self::config()->get('batchLength');
         // This limit is scientifically determined by keeping on trying until it didn't break anymore
         $items = $baseClass::get()
             ->sort('ID ASC')
@@ -69,7 +69,8 @@ class DocumentFactory
 
             foreach ($fields as $field) {
                 $fieldData = $this->introspection->getFieldIntrospection($field);
-                $fieldName = ClassInfo::shortName($class) . '_' . str_replace('.', '_', $field);
+                // Only one field per class, so let's take the f
+                $fieldName = array_keys($fieldData)[0];
                 $this->addField($doc, $item, $fieldData[$fieldName]);
                 if (in_array($fieldName, $boostFields, true)) {
                     $doc->setFieldBoost($fieldName, $boostFields[$field]);
