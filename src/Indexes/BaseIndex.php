@@ -145,6 +145,8 @@ abstract class BaseIndex
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
         $clientQuery->setStart($start);
+        // Get 10 times the amount of rows, to prevent canView errors (TBD)
+        $clientQuery->setRows($query->getRows() * 10);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
         // Add highlighting

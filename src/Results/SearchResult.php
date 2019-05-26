@@ -55,11 +55,8 @@ class SearchResult
 
     public function getPaginatedMatches($request)
     {
-        $start = $this->controller->getRequest()->getVar('start');
-        $pageNum =  $start ? $start / $this->query->getRows() : 0;
         $paginated = PaginatedList::create($this->matches, $request);
         $paginated->setTotalItems($this->getTotalItems());
-        $paginated->setCurrentPage($pageNum);
 
         return $paginated;
     }
