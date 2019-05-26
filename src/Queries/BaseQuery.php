@@ -207,17 +207,27 @@ class BaseQuery
     }
 
     /**
+     * Each boosted query needs a separate addition!
+     * e.g. $this->addTerm('test', ['MyField', 'MyOtherField'], 3)
+     * followed by
+     * $this->addTerm('otherTest', ['Title'], 5);
+     *
+     * If you want a generic boost on all terms, use addTerm only once, but boost on each field
+     *
+     * The fields parameter is used to boost on
+     *
+     * For generic boosting, use @addBoostedField($field, $boost)
      * @param string $term
-     * @param null|string $fields
-     * @param array $boost
+     * @param array $fields
+     * @param array|bool $boost
      * @param bool $fuzzy
      * @return $this
      */
-    public function addTerm($term, $fields = null, $boost = [], $fuzzy = false)
+    public function addTerm($term, $fields = [], $boost = false, $fuzzy = false)
     {
         $this->terms[] = [
             'text'   => $term,
-            'fields' => $fields ? (array)$fields : null,
+            'fields' => $fields,
             'boost'  => $boost,
             'fuzzy'  => $fuzzy
         ];

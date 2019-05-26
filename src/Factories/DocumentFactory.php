@@ -71,7 +71,7 @@ class DocumentFactory
                 $fieldData = $this->introspection->getFieldIntrospection($field);
                 $fieldName = ClassInfo::shortName($class) . '_' . str_replace('.', '_', $field);
                 $this->addField($doc, $item, $fieldData[$fieldName]);
-                if (in_array($field, $boostFields, true)) {
+                if (in_array($fieldName, $boostFields, true)) {
                     $doc->setFieldBoost($fieldName, $boostFields[$field]);
                 }
             }

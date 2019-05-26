@@ -14,7 +14,6 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\SiteConfig\SiteConfig;
-use Solarium\Component\ReRankQuery;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -86,20 +85,18 @@ abstract class BaseIndex
      * BaseIndex constructor.
      * @param bool $schema
      */
-    public function __construct($schema = false)
+    public function __construct($schema = true)
     {
         // Set up the client
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $this->client = new Client($config);
 
-        if ($schema) {
-            // Set up the schema service, only used in the generation of the schema
-            $schemaService = Injector::inst()->get(SchemaService::class);
-            $schemaService->setIndex($this);
-            $schemaService->setStore(Director::isDev());
-            $this->schemaService = $schemaService;
-        }
+        // Set up the schema service, only used in the generation of the schema
+        $schemaService = Injector::inst()->get(SchemaService::class);
+        $schemaService->setIndex($this);
+        $schemaService->setStore(Director::isDev());
+        $this->schemaService = $schemaService;
 
         $this->init();
     }
@@ -168,9 +165,13 @@ abstract class BaseIndex
         $q = [];
         foreach ($query->getTerms() as $search) {
             $term = $search['text'];
-            $q[] = $this->escapeSearch($term, $helper);
-            foreach ($this->getBoostedFields() as $boostedField => $weight) {
-                $q[] = $boostedField . ':' . $term . '^' . $weight;
+            $term = $this->escapeSearch($term, $helper);
+            $q[] = $term;
+            // If boosting is set, add the fields to boost
+            if ($search['boost']) {
+                foreach ($search['fields'] as $boostField) {
+                    $q[] = $boostField . ':' . $term . '^' . $search['boost'];
+                }
             }
         }
 
@@ -182,8 +183,6 @@ abstract class BaseIndex
         foreach ($query->getFields() as $field => $value) {
             $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
         }
-
-        $this->buildBoosts($clientQuery);
 
         return $clientQuery;
     }
@@ -227,22 +226,6 @@ abstract class BaseIndex
         $this->boostedFields = $boostedFields;
 
         return $this;
-    }
-
-    protected function buildBoosts(Query $clientQuery)
-    {
-        $boostedFields = $this->getBoostedFields();
-
-        $term = $clientQuery->getQuery();
-
-        foreach ($boostedFields as $boostField => $weight) {
-            /** @var ReRankQuery $rerank */
-            $rerank = $clientQuery->getReRankQuery();
-            $boostField = str_replace('.', '_', $boostField);
-            $rerank->setQuery($boostField . ':' . $term);
-            $rerank->setWeight($weight);
-        }
-//        $clientQuery->addParam('bf', );
     }
 
     /**
@@ -362,18 +345,22 @@ abstract class BaseIndex
 
     /**
      * Extra options is not used, it's here for backward compatibility
+     *
+     * Boosted fields are used at index time, not at query time
      * @param $field
      * @param array $extraOptions
      * @param int $boost
      * @return $this
+     * @throws \Exception
      */
     public function addBoostedField($field, $extraOptions = [], $boost = 2)
     {
-        if (!in_array($field, $this->getFulltextFields(), true)) {
-            $this->addFulltextField($field);
+        $fieldName = $this->schemaService->getIntrospection()->getFieldIntrospection($field);
+        if (!in_array(array_keys($fieldName)[0], $this->getFulltextFields(), true)) {
+            $this->addFulltextField(array_keys($fieldName)[0]);
         }
 
-        $this->boostedFields[$field] = $boost;
+        $this->boostedFields[array_keys($fieldName)[0]] = $boost;
 
         return $this;
     }
