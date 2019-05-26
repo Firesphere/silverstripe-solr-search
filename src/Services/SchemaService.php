@@ -10,6 +10,7 @@ use Firesphere\SearchConfig\Indexes\BaseIndex;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\ViewableData;
 
 class SchemaService extends ViewableData
@@ -38,6 +39,9 @@ class SchemaService extends ViewableData
      */
     protected $introspection;
 
+    /**
+     * SchemaService constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -122,13 +126,15 @@ class SchemaService extends ViewableData
         }
     }
 
+    /**
+     * @return ArrayList
+     */
     public function getCopyFields()
     {
         $fields = $this->index->getCopyFields();
 
         $return = ArrayList::create();
-        foreach ($fields as $field => $copyFields)
-        {
+        foreach ($fields as $field => $copyFields) {
             $item = [
                 'Field' => $field
             ];
@@ -181,6 +187,9 @@ class SchemaService extends ViewableData
         return $return;
     }
 
+    /**
+     * @return DBHTMLText
+     */
     public function getTypes()
     {
         if (!$this->typesTemplate) {
@@ -211,6 +220,9 @@ class SchemaService extends ViewableData
         return $this;
     }
 
+    /**
+     * @return DBHTMLText
+     */
     public function generateSchema()
     {
         if (!$this->template) {
@@ -240,11 +252,13 @@ class SchemaService extends ViewableData
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getExtrasPath()
     {
         // @todo configurable but with default to the current absolute path
         $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
-        $this->setTemplate($dir . '/Solr/5/templates/schema.ss');
 
         $confDirs = SolrCoreService::config()->get('paths');
 

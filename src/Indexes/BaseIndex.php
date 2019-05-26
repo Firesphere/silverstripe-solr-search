@@ -3,6 +3,7 @@
 
 namespace Firesphere\SearchConfig\Indexes;
 
+use Exception;
 use Firesphere\SearchConfig\Helpers\Synonyms;
 use Firesphere\SearchConfig\Interfaces\ConfigStore;
 use Firesphere\SearchConfig\Queries\BaseQuery;
@@ -184,11 +185,6 @@ abstract class BaseIndex
 
         $clientQuery->setQuery($term);
 
-        // Create filter queries for fields set on the query
-        foreach ($query->getFields() as $field => $value) {
-            $clientQuery->createFilterQuery($field)->setQuery($field . ':' . $value);
-        }
-
         return $clientQuery;
     }
 
@@ -212,25 +208,6 @@ abstract class BaseIndex
         }
 
         return implode(' ', $term);
-    }
-
-    /**
-     * @return array
-     */
-    public function getBoostedFields()
-    {
-        return $this->boostedFields;
-    }
-
-    /**
-     * @param array $boostedFields
-     * @return $this
-     */
-    public function setBoostedFields($boostedFields)
-    {
-        $this->boostedFields = $boostedFields;
-
-        return $this;
     }
 
     /**
@@ -284,6 +261,25 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostedFields()
+    {
+        return $this->boostedFields;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return $this
+     */
+    public function setBoostedFields($boostedFields)
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
     }
 
     /**
@@ -356,7 +352,7 @@ abstract class BaseIndex
      * @param array $extraOptions
      * @param int $boost
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function addBoostedField($field, $extraOptions = [], $boost = 2)
     {
