@@ -1,0 +1,4 @@
+# Enable the following for extensive debug output
+#Firesphere\SearchConfig\Indexes\BaseIndex:
+#  extensions:
+#    - Firesphere\SearchConfig\Extensions\BaseIndexExtension

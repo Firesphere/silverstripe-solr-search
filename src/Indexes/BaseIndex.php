@@ -10,8 +10,10 @@ use Firesphere\SearchConfig\Queries\BaseQuery;
 use Firesphere\SearchConfig\Results\SearchResult;
 use Firesphere\SearchConfig\Services\SchemaService;
 use Firesphere\SearchConfig\Services\SolrCoreService;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -26,6 +28,7 @@ use Solarium\QueryType\Select\Result\Result;
  */
 abstract class BaseIndex
 {
+    use Extensible;
     /**
      * @var Client
      */
@@ -136,6 +139,7 @@ abstract class BaseIndex
      */
     public function doSearch($query)
     {
+        $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
         // Build class filtering
@@ -146,15 +150,23 @@ abstract class BaseIndex
         $this->buildFacets($query, $clientQuery);
         // Add filters
         $this->buildFilters($query, $clientQuery);
+        $this->buildExcludes($query, $clientQuery);
 
         // Filter out the fields we want to see if they're set
         if (count($query->getFields())) {
             $clientQuery->setFields($query->getFields());
         }
 
+        if (Director::isDev() && Controller::curr()->getRequest()->getVar('debugquery')) {
+            $clientQuery->getDebug();
+        }
+
         $result = $this->client->select($clientQuery);
 
         $result = new SearchResult($result, $query);
+
+        $this->extend('updateSearchResults', $result);
+        $this->extend('onAfterSearch', $result);
 
         return $result;
     }
@@ -579,11 +591,11 @@ abstract class BaseIndex
             if (is_array($value)) {
                 foreach ($value as $key => $item) {
                     $clientQuery->createFilterQuery($field . $key)
-                        ->setQuery('-' . $field . ':' . $item);
+                        ->setQuery('-(' . $field . ':' . $item . ')');
                 }
             } else {
                 $clientQuery->createFilterQuery($field)
-                    ->setQuery('-' . $field . ':' . $value);
+                    ->setQuery('-(' . $field . ':' . $value . ')');
             }
         }
 
