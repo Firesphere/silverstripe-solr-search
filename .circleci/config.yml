@@ -26,7 +26,7 @@ jobs:
     working_directory: ~/var/www
 
     steps:
-      - run: cd ~/var/www\
+      - run: cd ~/var/www
       - checkout
       - restore_cache:
           keys:
