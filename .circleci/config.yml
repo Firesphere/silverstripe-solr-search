@@ -32,13 +32,13 @@ jobs:
             - cache-{{ checksum "composer.lock" }}-v1
             # fallback to using the latest cache if no exact match is found
             - cache-
-          - run: composer install -n --prefer-dist --ignore-platform-reqs
-          - run: composer vendor-expose
-          # Save all dependencies to cache
-          - save_cache:
-              key: cache-{{ checksum "composer.lock" }}-{{ checksum "yarn.lock" }}-v1
-              paths:
-                - vendor
-                - resources
+        - run: composer install -n --prefer-dist --ignore-platform-reqs
+        - run: composer vendor-expose
+        # Save all dependencies to cache
+        - save_cache:
+            key: cache-{{ checksum "composer.lock" }}-{{ checksum "yarn.lock" }}-v1
+            paths:
+              - vendor
+              - resources
       - run: vendor/bin/sake dev/build
 
