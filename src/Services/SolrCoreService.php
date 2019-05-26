@@ -1,6 +1,6 @@
 <?php
 
-namespace Firesphere\SearchConfig\Services;
+namespace Firesphere\SolrSearch\Services;
 
 use SilverStripe\Core\Config\Configurable;
 use Solarium\Client;

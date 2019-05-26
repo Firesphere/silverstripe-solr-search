@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Helpers;
+namespace Firesphere\SolrSearch\Helpers;
 
 /**
  * Class Synonyms
  * Source: @link https://raw.githubusercontent.com/heiswayi/spelling-uk-vs-us/
- * @package Firesphere\SearchConfig\Helpers
+ * @package Firesphere\SolrSearch\Helpers
  */
 class Synonyms
 {

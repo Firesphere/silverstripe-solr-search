@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Interfaces;
+namespace Firesphere\SolrSearch\Interfaces;
 
 interface ConfigStore
 {

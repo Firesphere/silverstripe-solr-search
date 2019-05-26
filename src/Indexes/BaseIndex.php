@@ -1,15 +1,15 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Indexes;
+namespace Firesphere\SolrSearch\Indexes;
 
 use Exception;
-use Firesphere\SearchConfig\Helpers\Synonyms;
-use Firesphere\SearchConfig\Interfaces\ConfigStore;
-use Firesphere\SearchConfig\Queries\BaseQuery;
-use Firesphere\SearchConfig\Results\SearchResult;
-use Firesphere\SearchConfig\Services\SchemaService;
-use Firesphere\SearchConfig\Services\SolrCoreService;
+use Firesphere\SolrSearch\Helpers\Synonyms;
+use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Results\SearchResult;
+use Firesphere\SolrSearch\Services\SchemaService;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -24,7 +24,7 @@ use Solarium\QueryType\Select\Result\Result;
 
 /**
  * Class BaseIndex
- * @package Firesphere\SearchConfig\Indexes
+ * @package Firesphere\SolrSearch\Indexes
  */
 abstract class BaseIndex
 {
@@ -274,6 +274,29 @@ abstract class BaseIndex
             } else {
                 $clientQuery->createFilterQuery($field)
                     ->setQuery($field . ':' . $value);
+            }
+        }
+
+        return $clientQuery;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return Query
+     */
+    protected function buildExcludes($query, Query $clientQuery)
+    {
+        $filters = $query->getExclude();
+        foreach ($filters as $field => $value) {
+            if (is_array($value)) {
+                foreach ($value as $key => $item) {
+                    $clientQuery->createFilterQuery($field . $key)
+                        ->setQuery('-(' . $field . ':' . $item . ')');
+                }
+            } else {
+                $clientQuery->createFilterQuery($field)
+                    ->setQuery('-(' . $field . ':' . $value . ')');
             }
         }
 
@@ -582,28 +605,5 @@ abstract class BaseIndex
         $this->defaultField = $defaultField;
 
         return $this;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return Query
-     */
-    protected function buildExcludes($query, Query $clientQuery)
-    {
-        $filters = $query->getExclude();
-        foreach ($filters as $field => $value) {
-            if (is_array($value)) {
-                foreach ($value as $key => $item) {
-                    $clientQuery->createFilterQuery($field . $key)
-                        ->setQuery('-(' . $field . ':' . $item . ')');
-                }
-            } else {
-                $clientQuery->createFilterQuery($field)
-                    ->setQuery('-(' . $field . ':' . $value . ')');
-            }
-        }
-
-        return $clientQuery;
     }
 }

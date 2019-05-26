@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Queries;
+namespace Firesphere\SolrSearch\Queries;
 
 /**
  * Class BaseQuery
- * @package Firesphere\SearchConfig\Queries
+ * @package Firesphere\SolrSearch\Queries
  */
 class BaseQuery
 {

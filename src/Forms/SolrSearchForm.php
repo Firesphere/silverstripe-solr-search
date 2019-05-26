@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Forms;
+namespace Firesphere\SolrSearch\Forms;
 
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\FieldList;

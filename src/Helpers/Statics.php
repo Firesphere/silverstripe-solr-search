@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Helpers;
+namespace Firesphere\SolrSearch\Helpers;
 
 use SilverStripe\ORM\FieldType\DBBoolean;
 use SilverStripe\ORM\FieldType\DBDate;

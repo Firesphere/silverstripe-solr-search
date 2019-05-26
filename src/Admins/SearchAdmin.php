@@ -1,12 +1,12 @@
 <?php
 
-namespace Firesphere\SearchConfig\Admins;
+namespace Firesphere\SolrSearch\Admins;
 
-use Firesphere\SearchConfig\Models\SearchClass;
+use Firesphere\SolrSearch\Models\SearchClass;
 use SilverStripe\Admin\ModelAdmin;
 
 /**
- * Class \Firesphere\SearchConfig\Admins\SearchAdmin
+ * Class \Firesphere\SolrSearch\Admins\SearchAdmin
  *
  */
 class SearchAdmin extends ModelAdmin

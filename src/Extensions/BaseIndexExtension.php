@@ -1,6 +1,6 @@
 <?php
 
-namespace Firesphere\SearchConfig\Extensions;
+namespace Firesphere\SolrSearch\Extensions;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;

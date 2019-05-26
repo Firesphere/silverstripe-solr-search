@@ -1,13 +1,13 @@
 <?php
 
-namespace Firesphere\SearchConfig\Models;
+namespace Firesphere\SolrSearch\Models;
 
 use SilverStripe\ORM\DataObject;
 
 /**
  * Class SearchClass to be populated by default from config
  *
- * @package Firesphere\SearchConfig\Models
+ * @package Firesphere\SolrSearch\Models
  * @property string $Name
  * @property int $SearchFieldID
  * @method SearchField SearchField()

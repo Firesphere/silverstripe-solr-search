@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Stores;
+namespace Firesphere\SolrSearch\Stores;
 
-use Firesphere\SearchConfig\Interfaces\ConfigStore;
+use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use RuntimeException;
 use SilverStripe\Control\Director;
 

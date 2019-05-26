@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Services;
+namespace Firesphere\SolrSearch\Services;
 
 use Exception;
-use Firesphere\SearchConfig\Helpers\SearchIntrospection;
-use Firesphere\SearchConfig\Helpers\Statics;
-use Firesphere\SearchConfig\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\Statics;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\ORM\ArrayList;

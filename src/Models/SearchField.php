@@ -6,12 +6,12 @@
  * Time: 18:01
  */
 
-namespace Firesphere\SearchConfig\Models;
+namespace Firesphere\SolrSearch\Models;
 
 use SilverStripe\ORM\DataObject;
 
 /**
- * Class \Firesphere\SearchConfig\Models\SearchField
+ * Class \Firesphere\SolrSearch\Models\SearchField
  *
  * @property string $Field
  * @property string $Type

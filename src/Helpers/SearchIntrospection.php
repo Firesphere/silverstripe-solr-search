@@ -1,9 +1,9 @@
 <?php
 
-namespace Firesphere\SearchConfig\Helpers;
+namespace Firesphere\SolrSearch\Helpers;
 
 use Exception;
-use Firesphere\SearchConfig\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;

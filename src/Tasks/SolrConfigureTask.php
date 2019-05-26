@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Tasks;
+namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
-use Firesphere\SearchConfig\Indexes\BaseIndex;
-use Firesphere\SearchConfig\Interfaces\ConfigStore;
-use Firesphere\SearchConfig\Services\SolrCoreService;
-use Firesphere\SearchConfig\Stores\FileConfigStore;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;

@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Tasks;
+namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
-use Firesphere\SearchConfig\Factories\DocumentFactory;
-use Firesphere\SearchConfig\Helpers\SearchIntrospection;
-use Firesphere\SearchConfig\Indexes\BaseIndex;
-use Firesphere\SearchConfig\Services\SolrCoreService;
+use Firesphere\SolrSearch\Factories\DocumentFactory;
+use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
@@ -98,7 +98,7 @@ class SolrIndexTask extends BuildTask
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
-                $groups = (int) ceil($class::get()->count() / DocumentFactory::config()->get('batchLength'));
+                $groups = (int)ceil($class::get()->count() / DocumentFactory::config()->get('batchLength'));
                 // @todo allow indexing of just a specific group
                 $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
                 $count = 0;
@@ -109,14 +109,29 @@ class SolrIndexTask extends BuildTask
                 );
                 while ($group >= 0) { // Run from newest to oldest item
                     list($count, $group) = $this->doReindex(
-                        $group, $groups, $client, $class, $fields, $index, $count,
-                        $debug);
+                        $group,
+                        $groups,
+                        $client,
+                        $class,
+                        $fields,
+                        $index,
+                        $count,
+                        $debug
+                    );
                 }
                 // Yeps, this will generate duplicates, but that's fine. It's a safer approach and works
                 $group = $groups - 2; // You'd have to try real hard getting 5k items in within 2 minutes!
                 while ($group <= $class::get()->count() / 2500) {
-                    list($count, $group) = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count,
-                        $debug);
+                    list($count, $group) = $this->doReindex(
+                        $group,
+                        $groups,
+                        $client,
+                        $class,
+                        $fields,
+                        $index,
+                        $count,
+                        $debug
+                    );
                     $group += 2; // The doReindex reduces the group by 1, so we need to add 2 to up it :)
                 }
             }

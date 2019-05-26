@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Firesphere\SearchConfig\Results;
+namespace Firesphere\SolrSearch\Results;
 
-use Firesphere\SearchConfig\Queries\BaseQuery;
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -174,6 +174,14 @@ class SearchResult
     }
 
     /**
+     * @return Controller
+     */
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    /**
      * @param Controller $controller
      * @return SearchResult
      */
@@ -182,13 +190,5 @@ class SearchResult
         $this->controller = $controller;
 
         return $this;
-    }
-
-    /**
-     * @return Controller
-     */
-    public function getController()
-    {
-        return $this->controller;
     }
 }
