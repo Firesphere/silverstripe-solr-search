@@ -10,11 +10,12 @@ use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
 
 /**
  * Class \Firesphere\SolrSearch\Extensions\DataObjectExtension
  *
- * @property DataObjectExtension $owner
+ * @property DataObjectExtension|DataObject $owner
  */
 class DataObjectExtension extends DataExtension
 {
@@ -42,6 +43,7 @@ class DataObjectExtension extends DataExtension
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($index);
             // No point in sending a delete for something that's not in the index
+            // @todo check the hierarchy, this could be a parent that should be indexed
             if (in_array($this->owner->ClassName, $index->getClass(), true)) {
                 $client = $index->getClient();
 
