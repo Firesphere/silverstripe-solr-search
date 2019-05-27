@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dea9b3c673898540a5b8700b3a89a718",
+    "content-hash": "b71054449c27321b7e2f937411015575",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -3235,16 +3235,16 @@
         },
         {
             "name": "silverleague/ideannotator",
-            "version": "dev-master",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/silverleague/silverstripe-ideannotator.git",
-                "reference": "e1a2536a904e55bb04450de35baf9a69452c28f8"
+                "reference": "08a5e58f085b265353b4fc0820884fcbb460c13a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silverleague/silverstripe-ideannotator/zipball/e1a2536a904e55bb04450de35baf9a69452c28f8",
-                "reference": "e1a2536a904e55bb04450de35baf9a69452c28f8",
+                "url": "https://api.github.com/repos/silverleague/silverstripe-ideannotator/zipball/08a5e58f085b265353b4fc0820884fcbb460c13a",
+                "reference": "08a5e58f085b265353b4fc0820884fcbb460c13a",
                 "shasum": ""
             },
             "require": {
@@ -3255,19 +3255,24 @@
             "require-dev": {
                 "phpunit/phpunit": "^5.7",
                 "scriptfusion/phpunit-immediate-exception-printer": "^1",
-                "squizlabs/php_codesniffer": "^3.0"
+                "silverstripe/recipe-cms": "~1",
+                "squizlabs/php_codesniffer": "3.*"
             },
             "type": "silverstripe-vendormodule",
             "extra": {
                 "branch-alias": {
-                    "3.x-dev": "3.1.x-dev",
+                    "3.x-dev": "3.0.x-dev",
                     "dev-master": "3.x-dev"
+                },
+                "autoload-dev": {
+                    "psr-4": {
+                        "SilverLeague\\IDEAnnotator\\": "src/"
+                    }
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "SilverLeague\\IDEAnnotator\\": "src/",
-                    "SilverLeague\\IDEAnnotator\\Tests\\": "tests/"
+                    "Axyr\\IDEAnnotator\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3293,7 +3298,7 @@
                 "orm",
                 "silverstripe"
             ],
-            "time": "2019-04-21T00:39:31+00:00"
+            "time": "2018-07-07T01:30:30+00:00"
         },
         {
             "name": "silverstripe/admin",
@@ -3690,9 +3695,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "silverleague/ideannotator": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
