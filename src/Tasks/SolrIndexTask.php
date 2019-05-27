@@ -86,19 +86,16 @@ class SolrIndexTask extends BuildTask
 
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($index);
-            $config = Config::inst()->get(SolrCoreService::class, 'config');
-            $config['endpoint'] = $index->getConfig($config['endpoint']);
-            $config['timeout'] = 10000; // doesn't seem to be working?
-
             $classes = $index->getClass();
-            $client = new Client($config);
+            $client = $index->getClient();
 
 
             foreach ($classes as $class) {
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
-                $groups = (int)ceil($class::get()->count() / DocumentFactory::config()->get('batchLength'));
+                $batchLength = DocumentFactory::config()->get('batchLength');
+                $groups = (int)ceil($class::get()->count() / $batchLength);
                 // @todo allow indexing of just a specific group
                 $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
                 $count = 0;
@@ -121,7 +118,7 @@ class SolrIndexTask extends BuildTask
                 }
                 // Yeps, this will generate duplicates, but that's fine. It's a safer approach and works
                 $group = $groups - 2; // You'd have to try real hard getting 5k items in within 2 minutes!
-                while ($group <= $class::get()->count() / 2500) {
+                while ($group <= $class::get()->count() / $batchLength) {
                     list($count, $group) = $this->doReindex(
                         $group,
                         $groups,

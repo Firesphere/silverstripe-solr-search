@@ -87,9 +87,8 @@ abstract class BaseIndex
 
     /**
      * BaseIndex constructor.
-     * @param bool $schema
      */
-    public function __construct($schema = true)
+    public function __construct()
     {
         // Set up the client
         $config = Config::inst()->get(SolrCoreService::class, 'config');
@@ -605,5 +604,24 @@ abstract class BaseIndex
         $this->defaultField = $defaultField;
 
         return $this;
+    }
+
+    /**
+     * @param Client $client
+     * @return BaseIndex
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }
