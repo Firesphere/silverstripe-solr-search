@@ -28,14 +28,9 @@ jobs:
     steps:
       - run: cd ~/var/www
       - checkout
-      - run: composer install -n --prefer-dist --ignore-platform-reqs
       - run: composer require silverstripe/recipe-cms
+      - run: composer install -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
-      - save_cache:
-          key: cache-{{ checksum "composer.lock" }}-v1
-          paths:
-            - vendor
-            - resources
       - run: vendor/bin/sake dev/build
       - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml --coverage-html ./coverage/ -d memory_limit=512M tests/unit
 
