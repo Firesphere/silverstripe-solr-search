@@ -52,8 +52,8 @@
     <fields>
         <%-- Default fields, needed for all items --%>
         <field name='id' type='string' indexed='true' stored='true' required='true' multiValued='false'/>
-        <field name='ID' type='tint' indexed='true' stored='true' required='true' multiValued='false'/>
-        <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
+        <field name='ObjectID' type='tint' indexed='true' stored='true' required='true' multiValued='false'/>
+        <field name='ClassName' type='string' indexed='true' stored='true' required='true' multiValued='false'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
         <% loop $CopyFields %>
             <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
