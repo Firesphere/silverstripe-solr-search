@@ -28,12 +28,8 @@ jobs:
     steps:
       - run: cd ~/var/www
       - checkout
-      - restore_cache:
-          keys:
-            - cache-{{ checksum "composer.lock" }}-v1
-            - cache-
-      - run: composer require silverstripe/recipe-cms
       - run: composer install -n --prefer-dist --ignore-platform-reqs
+      - run: composer require silverstripe/recipe-cms
       - run: composer vendor-expose
       - save_cache:
           key: cache-{{ checksum "composer.lock" }}-v1
