@@ -33,10 +33,18 @@ jobs:
             - cache-{{ checksum "composer.lock" }}-v1
             - cache-
       - run: composer install -n --prefer-dist --ignore-platform-reqs
+      - run: composer require silverstripe/recipe-cms
       - save_cache:
           key: cache-{{ checksum "composer.lock" }}-v1
           paths:
             - vendor
             - resources
       - run: vendor/bin/sake dev/build
+      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml --coverage-html ./coverage/ -d memory_limit=512M tests/unit
 
+      - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
+      - store_test_results:
+          path: /var/www/html/coverage
+      - store_artifacts:
+          path: /var/www/html/coverage
+          destination: phpunit

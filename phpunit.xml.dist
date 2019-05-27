@@ -9,6 +9,9 @@
             <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
+    <php>
+        <get name="flush" value="all" />
+    </php>
     <groups>
         <exclude>
             <group>sanitychecks</group>

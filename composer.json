@@ -13,6 +13,10 @@
     {
       "name": "Simon `Firesphere` Erkelens",
       "email": "simonerkelens@silverstripe.com"
+    },
+    {
+      "name": "Marco `Sheepy` Hermo",
+      "email": "marco@silverstripe.com"
     }
   ],
   "require": {
@@ -20,14 +24,18 @@
     "solarium/solarium": "^4.2"
   },
   "require-dev": {
-    "silverstripe/recipe-cms": "^4",
     "phpunit/phpunit": "^5.7",
     "squizlabs/php_codesniffer": "^3.0",
-    "silverleague/ideannotator": "dev-master"
+    "silverleague/ideannotator": "^3"
   },
   "extra": {
     "branch-alias": {
       "dev-master": "1.0.x-dev"
+    },
+    "autoload": {
+      "psr-4": {
+        "Firesphere\\SolrSearch": "src"
+      }
     }
   },
   "support": {
