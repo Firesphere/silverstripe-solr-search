@@ -57,6 +57,7 @@ class SolrIndexTask extends BuildTask
      * execute via the TaskRunner
      *
      * @param HTTPRequest $request
+     * @return int
      * @throws Exception
      * @todo make this properly use groups and maybe background tasks
      * @todo add a queued job
@@ -89,14 +90,18 @@ class SolrIndexTask extends BuildTask
             $classes = $index->getClass();
             $client = $index->getClient();
 
+            $groups = 0;
+            foreach ($classes as $class) {
+                $batchLength = DocumentFactory::config()->get('batchLength');
+                // @todo make sure the total amount of groups is all classes combined
+                $groups += ($class::get()->count() / $batchLength);
+            }
+
 
             foreach ($classes as $class) {
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
-                $batchLength = DocumentFactory::config()->get('batchLength');
-                $groups = (int)ceil($class::get()->count() / $batchLength);
-                // @todo allow indexing of just a specific group
                 $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
                 $count = 0;
                 $fields = array_merge(
@@ -104,7 +109,9 @@ class SolrIndexTask extends BuildTask
                     $index->getSortFields(),
                     $index->getFilterFields()
                 );
-                while ($group >= 0) { // Run from newest to oldest item
+                // Run a single group
+                if ($request->getVar('group')) {
+                    Debug::message(sprintf('Indexing group %s out of %s', $group, $groups));
                     list($count, $group) = $this->doReindex(
                         $group,
                         $groups,
@@ -115,21 +122,20 @@ class SolrIndexTask extends BuildTask
                         $count,
                         $debug
                     );
-                }
-                // Yeps, this will generate duplicates, but that's fine. It's a safer approach and works
-                $group = $groups - 2; // You'd have to try real hard getting 5k items in within 2 minutes!
-                while ($group <= $class::get()->count() / $batchLength) {
-                    list($count, $group) = $this->doReindex(
-                        $group,
-                        $groups,
-                        $client,
-                        $class,
-                        $fields,
-                        $index,
-                        $count,
-                        $debug
-                    );
-                    $group += 2; // The doReindex reduces the group by 1, so we need to add 2 to up it :)
+                // Otherwise, run them all
+                } else {
+                    while ($group <= $groups) { // Run from newest to oldest item
+                        list($count, $group) = $this->doReindex(
+                            $group,
+                            $groups,
+                            $client,
+                            $class,
+                            $fields,
+                            $index,
+                            $count,
+                            $debug
+                        );
+                    }
                 }
             }
         }
@@ -138,6 +144,8 @@ class SolrIndexTask extends BuildTask
         Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
         Debug::message("done!\n", false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
+
+        return $groups;
     }
 
     /**
@@ -168,7 +176,7 @@ class SolrIndexTask extends BuildTask
         $update->addDocuments($docs, true, 10);
         $client->update($update);
         $update = null; // clear out the update set for memory reasons
-        $group--;
+        $group++;
         Debug::message(date('Y-m-d H:i:s' . "\n"), false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 

@@ -8,6 +8,11 @@ use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataExtension;
 use Solarium\QueryType\Select\Result\Result;
 
+/**
+ * Class \Firesphere\SolrSearch\Extensions\BaseIndexExtension
+ *
+ * @property BaseIndexExtension $owner
+ */
 class BaseIndexExtension extends DataExtension
 {
 

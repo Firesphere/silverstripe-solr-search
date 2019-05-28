@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Jobs;
 
-
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;

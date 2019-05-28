@@ -9,14 +9,16 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
 
+/**
+ * Class \Firesphere\SolrSearch\Extensions\DataObjectExtension
+ *
+ * @property DataObjectExtension $owner
+ */
 class DataObjectExtension extends DataExtension
 {
-
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-
-
     }
 
     /**
@@ -39,7 +41,6 @@ class DataObjectExtension extends DataExtension
             $index = Injector::inst()->get($index);
             // No point in sending a delete for something that's not in the index
             if (in_array($this->owner->ClassName, $index->getClass(), true)) {
-
                 $client = $index->getClient();
 
                 try {
