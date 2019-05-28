@@ -17,11 +17,12 @@ class BaseIndexExtension extends DataExtension
     public function onAfterSearch($results)
     {
         if (Director::isDev() && Controller::curr()->getRequest()->getVar('debugquery')) {
-            $results = $results->getDebug();
-            Debug::dump($results->getQueryString());
-            Debug::dump($results->getParsedQuery());
-            Debug::dump($results->getQueryParser());
-            Debug::dump($results->getExplain());
+            /** @var \Solarium\Component\Result\Debug\Result $result */
+            $result = $results->getDebug();
+            Debug::message("Query string:\n" . $result->getQueryString());
+            Debug::message("Parsed query:\n" . $result->getParsedQuery());
+            Debug::message("Query parser:\n" . $result->getQueryParser());
+            Debug::message("Explanation:\n" . $result->getExplain());
         }
     }
 }
