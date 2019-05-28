@@ -64,10 +64,23 @@ class SolrIndexTask extends BuildTask
      */
     public function run($request)
     {
-        $debug = $request->getVar('debug') ? true : false;
-        $debug = Director::isDev() || $debug;
+        $vars = $request->getVars();
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        // If the given index is not an actual index, skip
+        if ($vars['index'] && !in_array($vars['index'], $indexes, true)) {
+            return false;
+        }
+        // If above doesn't fail, make the set var into an array to be indexed downstream, or continue with all indexes
+        if ($vars['index'] && in_array($vars['index'], $indexes, true)) {
+            $indexes = [$vars['index']];
+        }
+        // If all else fails, assume we're running a full index.
 
-        print_r(date('Y-m-d H:i:s' . "\n"));
+        $debug = $vars['debug'] ? true : false;
+        // Debug if in dev or CLI, or debug is requested explicitly
+        $debug = (Director::isDev() || Director::is_cli()) || $debug;
+
+        Debug::message(date('Y-m-d H:i:s' . "\n"));
         $start = time();
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
@@ -75,7 +88,6 @@ class SolrIndexTask extends BuildTask
 
         $this->introspection = new SearchIntrospection();
 
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
         foreach ($indexes as $index) {
 
@@ -87,22 +99,19 @@ class SolrIndexTask extends BuildTask
 
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($index);
-            $classes = $index->getClass();
+            // Only index the classes given in the var
+            $classes = $vars['class'] ?: $index->getClass();
             $client = $index->getClient();
+            $group = $request->getVar('group') ?: 0; // allow starting from a specific group
 
             $groups = 0;
             foreach ($classes as $class) {
                 $batchLength = DocumentFactory::config()->get('batchLength');
-                // @todo make sure the total amount of groups is all classes combined
-                $groups += ($class::get()->count() / $batchLength);
-            }
-
-
-            foreach ($classes as $class) {
+                // @todo make sure the total amount of groups is all classes combined at a later stage
+                $groups = (int)($class::get()->count() / $batchLength);
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
-                $group = $request->getVar('group') ?: $groups; // allow starting from a specific group
                 $count = 0;
                 $fields = array_merge(
                     $index->getFulltextFields(),
