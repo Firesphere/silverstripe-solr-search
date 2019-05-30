@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Jobs;
 
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
+use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
@@ -21,7 +22,7 @@ class SolrConfigureJob extends AbstractQueuedJob
 
     /**
      * Do some processing yourself!
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function process()
     {

@@ -7,12 +7,10 @@ use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
-use Firesphere\SolrSearch\Services\SolrCoreService;
 use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Dev\Debug;
@@ -59,19 +57,18 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request
      * @return int
      * @throws Exception
-     * @todo make this properly use groups and maybe background tasks
-     * @todo add a queued job
      */
     public function run($request)
     {
+        $start = time();
         $vars = $request->getVars();
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         // If the given index is not an actual index, skip
-        if ($vars['index'] && !in_array($vars['index'], $indexes, true)) {
+        if (isset($vars['index']) && !in_array($vars['index'], $indexes, true)) {
             return false;
         }
         // If above doesn't fail, make the set var into an array to be indexed downstream, or continue with all indexes
-        if ($vars['index'] && in_array($vars['index'], $indexes, true)) {
+        if (isset($vars['index']) && in_array($vars['index'], $indexes, true)) {
             $indexes = [$vars['index']];
         }
         // If all else fails, assume we're running a full index.
@@ -81,14 +78,13 @@ class SolrIndexTask extends BuildTask
         $debug = (Director::isDev() || Director::is_cli()) || $debug;
 
         Debug::message(date('Y-m-d H:i:s' . "\n"));
-        $start = time();
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
 
         $this->introspection = new SearchIntrospection();
 
-
+        $groups = 0;
         foreach ($indexes as $index) {
 
             // Skip the abstract base
@@ -99,28 +95,24 @@ class SolrIndexTask extends BuildTask
 
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($index);
-            // Only index the classes given in the var
-            $classes = $vars['class'] ?: $index->getClass();
+
+            // Only index the classes given in the var if needed, should be a single class
+            $classes = isset($vars['class']) ? [$vars['class']] : $index->getClass();
+
             $client = $index->getClient();
             $group = $request->getVar('group') ?: 0; // allow starting from a specific group
 
-            $groups = 0;
             foreach ($classes as $class) {
                 $batchLength = DocumentFactory::config()->get('batchLength');
-                // @todo make sure the total amount of groups is all classes combined at a later stage
                 $groups = (int)($class::get()->count() / $batchLength);
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
                 $count = 0;
-                $fields = array_merge(
-                    $index->getFulltextFields(),
-                    $index->getSortFields(),
-                    $index->getFilterFields()
-                );
+                $fields = $index->getFieldsForIndexing();
                 // Run a single group
+                Debug::message(sprintf('Indexing group %s out of %s', $group, $groups));
                 if ($request->getVar('group')) {
-                    Debug::message(sprintf('Indexing group %s out of %s', $group, $groups));
                     list($count, $group) = $this->doReindex(
                         $group,
                         $groups,
@@ -131,8 +123,8 @@ class SolrIndexTask extends BuildTask
                         $count,
                         $debug
                     );
-                // Otherwise, run them all
                 } else {
+                    // Otherwise, run them all
                     while ($group <= $groups) { // Run from newest to oldest item
                         list($count, $group) = $this->doReindex(
                             $group,

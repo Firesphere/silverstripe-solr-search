@@ -3,8 +3,10 @@
 
 namespace Firesphere\SolrSearch\Extensions;
 
+use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;
+use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
@@ -22,7 +24,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function onAfterDelete()
     {
@@ -50,7 +52,7 @@ class DataObjectExtension extends DataExtension
                     // add the delete query and a commit command to the update query
                     $update->addDeleteQuery('_documentid:' . $this->owner->ClassName . '-' . $this->owner->ID);
                     $update->addCommit();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // Continue, this document doesn't exist, ignore it :)
                     continue;
                 }

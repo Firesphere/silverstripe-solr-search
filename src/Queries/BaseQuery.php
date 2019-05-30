@@ -316,7 +316,7 @@ class BaseQuery
      * Add a facet field. Format:
      *
      * @param string $class The ClassName that's supposed to be faceted
-     * @param array $options:
+     * @param array $options :
      * [
      *     'Field' => 'Name_of_Field',
      *     'Title' => 'TitleToUseForRetrieving'

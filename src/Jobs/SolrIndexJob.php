@@ -3,8 +3,13 @@
 
 namespace Firesphere\SolrSearch\Jobs;
 
+use Exception;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
+use ReflectionClass;
+use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
@@ -28,7 +33,34 @@ class SolrIndexJob extends AbstractQueuedJob
      *
      * @var array
      */
-    protected $classToIndex;
+    protected $classToIndex = [];
+
+    /**
+     * The indexes that need to run.
+     * @var array
+     */
+    protected $indexes;
+
+    /**
+     * SolrIndexJob constructor.
+     * @param array $params
+     * @throws ReflectionException
+     */
+    public function __construct($params = array())
+    {
+        parent::__construct($params);
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+
+        foreach ($indexes as $index) {
+
+            // Skip the abstract base
+            $ref = new ReflectionClass($index);
+            if (!$ref->isInstantiable()) {
+                continue;
+            }
+            $this->indexes[] = $index;
+        }
+    }
 
     /**
      * @return string
@@ -40,17 +72,25 @@ class SolrIndexJob extends AbstractQueuedJob
 
     /**
      * Do some processing yourself!
-     * @throws \Exception
+     * @throws Exception
      */
     public function process()
     {
         $this->currentStep = $this->currentStep ?: 0;
+        $indexArgs = [
+            'group' => $this->currentStep,
+            'index' => $this->indexes[0],
+            'class' => $this->classToIndex[0]
+        ];
+        /** @var BaseIndex $index */
+        $index = Injector::inst()->get($this->indexes[0]);
+        $this->classToIndex = $this->classToIndex ?: $index->getClass();
         /** @var SolrIndexTask $task */
         $task = Injector::inst()->get(SolrIndexTask::class);
         $request = new HTTPRequest(
             'GET',
             '/dev/tasks/SolrIndexTask',
-            ['group' => $this->currentStep]
+            $indexArgs
         );
         $this->totalSteps = $task->run($request);
 
@@ -59,15 +99,49 @@ class SolrIndexJob extends AbstractQueuedJob
 
     public function afterComplete()
     {
-        if ($this->currentStep <= $this->totalSteps) {
+        // No more steps to execute on this class, let's go to the next class
+        if ($this->currentStep >= $this->totalSteps) {
+            array_pop($this->classToIndex);
+        }
+        // If there are no classes left in this index, go to the next index
+        if (!count($this->classToIndex)) {
+            array_pop($this->indexes);
+        }
+        // No indexes left to run, let's call it a day
+        if (!count($this->indexes)) {
+            parent::afterComplete();
+        } else {
             $nextJob = new self();
             $nextJob->currentStep = $this->currentStep + 1;
             $nextJob->totalSteps = $this->totalSteps;
+            $nextJob->setClassToIndex($this->classToIndex);
+            $nextJob->setIndexes($this->indexes);
 
             // Add a wee break to let the system recover from this heavy operation
             Injector::inst()->get(QueuedJobService::class)
                 ->queueJob($nextJob, date('Y-m-d H:i:00', strtotime('+1 minutes')));
         }
-        parent::afterComplete();
+    }
+
+    /**
+     * @param array $classToIndex
+     * @return SolrIndexJob
+     */
+    public function setClassToIndex($classToIndex)
+    {
+        $this->classToIndex = $classToIndex;
+
+        return $this;
+    }
+
+    /**
+     * @param array $indexes
+     * @return SolrIndexJob
+     */
+    public function setIndexes($indexes)
+    {
+        $this->indexes = $indexes;
+
+        return $this;
     }
 }
