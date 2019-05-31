@@ -17,6 +17,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\FullTextSearch\Search\Queries\SearchQuery;
 use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Query\Helper;
@@ -134,6 +135,22 @@ abstract class BaseIndex
      * @todo work from config first
      */
     abstract public function init();
+
+    /**
+     * Backward compatibility with FTS.
+     * @todo move offset, limit and params to the query, see PR#50
+     * @param BaseQuery $query
+     * @param int $offset
+     * @param int $limit
+     * @param array $params
+     * @return SearchResult|Result
+     */
+    public function search(BaseQuery $query, $offset = -1, $limit = -1, $params = array())
+    {
+        $query = $query->setStart($query->getStart() > 0 ?: $offset);
+        $query = $query->setStart($query->getRows() > 0 ?: $limit);
+        return $this->doSearch($query, Controller::curr());
+    }
 
     /**
      * @param BaseQuery $query
