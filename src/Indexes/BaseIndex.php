@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -136,40 +137,42 @@ abstract class BaseIndex
 
     /**
      * @param BaseQuery $query
-     * @param Controller $controller
+     * @param int $start deprecated in favour of $query, exists for backward compatibility with FTS
+     * @param int $limit deprecated in favour of $query, exists for backward compatibility with FTS
+     * @param array $params deprecated in favour of $query, exists for backward compatibility with FTS
      * @return SearchResult|Result
      */
-    public function doSearch($query, $controller)
+    public function doSearch(BaseQuery $query, $start = 0, $limit = 10, $params = [])
     {
-        $start = $controller->getRequest()->getVar('start') ?: 0;
+        $start = $query->getStart() ?: $start;
+        $rows = $query->getRows() ?: $limit;
+
         $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
-        $clientQuery->setStart($start);
-        // Get 10 times the amount of rows, to prevent canView errors (TBD)
-        $clientQuery->setRows($query->getRows() * 10);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
+        // Add filters
+        $this->buildFilters($query, $clientQuery);
+        // And excludes
+        $this->buildExcludes($query, $clientQuery);
         // Add highlighting
         $clientQuery->getHighlighting()->setFields($query->getHighlight());
         // Setup the facets
         $this->buildFacets($query, $clientQuery);
-        // Add filters
-        $this->buildFilters($query, $clientQuery);
-        $this->buildExcludes($query, $clientQuery);
 
+        // Set the start
+        $clientQuery->setStart($start);
+        // Get 10 times the amount of rows, to prevent canView errors (TBD)
+        $clientQuery->setRows($rows * 10);
         // Filter out the fields we want to see if they're set
         if (count($query->getFields())) {
             $clientQuery->setFields($query->getFields());
         }
 
-        if (Director::isDev() && Controller::curr()->getRequest()->getVar('debugquery')) {
-            $clientQuery->getDebug();
-        }
-
         $result = $this->client->select($clientQuery);
 
-        $result = new SearchResult($result, $query, $controller);
+        $result = new SearchResult($result, $query);
 
         $this->extend('updateSearchResults', $result);
         $this->extend('onAfterSearch', $result);
@@ -181,7 +184,7 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @return Query
      */
-    protected function buildSolrQuery($query)
+    protected function buildSolrQuery(BaseQuery $query)
     {
         $clientQuery = $this->client->createSelect();
         $helper = $clientQuery->getHelper();
@@ -194,7 +197,10 @@ abstract class BaseIndex
             // If boosting is set, add the fields to boost
             if ($search['boost']) {
                 foreach ($search['fields'] as $boostField) {
-                    $q[] = $boostField . ':' . $term . '^' . $search['boost'];
+                    $criteria = Criteria::where($boostField)
+                        ->where($term)
+                        ->boost($search['boost']);
+                    $q[] = $criteria->getQuery();
                 }
             }
         }
@@ -209,9 +215,9 @@ abstract class BaseIndex
     /**
      * @param string $searchTerm
      * @param Helper $helper
-     * @return array
+     * @return string
      */
-    protected function escapeSearch($searchTerm, $helper)
+    protected function escapeSearch($searchTerm, Helper $helper)
     {
         $term = [];
         // Escape special characters where needed. Except for quoted parts, those should be phrased
@@ -235,11 +241,16 @@ abstract class BaseIndex
      * @param Query $clientQuery
      * @return Query
      */
-    public function buildClassFilter($query, $clientQuery)
+    public function buildClassFilter(BaseQuery $query, $clientQuery)
     {
-        foreach ($query->getClasses() as $class) {
+        if (count($query->getClasses())) {
+            foreach ($query->getClasses() as &$class) {
+                $class = str_replace('\\', '\\\\', $class);
+            }
+            unset($class);
+            $criteria = Criteria::where('ClassHierarchy')->in($query->getClasses());
             $clientQuery->createFilterQuery('classes')
-                ->setQuery('ClassHierarchy:' . str_replace('\\', '\\\\', $class));
+                ->setQuery($criteria->getQuery());
         }
 
         return $clientQuery;
@@ -249,7 +260,7 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @param Query $clientQuery
      */
-    protected function buildFacets($query, Query $clientQuery)
+    protected function buildFacets(BaseQuery $query, Query $clientQuery)
     {
         $facets = $clientQuery->getFacetSet();
         foreach ($query->getFacetFields() as $field => $config) {
@@ -263,19 +274,14 @@ abstract class BaseIndex
      * @param Query $clientQuery
      * @return Query
      */
-    protected function buildFilters($query, Query $clientQuery)
+    protected function buildFilters(BaseQuery $query, Query $clientQuery)
     {
         $filters = $query->getFilter();
         foreach ($filters as $field => $value) {
-            if (is_array($value)) {
-                foreach ($value as $key => $item) {
-                    $clientQuery->createFilterQuery($field . '_' . $key)
-                        ->setQuery($field . ':' . $item);
-                }
-            } else {
-                $clientQuery->createFilterQuery($field)
-                    ->setQuery($field . ':' . $value);
-            }
+            $value = is_array($value) ?: [$value];
+            $criteria = Criteria::where($field)->in($value);
+            $clientQuery->createFilterQuery($field)
+                ->setQuery($criteria->getQuery());
         }
 
         return $clientQuery;
@@ -286,19 +292,16 @@ abstract class BaseIndex
      * @param Query $clientQuery
      * @return Query
      */
-    protected function buildExcludes($query, Query $clientQuery)
+    protected function buildExcludes(BaseQuery $query, Query $clientQuery)
     {
         $filters = $query->getExclude();
         foreach ($filters as $field => $value) {
-            if (is_array($value)) {
-                foreach ($value as $key => $item) {
-                    $clientQuery->createFilterQuery($field . $key)
-                        ->setQuery('-(' . $field . ':' . $item . ')');
-                }
-            } else {
-                $clientQuery->createFilterQuery($field)
-                    ->setQuery('-(' . $field . ':' . $value . ')');
-            }
+            $value = is_array($value) ?: [$value];
+            $criteria = Criteria::where($field)
+                ->is($value)
+                ->not();
+            $clientQuery->createFilterQuery($field)
+                ->setQuery($criteria->getQuery());
         }
 
         return $clientQuery;
@@ -309,7 +312,7 @@ abstract class BaseIndex
      *
      * @param ConfigStore $store
      */
-    public function uploadConfig($store)
+    public function uploadConfig(ConfigStore $store)
     {
         // @todo use types/schema/elevate rendering
         // Upload the config files for this index
@@ -450,6 +453,25 @@ abstract class BaseIndex
             Deprecation::notice('5', 'Options are not used anymore');
         }
         $this->class[] = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostedFields()
+    {
+        return $this->boostedFields;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return $this
+     */
+    public function setBoostedFields($boostedFields)
+    {
+        $this->boostedFields = $boostedFields;
 
         return $this;
     }
