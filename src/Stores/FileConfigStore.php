@@ -7,6 +7,10 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use RuntimeException;
 use SilverStripe\Control\Director;
 
+/**
+ * Class FileConfigStore
+ * @package Firesphere\SolrSearch\Stores
+ */
 class FileConfigStore implements ConfigStore
 {
 
@@ -15,6 +19,10 @@ class FileConfigStore implements ConfigStore
      */
     protected $path;
 
+    /**
+     * FileConfigStore constructor.
+     * @param null $config
+     */
     public function __construct($config = null)
     {
         if (!$config) {
@@ -39,6 +47,10 @@ class FileConfigStore implements ConfigStore
         copy($file, $targetDir . '/' . basename($file));
     }
 
+    /**
+     * @param $index
+     * @return string
+     */
     public function getTargetDir($index)
     {
         $targetDir = "{$this->path}/{$index}/conf";
@@ -56,12 +68,22 @@ class FileConfigStore implements ConfigStore
         return $targetDir;
     }
 
+    /**
+     * @param string $index
+     * @param string $filename
+     * @param string $string
+     * @return void|null
+     */
     public function uploadString($index, $filename, $string)
     {
         $targetDir = $this->getTargetDir($index);
         file_put_contents("$targetDir/$filename", $string);
     }
 
+    /**
+     * @param string|null $index
+     * @return string|null
+     */
     public function instanceDir($index)
     {
         return $this->path . '/' . $index;

@@ -198,7 +198,7 @@ abstract class BaseIndex
             if ($search['boost']) {
                 foreach ($search['fields'] as $boostField) {
                     $criteria = Criteria::where($boostField)
-                        ->where($term)
+                        ->is($term)
                         ->boost($search['boost']);
                     $q[] = $criteria->getQuery();
                 }
