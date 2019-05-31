@@ -11,7 +11,6 @@ use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Minimalcode\Search\Criteria;
-use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extensible;
@@ -150,6 +149,10 @@ abstract class BaseIndex
         $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
+        // Set the start
+        $clientQuery->setStart($start);
+        // Get 10 times the amount of rows, to prevent canView errors (TBD)
+        $clientQuery->setRows($query->getRows() * 10);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
         // Add filters
@@ -259,19 +262,6 @@ abstract class BaseIndex
     /**
      * @param BaseQuery $query
      * @param Query $clientQuery
-     */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery)
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
      * @return Query
      */
     protected function buildFilters(BaseQuery $query, Query $clientQuery)
@@ -305,6 +295,19 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     */
+    protected function buildFacets(BaseQuery $query, Query $clientQuery)
+    {
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
     }
 
     /**
