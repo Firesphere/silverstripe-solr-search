@@ -423,25 +423,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
-     */
-    public function getBoostedFields()
-    {
-        return $this->boostedFields;
-    }
-
-    /**
-     * @param array $boostedFields
-     * @return $this
-     */
-    public function setBoostedFields($boostedFields)
-    {
-        $this->boostedFields = $boostedFields;
-
-        return $this;
-    }
-
-    /**
      * $options is not used anymore, added for backward compatibility
      * @param $class
      * @param array $options
