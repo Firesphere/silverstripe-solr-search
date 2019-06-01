@@ -101,7 +101,9 @@ abstract class BaseIndex
         $schemaService->setStore(Director::isDev());
         $this->schemaService = $schemaService;
 
+        $this->extend('onBeforeInit');
         $this->init();
+        $this->extend('onAfterInit');
     }
 
     /**
