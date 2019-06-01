@@ -100,11 +100,11 @@ class SolrIndexJob extends AbstractQueuedJob
     {
         // No more steps to execute on this class, let's go to the next class
         if ($this->currentStep >= $this->totalSteps) {
-            array_pop($this->classToIndex);
+            array_shift($this->classToIndex);
         }
         // If there are no classes left in this index, go to the next index
         if (!count($this->classToIndex)) {
-            array_pop($this->indexes);
+            array_shift($this->indexes);
         }
         // No indexes left to run, let's call it a day
         if (!count($this->indexes)) {
