@@ -75,7 +75,7 @@ class SolrIndexTask extends BuildTask
         }
         // If all else fails, assume we're running a full index.
 
-        $debug = $vars['debug'] ? true : false;
+        $debug = isset($vars['debug']) ? true : false;
         // Debug if in dev or CLI, or debug is requested explicitly
         $debug = (Director::isDev() || Director::is_cli()) || $debug;
 
@@ -112,7 +112,6 @@ class SolrIndexTask extends BuildTask
                 $count = 0;
                 $fields = $index->getFieldsForIndexing();
                 // Run a single group
-                Debug::message(sprintf('Indexing group %s out of %s', $group, $groups));
                 if ($request->getVar('group')) {
                     list($count, $group) = $this->doReindex(
                         $group,
@@ -140,11 +139,6 @@ class SolrIndexTask extends BuildTask
                     }
                 }
             }
-            // get an update query instance
-            $update = $client->createUpdate();
-            // optimize the index
-            $update->addOptimize(true, false, 5);
-            $client->update($update);
         }
         $end = time();
 
@@ -184,6 +178,11 @@ class SolrIndexTask extends BuildTask
         $client->update($update);
         $update = null; // clear out the update set for memory reasons
         $group++;
+        // get an update query instance
+        $update = $client->createUpdate();
+        // optimize the index
+        $update->addOptimize(true, false, 5);
+        $client->update($update);
         Debug::message(date('Y-m-d H:i:s' . "\n"), false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 

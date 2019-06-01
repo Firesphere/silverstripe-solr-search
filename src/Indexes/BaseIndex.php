@@ -17,6 +17,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Query\Helper;
@@ -163,8 +164,8 @@ abstract class BaseIndex
 
         // Set the start
         $clientQuery->setStart($start);
-        // Get 10 times the amount of rows, to prevent canView errors (TBD)
-        $clientQuery->setRows($rows * 10);
+        // Get 5 times the amount of rows, to prevent canView errors (TBD)
+        $clientQuery->setRows($rows * 5);
         // Filter out the fields we want to see if they're set
         if (count($query->getFields())) {
             $clientQuery->setFields($query->getFields());
@@ -204,6 +205,13 @@ abstract class BaseIndex
                 }
             }
         }
+
+        $id = 'null';
+        $currentUser = Security::getCurrentUser();
+        if ($currentUser) {
+            $id = $currentUser->ID;
+        }
+        $q[] = Criteria::where('ViewStatus')-> is("'1':" . $id);
 
         $term = implode(' ', $q);
 

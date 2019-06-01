@@ -16,7 +16,7 @@ Firesphere\SolrSearch\Services\SolrCoreService:
         finalize_timeout: 30
         http_method: 'AUTO'
         # commit within 100ms
-        commit_within: 100
+        commit_within: 60
   # default path settings
   paths:
     schema: '%s/Solr/5/templates'

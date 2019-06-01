@@ -11,6 +11,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
 
 /**
  * Class \Firesphere\SolrSearch\Extensions\DataObjectExtension
@@ -19,6 +20,8 @@ use SilverStripe\ORM\DataObject;
  */
 class DataObjectExtension extends DataExtension
 {
+    protected static $members;
+
     public function onAfterWrite()
     {
         parent::onAfterWrite();
@@ -62,5 +65,26 @@ class DataObjectExtension extends DataExtension
 
             $index = null;
         }
+    }
+
+    /**
+     * Get the view status for each member in this object
+     * @return array
+     */
+    public function getViewStatus()
+    {
+        if (!self::$members) {
+            self::$members = Member::get();
+        }
+        $return = [];
+        foreach (self::$members as $member) {
+            $return[] = $this->owner->canView($member) . '-' . $member->ID;
+        }
+        // Add null users
+        if ($this->owner->canView()) {
+            $return[] = '1-null';
+        }
+
+        return $return;
     }
 }
