@@ -7,10 +7,12 @@ use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Dev\Debug;
@@ -173,7 +175,7 @@ class SolrIndexTask extends BuildTask
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
         $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
-        $update->addDocuments($docs, true, 10);
+        $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
         $client->update($update);
         $update = null; // clear out the update set for memory reasons
         $group++;

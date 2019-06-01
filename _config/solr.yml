@@ -10,11 +10,14 @@ Firesphere\SolrSearch\Services\SolrCoreService:
         host: 127.0.0.1
         port: 8983
         timeout: 5
+        # set up timeouts
         index_timeout: 5
         optimize_timeout: 10
         finalize_timeout: 30
         http_method: 'AUTO'
-        commit_within: 10
+        # commit within 100ms
+        commit_within: 100
+  # default path settings
   paths:
     schema: '%s/Solr/5/templates'
     extras: '%s/Solr/5/extras'

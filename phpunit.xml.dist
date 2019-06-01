@@ -10,7 +10,7 @@
         </whitelist>
     </filter>
     <php>
-        <get name="flush" value="all" />
+        <get name="flush" value="all"/>
     </php>
     <groups>
         <exclude>

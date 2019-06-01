@@ -4,14 +4,14 @@ engines:
     enabled: true
     config:
       languages:
-      - php
+        - php
   fixme:
     enabled: true
   phpmd:
     enabled: true
 ratings:
   paths:
-  - "**.php"
+    - "**.php"
 exclude_paths:
-- docs/*
-- tests/*
+  - docs/*
+  - tests/*
