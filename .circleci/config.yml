@@ -22,6 +22,20 @@ jobs:
           - MYSQL_ROOT_PASSWORD=ubuntu
           - MYSQL_DATABASE=circle_test
           - MYSQL_HOST=127.0.0.1
+      - image: solr:8.1.1
+        environment:
+          - SOLR_USER=solr
+          - SOLR_UID=8983
+          - SOLR_GROUP=solr
+          - SOLR_GID=8983
+          - SOLR_HOME=/var/solr/data
+          - SOLR_PID_DIR=/var/solr
+          - SOLR_LOGS_DIR=/var/solr/logs
+          - VERBOSE=yes
+        entrypoint: docker-entrypoint.sh
+        command:
+          - solr-precreate
+          - TestIndex
 
     working_directory: ~/var/www
 
@@ -31,11 +45,42 @@ jobs:
       - run: composer require silverstripe/recipe-cms
       - run: composer update -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
+      - run:
+          name: Create implementation code by extending BaseIndex
+          command: |
+            cat <<'PHPSRC' > ~/var/www/app/src/TestIndex.php
+            <?php
+              use Firesphere\SolrSearch\Indexes\BaseIndex;
+              use SilverStripe\CMS\Model\SiteTree;
+              use SilverStripe\Dev\TestOnly;
+              class TestIndex extends BaseIndex implements TestOnly {
+              public function init() {
+                $this->addClass(SiteTree::class);
+                $this->addFulltextField('Title');
+                $this->addFulltextField('Content');
+              }
+              public function getIndexName() {
+                return 'TestIndex';
+              }
+            }
+            PHPSRC
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
       - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
+      - save_cache:
+          key: cache-{{ checksum "composer.lock" }}-{{ checksum "composer.json" }}-v1
+          paths:
+            - vendor
+            - resources
+            - app
 
       - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
+      - run:
+          name: Run Solr Configure
+          command: |
+            mkdir -p ~/var/www/.solr && chmod -R 777 ~/var/www/.solr
+            vendor/bin/sake dev/tasks/SolrConfigureTask
+      - run: vendor/bin/sake dev/tasks/SolrIndexTask
       - store_test_results:
           path: ~/var/www/coverage
       - store_artifacts:
