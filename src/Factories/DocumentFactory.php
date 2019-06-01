@@ -170,6 +170,7 @@ class DocumentFactory
      * @param array $field - The field definition to use
      * @return array|string|null - The value of the field, or null if we couldn't look it up for some reason
      * @todo refactor to something more readable
+     * @todo reduced the array_merge need to something more effective
      */
     protected function getValueForField($object, $field)
     {
@@ -188,7 +189,7 @@ class DocumentFactory
                 $next = [];
 
                 foreach ($object as $item) {
-                    if ($step['call'] === 'method') {
+                    if ($step['call'] === 'method') { // php's built_in method_exists() is faster
                         $method = $step['method'];
                         $item = $item->$method();
                     } else {

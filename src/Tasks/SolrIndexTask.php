@@ -140,6 +140,11 @@ class SolrIndexTask extends BuildTask
                     }
                 }
             }
+            // get an update query instance
+            $update = $client->createUpdate();
+            // optimize the index
+            $update->addOptimize(true, false, 5);
+            $client->update($update);
         }
         $end = time();
 
