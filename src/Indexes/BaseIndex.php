@@ -211,7 +211,8 @@ abstract class BaseIndex
         if ($currentUser) {
             $id = $currentUser->ID;
         }
-        $q[] = Criteria::where('ViewStatus')-> is("'1':" . $id);
+        /** Add canView criterias. These are based on {@link DataObjectExtension::ViewStatus()} */
+        $q[] = Criteria::where('ViewStatus')-> is('1-' . $id);
 
         $term = implode(' ', $q);
 
