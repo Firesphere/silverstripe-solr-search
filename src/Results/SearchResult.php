@@ -43,14 +43,14 @@ class SearchResult
      */
     protected $highlight;
 
-    public function __construct(Result $result, $query, $controller)
+    public function __construct(Result $result, $query)
     {
         $this->query = $query;
         $this->setMatches($result);
         $this->setFacets($result);
         $this->setHighlight($result);
         $this->setTotalItems($result->getNumFound());
-        $this->setController($controller);
+        $this->setController(Controller::curr());
     }
 
     public function getPaginatedMatches($request)
