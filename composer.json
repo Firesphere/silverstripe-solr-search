@@ -21,6 +21,7 @@
   ],
   "require": {
     "silverstripe/framework": "^4",
+    "silverstripe/queuedjobs": "^4",
     "solarium/solarium": "^4.2"
   },
   "require-dev": {
