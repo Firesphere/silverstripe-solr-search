@@ -42,7 +42,7 @@ class DocumentFactory
      * @param bool $debug
      * @return array
      * @throws Exception
-     * @todo this should be cleaner
+     * @todo this could be cleaner
      */
     public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $debug = false)
     {

@@ -303,25 +303,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
-     */
-    public function getBoostedFields()
-    {
-        return $this->boostedFields;
-    }
-
-    /**
-     * @param array $boostedFields
-     * @return $this
-     */
-    public function setBoostedFields($boostedFields)
-    {
-        $this->boostedFields = $boostedFields;
-
-        return $this;
-    }
-
-    /**
      * Upload config for this index to the given store
      *
      * @param ConfigStore $store
@@ -368,6 +349,94 @@ abstract class BaseIndex
     }
 
     /**
+     * @return array
+     */
+    public function getFieldsForIndexing()
+    {
+        return array_merge(
+            $this->getFulltextFields(),
+            $this->getSortFields(),
+            $this->getFilterFields()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getFulltextFields()
+    {
+        return $this->fulltextFields;
+    }
+
+    /**
+     * @param array $fulltextFields
+     * @return $this
+     */
+    public function setFulltextFields($fulltextFields)
+    {
+        $this->fulltextFields = $fulltextFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortFields()
+    {
+        return $this->sortFields;
+    }
+
+    /**
+     * @param array $sortFields
+     * @return BaseIndex
+     */
+    public function setSortFields($sortFields)
+    {
+        $this->sortFields = $sortFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterFields()
+    {
+        return $this->filterFields;
+    }
+
+    /**
+     * @param array $filterFields
+     * @return $this
+     */
+    public function setFilterFields($filterFields)
+    {
+        $this->filterFields = $filterFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostedFields()
+    {
+        return $this->boostedFields;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return $this
+     */
+    public function setBoostedFields($boostedFields)
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
+    }
+
+    /**
      * $options is not used anymore, added for backward compatibility
      * @param $class
      * @param array $options
@@ -405,25 +474,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
-     */
-    public function getFulltextFields()
-    {
-        return $this->fulltextFields;
-    }
-
-    /**
-     * @param array $fulltextFields
-     * @return $this
-     */
-    public function setFulltextFields($fulltextFields)
-    {
-        $this->fulltextFields = $fulltextFields;
-
-        return $this;
-    }
-
-    /**
      * @param string $fulltextField
      * @return $this
      */
@@ -450,25 +500,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
-     */
-    public function getSortFields()
-    {
-        return $this->sortFields;
-    }
-
-    /**
-     * @param array $sortFields
-     * @return BaseIndex
-     */
-    public function setSortFields($sortFields)
-    {
-        $this->sortFields = $sortFields;
-
-        return $this;
-    }
-
-    /**
      * @param $field
      * @param array $options
      * @return $this
@@ -480,25 +511,6 @@ abstract class BaseIndex
         if (!in_array($field, $this->getFilterFields(), true)) {
             $this->addFilterField($field);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFilterFields()
-    {
-        return $this->filterFields;
-    }
-
-    /**
-     * @param array $filterFields
-     * @return $this
-     */
-    public function setFilterFields($filterFields)
-    {
-        $this->filterFields = $filterFields;
 
         return $this;
     }
@@ -607,6 +619,14 @@ abstract class BaseIndex
     }
 
     /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * @param Client $client
      * @return BaseIndex
      */
@@ -615,13 +635,5 @@ abstract class BaseIndex
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @return Client
-     */
-    public function getClient()
-    {
-        return $this->client;
     }
 }

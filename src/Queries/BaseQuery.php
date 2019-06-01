@@ -10,6 +10,7 @@ namespace Firesphere\SolrSearch\Queries;
 class BaseQuery
 {
     /**
+     * @todo add user search history through the Query
      * @var array
      */
     protected $history = [];
@@ -216,11 +217,11 @@ class BaseQuery
      *
      * The fields parameter is used to boost on
      *
-     * For generic boosting, use @addBoostedField($field, $boost)
-     * @param string $term
-     * @param array $fields
-     * @param array|bool $boost
-     * @param bool $fuzzy
+     * For generic boosting, use @addBoostedField($field, $boost), this will add the boost at Index time
+     * @param string $term Term to search for
+     * @param array $fields fields to boost on
+     * @param array|bool $boost Boost value
+     * @param bool $fuzzy Unused
      * @return $this
      */
     public function addTerm($term, $fields = [], $boost = false, $fuzzy = false)
@@ -315,7 +316,11 @@ class BaseQuery
      * Add a facet field. Format:
      *
      * @param string $class The ClassName that's supposed to be faceted
-     * @param array $options
+     * @param array $options :
+     * [
+     *     'Field' => 'Name_of_Field',
+     *     'Title' => 'TitleToUseForRetrieving'
+     * ]
      * @return BaseQuery
      */
     public function addFacetField($class, $options)
@@ -335,7 +340,7 @@ class BaseQuery
 
     /**
      * @param array $facetFields
-     * @return BaseQuery
+     * @return $this
      */
     public function setFacetFields($facetFields)
     {
@@ -344,6 +349,10 @@ class BaseQuery
         return $this;
     }
 
+    /**
+     * @param string $class
+     * @return $this
+     */
     public function addClass($class)
     {
         $this->classes[] = $class;
@@ -361,7 +370,7 @@ class BaseQuery
 
     /**
      * @param array $classes
-     * @return BaseQuery
+     * @return $this
      */
     public function setClasses($classes)
     {
@@ -391,7 +400,7 @@ class BaseQuery
 
     /**
      * @param array $highlight
-     * @return BaseQuery
+     * @return $this
      */
     public function setHighlight($highlight)
     {
