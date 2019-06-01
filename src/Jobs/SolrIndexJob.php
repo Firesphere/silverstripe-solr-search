@@ -52,7 +52,6 @@ class SolrIndexJob extends AbstractQueuedJob
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
         foreach ($indexes as $index) {
-
             // Skip the abstract base
             $ref = new ReflectionClass($index);
             if (!$ref->isInstantiable()) {
