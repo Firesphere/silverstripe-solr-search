@@ -112,7 +112,8 @@ class SolrIndexJob extends AbstractQueuedJob
         } else {
             $nextJob = new self();
             $nextJob->currentStep = $this->currentStep + 1;
-            $nextJob->totalSteps = $this->totalSteps;
+            // Make sure the job doesn't stop if the current step accidentally is bigger than the total
+            $nextJob->totalSteps = $this->totalSteps ?: $this->currentStep + 1;
             $nextJob->setClassToIndex($this->classToIndex);
             $nextJob->setIndexes($this->indexes);
 
