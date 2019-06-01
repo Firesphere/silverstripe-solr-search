@@ -14,6 +14,7 @@ use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
 
@@ -96,7 +97,6 @@ class SolrConfigureTask extends BuildTask
             'mode' => 'file',
             'path' => Director::baseFolder() . '/.solr'
         ];
-        /** @todo make stores configurable */
         /** @var ConfigStore $configStore */
         $configStore = Injector::inst()->create(FileConfigStore::class, $config);
         $instance->uploadConfig($configStore);
@@ -113,7 +113,8 @@ class SolrConfigureTask extends BuildTask
             try {
                 $service->coreReload($index);
             } catch (Exception $e) {
-                var_dump($e);
+                $this->logger->notice('If you get a time-out error or core-could-not-be-created error, refresh');
+                $this->logger->emergency($e);
                 // Possibly a file error, try to unload and recreate the core
                 $service->coreUnload($index);
                 $service->coreCreate($index, $configStore->instanceDir($index));
