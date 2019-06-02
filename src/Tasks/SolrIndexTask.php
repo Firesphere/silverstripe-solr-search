@@ -46,10 +46,18 @@ class SolrIndexTask extends BuildTask
      */
     protected $factory;
 
+    /**
+     * SolrIndexTask constructor. Sets up the document factory
+     */
     public function __construct()
     {
         parent::__construct();
         $this->factory = Injector::inst()->get(DocumentFactory::class);
+        // Only index live items.
+        // The old FTS module also indexed Draft items. This is unnecessary
+        Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
+
+        $this->introspection = new SearchIntrospection();
     }
 
     /**
@@ -59,6 +67,7 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request
      * @return int
      * @throws Exception
+     * @todo clean up a bit, this is becoming a mess
      */
     public function run($request)
     {
@@ -80,11 +89,6 @@ class SolrIndexTask extends BuildTask
         $debug = (Director::isDev() || Director::is_cli()) || $debug;
 
         Debug::message(date('Y-m-d H:i:s' . "\n"));
-        // Only index live items.
-        // The old FTS module also indexed Draft items. This is unnecessary
-        Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
-
-        $this->introspection = new SearchIntrospection();
 
         $groups = 0;
         foreach ($indexes as $index) {
@@ -103,6 +107,10 @@ class SolrIndexTask extends BuildTask
             $client = $index->getClient();
             $group = $request->getVar('group') ?: 0; // allow starting from a specific group
             $start = $request->getVar('start') ?: 0;
+            // Set the start point to the requested value, if there is only one class to index
+            if ($start > $group && count($classes) === 1) {
+                $group = $start;
+            }
 
             foreach ($classes as $class) {
                 $batchLength = DocumentFactory::config()->get('batchLength');
@@ -125,9 +133,6 @@ class SolrIndexTask extends BuildTask
                         $debug
                     );
                 } else {
-                    if ($start > $group) {
-                        $group = $start;
-                    }
                     // Otherwise, run them all
                     while ($group <= $groups) { // Run from newest to oldest item
                         list($count, $group) = $this->doReindex(
@@ -140,6 +145,10 @@ class SolrIndexTask extends BuildTask
                             $count,
                             $debug
                         );
+                    }
+                    // Reset the group for the next class
+                    if ($group >= $groups) {
+                        $group = 0;
                     }
                 }
             }
@@ -180,13 +189,13 @@ class SolrIndexTask extends BuildTask
         $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
         $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
         $client->update($update);
-        $update = null; // clear out the update set for memory reasons
         $group++;
         // get an update query instance
         $update = $client->createUpdate();
         // optimize the index
         $update->addOptimize(true, false, 5);
         $client->update($update);
+        $update = null; // clear out the update set for memory reasons
         Debug::message(date('Y-m-d H:i:s' . "\n"), false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 

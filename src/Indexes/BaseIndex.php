@@ -364,11 +364,15 @@ abstract class BaseIndex
 
     /**
      * Add synonyms. Public to be extendable
+     * @param bool $eng Include UK to US synonyms
      * @return string
      */
-    public function getSynonyms()
+    public function getSynonyms($eng = true)
     {
-        $engSynonyms = Synonyms::getSynonymsAsString();
+        $engSynonyms = '';
+        if ($eng) {
+            $engSynonyms = Synonyms::getSynonymsAsString();
+        }
 
         return $engSynonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
     }
