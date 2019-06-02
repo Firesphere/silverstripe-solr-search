@@ -65,7 +65,7 @@ class SolrIndexTask extends BuildTask
      * execute via the TaskRunner
      *
      * @param HTTPRequest $request
-     * @return int
+     * @return int|bool
      * @throws Exception
      * @todo clean up a bit, this is becoming a mess
      * @todo defer to background because it may run out of memory
@@ -136,7 +136,7 @@ class SolrIndexTask extends BuildTask
                     );
                 } else {
                     // Otherwise, run them all
-                    while ($group <= $groups) { // Run from newest to oldest item
+                    while ($group <= $groups) { // Run from oldest to newest
                         try {
                             list($count, $group) = $this->doReindex(
                                 $group,
@@ -151,6 +151,7 @@ class SolrIndexTask extends BuildTask
                         } catch (Exception $e) {
                             // get an update query instance
                             $update = $client->createUpdate();
+                            $update->addCommit();
                             // optimize the index
                             $update->addOptimize(true, false, 5);
                             $client->update($update);
@@ -210,6 +211,7 @@ class SolrIndexTask extends BuildTask
         $update = $client->createUpdate();
         // optimize the index
         $update->addOptimize(true, false, 5);
+        $update->addCommit();
         $client->update($update);
         $update = null; // clear out the update set for memory reasons
         Debug::message(date('Y-m-d H:i:s' . "\n"), false);

@@ -37,9 +37,10 @@ jobs:
             - vendor
             - resources
             - app
-      - run: vendor/bin/sake dev/build
-      #      No tests to run yet
-      #      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml --coverage-html ./coverage/ -d memory_limit=512M tests/unit
+
+      - run: vendor/bin/sake dev/build flush=all skipannotation=true
+      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
+      - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
 
       - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:

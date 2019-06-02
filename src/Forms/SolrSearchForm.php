@@ -17,10 +17,10 @@ class SolrSearchForm extends Form
         FieldList $actions = null,
         Validator $validator = null
     ) {
-        $form = parent::__construct($controller, $name, $fields, $actions, $validator);
+        parent::__construct($controller, $name, $fields, $actions, $validator);
 
-        $form->setFormMethod('GET');
+        $this->setFormMethod('GET');
 
-        $form->disableSecurityToken();
+        $this->disableSecurityToken();
     }
 }

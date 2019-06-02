@@ -58,7 +58,7 @@ class DataObjectExtension extends DataExtension
                     $update = $client->createUpdate();
 
                     // add the delete query and a commit command to the update query
-                    $update->addDeleteQuery('_documentid:' . $this->owner->ClassName . '-' . $this->owner->ID);
+                    $update->addDeleteQuery('id:' . $this->owner->ClassName . '-' . $this->owner->ID);
                     $update->addCommit();
                 } catch (Exception $e) {
                     // Continue, this document doesn't exist, ignore it :)
@@ -82,16 +82,17 @@ class DataObjectExtension extends DataExtension
             return $this->canViewClasses[$this->owner->ClassName];
         }
         // Add null users if it's publicly viewable
+        $return[] = '1-null';
         if ($this->owner->canView()) {
-            $return[] = '1-null';
-        } else {
-            if (!self::$members) {
-                self::$members = Member::get();
-            }
-            $return = [];
-            foreach (self::$members as $member) {
-                $return[] = $this->owner->canView($member) . '-' . $member->ID;
-            }
+            return $return;
+        }
+
+        if (!self::$members) {
+            self::$members = Member::get();
+        }
+        $return = [];
+        foreach (self::$members as $member) {
+            $return[] = $this->owner->canView($member) . '-' . $member->ID;
         }
 
         $this->canViewClasses[$this->owner->ClassName] = $return;
