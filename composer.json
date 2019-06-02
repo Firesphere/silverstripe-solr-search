@@ -20,6 +20,7 @@
     }
   ],
   "require": {
+    "php": ">=7.1",
     "silverstripe/framework": "^4",
     "silverstripe/queuedjobs": "^4",
     "solarium/solarium": "^4.2",
