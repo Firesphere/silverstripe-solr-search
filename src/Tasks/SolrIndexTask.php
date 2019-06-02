@@ -102,10 +102,11 @@ class SolrIndexTask extends BuildTask
 
             $client = $index->getClient();
             $group = $request->getVar('group') ?: 0; // allow starting from a specific group
+            $start = $request->getVar('start') ?: 0;
 
             foreach ($classes as $class) {
                 $batchLength = DocumentFactory::config()->get('batchLength');
-                $groups = (int)($class::get()->count() / $batchLength);
+                $groups = (int)ceil($class::get()->count() / $batchLength);
                 if ($debug) {
                     Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
                 }
@@ -124,6 +125,9 @@ class SolrIndexTask extends BuildTask
                         $debug
                     );
                 } else {
+                    if ($start > $group) {
+                        $group = $start;
+                    }
                     // Otherwise, run them all
                     while ($group <= $groups) { // Run from newest to oldest item
                         list($count, $group) = $this->doReindex(

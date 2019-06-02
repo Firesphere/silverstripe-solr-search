@@ -7,6 +7,7 @@ use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;
 use ReflectionException;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
@@ -21,6 +22,8 @@ use SilverStripe\Security\Member;
 class DataObjectExtension extends DataExtension
 {
     protected static $members;
+
+    protected $canViewClasses = [];
 
     public function onAfterWrite()
     {
@@ -73,17 +76,25 @@ class DataObjectExtension extends DataExtension
      */
     public function getViewStatus()
     {
-        if (!self::$members) {
-            self::$members = Member::get();
+        if (array_key_exists($this->owner->ClassName, $this->canViewClasses) &&
+            !$this->owner instanceof SiteTree
+        ) {
+            return $this->canViewClasses[$this->owner->ClassName];
         }
-        $return = [];
-        foreach (self::$members as $member) {
-            $return[] = $this->owner->canView($member) . '-' . $member->ID;
-        }
-        // Add null users
+        // Add null users if it's publicly viewable
         if ($this->owner->canView()) {
             $return[] = '1-null';
+        } else {
+            if (!self::$members) {
+                self::$members = Member::get();
+            }
+            $return = [];
+            foreach (self::$members as $member) {
+                $return[] = $this->owner->canView($member) . '-' . $member->ID;
+            }
         }
+
+        $this->canViewClasses[$this->owner->ClassName] = $return;
 
         return $return;
     }

@@ -11,7 +11,6 @@ use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Minimalcode\Search\Criteria;
-use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extensible;
@@ -46,6 +45,7 @@ abstract class BaseIndex
     protected $fulltextFields = [];
 
     /**
+     * Sets boosting at _index_ time
      * [
      *     'FieldName' => 2,
      * ]
@@ -153,6 +153,8 @@ abstract class BaseIndex
         $clientQuery = $this->buildSolrQuery($query);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
+        // Limit the results based on viewability
+        $this->buildViewFilter($clientQuery);
         // Add filters
         $this->buildFilters($query, $clientQuery);
         // And excludes
@@ -164,8 +166,7 @@ abstract class BaseIndex
 
         // Set the start
         $clientQuery->setStart($start);
-        // Get 5 times the amount of rows, to prevent canView errors (TBD)
-        $clientQuery->setRows($rows * 5);
+        $clientQuery->setRows($rows);
         // Filter out the fields we want to see if they're set
         if (count($query->getFields())) {
             $clientQuery->setFields($query->getFields());
@@ -206,14 +207,6 @@ abstract class BaseIndex
             }
         }
 
-        $id = 'null';
-        $currentUser = Security::getCurrentUser();
-        if ($currentUser) {
-            $id = $currentUser->ID;
-        }
-        /** Add canView criterias. These are based on {@link DataObjectExtension::ViewStatus()} */
-        $q[] = Criteria::where('ViewStatus')-> is('1-' . $id);
-
         $term = implode(' ', $q);
 
         $clientQuery->setQuery($term);
@@ -244,6 +237,19 @@ abstract class BaseIndex
     }
 
     /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     */
+    protected function buildFacets(BaseQuery $query, Query $clientQuery)
+    {
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
+    }
+
+    /**
      * Add filtered queries based on class hierarchy
      * We only need the class itself, since the hierarchy will take care of the rest
      * @param BaseQuery $query
@@ -268,19 +274,6 @@ abstract class BaseIndex
     /**
      * @param BaseQuery $query
      * @param Query $clientQuery
-     */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery)
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
      * @return Query
      */
     protected function buildFilters(BaseQuery $query, Query $clientQuery)
@@ -294,6 +287,24 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
+    }
+
+    /**
+     * @param Query $clientQuery
+     */
+    protected function buildViewFilter(Query $clientQuery)
+    {
+        // Filter by what the user is allowed to see
+        $id = ['1-null']; // null is always an option as that means publicly visible
+        $currentUser = Security::getCurrentUser();
+        if ($currentUser) {
+            $id[] = '1-' . $currentUser->ID;
+        }
+        /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
+        $q = Criteria::where('ViewStatus')->in($id);
+
+        $clientQuery->createFilterQuery('ViewStatus')
+            ->setQuery($q->getQuery());
     }
 
     /**
@@ -359,7 +370,7 @@ abstract class BaseIndex
     {
         $engSynonyms = Synonyms::getSynonymsAsString();
 
-        return $engSynonyms . SiteConfig::current_site_config()->SearchSynonyms;
+        return $engSynonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
     }
 
     /**
@@ -456,6 +467,8 @@ abstract class BaseIndex
     }
 
     /**
+     * Boosted fields are used at index time, not at query time
+     *
      * @param array $boostedFields
      * @return $this
      */
