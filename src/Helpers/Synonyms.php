@@ -23,10 +23,15 @@ class Synonyms
     public static function getSynonymsAsString()
     {
         $result = '';
-        foreach (static::config()->get('synonyms') as $synonym) {
+        foreach (static::getSynonyms() as $synonym) {
             $result .= implode(',', $synonym) . "\n";
         }
 
         return $result;
+    }
+
+    public static function getSynonyms()
+    {
+        return static::config()->get('synonyms');
     }
 }
