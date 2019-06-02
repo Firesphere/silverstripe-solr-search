@@ -10,6 +10,7 @@ class Statics
     use Configurable;
 
     /**
+     * @todo move to YML
      * @var array map SilverStripe DB types to Solr types
      */
     protected static $typemap;
