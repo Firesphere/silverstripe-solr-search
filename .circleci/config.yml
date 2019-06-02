@@ -28,11 +28,16 @@ jobs:
     steps:
       - run: cd ~/var/www
       - checkout
-      - run: composer require silverstripe/recipe-cms
+      - restore_cache:
+          - keys:
+              - cache-{{ checksum "composer.json" }}-v1
+              # fallback to using the latest cache if no exact match is found
+              - cache-
       - run: composer install -n --prefer-dist --ignore-platform-reqs
+      - run: composer require silverstripe/recipe-cms
       - run: composer vendor-expose
       - save_cache:
-          key: cache-{{ checksum "composer.lock" }}-{{ checksum "composer.json" }}-v1
+          key: cache-{{ checksum "composer.json" }}-v1
           paths:
             - vendor
             - resources
