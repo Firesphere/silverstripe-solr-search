@@ -157,7 +157,7 @@ class SolrIndexTask extends BuildTask
                             $update = null; // clear out the update set for memory reasons
                             Debug::message(date('Y-m-d H:i:s' . "\n"), false);
                             gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-
+                            $group++;
                             continue;
                         }
                     }
@@ -199,6 +199,7 @@ class SolrIndexTask extends BuildTask
         &$count,
         $debug
     ) {
+        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
         $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
