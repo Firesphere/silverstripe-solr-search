@@ -31,8 +31,6 @@ jobs:
       - restore_cache:
           - keys:
               - cache-{{ checksum "composer.json" }}-v1
-              # fallback to using the latest cache if no exact match is found
-              - cache-
       - run: composer install -n --prefer-dist --ignore-platform-reqs
       - run: composer require silverstripe/recipe-cms
       - run: composer vendor-expose
