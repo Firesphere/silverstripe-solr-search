@@ -28,19 +28,9 @@ jobs:
     steps:
       - run: cd ~/var/www
       - checkout
-      - restore_cache:
-          - keys:
-              - cache-{{ checksum "composer.json" }}-v1
       - run: composer install -n --prefer-dist --ignore-platform-reqs
       - run: composer require silverstripe/recipe-cms
       - run: composer vendor-expose
-      - save_cache:
-          key: cache-{{ checksum "composer.json" }}-v1
-          paths:
-            - vendor
-            - resources
-            - app
-
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
       - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
