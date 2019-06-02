@@ -7,7 +7,6 @@ use SilverStripe\Core\Config\Configurable;
 
 class Statics
 {
-
     use Configurable;
 
     /**

@@ -98,7 +98,6 @@ class SolrIndexJob extends AbstractQueuedJob
             // If the result is false, the job should fail too
             $this->isComplete = true;
         }
-
     }
 
     public function afterComplete()

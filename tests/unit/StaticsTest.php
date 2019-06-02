@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Helpers\Statics;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\FieldType\DBBoolean;
@@ -21,8 +20,6 @@ use SilverStripe\ORM\FieldType\DBVarchar;
 
 class StaticsTest extends SapphireTest
 {
-
-
     public function testGetTypesMap()
     {
         $expected = [

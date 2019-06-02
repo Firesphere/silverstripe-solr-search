@@ -3,13 +3,11 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use SilverStripe\Dev\SapphireTest;
 
 class SynonymsTest extends SapphireTest
 {
-
     public function testGetSynonyms()
     {
         $synonyms = Synonyms::config()->get('synonyms');

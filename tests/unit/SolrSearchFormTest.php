@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Forms\SolrSearchForm;
 use Page;
 use PageController;
@@ -14,7 +13,6 @@ use SilverStripe\Security\NullSecurityToken;
 
 class SolrSearchFormTest extends SapphireTest
 {
-
     public function testConstruct()
     {
         /** @var Page $page */
