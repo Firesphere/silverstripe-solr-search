@@ -82,7 +82,7 @@ class DataObjectExtension extends DataExtension
             return $this->canViewClasses[$this->owner->ClassName];
         }
         // Add null users if it's publicly viewable
-        $return[] = '1-null';
+        $return = ['1-null'];
         if ($this->owner->canView()) {
             return $return;
         }

@@ -91,9 +91,14 @@ class SolrIndexJob extends AbstractQueuedJob
             '/dev/tasks/SolrIndexTask',
             $indexArgs
         );
-        $this->totalSteps = $task->run($request);
 
-        $this->isComplete = true;
+        $result = $task->run($request);
+        if ($result !== false) {
+            $this->totalSteps = $result;
+            // If the result is false, the job should fail too
+            $this->isComplete = true;
+        }
+
     }
 
     public function afterComplete()
