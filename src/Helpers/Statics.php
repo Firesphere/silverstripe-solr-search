@@ -20,7 +20,6 @@ class Statics
 {
 
     /**
-     * @todo include DBTypes for casting
      * @var array map SilverStripe DB types to Solr types
      */
     protected static $typeMap = [

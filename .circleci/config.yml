@@ -44,7 +44,7 @@ jobs:
 
       - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
-          path: /var/www/html/coverage
+          path: ~/var/www/coverage
       - store_artifacts:
-          path: /var/www/html/coverage
+          path: ~/var/www/coverage
           destination: phpunit
