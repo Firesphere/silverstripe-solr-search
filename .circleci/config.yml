@@ -28,8 +28,8 @@ jobs:
     steps:
       - run: cd ~/var/www
       - checkout
-      - run: composer install -n --prefer-dist --ignore-platform-reqs
       - run: composer require silverstripe/recipe-cms
+      - run: composer update -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
