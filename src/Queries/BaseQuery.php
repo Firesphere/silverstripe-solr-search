@@ -162,7 +162,7 @@ class BaseQuery
      * @param array $sort
      * @return $this
      */
-    public function setSort($sort)
+    public function setSort($sort): self
     {
         $this->sort = $sort;
 
@@ -181,7 +181,7 @@ class BaseQuery
      * @param mixed $facetsMinCount
      * @return $this
      */
-    public function setFacetsMinCount($facetsMinCount)
+    public function setFacetsMinCount($facetsMinCount): self
     {
         $this->facetsMinCount = $facetsMinCount;
 

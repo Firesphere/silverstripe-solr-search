@@ -39,5 +39,10 @@ class BaseQueryTest extends SapphireTest
         $this->assertEquals(['test'], $this->query->getExclude());
         $this->query->addExclude('test', 'test');
         $this->assertEquals(['test', 'test' => 'test'], $this->query->getExclude());
+        $this->query->addField('test', 'test');
+        $this->assertEquals(['test' => 'test'], $this->query->getFields());
+        $this->assertEquals(0, $this->query->getFacetsMinCount());
+        $this->query->setFacetsMinCount(15);
+        $this->assertEquals(15, $this->query->getFacetsMinCount());
     }
 }
