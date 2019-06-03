@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Results;
 
 use Firesphere\SolrSearch\Queries\BaseQuery;
-use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -88,6 +87,12 @@ class SearchResult
         return $this;
     }
 
+    /**
+     * Allow overriding of matches with a custom result
+     *
+     * @param $matches
+     * @return mixed
+     */
     public function overrideMatches($matches)
     {
         $this->matches = $matches;
@@ -117,6 +122,10 @@ class SearchResult
         return $this;
     }
 
+    /**
+     * @param $docID
+     * @return string|null
+     */
     public function getHighlight($docID)
     {
         if ($this->highlight) {

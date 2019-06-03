@@ -2,6 +2,7 @@
 
 namespace Firesphere\SolrSearch\Models;
 
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 
 /**

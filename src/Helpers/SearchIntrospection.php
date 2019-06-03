@@ -22,11 +22,11 @@ class SearchIntrospection
 
     /**
      * Check if class is subclass of (a) the class in $of, or (b) any of the classes in the array $of
-     * @todo remove in favour of DataObjectSchema
-     * @static
      * @param  $class
      * @param  $of
      * @return bool
+     * @todo remove in favour of DataObjectSchema
+     * @static
      */
     public static function isSubclassOf($class, $of)
     {

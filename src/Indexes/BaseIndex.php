@@ -207,6 +207,7 @@ abstract class BaseIndex
             }
         }
 
+        // @todo could this be simplified with Criteria?
         $term = implode(' ', $q);
 
         $clientQuery->setQuery($term);
@@ -237,19 +238,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery)
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
-    }
-
-    /**
      * Add filtered queries based on class hierarchy
      * We only need the class itself, since the hierarchy will take care of the rest
      * @param BaseQuery $query
@@ -265,24 +253,6 @@ abstract class BaseIndex
             unset($class);
             $criteria = Criteria::where('ClassHierarchy')->in($query->getClasses());
             $clientQuery->createFilterQuery('classes')
-                ->setQuery($criteria->getQuery());
-        }
-
-        return $clientQuery;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return Query
-     */
-    protected function buildFilters(BaseQuery $query, Query $clientQuery)
-    {
-        $filters = $query->getFilter();
-        foreach ($filters as $field => $value) {
-            $value = is_array($value) ?: [$value];
-            $criteria = Criteria::where($field)->in($value);
-            $clientQuery->createFilterQuery($field)
                 ->setQuery($criteria->getQuery());
         }
 
@@ -312,6 +282,24 @@ abstract class BaseIndex
      * @param Query $clientQuery
      * @return Query
      */
+    protected function buildFilters(BaseQuery $query, Query $clientQuery)
+    {
+        $filters = $query->getFilter();
+        foreach ($filters as $field => $value) {
+            $value = is_array($value) ?: [$value];
+            $criteria = Criteria::where($field)->in($value);
+            $clientQuery->createFilterQuery($field)
+                ->setQuery($criteria->getQuery());
+        }
+
+        return $clientQuery;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return Query
+     */
     protected function buildExcludes(BaseQuery $query, Query $clientQuery)
     {
         $filters = $query->getExclude();
@@ -325,6 +313,19 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     */
+    protected function buildFacets(BaseQuery $query, Query $clientQuery)
+    {
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
     }
 
     /**
