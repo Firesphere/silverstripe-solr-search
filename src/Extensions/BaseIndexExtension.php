@@ -19,7 +19,7 @@ class BaseIndexExtension extends DataExtension
     /**
      * @param Result $results
      */
-    public function onAfterSearch($results)
+    public function onAfterSearch($results): void
     {
         if (Director::isDev() && Controller::curr()->getRequest()->getVar('debugquery')) {
             /** @var \Solarium\Component\Result\Debug\Result $result */
@@ -27,7 +27,8 @@ class BaseIndexExtension extends DataExtension
             Debug::message("Query string:\n" . $result->getQueryString());
             Debug::message("Parsed query:\n" . $result->getParsedQuery());
             Debug::message("Query parser:\n" . $result->getQueryParser());
-            Debug::message("Explanation:\n" . $result->getExplain());
+            Debug::message('Explanation:');
+            Debug::message($result->getExplain());
         }
     }
 }
