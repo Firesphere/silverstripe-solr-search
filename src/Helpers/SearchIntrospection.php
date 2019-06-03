@@ -21,24 +21,6 @@ class SearchIntrospection
     protected $index;
 
     /**
-     * Add classes to list, keeping only the parent when parent & child are both in list after add
-     */
-    public static function add_unique_by_ancestor(&$list, $class)
-    {
-        // If class already has parent in list, just ignore
-        if (self::is_subclass_of($class, $list)) {
-            return;
-        }
-
-        // Strip out any subclasses of $class already in the list
-        $children = ClassInfo::subclassesFor($class);
-        $list = array_diff($list, $children);
-
-        // Then add the class in
-        $list[] = $class;
-    }
-
-    /**
      * Check if class is subclass of (a) the class in $of, or (b) any of the classes in the array $of
      * @static
      * @param  $class
