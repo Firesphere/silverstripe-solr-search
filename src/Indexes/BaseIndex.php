@@ -174,10 +174,13 @@ abstract class BaseIndex
 
         $result = $this->client->select($clientQuery);
 
+
+        // Handle the after search first. This gets a raw search result
+        $this->extend('onAfterSearch', $result);
         $searchResult = new SearchResult($result, $query);
 
+        // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);
-        $this->extend('onAfterSearch', $searchResult);
 
         return $result;
     }
@@ -186,29 +189,29 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @return Query
      */
-    protected function buildSolrQuery(BaseQuery $query)
+    protected function buildSolrQuery(BaseQuery $query): Query
     {
         $clientQuery = $this->client->createSelect();
         $helper = $clientQuery->getHelper();
 
-        $q = [];
+        $searchQuery = [];
         foreach ($query->getTerms() as $search) {
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
-            $q[] = $term;
+            $searchQuery[] = $term;
             // If boosting is set, add the fields to boost
             if ($search['boost']) {
                 foreach ($search['fields'] as $boostField) {
                     $criteria = Criteria::where($boostField)
                         ->is($term)
                         ->boost($search['boost']);
-                    $q[] = $criteria->getQuery();
+                    $searchQuery[] = $criteria->getQuery();
                 }
             }
         }
 
         // @todo could this be simplified with Criteria?
-        $term = implode(' ', $q);
+        $term = implode(' ', $searchQuery);
 
         $clientQuery->setQuery($term);
 
@@ -265,16 +268,16 @@ abstract class BaseIndex
     protected function buildViewFilter(Query $clientQuery)
     {
         // Filter by what the user is allowed to see
-        $id = ['1-null']; // null is always an option as that means publicly visible
+        $viewIDs = ['1-null']; // null is always an option as that means publicly visible
         $currentUser = Security::getCurrentUser();
         if ($currentUser) {
-            $id[] = '1-' . $currentUser->ID;
+            $viewIDs[] = '1-' . $currentUser->ID;
         }
         /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
-        $q = Criteria::where('ViewStatus')->in($id);
+        $query= Criteria::where('ViewStatus')->in($viewIDs);
 
         $clientQuery->createFilterQuery('ViewStatus')
-            ->setQuery($q->getQuery());
+            ->setQuery($query->getQuery());
     }
 
     /**
