@@ -180,22 +180,29 @@ class SearchResult
         $facetArray = [];
         if ($facets) {
             $facetTypes = $this->query->getFacetFields();
+            // Loop all available facet fields by type
             foreach ($facetTypes as $class => $options) {
+                // Get the facets by its title
                 $typeFacets = $facets->getFacet($options['Title']);
                 $values = $typeFacets->getValues();
                 $results = ArrayList::create();
+                // If there are values, get the items one by one and push them in to the list
                 if (count($values)) {
                     $items = $class::get()->byIds(array_keys($values));
                     foreach ($items as $item) {
+                        // Set the FacetCount value to be sorted on later
                         $item->FacetCount = $values[$item->ID];
                         $results->push($item);
                     }
+                    // Sort the results by FacetCount
                     $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
                 }
+                // Put the results in to the array
                 $facetArray[$options['Title']] = $results;
             }
         }
 
+        // Return an ArrayList of the results
         return ArrayData::create($facetArray);
     }
 }
