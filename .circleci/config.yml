@@ -65,15 +65,15 @@ jobs:
             }
             PHPSRC
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
-      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
-      - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
-      - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - run:
           name: Run Solr Configure
           command: |
             mkdir -p ~/var/www/.solr && chmod -R 777 ~/var/www/.solr
             vendor/bin/sake dev/tasks/SolrConfigureTask
       - run: vendor/bin/sake dev/tasks/SolrIndexTask
+      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
+      - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
+      - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
           path: ~/var/www/coverage
       - store_artifacts:
