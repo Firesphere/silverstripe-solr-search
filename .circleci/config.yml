@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: brettt89/silverstripe-web:7.1-platform
+      - image: ssmarco/php-solr:latest
         environment:
           - SS_DATABASE_SERVER=127.0.0.1
           - SS_DATABASE_USERNAME=root
@@ -22,20 +22,6 @@ jobs:
           - MYSQL_ROOT_PASSWORD=ubuntu
           - MYSQL_DATABASE=circle_test
           - MYSQL_HOST=127.0.0.1
-      - image: solr:8.1.1
-        environment:
-          - SOLR_USER=solr
-          - SOLR_UID=8983
-          - SOLR_GROUP=solr
-          - SOLR_GID=8983
-          - SOLR_HOME=/var/solr/data
-          - SOLR_PID_DIR=/var/solr
-          - SOLR_LOGS_DIR=/var/solr/logs
-          - VERBOSE=yes
-        entrypoint: docker-entrypoint.sh
-        command:
-          - solr-precreate
-          - TestIndex
 
     working_directory: ~/var/www
 
@@ -68,6 +54,7 @@ jobs:
       - run:
           name: Run Solr Configure
           command: |
+            service solr restart
             mkdir -p ~/var/www/.solr && chmod -R 777 ~/var/www/.solr
             vendor/bin/sake dev/tasks/SolrConfigureTask
       - run: vendor/bin/sake dev/tasks/SolrIndexTask
