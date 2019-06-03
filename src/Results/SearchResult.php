@@ -5,9 +5,11 @@ namespace Firesphere\SolrSearch\Results;
 
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
+use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -17,11 +19,6 @@ class SearchResult
      * @var BaseQuery
      */
     protected $query;
-
-    /**
-     * @var Controller
-     */
-    protected $controller;
 
     /**
      * @var ArrayList
@@ -43,17 +40,28 @@ class SearchResult
      */
     protected $highlight;
 
-    public function __construct(Result $result, $query)
+    /**
+     * SearchResult constructor.
+     * Funnily enough, the $result contains the actual results, and has methods for the other things.
+     * See Solarium docs for this.
+     *
+     * @param Result $result
+     * @param $query
+     */
+    public function __construct(Result $result, BaseQuery $query)
     {
         $this->query = $query;
         $this->setMatches($result);
-        $this->setFacets($result);
-        $this->setHighlight($result);
+        $this->setFacets($result->getFacetSet());
+        $this->setHighlight($result->getHighlighting());
         $this->setTotalItems($result->getNumFound());
-        $this->setController(Controller::curr());
     }
 
-    public function getPaginatedMatches($request)
+    /**
+     * @param HTTPRequest $request
+     * @return PaginatedList
+     */
+    public function getPaginatedMatches(HTTPRequest $request): PaginatedList
     {
         $paginated = PaginatedList::create($this->matches, $request);
         $paginated->setTotalItems($this->getTotalItems());
@@ -64,16 +72,16 @@ class SearchResult
     /**
      * @return int
      */
-    public function getTotalItems()
+    public function getTotalItems(): int
     {
         return $this->totalItems;
     }
 
     /**
      * @param int $totalItems
-     * @return SearchResult
+     * @return $this
      */
-    public function setTotalItems($totalItems)
+    public function setTotalItems($totalItems): self
     {
         $this->totalItems = $totalItems;
 
@@ -90,16 +98,16 @@ class SearchResult
     /**
      * @return ArrayList
      */
-    public function getMatches()
+    public function getMatches(): ArrayList
     {
         return $this->matches;
     }
 
     /**
      * @param Result $result
-     * @return SearchResult
+     * @return $this
      */
-    protected function setMatches($result)
+    protected function setMatches($result): self
     {
         $data = $result->getData();
 
@@ -124,12 +132,12 @@ class SearchResult
     }
 
     /**
-     * @param Result $result
-     * @return SearchResult
+     * @param Highlighting $result
+     * @return $this
      */
-    public function setHighlight($result)
+    public function setHighlight(Highlighting $result): self
     {
-        $this->highlight = $result->getHighlighting();
+        $this->highlight = $result;
 
         return $this;
     }
@@ -143,14 +151,25 @@ class SearchResult
     }
 
     /**
-     * @param Result $facets
-     * @return SearchResult
+     * @param FacetSet $facets
+     * @return $this
      */
-    protected function setFacets($facets)
+    protected function setFacets(FacetSet $facets): self
     {
-        // @todo clean up this mess
+        $this->facets = $this->buildFacets($facets);
+
+        return $this;
+    }
+
+    /**
+     * Build the given list of key-value pairs in to a SilverStripe useable array
+     * @param FacetSet $facets
+     * @return ArrayData
+     */
+    protected function buildFacets(FacetSet $facets): ArrayData
+    {
         $facetArray = [];
-        if ($facets = $facets->getFacetSet()) {
+        if ($facets) {
             $facetTypes = $this->query->getFacetFields();
             foreach ($facetTypes as $class => $options) {
                 $typeFacets = $facets->getFacet($options['Title']);
@@ -168,27 +187,6 @@ class SearchResult
             }
         }
 
-        $this->facets = ArrayData::create($facetArray);
-
-        return $this;
-    }
-
-    /**
-     * @return Controller
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
-     * @param Controller $controller
-     * @return SearchResult
-     */
-    public function setController($controller)
-    {
-        $this->controller = $controller;
-
-        return $this;
+        return ArrayData::create($facetArray);
     }
 }

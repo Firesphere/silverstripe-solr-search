@@ -174,10 +174,10 @@ abstract class BaseIndex
 
         $result = $this->client->select($clientQuery);
 
-        $result = new SearchResult($result, $query);
+        $searchResult = new SearchResult($result, $query);
 
-        $this->extend('updateSearchResults', $result);
-        $this->extend('onAfterSearch', $result);
+        $this->extend('updateSearchResults', $searchResult);
+        $this->extend('onAfterSearch', $searchResult);
 
         return $result;
     }
