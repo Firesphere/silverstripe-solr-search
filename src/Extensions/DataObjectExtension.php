@@ -80,16 +80,17 @@ class DataObjectExtension extends DataExtension
         ) {
             return $this->canViewClasses[$this->owner->ClassName];
         }
+        $return = [];
         // Add null users if it's publicly viewable
-        $return = ['1-null'];
         if ($this->owner->canView()) {
+            $return = ['1-null'];
             return $return;
         }
 
         if (!self::$members) {
             self::$members = Member::get();
         }
-        $return = [];
+
         foreach (self::$members as $member) {
             $return[] = $this->owner->canView($member) . '-' . $member->ID;
         }
