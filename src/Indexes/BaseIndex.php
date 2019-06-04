@@ -233,7 +233,7 @@ abstract class BaseIndex
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
             // We can add the same term multiple times with different boosts
-            // Not ideal, but it might happen
+            // Not ideal, but it might happen, so let's add the term itself only once
             if (!in_array($term, $searchQuery, true)) {
                 $searchQuery[] = $term;
             }
@@ -256,13 +256,35 @@ abstract class BaseIndex
     }
 
     /**
+     * @param string $searchTerm
+     * @param Helper $helper
+     * @return string
+     */
+    protected function escapeSearch($searchTerm, Helper $helper): string
+    {
+        $term = [];
+        // Escape special characters where needed. Except for quoted parts, those should be phrased
+        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
+        foreach ($parts[0] as $part) {
+            // As we split the parts, everything with two quotes is a phrase
+            if (substr_count($part, '"') === 2) {
+                $term[] = $helper->escapePhrase($part);
+            } else {
+                $term[] = $helper->escapeTerm($part);
+            }
+        }
+
+        return implode(' ', $term);
+    }
+
+    /**
      * Add filtered queries based on class hierarchy
      * We only need the class itself, since the hierarchy will take care of the rest
      * @param BaseQuery $query
      * @param Query $clientQuery
      * @return Query
      */
-    public function buildClassFilter(BaseQuery $query, $clientQuery)
+    protected function buildClassFilter(BaseQuery $query, $clientQuery): Query
     {
         if (count($query->getClasses())) {
             foreach ($query->getClasses() as &$class) {
@@ -280,7 +302,7 @@ abstract class BaseIndex
     /**
      * @param Query $clientQuery
      */
-    protected function buildViewFilter(Query $clientQuery)
+    protected function buildViewFilter(Query $clientQuery): void
     {
         // Filter by what the user is allowed to see
         $viewIDs = ['1-null']; // null is always an option as that means publicly visible
@@ -300,7 +322,7 @@ abstract class BaseIndex
      * @param Query $clientQuery
      * @return Query
      */
-    protected function buildFilters(BaseQuery $query, Query $clientQuery)
+    protected function buildFilters(BaseQuery $query, Query $clientQuery): Query
     {
         $filters = $query->getFilter();
         foreach ($filters as $field => $value) {
@@ -318,7 +340,7 @@ abstract class BaseIndex
      * @param Query $clientQuery
      * @return Query
      */
-    protected function buildExcludes(BaseQuery $query, Query $clientQuery)
+    protected function buildExcludes(BaseQuery $query, Query $clientQuery): Query
     {
         $filters = $query->getExclude();
         foreach ($filters as $field => $value) {
@@ -331,19 +353,6 @@ abstract class BaseIndex
         }
 
         return $clientQuery;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery): void
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
     }
 
     /**
@@ -368,25 +377,16 @@ abstract class BaseIndex
     }
 
     /**
-     * @param string $searchTerm
-     * @param Helper $helper
-     * @return string
+     * @param BaseQuery $query
+     * @param Query $clientQuery
      */
-    protected function escapeSearch($searchTerm, Helper $helper): string
+    protected function buildFacets(BaseQuery $query, Query $clientQuery): void
     {
-        $term = [];
-        // Escape special characters where needed. Except for quoted parts, those should be phrased
-        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
-        foreach ($parts[0] as $part) {
-            // As we split the parts, everything with two quotes is a phrase
-            if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
-            } else {
-                $term[] = $helper->escapeTerm($part);
-            }
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
         }
-
-        return implode(' ', $term);
+        $facets->setMinCount($query->getFacetsMinCount());
     }
 
     /**
@@ -452,33 +452,6 @@ abstract class BaseIndex
     }
 
     /**
-     * Generate a yml version of the init method indexes
-     */
-    public function initToYml(): void
-    {
-        if (function_exists('yaml_emit')) {
-            $result = [
-                BaseIndex::class => [
-                    $this->getIndexName() =>
-                        [
-                            'Classes'        => $this->getClass(),
-                            'FulltextFields' => $this->getFulltextFields(),
-                            'SortFields'     => $this->getSortFields(),
-                            'FilterFields'   => $this->getFilterFields(),
-                            'BoostFields'    => $this->getBoostedFields(),
-                        ]
-                ]
-            ];
-
-            Debug::dump(yaml_emit($result));
-
-            return;
-        }
-
-        throw new LogicException('yaml-emit PHP module missing');
-    }
-
-    /**
      * @return array
      */
     public function getFulltextFields(): array
@@ -536,17 +509,47 @@ abstract class BaseIndex
     }
 
     /**
-     * $options is not used anymore, added for backward compatibility
-     * @param $class
-     * @param array $options
-     * @return $this
+     * Generate a yml version of the init method indexes
      */
-    public function addClass($class, $options = array())
+    public function initToYml(): void
     {
-        if (count($options)) {
-            Deprecation::notice('5', 'Options are not used anymore');
+        if (function_exists('yaml_emit')) {
+            $result = [
+                BaseIndex::class => [
+                    $this->getIndexName() =>
+                        [
+                            'Classes'        => $this->getClass(),
+                            'FulltextFields' => $this->getFulltextFields(),
+                            'SortFields'     => $this->getSortFields(),
+                            'FilterFields'   => $this->getFilterFields(),
+                            'BoostFields'    => $this->getBoostedFields(),
+                        ]
+                ]
+            ];
+
+            Debug::dump(yaml_emit($result));
+
+            return;
         }
-        $this->class[] = $class;
+
+        throw new LogicException('yaml-emit PHP module missing');
+    }
+
+    /**
+     * @return array
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param array $class
+     * @return BaseIndex
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
 
         return $this;
     }
@@ -568,6 +571,22 @@ abstract class BaseIndex
     public function setBoostedFields($boostedFields)
     {
         $this->boostedFields = $boostedFields;
+
+        return $this;
+    }
+
+    /**
+     * $options is not used anymore, added for backward compatibility
+     * @param $class
+     * @param array $options
+     * @return $this
+     */
+    public function addClass($class, $options = array())
+    {
+        if (count($options)) {
+            Deprecation::notice('5', 'Options are not used anymore');
+        }
+        $this->class[] = $class;
 
         return $this;
     }
@@ -658,25 +677,6 @@ abstract class BaseIndex
         if (!in_array($field, $this->getFulltextFields(), true)) {
             $this->addFulltextField($field);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getClass()
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param array $class
-     * @return BaseIndex
-     */
-    public function setClass($class)
-    {
-        $this->class = $class;
 
         return $this;
     }

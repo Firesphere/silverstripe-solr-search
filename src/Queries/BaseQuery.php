@@ -415,17 +415,6 @@ class BaseQuery
     }
 
     /**
-     * @param array $boostedFields
-     * @return BaseQuery
-     */
-    public function setBoostedFields(array $boostedFields): BaseQuery
-    {
-        $this->boostedFields = $boostedFields;
-
-        return $this;
-    }
-
-    /**
      * Add a boosted field to be boosted at query time
      *
      * @param string $field
@@ -446,5 +435,16 @@ class BaseQuery
     public function getBoostedFields(): array
     {
         return $this->boostedFields;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return BaseQuery
+     */
+    public function setBoostedFields(array $boostedFields): BaseQuery
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
     }
 }

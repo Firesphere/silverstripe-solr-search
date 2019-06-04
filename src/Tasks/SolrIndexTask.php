@@ -135,48 +135,6 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
-     * @param int $group
-     * @param int $groups
-     * @param Client $client
-     * @param string $class
-     * @param array $fields
-     * @param BaseIndex $index
-     * @param int $count
-     * @param bool $debug
-     * @return array[int, int]
-     * @throws Exception
-     */
-    protected function doReindex(
-        $group,
-        $groups,
-        Client $client,
-        $class,
-        array $fields,
-        BaseIndex $index,
-        $count,
-        $debug
-    ): array {
-        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-        Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
-        $update = $client->createUpdate();
-        $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
-        $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
-        $client->update($update);
-        $group++;
-        // get an update query instance
-        $update = $client->createUpdate();
-        // optimize the index
-        $update->addOptimize(true, false, 5);
-        $update->addCommit();
-        $client->update($update);
-        $update = null; // clear out the update set for memory reasons
-        Debug::message(date('Y-m-d H:i:s' . "\n"), false);
-        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-
-        return [$count, $group];
-    }
-
-    /**
      * @param $isGroup
      * @param $class
      * @param bool $debug
@@ -242,5 +200,47 @@ class SolrIndexTask extends BuildTask
         }
 
         return [$groups, $group];
+    }
+
+    /**
+     * @param int $group
+     * @param int $groups
+     * @param Client $client
+     * @param string $class
+     * @param array $fields
+     * @param BaseIndex $index
+     * @param int $count
+     * @param bool $debug
+     * @return array[int, int]
+     * @throws Exception
+     */
+    protected function doReindex(
+        $group,
+        $groups,
+        Client $client,
+        $class,
+        array $fields,
+        BaseIndex $index,
+        $count,
+        $debug
+    ): array {
+        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
+        Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
+        $update = $client->createUpdate();
+        $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
+        $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
+        $client->update($update);
+        $group++;
+        // get an update query instance
+        $update = $client->createUpdate();
+        // optimize the index
+        $update->addOptimize(true, false, 5);
+        $update->addCommit();
+        $client->update($update);
+        $update = null; // clear out the update set for memory reasons
+        Debug::message(date('Y-m-d H:i:s' . "\n"), false);
+        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
+
+        return [$count, $group];
     }
 }
