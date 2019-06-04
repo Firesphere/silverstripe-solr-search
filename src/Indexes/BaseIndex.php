@@ -159,6 +159,8 @@ abstract class BaseIndex
         $this->buildFilters($query, $clientQuery);
         // And excludes
         $this->buildExcludes($query, $clientQuery);
+        // Add boosting
+        $this->buildBoosts($query, $clientQuery);
         // Add highlighting
         $clientQuery->getHighlighting()->setFields($query->getHighlight());
         // Setup the facets
@@ -173,7 +175,6 @@ abstract class BaseIndex
         }
 
         $result = $this->client->select($clientQuery);
-
 
         // Handle the after search first. This gets a raw search result
         $this->extend('onAfterSearch', $result);
@@ -198,9 +199,13 @@ abstract class BaseIndex
         foreach ($query->getTerms() as $search) {
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
-            $searchQuery[] = $term;
+            // We can add the same term multiple times with different boosts
+            // Not ideal, but it might happen
+            if (!in_array($term, $searchQuery, true)) {
+                $searchQuery[] = $term;
+            }
             // If boosting is set, add the fields to boost
-            if ($search['boost']) {
+            if ($search['boost'] > 1) {
                 foreach ($search['fields'] as $boostField) {
                     $criteria = Criteria::where($boostField)
                         ->is($term)
@@ -210,34 +215,11 @@ abstract class BaseIndex
             }
         }
 
-        // @todo could this be simplified with Criteria?
         $term = implode(' ', $searchQuery);
 
         $clientQuery->setQuery($term);
 
         return $clientQuery;
-    }
-
-    /**
-     * @param string $searchTerm
-     * @param Helper $helper
-     * @return string
-     */
-    protected function escapeSearch($searchTerm, Helper $helper)
-    {
-        $term = [];
-        // Escape special characters where needed. Except for quoted parts, those should be phrased
-        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
-        foreach ($parts[0] as $part) {
-            // As we split the parts, everything with two quotes is a phrase
-            if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
-            } else {
-                $term[] = $helper->escapeTerm($part);
-            }
-        }
-
-        return implode(' ', $term);
     }
 
     /**
@@ -261,7 +243,6 @@ abstract class BaseIndex
 
         return $clientQuery;
     }
-
     /**
      * @param Query $clientQuery
      */
@@ -322,7 +303,7 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @param Query $clientQuery
      */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery)
+    protected function buildFacets(BaseQuery $query, Query $clientQuery): void
     {
         $facets = $clientQuery->getFacetSet();
         foreach ($query->getFacetFields() as $field => $config) {
@@ -332,11 +313,54 @@ abstract class BaseIndex
     }
 
     /**
+     * Add the index-time boosting to the query
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     */
+    protected function buildBoosts(BaseQuery $query, Query $clientQuery): void
+    {
+        $boosts = $this->getBoostedFields();
+        $q = $clientQuery->getQuery();
+        foreach ($query->getTerms() as $term) {
+            foreach ($boosts as $field => $boost) {
+                $booster = Criteria::where($field)
+                    ->is($term)
+                    ->boost($boost);
+                $q .= ' ' . $booster->getQuery();
+            }
+        }
+
+        $clientQuery->setQuery($q);
+    }
+
+    /**
+     * @param string $searchTerm
+     * @param Helper $helper
+     * @return string
+     */
+    protected function escapeSearch($searchTerm, Helper $helper): string
+    {
+        $term = [];
+        // Escape special characters where needed. Except for quoted parts, those should be phrased
+        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
+        foreach ($parts[0] as $part) {
+            // As we split the parts, everything with two quotes is a phrase
+            if (substr_count($part, '"') === 2) {
+                $term[] = $helper->escapePhrase($part);
+            } else {
+                $term[] = $helper->escapeTerm($part);
+            }
+        }
+
+        return implode(' ', $term);
+    }
+
+    /**
      * Upload config for this index to the given store
      *
      * @param ConfigStore $store
      */
-    public function uploadConfig(ConfigStore $store)
+    public function uploadConfig(ConfigStore $store): void
     {
         // @todo use types/schema/elevate rendering
         // Upload the config files for this index
