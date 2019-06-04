@@ -115,58 +115,14 @@ class SolrIndexTask extends BuildTask
             }
 
             foreach ($classes as $class) {
-                $batchLength = DocumentFactory::config()->get('batchLength');
-                $groups = (int)ceil($class::get()->count() / $batchLength);
-                if ($debug) {
-                    Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
-                }
-                $count = 0;
-                $fields = $index->getFieldsForIndexing();
-                // Run a single group
-                if ($request->getVar('group')) {
-                    list($count, $group) = $this->doReindex(
-                        $group,
-                        $groups,
-                        $client,
-                        $class,
-                        $fields,
-                        $index,
-                        $count,
-                        $debug
-                    );
-                } else {
-                    // Otherwise, run them all
-                    while ($group <= $groups) { // Run from oldest to newest
-                        try {
-                            list($count, $group) = $this->doReindex(
-                                $group,
-                                $groups,
-                                $client,
-                                $class,
-                                $fields,
-                                $index,
-                                $count,
-                                $debug
-                            );
-                        } catch (Exception $e) {
-                            // get an update query instance
-                            $update = $client->createUpdate();
-                            $update->addCommit();
-                            // optimize the index
-                            $update->addOptimize(true, false, 5);
-                            $client->update($update);
-                            $update = null; // clear out the update set for memory reasons
-                            Debug::message(date('Y-m-d H:i:s' . "\n"), false);
-                            gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-                            $group++;
-                            continue;
-                        }
-                    }
-                    // Reset the group for the next class
-                    if ($group >= $groups) {
-                        $group = 0;
-                    }
-                }
+                [$groups, $group] = $this->reindexClass(
+                    $request->getVar('group'),
+                    $class,
+                    $debug,
+                    $index,
+                    $group,
+                    $client
+                );
             }
         }
         $end = time();
@@ -197,9 +153,9 @@ class SolrIndexTask extends BuildTask
         $class,
         array $fields,
         BaseIndex $index,
-        &$count,
+        $count,
         $debug
-    ) {
+    ): array {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
@@ -218,5 +174,73 @@ class SolrIndexTask extends BuildTask
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return [$count, $group];
+    }
+
+    /**
+     * @param $isGroup
+     * @param $class
+     * @param bool $debug
+     * @param BaseIndex $index
+     * @param int $group
+     * @param Client $client
+     * @return array
+     * @throws Exception
+     */
+    protected function reindexClass($isGroup, $class, bool $debug, BaseIndex $index, int $group, Client $client): array
+    {
+        $batchLength = DocumentFactory::config()->get('batchLength');
+        $groups = (int)ceil($class::get()->count() / $batchLength);
+        if ($debug) {
+            Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
+        }
+        $count = 0;
+        $fields = $index->getFieldsForIndexing();
+        // Run a single group
+        if ($isGroup) {
+            $this->doReindex(
+                $group,
+                $groups,
+                $client,
+                $class,
+                $fields,
+                $index,
+                $count,
+                $debug
+            );
+        } else {
+            // Otherwise, run them all
+            while ($group <= $groups) { // Run from oldest to newest
+                try {
+                    [$count, $group] = $this->doReindex(
+                        $group,
+                        $groups,
+                        $client,
+                        $class,
+                        $fields,
+                        $index,
+                        $count,
+                        $debug
+                    );
+                } catch (Exception $e) {
+                    // get an update query instance
+                    $update = $client->createUpdate();
+                    $update->addCommit();
+                    // optimize the index
+                    $update->addOptimize(true, false, 5);
+                    $client->update($update);
+                    $update = null; // clear out the update set for memory reasons
+                    Debug::message(date('Y-m-d H:i:s' . "\n"), false);
+                    gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
+                    $group++;
+                    continue;
+                }
+            }
+            // Reset the group for the next class
+            if ($group >= $groups) {
+                $group = 0;
+            }
+        }
+
+        return [$groups, $group];
     }
 }
