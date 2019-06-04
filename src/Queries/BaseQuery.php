@@ -74,6 +74,11 @@ class BaseQuery
     /**
      * @var array
      */
+    protected $boostedFields = [];
+
+    /**
+     * @var array
+     */
     protected $terms = [];
 
     /**
@@ -84,7 +89,7 @@ class BaseQuery
     /**
      * @return int
      */
-    public function getStart()
+    public function getStart(): int
     {
         return $this->start;
     }
@@ -93,7 +98,7 @@ class BaseQuery
      * @param int $start
      * @return $this
      */
-    public function setStart($start)
+    public function setStart($start): self
     {
         $this->start = $start;
 
@@ -103,7 +108,7 @@ class BaseQuery
     /**
      * @return int
      */
-    public function getRows()
+    public function getRows(): int
     {
         return $this->rows;
     }
@@ -112,7 +117,7 @@ class BaseQuery
      * @param int $rows
      * @return $this
      */
-    public function setRows($rows)
+    public function setRows($rows): self
     {
         $this->rows = $rows;
 
@@ -122,7 +127,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
@@ -131,7 +136,7 @@ class BaseQuery
      * @param array $fields
      * @return $this
      */
-    public function setFields($fields)
+    public function setFields($fields): self
     {
         $this->fields = $fields;
 
@@ -143,7 +148,7 @@ class BaseQuery
      * @param string $query search filter on field name
      * @return $this
      */
-    public function addField($field, $query)
+    public function addField($field, $query): self
     {
         $this->fields[$field] = $query;
 
@@ -153,7 +158,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getSort()
+    public function getSort(): array
     {
         return $this->sort;
     }
@@ -170,9 +175,9 @@ class BaseQuery
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getFacetsMinCount()
+    public function getFacetsMinCount(): int
     {
         return $this->facetsMinCount;
     }
@@ -191,7 +196,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getTerms()
+    public function getTerms(): array
     {
         return $this->terms;
     }
@@ -200,7 +205,7 @@ class BaseQuery
      * @param array $terms
      * @return $this
      */
-    public function setTerms($terms)
+    public function setTerms($terms): self
     {
         $this->terms = $terms;
 
@@ -224,7 +229,7 @@ class BaseQuery
      * @param bool $fuzzy Unused
      * @return $this
      */
-    public function addTerm($term, $fields = [], $boost = false, $fuzzy = false)
+    public function addTerm($term, $fields = [], $boost = false, $fuzzy = false): self
     {
         $this->terms[] = [
             'text'   => $term,
@@ -248,7 +253,7 @@ class BaseQuery
      * @param array|string $query
      * @return $this
      */
-    public function setQuery($query)
+    public function setQuery($query): self
     {
         $this->query = $query;
 
@@ -265,7 +270,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getFilter()
+    public function getFilter(): array
     {
         return $this->filter;
     }
@@ -274,7 +279,7 @@ class BaseQuery
      * @param array $filter
      * @return $this
      */
-    public function setFilter($filter)
+    public function setFilter($filter): self
     {
         $this->filter = $filter;
 
@@ -286,7 +291,7 @@ class BaseQuery
      * @param $value
      * @return $this
      */
-    public function addExclude($field, $value)
+    public function addExclude($field, $value): self
     {
         $this->exclude[$field] = $value;
 
@@ -296,7 +301,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getExclude()
+    public function getExclude(): array
     {
         return $this->exclude;
     }
@@ -305,7 +310,7 @@ class BaseQuery
      * @param array $exclude
      * @return $this
      */
-    public function setExclude($exclude)
+    public function setExclude($exclude): self
     {
         $this->exclude = $exclude;
 
@@ -323,7 +328,7 @@ class BaseQuery
      * ]
      * @return BaseQuery
      */
-    public function addFacetField($class, $options)
+    public function addFacetField($class, $options): BaseQuery
     {
         $this->facetFields[$class] = $options;
 
@@ -333,7 +338,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getFacetFields()
+    public function getFacetFields(): array
     {
         return $this->facetFields;
     }
@@ -342,7 +347,7 @@ class BaseQuery
      * @param array $facetFields
      * @return $this
      */
-    public function setFacetFields($facetFields)
+    public function setFacetFields($facetFields): self
     {
         $this->facetFields = $facetFields;
 
@@ -353,7 +358,7 @@ class BaseQuery
      * @param string $class
      * @return $this
      */
-    public function addClass($class)
+    public function addClass($class): self
     {
         $this->classes[] = $class;
 
@@ -363,7 +368,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getClasses()
+    public function getClasses(): array
     {
         return $this->classes;
     }
@@ -372,7 +377,7 @@ class BaseQuery
      * @param array $classes
      * @return $this
      */
-    public function setClasses($classes)
+    public function setClasses($classes): self
     {
         $this->classes = $classes;
 
@@ -383,7 +388,7 @@ class BaseQuery
      * @param $field
      * @return $this
      */
-    public function addHighlight($field)
+    public function addHighlight($field): self
     {
         $this->highlight[] = $field;
 
@@ -393,7 +398,7 @@ class BaseQuery
     /**
      * @return array
      */
-    public function getHighlight()
+    public function getHighlight(): array
     {
         return $this->highlight;
     }
@@ -402,10 +407,44 @@ class BaseQuery
      * @param array $highlight
      * @return $this
      */
-    public function setHighlight($highlight)
+    public function setHighlight($highlight): self
     {
         $this->highlight = $highlight;
 
         return $this;
+    }
+
+    /**
+     * @param array $boostedFields
+     * @return BaseQuery
+     */
+    public function setBoostedFields(array $boostedFields): BaseQuery
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
+    }
+
+    /**
+     * Add a boosted field to be boosted at query time
+     *
+     * @param string $field
+     * @param string $boost
+     * @return $this
+     */
+    public function addBoostedField($field, $boost): self
+    {
+        $this->boostedFields[$field] = $boost;
+
+        return $this;
+    }
+
+    /**
+     * Set boosted fields to be boosted at query time
+     * @return array
+     */
+    public function getBoostedFields(): array
+    {
+        return $this->boostedFields;
     }
 }

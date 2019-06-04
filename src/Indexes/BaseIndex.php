@@ -10,11 +10,14 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use LogicException;
 use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -30,6 +33,8 @@ use Solarium\QueryType\Select\Result\Result;
 abstract class BaseIndex
 {
     use Extensible;
+    use Configurable;
+
     /**
      * @var Client
      */
@@ -134,7 +139,35 @@ abstract class BaseIndex
      * @return mixed
      * @todo work from config first
      */
-    abstract public function init();
+    public function init()
+    {
+        if (!self::config()->get($this->getIndexName())) {
+            Deprecation::notice('10.0', 'The configuration should be set from YML now');
+
+            return;
+        }
+
+        $config = self::config()->get($this->getIndexName());
+
+        if (!array_key_exists('Classes', $config)) {
+            throw new LogicException('No classes to index found!');
+        }
+
+        $this->setClass($config['Classes']);
+
+        if (array_key_exists('FulltextFields', $config)) {
+            $this->setFulltextFields($config['FulltextFields']);
+        }
+        if (array_key_exists('SortFields', $config)) {
+            $this->setSortFields($config['SortFields']);
+        }
+        if (array_key_exists('FilterFields', $config)) {
+            $this->setFilterFields($config['FilterFields']);
+        }
+        if (array_key_exists('BoostFields', $config)) {
+            $this->setBoostedFields($config['BoostFields']);
+        }
+    }
 
     /**
      * @param BaseQuery $query
@@ -243,6 +276,7 @@ abstract class BaseIndex
 
         return $clientQuery;
     }
+
     /**
      * @param Query $clientQuery
      */
@@ -255,7 +289,7 @@ abstract class BaseIndex
             $viewIDs[] = '1-' . $currentUser->ID;
         }
         /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
-        $query= Criteria::where('ViewStatus')->in($viewIDs);
+        $query = Criteria::where('ViewStatus')->in($viewIDs);
 
         $clientQuery->createFilterQuery('ViewStatus')
             ->setQuery($query->getQuery());
@@ -319,10 +353,10 @@ abstract class BaseIndex
      */
     protected function buildBoosts(BaseQuery $query, Query $clientQuery): void
     {
-        $boosts = $this->getBoostedFields();
+        $boosts = $query->getBoostedFields();
         $q = $clientQuery->getQuery();
-        foreach ($query->getTerms() as $term) {
-            foreach ($boosts as $field => $boost) {
+        foreach ($boosts as $field => $boost) {
+            foreach ($query->getTerms() as $term) {
                 $booster = Criteria::where($field)
                     ->is($term)
                     ->boost($boost);
@@ -395,7 +429,7 @@ abstract class BaseIndex
      * @param bool $eng Include UK to US synonyms
      * @return string
      */
-    public function getSynonyms($eng = true)
+    public function getSynonyms($eng = true): string
     {
         $engSynonyms = '';
         if ($eng) {
@@ -408,7 +442,7 @@ abstract class BaseIndex
     /**
      * @return array
      */
-    public function getFieldsForIndexing()
+    public function getFieldsForIndexing(): array
     {
         return array_merge(
             $this->getFulltextFields(),
@@ -418,9 +452,36 @@ abstract class BaseIndex
     }
 
     /**
+     * Generate a yml version of the init method indexes
+     */
+    public function initToYml(): void
+    {
+        if (function_exists('yaml_emit')) {
+            $result = [
+                BaseIndex::class => [
+                    $this->getIndexName() =>
+                        [
+                            'Classes'        => $this->getClass(),
+                            'FulltextFields' => $this->getFulltextFields(),
+                            'SortFields'     => $this->getSortFields(),
+                            'FilterFields'   => $this->getFilterFields(),
+                            'BoostFields'    => $this->getBoostedFields(),
+                        ]
+                ]
+            ];
+
+            Debug::dump(yaml_emit($result));
+
+            return;
+        }
+
+        throw new LogicException('yaml-emit PHP module missing');
+    }
+
+    /**
      * @return array
      */
-    public function getFulltextFields()
+    public function getFulltextFields(): array
     {
         return $this->fulltextFields;
     }
