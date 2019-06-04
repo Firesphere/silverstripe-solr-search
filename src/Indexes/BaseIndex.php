@@ -182,7 +182,7 @@ abstract class BaseIndex
         // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);
 
-        return $result;
+        return $searchResult;
     }
 
     /**
