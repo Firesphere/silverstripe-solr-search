@@ -226,11 +226,11 @@ class BaseQuery
      * For generic boosting, use @addBoostedField($field, $boost), this will add the boost at Index time
      * @param string $term Term to search for
      * @param array $fields fields to boost on
-     * @param array|bool $boost Boost value
+     * @param int $boost Boost value
      * @param bool $fuzzy Unused
      * @return $this
      */
-    public function addTerm($term, $fields = [], $boost = false, $fuzzy = false): self
+    public function addTerm($term, $fields = [], $boost = 0, $fuzzy = false): self
     {
         $this->terms[] = [
             'text'   => $term,
