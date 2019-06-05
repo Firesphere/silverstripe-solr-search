@@ -49,7 +49,7 @@ class SolrConfigureTask extends BuildTask
      * execute via the TaskRunner
      *
      * @param HTTPRequest $request
-     * @return void
+     * @return bool|Exception
      * @throws ReflectionException
      */
     public function run($request)
@@ -73,11 +73,12 @@ class SolrConfigureTask extends BuildTask
             }
         }
 
-        if (isset($e)) {
-            exit(1);
+        if (!isset($e)) {
+            $this->extend('onAfterSolrConfigureTask', $request);
+            return true;
         }
 
-        $this->extend('onAfterSolrConfigureTask', $request);
+        return $e;
     }
 
     /**

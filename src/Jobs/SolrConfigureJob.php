@@ -28,8 +28,14 @@ class SolrConfigureJob extends AbstractQueuedJob
     {
         /** @var SolrConfigureTask $task */
         $task = Injector::inst()->get(SolrConfigureTask::class);
-        $task->run(new NullHTTPRequest());
+        $result = $task->run(new NullHTTPRequest());
 
+        if ($result !== true) {
+            var_dump($result);
+
+            return null;
+        }
+        
         $this->isComplete = true;
     }
 }
