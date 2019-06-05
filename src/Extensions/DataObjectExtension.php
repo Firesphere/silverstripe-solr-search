@@ -11,6 +11,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 
@@ -21,6 +22,9 @@ use SilverStripe\Security\Member;
  */
 class DataObjectExtension extends DataExtension
 {
+    /**
+     * @var DataList
+     */
     protected static $members;
 
     protected $canViewClasses = [];
@@ -28,6 +32,8 @@ class DataObjectExtension extends DataExtension
     public function onAfterWrite()
     {
         parent::onAfterWrite();
+        $key = $this->owner->ClassName . '-' . $this->owner->ID;
+
     }
 
     /**
