@@ -68,6 +68,7 @@ class DataObjectExtension extends DataExtension
                     $update->addCommit();
                 } catch (Exception $e) {
                     // Continue, this document doesn't exist, ignore it :)
+                    // Or Solr is having a hickup, should be fine :)
                     continue;
                 }
             }

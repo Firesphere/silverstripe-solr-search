@@ -120,6 +120,7 @@ class SearchResult
     }
 
     /**
+     * @todo support multiple classes
      * @param array $result
      * @return $this
      */

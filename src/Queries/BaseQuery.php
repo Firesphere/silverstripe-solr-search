@@ -42,6 +42,7 @@ class BaseQuery
     protected $rows = 10;
 
     /**
+     * Always get the ID. If you don't, you need to implement your own solution
      * @var array
      */
     protected $fields = [];
