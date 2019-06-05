@@ -93,15 +93,15 @@ class SolrIndexTask extends BuildTask
         Debug::message(date('Y-m-d H:i:s' . "\n"));
 
         $groups = 0;
-        foreach ($indexes as $index) {
+        foreach ($indexes as $indexName) {
             // Skip the abstract base
-            $ref = new ReflectionClass($index);
+            $ref = new ReflectionClass($indexName);
             if (!$ref->isInstantiable()) {
                 continue;
             }
 
             /** @var BaseIndex $index */
-            $index = Injector::inst()->get($index);
+            $index = Injector::inst()->get($indexName);
 
             // Only index the classes given in the var if needed, should be a single class
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClass();
@@ -186,7 +186,6 @@ class SolrIndexTask extends BuildTask
                     // optimize the index
                     $update->addOptimize(true, false, 5);
                     $client->update($update);
-                    $update = null; // clear out the update set for memory reasons
                     Debug::message(date('Y-m-d H:i:s' . "\n"), false);
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
@@ -237,7 +236,6 @@ class SolrIndexTask extends BuildTask
         $update->addOptimize(true, false, 5);
         $update->addCommit();
         $client->update($update);
-        $update = null; // clear out the update set for memory reasons
         Debug::message(date('Y-m-d H:i:s' . "\n"), false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 

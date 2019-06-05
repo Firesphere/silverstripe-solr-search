@@ -67,8 +67,6 @@ class DataObjectExtension extends DataExtension
                     continue;
                 }
             }
-
-            $index = null;
         }
     }
 

@@ -26,7 +26,6 @@ class SolrConfigureTask extends BuildTask
     protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
 
     /**
-     * @todo load the logger :)
      * @var LoggerInterface
      */
     protected $logger;
@@ -38,9 +37,9 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
-     * @return Monolog log channel
+     * @return LoggerInterface log channel
      */
-    protected function getLoggerFactory()
+    protected function getLoggerFactory(): LoggerInterface
     {
         return Injector::inst()->get(LoggerInterface::class);
     }
@@ -87,7 +86,7 @@ class SolrConfigureTask extends BuildTask
      * @todo make this a tad cleaner, it's a bit unreadable
      * @param BaseIndex $instance Instance
      */
-    protected function updateIndex($instance)
+    protected function updateIndex($instance): void
     {
         $index = $instance->getIndexName();
 
@@ -128,7 +127,7 @@ class SolrConfigureTask extends BuildTask
      *
      * @return LoggerInterface
      */
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -138,7 +137,7 @@ class SolrConfigureTask extends BuildTask
      *
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }

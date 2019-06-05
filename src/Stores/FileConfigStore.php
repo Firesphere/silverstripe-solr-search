@@ -21,7 +21,7 @@ class FileConfigStore implements ConfigStore
 
     /**
      * FileConfigStore constructor.
-     * @param null $config
+     * @param null|array $config
      */
     public function __construct($config = null)
     {
