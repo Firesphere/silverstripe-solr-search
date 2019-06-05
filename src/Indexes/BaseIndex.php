@@ -119,7 +119,7 @@ abstract class BaseIndex
      * @param array $endpoints
      * @return array
      */
-    public function getConfig($endpoints)
+    public function getConfig($endpoints): array
     {
         foreach ($endpoints as $host => $endpoint) {
             $endpoints[$host]['core'] = $this->getIndexName();
@@ -131,15 +131,13 @@ abstract class BaseIndex
     /**
      * @return string
      */
-    abstract public function getIndexName();
+    abstract public function getIndexName(): string;
 
     /**
-     * Stub for backward compatibility
-     * Required to initialise the fields if not from config.
-     * @return mixed
-     * @todo work from config first
+     * Required to initialise the fields.
+     * It's loaded in to the non-static properties for backward compatibility with FTS
      */
-    public function init()
+    public function init(): void
     {
         if (!self::config()->get($this->getIndexName())) {
             Deprecation::notice('10.0', 'The configuration should be set from YML now');
@@ -170,16 +168,34 @@ abstract class BaseIndex
     }
 
     /**
+     * @deprecated This is used as an Fulltext Search compatibility method. Call doSearch instead with the correct Query
      * @param BaseQuery $query
      * @param int $start deprecated in favour of $query, exists for backward compatibility with FTS
      * @param int $limit deprecated in favour of $query, exists for backward compatibility with FTS
      * @param array $params deprecated in favour of $query, exists for backward compatibility with FTS
+     * @param bool $spellcheck deprecated in favour of #query, exists for backward compatibility with FTS
      * @return SearchResult|Result
      */
-    public function doSearch(BaseQuery $query, $start = 0, $limit = 10, $params = [])
+    public function search($query, $start = 0, $limit = 10, $params = [], $spellcheck = true)
     {
-        $start = $query->getStart() ?: $start;
-        $rows = $query->getRows() ?: $limit;
+        $query->getStart() ?: $query->setStart($start);
+        $query->getRows() ?: $query->setRows($limit);
+        if ($query->isSpellcheck() !== $spellcheck) {
+            $query->setSpellcheck($spellcheck);
+        }
+        if ($params['fq'] && !count($query->getFields())) {
+            $query->setFields($params['fq']);
+        }
+
+        return $this->doSearch($query);
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @return SearchResult|Result
+     */
+    public function doSearch(BaseQuery $query)
+    {
 
         $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
@@ -196,12 +212,17 @@ abstract class BaseIndex
         $this->buildBoosts($query, $clientQuery);
         // Add highlighting
         $clientQuery->getHighlighting()->setFields($query->getHighlight());
+
         // Setup the facets
         $this->buildFacets($query, $clientQuery);
 
         // Set the start
-        $clientQuery->setStart($start);
-        $clientQuery->setRows($rows);
+        $clientQuery->setStart($query->getStart());
+        $clientQuery->setRows($query->getRows());
+        // Add spellchecking
+        if ($query->isSpellcheck()) {
+            $this->buildSpellcheck($query, $clientQuery);
+        }
         // Filter out the fields we want to see if they're set
         if (count($query->getFields())) {
             $clientQuery->setFields($query->getFields());
@@ -380,6 +401,26 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @param Query $clientQuery
      */
+    protected function buildSpellcheck(BaseQuery $query, Query $clientQuery): void
+    {
+        // Assuming the first term is the term entered
+        $queryString = $query->getTerms()[0]['text'];
+        // Arbitrarily limit to 5 if the config isn't set
+        $count = static::config()->get('spellcheckCount') ?: 5;
+        $spellcheck = $clientQuery->getSpellcheck();
+        $spellcheck->setQuery($queryString);
+        $spellcheck->setCount($count);
+        $spellcheck->setBuild(true);
+        $spellcheck->setCollate(true);
+        $spellcheck->setExtendedResults(true);
+        $spellcheck->setCollateExtendedResults(true);
+
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     */
     protected function buildFacets(BaseQuery $query, Query $clientQuery): void
     {
         $facets = $clientQuery->getFacetSet();
@@ -463,7 +504,7 @@ abstract class BaseIndex
      * @param array $fulltextFields
      * @return $this
      */
-    public function setFulltextFields($fulltextFields)
+    public function setFulltextFields($fulltextFields): self
     {
         $this->fulltextFields = $fulltextFields;
 

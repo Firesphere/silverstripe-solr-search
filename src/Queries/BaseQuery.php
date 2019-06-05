@@ -21,11 +21,6 @@ class BaseQuery
     protected $classes = [];
 
     /**
-     * @var string|array The actual query to be executed
-     */
-    protected $query;
-
-    /**
      * Key-value pairs of fields and what to filter against
      *
      * @var array
@@ -55,6 +50,12 @@ class BaseQuery
      * @var array
      */
     protected $sort = [];
+
+    /**
+     * Enable spellchecking?
+     * @var bool
+     */
+    protected $spellcheck = true;
 
     /**
      * Format:
@@ -237,25 +238,6 @@ class BaseQuery
             'boost'  => $boost,
             'fuzzy'  => $fuzzy
         ];
-
-        return $this;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
-    /**
-     * @param array|string $query
-     * @return $this
-     */
-    public function setQuery($query): self
-    {
-        $this->query = $query;
 
         return $this;
     }
@@ -446,5 +428,24 @@ class BaseQuery
         $this->boostedFields = $boostedFields;
 
         return $this;
+    }
+
+    /**
+     * @param bool $spellcheck
+     * @return BaseQuery
+     */
+    public function setSpellcheck(bool $spellcheck): BaseQuery
+    {
+        $this->spellcheck = $spellcheck;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpellcheck(): bool
+    {
+        return $this->spellcheck;
     }
 }

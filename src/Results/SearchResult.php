@@ -10,6 +10,8 @@ use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Highlighting\Highlighting;
+use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
+use Solarium\QueryType\Select\Result\Document;
 use Solarium\QueryType\Select\Result\Result;
 
 class SearchResult
@@ -40,6 +42,11 @@ class SearchResult
     protected $highlight;
 
     /**
+     * @var ArrayList
+     */
+    protected $spellcheck;
+
+    /**
      * SearchResult constructor.
      * Funnily enough, the $result contains the actual results, and has methods for the other things.
      * See Solarium docs for this.
@@ -50,10 +57,13 @@ class SearchResult
     public function __construct(Result $result, BaseQuery $query)
     {
         $this->query = $query;
-        $this->setMatches($result);
+        $this->setMatches($result->getDocuments());
         $this->setFacets($result->getFacetSet());
         $this->setHighlight($result->getHighlighting());
         $this->setTotalItems($result->getNumFound());
+        if ($query->isSpellcheck()) {
+            $this->setSpellcheck($result->getSpellcheck());
+        }
     }
 
     /**
@@ -109,14 +119,18 @@ class SearchResult
     }
 
     /**
-     * @param Result $result
+     * @param array $result
      * @return $this
      */
     protected function setMatches($result): self
     {
-        $data = $result->getData();
+        $data = [];
+        /** @var Document $item */
+        foreach ($result as $item) {
+            $data[] = ArrayData::create($item->getFields());
+        }
 
-        $docs = ArrayList::create($data['response']['docs']);
+        $docs = ArrayList::create($data);
         $this->matches = $docs;
 
         return $this;
@@ -126,7 +140,7 @@ class SearchResult
      * @param $docID
      * @return string|null
      */
-    public function getHighlight($docID)
+    public function getHighlight($docID): ?string
     {
         if ($this->highlight) {
             $hl = [];
@@ -144,7 +158,7 @@ class SearchResult
      * @param Highlighting $result
      * @return $this
      */
-    public function setHighlight(Highlighting $result): self
+    protected function setHighlight(Highlighting $result): self
     {
         $this->highlight = $result;
 
@@ -152,9 +166,9 @@ class SearchResult
     }
 
     /**
-     * @return mixed
+     * @return ArrayList
      */
-    public function getFacets()
+    public function getFacets(): ArrayList
     {
         return $this->facets;
     }
@@ -168,6 +182,33 @@ class SearchResult
         $this->facets = $this->buildFacets($facets);
 
         return $this;
+    }
+
+    /**
+     * @param SpellcheckResult|null $spellcheck
+     * @return SearchResult
+     */
+    public function setSpellcheck($spellcheck): self
+    {
+        $spellcheckList = [];
+
+        if ($spellcheck && ($suggestions = $spellcheck->getSuggestion(0))) {
+            foreach ($suggestions->getWords() as $suggestion) {
+                $spellcheckList[] = ArrayData::create($suggestion);
+            }
+        }
+
+        $this->spellcheck = ArrayList::create($spellcheckList);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayList
+     */
+    public function getSpellcheck(): ArrayList
+    {
+        return $this->spellcheck;
     }
 
     /**
