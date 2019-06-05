@@ -7,19 +7,17 @@ use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Group;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
-use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * Class \Firesphere\SolrSearch\Extensions\DataObjectExtension
  *
- * @property File|SiteConfig|SiteTree|Group|Member|DataObjectExtension $owner
+ * @property DataObject|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {
@@ -85,6 +83,7 @@ class DataObjectExtension extends DataExtension
         // Add null users if it's publicly viewable
         if ($this->owner->canView()) {
             $return = ['1-null'];
+
             return $return;
         }
 
