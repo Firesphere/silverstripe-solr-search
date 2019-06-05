@@ -200,7 +200,6 @@ abstract class BaseIndex
      */
     public function doSearch(BaseQuery $query): SearchResult
     {
-
         $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
@@ -418,7 +417,6 @@ abstract class BaseIndex
         $spellcheck->setCollate(true);
         $spellcheck->setExtendedResults(true);
         $spellcheck->setCollateExtendedResults(true);
-
     }
 
     /**

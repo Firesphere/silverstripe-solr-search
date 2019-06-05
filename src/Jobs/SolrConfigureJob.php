@@ -15,7 +15,7 @@ class SolrConfigureJob extends AbstractQueuedJob
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return 'Configure new or re-configure existing Solr cores';
     }
@@ -23,6 +23,7 @@ class SolrConfigureJob extends AbstractQueuedJob
     /**
      * Do some processing yourself!
      * @throws ReflectionException
+     * @return false|null
      */
     public function process()
     {
@@ -31,11 +32,9 @@ class SolrConfigureJob extends AbstractQueuedJob
         $result = $task->run(new NullHTTPRequest());
 
         if ($result !== true) {
-            var_dump($result);
-
-            return null;
+            return false;
         }
-        
+
         $this->isComplete = true;
     }
 }
