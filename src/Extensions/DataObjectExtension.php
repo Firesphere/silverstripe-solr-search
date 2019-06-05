@@ -7,11 +7,14 @@ use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;
 use ReflectionException;
+use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
+use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * Class \Firesphere\SolrSearch\Extensions\DataObjectExtension
@@ -32,7 +35,7 @@ class DataObjectExtension extends DataExtension
     /**
      * @throws ReflectionException
      */
-    public function onAfterDelete()
+    public function onAfterDelete(): void
     {
         parent::onAfterDelete();
 
@@ -73,7 +76,7 @@ class DataObjectExtension extends DataExtension
      * Get the view status for each member in this object
      * @return array
      */
-    public function getViewStatus()
+    public function getViewStatus(): array
     {
         if (array_key_exists($this->owner->ClassName, $this->canViewClasses) &&
             !$this->owner instanceof SiteTree
