@@ -8,6 +8,7 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
+use Solarium\Component\Result\Facet\Field;
 use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
@@ -32,7 +33,7 @@ class SearchResult
     protected $totalItems;
 
     /**
-     * @var ArrayList
+     * @var ArrayData
      */
     protected $facets;
 
@@ -140,7 +141,7 @@ class SearchResult
      * @param $docID
      * @return string|null
      */
-    public function getHighlight($docID): ?string
+    public function getHighlightByID($docID): ?string
     {
         if ($this->highlight) {
             $hl = [];
@@ -166,9 +167,9 @@ class SearchResult
     }
 
     /**
-     * @return ArrayList
+     * @return ArrayData
      */
-    public function getFacets(): ArrayList
+    public function getFacets(): ArrayData
     {
         return $this->facets;
     }
@@ -224,6 +225,7 @@ class SearchResult
             // Loop all available facet fields by type
             foreach ($facetTypes as $class => $options) {
                 // Get the facets by its title
+                /** @var Field $typeFacets */
                 $typeFacets = $facets->getFacet($options['Title']);
                 // @todo bugfix this. It doesn't consistently return something
                 $values = $typeFacets->getValues();

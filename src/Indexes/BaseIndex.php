@@ -183,7 +183,7 @@ abstract class BaseIndex
         if ($query->isSpellcheck() !== $spellcheck) {
             $query->setSpellcheck($spellcheck);
         }
-        if ($params['fq'] && !count($query->getFields())) {
+        if (isset($params['fq']) && !count($query->getFields())) {
             $query->setFields($params['fq']);
         }
 
