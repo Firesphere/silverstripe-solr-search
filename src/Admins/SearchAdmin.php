@@ -15,6 +15,8 @@ class SearchAdmin extends ModelAdmin
         SearchClass::class
     ];
 
+    private static $menu_icon_class = 'font-icon-search';
+
     private static $url_segment = 'searchadmin';
 
     private static $menu_title = 'Search';
