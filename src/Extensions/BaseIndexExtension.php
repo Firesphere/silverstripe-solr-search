@@ -28,7 +28,7 @@ class BaseIndexExtension extends DataExtension
             Debug::message("Parsed query:\n" . $result->getParsedQuery());
             Debug::message("Query parser:\n" . $result->getQueryParser());
             Debug::message('Explanation:');
-            Debug::message($result->getExplain());
+            Debug::dump($result->getExplain());
         }
     }
 }
