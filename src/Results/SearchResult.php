@@ -6,11 +6,13 @@ namespace Firesphere\SolrSearch\Results;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Facet\Field;
 use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Highlighting\Highlighting;
+use Solarium\Component\Result\Spellcheck\Collation;
 use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
 use Solarium\QueryType\Select\Result\Document;
 use Solarium\QueryType\Select\Result\Result;
@@ -47,6 +49,8 @@ class SearchResult
      */
     protected $spellcheck;
 
+    protected $collatedSpellcheck;
+
     /**
      * SearchResult constructor.
      * Funnily enough, the $result contains the actual results, and has methods for the other things.
@@ -64,6 +68,7 @@ class SearchResult
         $this->setTotalItems($result->getNumFound());
         if ($query->isSpellcheck()) {
             $this->setSpellcheck($result->getSpellcheck());
+            $this->setCollatedSpellcheck($result->getSpellcheck());
         }
     }
 
@@ -73,8 +78,27 @@ class SearchResult
      */
     public function getPaginatedMatches(HTTPRequest $request): PaginatedList
     {
-        $paginated = PaginatedList::create($this->matches, $request);
+        // Get all the items in the set and push them in to the list
+        $items = [];
+        foreach ($this->matches as $match) {
+            $class = $match['ClassName'];
+            $item = $class::get()->byID($match['ID']);
+            $item->Excerpt = DBField::create_field(
+                'HTMLText',
+                str_replace(
+                    '&#65533;',
+                    '',
+                    $this->getHighlightByID($match['_documentid'])
+                )
+            );
+            $items[] = $item;
+        }
+        $items = ArrayList::create($items);
+        /** @var PaginatedList $paginated */
+        $paginated = PaginatedList::create($items, $request);
         $paginated->setTotalItems($this->getTotalItems());
+        $paginated->setPageStart($this->query->getStart());
+        $paginated->setPageLength($this->query->getRows());
 
         return $paginated;
     }
@@ -120,9 +144,9 @@ class SearchResult
     }
 
     /**
-     * @todo support multiple classes
      * @param array $result
      * @return $this
+     * @todo support multiple classes
      */
     protected function setMatches($result): self
     {
@@ -154,6 +178,14 @@ class SearchResult
         }
 
         return null;
+    }
+
+    /**
+     * @return Highlighting
+     */
+    public function getHighlight()
+    {
+        return $this->highlight;
     }
 
     /**
@@ -211,6 +243,32 @@ class SearchResult
     public function getSpellcheck(): ArrayList
     {
         return $this->spellcheck;
+    }
+
+    /**
+     * @param mixed $collatedSpellcheck
+     * @return $this
+     */
+    public function setCollatedSpellcheck($collatedSpellcheck): self
+    {
+        /** @var array|Collation[] $collated */
+        if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
+            // Because we don't know the key value, we need to loop and just grab the first one
+            foreach ($collated[0]->getCorrections() as $original => $correction) {
+                $this->collatedSpellcheck = $correction;
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCollatedSpellcheck()
+    {
+        return $this->collatedSpellcheck;
     }
 
     /**

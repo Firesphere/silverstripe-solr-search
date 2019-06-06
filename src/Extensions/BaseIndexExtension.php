@@ -4,8 +4,8 @@ namespace Firesphere\SolrSearch\Extensions;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Extension;
 use SilverStripe\Dev\Debug;
-use SilverStripe\ORM\DataExtension;
 use Solarium\QueryType\Select\Result\Result;
 
 /**
@@ -13,7 +13,7 @@ use Solarium\QueryType\Select\Result\Result;
  *
  * @property BaseIndexExtension $owner
  */
-class BaseIndexExtension extends DataExtension
+class BaseIndexExtension extends Extension
 {
 
     /**
