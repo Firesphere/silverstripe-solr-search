@@ -140,7 +140,7 @@ abstract class BaseIndex
     /**
      * @return string
      */
-    abstract public function getIndexName(): string;
+    abstract public function getIndexName();
 
     /**
      * Required to initialise the fields.
@@ -148,7 +148,7 @@ abstract class BaseIndex
      * Also, it's a tad easier to use this way, loading the other way around would be very
      * memory intensive, as updating the config for each item is not efficient
      */
-    public function init(): void
+    public function init()
     {
         if (!self::config()->get($this->getIndexName())) {
             Deprecation::notice('5.0', 'The configuration should be set from YML now');

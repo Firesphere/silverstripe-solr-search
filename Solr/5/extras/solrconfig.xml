@@ -134,10 +134,10 @@
 
     <!-- To enable dynamic schema REST APIs, use the following for <schemaFactory>: -->
 
-    <schemaFactory class="ManagedIndexSchemaFactory">
-        <bool name="mutable">true</bool>
-        <str name="managedSchemaResourceName">managed-schema</str>
-    </schemaFactory>
+<!--    <schemaFactory class="ManagedIndexSchemaFactory">-->
+<!--        <bool name="mutable">true</bool>-->
+<!--        <str name="managedSchemaResourceName">managed-schema</str>-->
+<!--    </schemaFactory>-->
 
     <!--
          When ManagedIndexSchemaFactory is specified, Solr will load the schema from
@@ -152,8 +152,8 @@
          When ManagedIndexSchemaFactory is specified with mutable = true, schema
          modification REST API calls will be allowed; otherwise, error responses will be
          sent back for these requests.
-    <schemaFactory class="ClassicIndexSchemaFactory"/>
     -->
+    <schemaFactory class="ClassicIndexSchemaFactory"/>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          Index Config - These settings control low-level behavior of indexing

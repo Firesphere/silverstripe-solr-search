@@ -100,6 +100,7 @@ class DocumentFactory
         $doc->addField('ID', $item->ID);
         $doc->addField('ClassName', $item->ClassName);
         $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
+        $doc->addField('ViewStatus', $item->getViewStatus());
     }
 
     /**
