@@ -120,80 +120,7 @@ class SearchIntrospection
 
                 // @todo remove repetition
                 foreach ($sources as $source => $baseOptions) {
-                    $source = $this->getSourceName($source);
-
-                    foreach (self::hierarchy($source, true) as $dataclass) {
-                        $class = null;
-                        $options = $baseOptions;
-                        $singleton = singleton($dataclass);
-                        $schema = DataObject::getSchema();
-                        $className = $singleton->getClassName();
-
-                        if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
-                            // we only want to include base class for relation, omit classes that inherited the relation
-                            $relationList = Config::inst()->get($dataclass, 'has_one', Config::UNINHERITED);
-                            $relationList = (!is_null($relationList)) ? $relationList : [];
-                            if (!array_key_exists($lookup, $relationList)) {
-                                continue;
-                            }
-
-                            $class = $hasOne;
-                            $options['lookup_chain'][] = [
-                                'call'       => 'method',
-                                'method'     => $lookup,
-                                'through'    => 'has_one',
-                                'class'      => $dataclass,
-                                'otherclass' => $class,
-                                'foreignkey' => "{$lookup}ID"
-                            ];
-                        } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-                            // we only want to include base class for relation, omit classes that inherited the relation
-                            $relationList = Config::inst()->get($dataclass, 'has_many', Config::UNINHERITED);
-                            $relationList = (!is_null($relationList)) ? $relationList : [];
-                            if (!array_key_exists($lookup, $relationList)) {
-                                continue;
-                            }
-
-                            $class = $hasMany;
-                            $options['multi_valued'] = true;
-                            $options['lookup_chain'][] = [
-                                'call'       => 'method',
-                                'method'     => $lookup,
-                                'through'    => 'has_many',
-                                'class'      => $dataclass,
-                                'otherclass' => $class,
-                                'foreignkey' => $schema->getRemoteJoinField($className, $lookup, 'has_many')
-                            ];
-                        } elseif ($manyMany = $schema->manyManyComponent($className, $lookup)) {
-                            // we only want to include base class for relation, omit classes that inherited the relation
-                            $relationList = Config::inst()->get($dataclass, 'many_many', Config::UNINHERITED);
-                            $relationList = (!is_null($relationList)) ? $relationList : [];
-                            if (!array_key_exists($lookup, $relationList)) {
-                                continue;
-                            }
-
-                            $class = $manyMany['childClass'];
-                            $options['multi_valued'] = true;
-                            $options['lookup_chain'][] = [
-                                'call'       => 'method',
-                                'method'     => $lookup,
-                                'through'    => 'many_many',
-                                'class'      => $dataclass,
-                                'otherclass' => $class,
-                                'details'    => $manyMany,
-                            ];
-                        }
-
-                        if (is_string($class) && $class) {
-                            if (!isset($options['origin'])) {
-                                $options['origin'] = $dataclass;
-                            }
-
-                            // we add suffix here to prevent the relation to be overwritten by other instances
-                            // all sources lookups must clean the source name before reading it via getSourceName()
-                            $next[$class . '_|_' . $dataclass] = $options;
-                        }
-                    }
+                    $next = $this->getRelationIntrospection($source, $lookup, $next);
                 }
 
                 if (!$next) {
@@ -373,6 +300,15 @@ class SearchIntrospection
         return (!array_key_exists($lookup, $relationList));
     }
 
+    /**
+     * @param array $options
+     * @param $lookup
+     * @param $type
+     * @param $dataClass
+     * @param $class
+     * @param $key
+     * @return array
+     */
     public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key)
     {
         $options['lookup_chain'][] = array(
