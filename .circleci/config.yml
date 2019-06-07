@@ -45,7 +45,7 @@ jobs:
                 $this->addFulltextField('Title');
                 $this->addFulltextField('Content');
               }
-              public function getIndexName() {
+              public function getIndexName(): string {
                 return 'TestIndex';
               }
             }
