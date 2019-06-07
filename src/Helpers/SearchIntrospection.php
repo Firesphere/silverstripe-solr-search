@@ -118,6 +118,7 @@ class SearchIntrospection
             foreach ($lookups as $lookup) {
                 $next = [];
 
+                // @todo remove repetition
                 foreach ($sources as $source => $baseOptions) {
                     $source = $this->getSourceName($source);
 
@@ -137,14 +138,14 @@ class SearchIntrospection
                             }
 
                             $class = $hasOne;
-                            $options['lookup_chain'][] = array(
+                            $options['lookup_chain'][] = [
                                 'call'       => 'method',
                                 'method'     => $lookup,
                                 'through'    => 'has_one',
                                 'class'      => $dataclass,
                                 'otherclass' => $class,
                                 'foreignkey' => "{$lookup}ID"
-                            );
+                            ];
                         } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
                             // we only want to include base class for relation, omit classes that inherited the relation
                             $relationList = Config::inst()->get($dataclass, 'has_many', Config::UNINHERITED);
@@ -155,14 +156,14 @@ class SearchIntrospection
 
                             $class = $hasMany;
                             $options['multi_valued'] = true;
-                            $options['lookup_chain'][] = array(
+                            $options['lookup_chain'][] = [
                                 'call'       => 'method',
                                 'method'     => $lookup,
                                 'through'    => 'has_many',
                                 'class'      => $dataclass,
                                 'otherclass' => $class,
                                 'foreignkey' => $schema->getRemoteJoinField($className, $lookup, 'has_many')
-                            );
+                            ];
                         } elseif ($manyMany = $schema->manyManyComponent($className, $lookup)) {
                             // we only want to include base class for relation, omit classes that inherited the relation
                             $relationList = Config::inst()->get($dataclass, 'many_many', Config::UNINHERITED);
@@ -173,14 +174,14 @@ class SearchIntrospection
 
                             $class = $manyMany['childClass'];
                             $options['multi_valued'] = true;
-                            $options['lookup_chain'][] = array(
+                            $options['lookup_chain'][] = [
                                 'call'       => 'method',
                                 'method'     => $lookup,
                                 'through'    => 'many_many',
                                 'class'      => $dataclass,
                                 'otherclass' => $class,
                                 'details'    => $manyMany,
-                            );
+                            ];
                         }
 
                         if (is_string($class) && $class) {
