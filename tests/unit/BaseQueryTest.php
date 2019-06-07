@@ -53,5 +53,7 @@ class BaseQueryTest extends SapphireTest
         $this->assertCount(2, $this->query->getTerms());
         $this->query->addFilter('Field1', 'test');
         $this->assertCount(1, $this->query->getFilter());
+        $this->query->setFields([['Field1' => 'testing']]);
+        $this->assertCount(1, $this->query->getFilter());
     }
 }

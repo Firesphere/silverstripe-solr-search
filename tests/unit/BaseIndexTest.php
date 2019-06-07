@@ -28,6 +28,8 @@ class BaseIndexTest extends SapphireTest
     public function testConstruct()
     {
         $this->assertInstanceOf(Client::class, $this->index->getClient());
+        $this->assertCount(1, $this->index->getClass());
+        $this->assertCount(2, $this->index->getFulltextFields());
     }
 
     public function testGetSynonyms()
@@ -35,5 +37,10 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms());
 
         $this->assertEmpty($this->index->getSynonyms(false));
+    }
+
+    public function testIndexName()
+    {
+        $this->assertEquals('TestIndex', $this->index->getIndexName());
     }
 }
