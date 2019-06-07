@@ -33,7 +33,6 @@ class DataObjectExtension extends DataExtension
     {
         parent::onAfterWrite();
         $key = $this->owner->ClassName . '-' . $this->owner->ID;
-
     }
 
     /**
