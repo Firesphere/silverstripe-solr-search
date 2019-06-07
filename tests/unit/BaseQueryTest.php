@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
@@ -20,7 +21,7 @@ class BaseQueryTest extends SapphireTest
         parent::setUp();
     }
 
-    public function testClass()
+    public function testGetSet()
     {
         $this->assertEquals(0, $this->query->getStart());
         $this->query->setStart(1);
@@ -55,5 +56,28 @@ class BaseQueryTest extends SapphireTest
         $this->assertCount(1, $this->query->getFilter());
         $this->query->setFields([['Field1' => 'testing']]);
         $this->assertCount(1, $this->query->getFilter());
+        $this->query->setFilter([['Field1' => 'Test']]);
+        $this->assertCount(1, $this->query->getFilter());
+        $this->query->addFacetField(SiteTree::class, [
+                'Field' => 'Name_of_Field',
+                'Title' => 'TitleToUseForRetrieving'
+            ]
+        );
+        $this->assertCount(1, $this->query->getFacetFields());
+        $this->query->setFacetFields([
+                SiteTree::class,
+                [
+                    'Field' => 'Name_of_Field',
+                    'Title' => 'TitleToUseForRetrieving'
+                ]
+            ]
+        );
+        $this->assertCount(1, $this->query->getFacetFields());
+        $this->query->setSpellcheck(false);
+        $this->assertFalse($this->query->isSpellcheck());
+        $this->query->addBoostedField('Field1', 2);
+        $this->assertEquals(2, $this->query->getBoostedFields()['Field1']);
+        $this->query->setBoostedFields(['Field' => 2]);
+        $this->assertEquals(2, $this->query->getBoostedFields()['Field']);
     }
 }
