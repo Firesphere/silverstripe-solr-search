@@ -130,72 +130,7 @@ class SearchIntrospection
             }
         }
 
-        foreach ($sources as $class => $fieldoptions) {
-            if (is_int($class)) {
-                $class = $fieldoptions;
-                $fieldoptions = [];
-            }
-            $class = $this->getSourceName($class);
-            $dataclasses = self::hierarchy($class);
-
-            while (count($dataclasses)) {
-                $dataclass = array_shift($dataclasses);
-                $type = null;
-
-                $fields = DataObject::getSchema()->databaseFields($class);
-
-                if (isset($fields[$field])) {
-                    $type = $fields[$field];
-                    $fieldoptions['lookup_chain'][] = [
-                        'call'     => 'property',
-                        'property' => $field
-                    ];
-                } else {
-                    $singleton = singleton($dataclass);
-
-                    if ($singleton->hasMethod("get$field") || $singleton->hasField($field)) {
-                        $type = $singleton->castingClass($field);
-                        if (!$type) {
-                            $type = 'String';
-                        }
-
-                        if ($singleton->hasMethod("get$field")) {
-                            $fieldoptions['lookup_chain'][] = [
-                                'call'   => 'method',
-                                'method' => "get$field"
-                            ];
-                        } else {
-                            $fieldoptions['lookup_chain'][] = [
-                                'call'     => 'property',
-                                'property' => $field
-                            ];
-                        }
-                    }
-                }
-
-                if ($type) {
-                    // Don't search through child classes of a class we matched on. TODO: Should we?
-                    $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
-                    // Trim arguments off the type string
-                    if (preg_match('/^(\w+)\(/', $type, $match)) {
-                        $type = $match[1];
-                    }
-                    // Get the origin
-                    $origin = isset($fieldoptions['origin']) ? $fieldoptions['origin'] : $dataclass;
-
-                    $found["{$origin}_{$fullfield}"] = array(
-                        'name'         => "{$origin}_{$fullfield}",
-                        'field'        => $field,
-                        'fullfield'    => $fullfield,
-                        'origin'       => $origin,
-                        'class'        => $dataclass,
-                        'lookup_chain' => $fieldoptions['lookup_chain'],
-                        'type'         => $type,
-                        'multi_valued' => isset($fieldoptions['multi_valued']) ? true : false,
-                    );
-                }
-            }
-        }
+        $found = $this->getFieldOptions($field, $sources, $fullfield, $found);
 
         return $found;
     }
@@ -332,5 +267,84 @@ class SearchIntrospection
         $this->index = $index;
 
         return $this;
+    }
+
+    /**
+     * @param $field
+     * @param array $sources
+     * @param $fullfield
+     * @param array $found
+     * @return array
+     */
+    protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
+    {
+        foreach ($sources as $class => $fieldoptions) {
+            if (is_int($class)) {
+                $class = $fieldoptions;
+                $fieldoptions = [];
+            }
+            $class = $this->getSourceName($class);
+            $dataclasses = self::hierarchy($class);
+
+            while (count($dataclasses)) {
+                $dataclass = array_shift($dataclasses);
+                $type = null;
+
+                $fields = DataObject::getSchema()->databaseFields($class);
+
+                if (isset($fields[$field])) {
+                    $type = $fields[$field];
+                    $fieldoptions['lookup_chain'][] = [
+                        'call'     => 'property',
+                        'property' => $field
+                    ];
+                } else {
+                    $singleton = singleton($dataclass);
+
+                    if ($singleton->hasMethod("get$field") || $singleton->hasField($field)) {
+                        $type = $singleton->castingClass($field);
+                        if (!$type) {
+                            $type = 'String';
+                        }
+
+                        if ($singleton->hasMethod("get$field")) {
+                            $fieldoptions['lookup_chain'][] = [
+                                'call'   => 'method',
+                                'method' => "get$field"
+                            ];
+                        } else {
+                            $fieldoptions['lookup_chain'][] = [
+                                'call'     => 'property',
+                                'property' => $field
+                            ];
+                        }
+                    }
+                }
+
+                if ($type) {
+                    // Don't search through child classes of a class we matched on. TODO: Should we?
+                    $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
+                    // Trim arguments off the type string
+                    if (preg_match('/^(\w+)\(/', $type, $match)) {
+                        $type = $match[1];
+                    }
+                    // Get the origin
+                    $origin = isset($fieldoptions['origin']) ? $fieldoptions['origin'] : $dataclass;
+
+                    $found["{$origin}_{$fullfield}"] = array(
+                        'name'         => "{$origin}_{$fullfield}",
+                        'field'        => $field,
+                        'fullfield'    => $fullfield,
+                        'origin'       => $origin,
+                        'class'        => $dataclass,
+                        'lookup_chain' => $fieldoptions['lookup_chain'],
+                        'type'         => $type,
+                        'multi_valued' => isset($fieldoptions['multi_valued']) ? true : false,
+                    );
+                }
+            }
+        }
+
+        return $found;
     }
 }
