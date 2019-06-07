@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Firesphere\SolrSearch\Extensions;
+namespace Firesphere\SolrSearch\Compat;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\ORM\DataExtension;
 
 /**
- * Class \Firesphere\SolrSearch\Extensions\SubsitesExtension
+ * Class \Firesphere\SolrSearch\Compat\SubsitesExtension
  *
  * @property BaseIndex|SubsitesExtension $owner
  */

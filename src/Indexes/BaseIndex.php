@@ -21,6 +21,7 @@ use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -34,6 +35,15 @@ abstract class BaseIndex
     use Extensible;
     use Configurable;
 
+    private static $fieldTypes = [
+        'FulltextFields',
+        'SortFields',
+        'FilterFields',
+        'BoostedFields',
+        'CopyFields',
+        'DefaultField',
+        'FacetFields',
+    ];
     /**
      * @var Client
      */
@@ -42,12 +52,10 @@ abstract class BaseIndex
      * @var array
      */
     protected $class = [];
-
     /**
      * @var array
      */
     protected $fulltextFields = [];
-
     /**
      * Sets boosting at _index_ time
      * [
@@ -56,22 +64,18 @@ abstract class BaseIndex
      * @var array
      */
     protected $boostedFields = [];
-
     /**
      * @var array
      */
     protected $filterFields = [];
-
     /**
      * @var array
      */
     protected $sortFields = [];
-
     /**
      * @var array
      */
     protected $facetFields = [];
-
     /**
      * @var array
      */
@@ -80,26 +84,14 @@ abstract class BaseIndex
             '*'
         ],
     ];
-
     /**
      * @var string
      */
     protected $defaultField = '_text';
-
     /**
      * @var SchemaService
      */
     protected $schemaService;
-
-    private static $fieldTypes = [
-        'FulltextFields',
-        'SortFields',
-        'FilterFields',
-        'BoostFields',
-        'CopyFields',
-        'DefaultField',
-        'FacetFields',
-    ];
 
     /**
      * BaseIndex constructor.
@@ -166,7 +158,8 @@ abstract class BaseIndex
 
         foreach (self::$fieldTypes as $type) {
             if (array_key_exists($type, $config)) {
-                $this->setFulltextFields($config[$type]);
+                $method = 'set' . $type;
+                $this->$method($config[$type]);
             }
         }
     }
@@ -195,10 +188,12 @@ abstract class BaseIndex
     }
 
     /**
+     * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
+     * 
      * @param BaseQuery $query
-     * @return SearchResult
+     * @return SearchResult|ArrayData
      */
-    public function doSearch(BaseQuery $query): SearchResult
+    public function doSearch(BaseQuery $query)
     {
         $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
@@ -404,6 +399,19 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @param Query $clientQuery
      */
+    protected function buildFacets(BaseQuery $query, Query $clientQuery): void
+    {
+        $facets = $clientQuery->getFacetSet();
+        foreach ($query->getFacetFields() as $field => $config) {
+            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        }
+        $facets->setMinCount($query->getFacetsMinCount());
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     */
     protected function buildSpellcheck(BaseQuery $query, Query $clientQuery): void
     {
         // Assuming the first term is the term entered
@@ -417,19 +425,6 @@ abstract class BaseIndex
         $spellcheck->setCollate(true);
         $spellcheck->setExtendedResults(true);
         $spellcheck->setCollateExtendedResults(true);
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery): void
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
     }
 
     /**
@@ -565,7 +560,7 @@ abstract class BaseIndex
                             'FulltextFields' => $this->getFulltextFields(),
                             'SortFields'     => $this->getSortFields(),
                             'FilterFields'   => $this->getFilterFields(),
-                            'BoostFields'    => $this->getBoostedFields(),
+                            'BoostedFields'    => $this->getBoostedFields(),
                             'CopyFields'     => $this->getCopyFields(),
                             'DefaultField'   => $this->getDefaultField(),
                             'FacetFields'    => $this->getFacetFields(),
@@ -617,6 +612,63 @@ abstract class BaseIndex
     public function setBoostedFields($boostedFields): self
     {
         $this->boostedFields = $boostedFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCopyFields(): array
+    {
+        return $this->copyFields;
+    }
+
+    /**
+     * @param array $copyField
+     * @return $this
+     */
+    public function setCopyFields($copyField): self
+    {
+        $this->copyFields = $copyField;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultField(): string
+    {
+        return $this->defaultField;
+    }
+
+    /**
+     * @param string $defaultField
+     * @return $this
+     */
+    public function setDefaultField($defaultField): self
+    {
+        $this->defaultField = $defaultField;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFacetFields(): array
+    {
+        return $this->facetFields;
+    }
+
+    /**
+     * @param array $facetFields
+     * @return BaseIndex
+     */
+    public function setFacetFields($facetFields): BaseIndex
+    {
+        $this->facetFields = $facetFields;
 
         return $this;
     }
@@ -723,63 +775,6 @@ abstract class BaseIndex
         if (!in_array($field, $this->getFulltextFields(), true)) {
             $this->addFulltextField($field);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFacetFields(): array
-    {
-        return $this->facetFields;
-    }
-
-    /**
-     * @param array $facetFields
-     * @return BaseIndex
-     */
-    public function setFacetFields($facetFields): BaseIndex
-    {
-        $this->facetFields = $facetFields;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCopyFields(): array
-    {
-        return $this->copyFields;
-    }
-
-    /**
-     * @param array $copyField
-     * @return $this
-     */
-    public function setCopyFields($copyField): self
-    {
-        $this->copyFields = $copyField;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDefaultField(): string
-    {
-        return $this->defaultField;
-    }
-
-    /**
-     * @param string $defaultField
-     * @return $this
-     */
-    public function setDefaultField($defaultField): self
-    {
-        $this->defaultField = $defaultField;
 
         return $this;
     }

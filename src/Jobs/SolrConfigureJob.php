@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Jobs;
 
+use Exception;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
@@ -22,14 +23,14 @@ class SolrConfigureJob extends AbstractQueuedJob
 
     /**
      * Do some processing yourself!
-     * @throws ReflectionException
      * @return false|null
+     * @throws ReflectionException
      */
     public function process()
     {
         /** @var SolrConfigureTask $task */
         $task = Injector::inst()->get(SolrConfigureTask::class);
-        /** @var bool|\Exception $result */
+        /** @var bool|Exception $result */
         $result = $task->run(new NullHTTPRequest());
 
         // If there's an exception, return the result

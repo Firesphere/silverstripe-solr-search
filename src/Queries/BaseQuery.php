@@ -432,6 +432,14 @@ class BaseQuery
     }
 
     /**
+     * @return bool
+     */
+    public function isSpellcheck(): bool
+    {
+        return $this->spellcheck;
+    }
+
+    /**
      * @param bool $spellcheck
      * @return BaseQuery
      */
@@ -440,13 +448,5 @@ class BaseQuery
         $this->spellcheck = $spellcheck;
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSpellcheck(): bool
-    {
-        return $this->spellcheck;
     }
 }

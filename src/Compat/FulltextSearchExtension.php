@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Firesphere\SolrSearch\Extensions;
+namespace Firesphere\SolrSearch\Compat;
 
 use Firesphere\SolrSearch\Results\SearchResult;
 use SilverStripe\Control\Controller;
@@ -20,7 +20,7 @@ class FulltextSearchExtension extends Extension
      * Convert the SearchResult class to a Full text search compatible ArrayData
      * @param SearchResult|ArrayData $results
      */
-    public function updateSearchResults($results): void
+    public function updateSearchResults(&$results): void
     {
         $request = Controller::curr()->getRequest();
         $data = [

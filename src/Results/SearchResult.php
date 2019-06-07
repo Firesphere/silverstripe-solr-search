@@ -80,15 +80,16 @@ class SearchResult
     {
         // Get all the items in the set and push them in to the list
         $items = [];
-        foreach ($this->matches as $match) {
-            $class = $match['ClassName'];
-            $item = $class::get()->byID($match['ID']);
+        $matches = $this->matches;
+        foreach ($matches as $match) {
+            $class = $match->ClassName;
+            $item = $class::get()->byID($match->ID);
             $item->Excerpt = DBField::create_field(
                 'HTMLText',
                 str_replace(
                     '&#65533;',
                     '',
-                    $this->getHighlightByID($match['_documentid'])
+                    $this->getHighlightByID($match->_documentid)
                 )
             );
             $items[] = $item;
@@ -101,6 +102,24 @@ class SearchResult
         $paginated->setPageLength($this->query->getRows());
 
         return $paginated;
+    }
+
+    /**
+     * @param $docID
+     * @return string|null
+     */
+    public function getHighlightByID($docID): ?string
+    {
+        if ($this->highlight && $docID) {
+            $hl = [];
+            foreach ($this->highlight->getResult($docID) as $field => $highlight) {
+                $hl[] = implode(' (...) ', $highlight);
+            }
+
+            return implode(' (...) ', $hl);
+        }
+
+        return null;
     }
 
     /**
@@ -163,24 +182,6 @@ class SearchResult
     }
 
     /**
-     * @param $docID
-     * @return string|null
-     */
-    public function getHighlightByID($docID): ?string
-    {
-        if ($this->highlight) {
-            $hl = [];
-            foreach ($this->highlight->getResult($docID) as $field => $highlight) {
-                $hl[] = implode(' (...) ', $highlight);
-            }
-
-            return implode(' (...) ', $hl);
-        }
-
-        return null;
-    }
-
-    /**
      * @return Highlighting
      */
     public function getHighlight()
@@ -219,6 +220,14 @@ class SearchResult
     }
 
     /**
+     * @return ArrayList
+     */
+    public function getSpellcheck(): ArrayList
+    {
+        return $this->spellcheck;
+    }
+
+    /**
      * @param SpellcheckResult|null $spellcheck
      * @return SearchResult
      */
@@ -238,11 +247,11 @@ class SearchResult
     }
 
     /**
-     * @return ArrayList
+     * @return mixed
      */
-    public function getSpellcheck(): ArrayList
+    public function getCollatedSpellcheck()
     {
-        return $this->spellcheck;
+        return $this->collatedSpellcheck;
     }
 
     /**
@@ -261,14 +270,6 @@ class SearchResult
         }
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCollatedSpellcheck()
-    {
-        return $this->collatedSpellcheck;
     }
 
     /**

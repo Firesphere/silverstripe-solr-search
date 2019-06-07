@@ -16,7 +16,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 
 /**
- * Class \Firesphere\SolrSearch\Extensions\DataObjectExtension
+ * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
  * @property DataObject|DataObjectExtension $owner
  */
@@ -101,7 +101,10 @@ class DataObjectExtension extends DataExtension
             $return[] = $this->owner->canView($member) . '-' . $member->ID;
         }
 
-        $this->canViewClasses[$this->owner->ClassName] = $return;
+        // Dont record sitetree activity, it'll take up much needed memory
+        if (!$this->owner instanceof SiteTree) {
+            $this->canViewClasses[$this->owner->ClassName] = $return;
+        }
 
         return $return;
     }

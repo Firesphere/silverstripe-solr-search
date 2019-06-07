@@ -75,6 +75,7 @@ class SolrConfigureTask extends BuildTask
 
         if (!isset($e)) {
             $this->extend('onAfterSolrConfigureTask', $request);
+
             return true;
         }
 
