@@ -101,19 +101,21 @@ class SchemaService extends ViewableData
     }
 
     /**
-     * @param $field
+     * @param $fieldName
      * @param ArrayList $return
      * @param null|string $copyField
      * @throws Exception
      */
-    protected function getFieldDefinition($field, &$return, $copyField = null)
+    protected function getFieldDefinition($fieldName, &$return, $copyField = null)
     {
-        $field = $this->introspection->getFieldIntrospection($field);
+        $field = $this->introspection->getFieldIntrospection($fieldName);
         $typeMap = Statics::getTypeMap();
         $boostedFields = $this->index->getBoostedFields();
         foreach ($field as $name => $options) {
+            $name = explode ('\\', $name);
+            $name = end($name);
             // Boosted fields are always stored
-            $store = ($this->store || array_key_exists($name, $boostedFields)) ? 'true' : 'false';
+            $store = ($this->store || array_key_exists($fieldName, $boostedFields)) ? 'true' : 'false';
             $item = [
                 'Field'       => $name,
                 'Type'        => $typeMap[$options['type']],

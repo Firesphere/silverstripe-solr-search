@@ -189,7 +189,7 @@ abstract class BaseIndex
 
     /**
      * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
-     * 
+     *
      * @param BaseQuery $query
      * @return SearchResult|ArrayData
      */
@@ -705,7 +705,7 @@ abstract class BaseIndex
             $this->addFulltextField($field);
         }
 
-        $this->boostedFields[$field] = $boost;
+        $this->addBoostedField($field, [], $boost);
 
         return $this;
     }
