@@ -112,6 +112,7 @@ class SchemaService extends ViewableData
         $typeMap = Statics::getTypeMap();
         $boostedFields = $this->index->getBoostedFields();
         foreach ($field as $name => $options) {
+            // Temporary short-name solution until the Introspection is properly solved
             $name = explode ('\\', $name);
             $name = end($name);
             // Boosted fields are always stored
