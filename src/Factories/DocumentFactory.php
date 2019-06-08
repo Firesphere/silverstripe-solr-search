@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Factories;
 
+use Composer\Autoload\ClassLoader;
 use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
@@ -73,11 +74,12 @@ class DocumentFactory
 
             foreach ($fields as $field) {
                 $fieldData = $this->introspection->getFieldIntrospection($field);
-                // Only one field per class, so let's take the f
-                $fieldName = array_keys($fieldData)[0];
-                $this->addField($doc, $item, $fieldData[$fieldName]);
-                if (array_key_exists($field, $boostFields)) {
-                    $doc->setFieldBoost($fieldName, $boostFields[$field]);
+                foreach ($fieldData as $dataField => $options) {
+                    // Only one field per class, so let's take the f
+                    $this->addField($doc, $item, $fieldData[$dataField]);
+                    if (array_key_exists($field, $boostFields)) {
+                        $doc->setFieldBoost($dataField, $boostFields[$field]);
+                    }
                 }
             }
             $item->destroy();
@@ -114,7 +116,7 @@ class DocumentFactory
     protected function addField($doc, $object, $field)
     {
         $typeMap = Statics::getTypeMap();
-        if (!$this->classIs(ClassInfo::shortName($object), $field['origin'])) {
+        if (!$this->classIs($object, $field['origin'])) {
             return;
         }
 
@@ -140,13 +142,16 @@ class DocumentFactory
                 continue;
             }
 
-            $doc->addField($field['name'], $item);
+            $name = explode('\\', $field['name']);
+            $name = end($name);
+
+            $doc->addField($name, $item);
         }
     }
 
     /**
      * Determine if the given object is one of the given type
-     * @param string $class
+     * @param string|array $class
      * @param array|string $base Class or list of base classes
      * @return bool
      * @todo copy-paste, needs refactoring
@@ -165,7 +170,7 @@ class DocumentFactory
         }
 
         // Check single origin
-        return $class === $base || is_subclass_of($class, $base);
+        return $class === $base || ($class instanceof $base);
     }
 
     /**
