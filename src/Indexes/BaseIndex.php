@@ -133,6 +133,11 @@ abstract class BaseIndex
             return;
         }
 
+        // If the old init method is found, skip the config based init
+        if (count($this->getClasses())) {
+            return;
+        }
+
         $config = self::config()->get($this->getIndexName());
 
         if (!array_key_exists('Classes', $config)) {
@@ -141,35 +146,14 @@ abstract class BaseIndex
 
         $this->setClasses($config['Classes']);
 
+        // For backward compatibility, copy the config to the protected values
+        // Saves doubling up further down the line
         foreach (self::$fieldTypes as $type) {
             if (array_key_exists($type, $config)) {
                 $method = 'set' . $type;
                 $this->$method($config[$type]);
             }
         }
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param int $start deprecated in favour of $query, exists for backward compatibility with FTS
-     * @param int $limit deprecated in favour of $query, exists for backward compatibility with FTS
-     * @param array $params deprecated in favour of $query, exists for backward compatibility with FTS
-     * @param bool $spellcheck deprecated in favour of #query, exists for backward compatibility with FTS
-     * @return SearchResult|ArrayData|mixed
-     * @deprecated This is used as an Fulltext Search compatibility method. Call doSearch instead with the correct Query
-     */
-    public function search($query, $start = 0, $limit = 10, $params = [], $spellcheck = true)
-    {
-        $query->getStart() ?: $query->setStart($start);
-        $query->getRows() ?: $query->setRows($limit);
-        if ($query->isSpellcheck() !== $spellcheck) {
-            $query->setSpellcheck($spellcheck);
-        }
-        if (isset($params['fq']) && !count($query->getFields())) {
-            $query->setFields($params['fq']);
-        }
-
-        return $this->doSearch($query);
     }
 
     /**
@@ -266,7 +250,7 @@ abstract class BaseIndex
      * @param Helper $helper
      * @return string
      */
-    protected function escapeSearch($searchTerm, Helper $helper): string
+    public function escapeSearch($searchTerm, Helper $helper): string
     {
         $term = [];
         // Escape special characters where needed. Except for quoted parts, those should be phrased
