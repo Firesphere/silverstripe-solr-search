@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\Dev\Deprecation;
 
 trait GetterSetterTrait
@@ -59,12 +60,15 @@ trait GetterSetterTrait
      * Add a boosted field to be boosted at query time
      *
      * @param string $field
-     * @param array $extraOptions
-     * @param string $boost
+     * @param array|int $extraOptions
+     * @param int|null $boost
      * @return $this
      */
-    public function addBoostedField($field, $extraOptions = [], $boost): self
+    public function addBoostedField($field, $extraOptions = [], $boost = null): self
     {
+        if (!$boost && is_int($extraOptions)) {
+            $boost = $extraOptions;
+        }
         $this->boostedFields[$field] = $boost;
 
         return $this;
@@ -76,6 +80,26 @@ trait GetterSetterTrait
     public function getBoostedFields(): array
     {
         return $this->boostedFields;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getFacetFields(): array
+    {
+        return $this->facetFields;
+    }
+
+    /**
+     * @param array $facetFields
+     * @return $this
+     */
+    public function setFacetFields($facetFields): self
+    {
+        $this->facetFields = $facetFields;
+
+        return $this;
     }
 
 }

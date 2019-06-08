@@ -322,25 +322,6 @@ class BaseQuery
     }
 
     /**
-     * @return array
-     */
-    public function getFacetFields(): array
-    {
-        return $this->facetFields;
-    }
-
-    /**
-     * @param array $facetFields
-     * @return $this
-     */
-    public function setFacetFields($facetFields): self
-    {
-        $this->facetFields = $facetFields;
-
-        return $this;
-    }
-
-    /**
      * @param $field
      * @return $this
      */

@@ -620,25 +620,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
-     */
-    public function getFacetFields(): array
-    {
-        return $this->facetFields;
-    }
-
-    /**
-     * @param array $facetFields
-     * @return BaseIndex
-     */
-    public function setFacetFields($facetFields): BaseIndex
-    {
-        $this->facetFields = $facetFields;
-
-        return $this;
-    }
-
-    /**
      * @param string $fulltextField
      * @return $this
      */
