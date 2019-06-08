@@ -18,7 +18,7 @@ use SilverStripe\Security\Member;
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
- * @property DataObject|DataObjectExtension $owner
+ * @property File|SiteConfig|SiteTree|Group|Member|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {

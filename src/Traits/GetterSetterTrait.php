@@ -105,7 +105,7 @@ trait GetterSetterTrait
     {
         return $this->boostedFields;
     }
-    
+
     /**
      * @return array
      */

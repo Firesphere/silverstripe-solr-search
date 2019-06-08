@@ -70,7 +70,6 @@ class DocumentFactory
             /** @var Document $doc */
             $doc = $update->createDocument();
             $this->addDefaultFields($doc, $item);
-            $doc->addField('ViewStatus', $item->getViewStatus());
 
             foreach ($fields as $field) {
                 $fieldData = $this->introspection->getFieldIntrospection($field);
