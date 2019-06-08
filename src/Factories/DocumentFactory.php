@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
+use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
@@ -27,6 +28,9 @@ class DocumentFactory
      */
     protected $introspection;
 
+    /**
+     * DocumentFactory constructor, sets up introspection
+     */
     public function __construct()
     {
         $this->introspection = Injector::inst()->get(SearchIntrospection::class);
@@ -92,7 +96,7 @@ class DocumentFactory
 
     /**
      * @param Document $doc
-     * @param DataObject $item
+     * @param DataObject|DataObjectExtension $item
      */
     protected function addDefaultFields(Document $doc, DataObject $item)
     {
@@ -147,7 +151,7 @@ class DocumentFactory
      * @param array|string $base Class or list of base classes
      * @return bool
      * @todo copy-paste, needs refactoring
-     *
+     * @todo This can be handled by PHP built-in Class determination, e.g. InstanceOf
      */
     protected function classIs($class, $base)
     {
@@ -171,7 +175,6 @@ class DocumentFactory
      * @param DataObject|array|SS_List $object - The object to get the value from
      * @param array $field - The field definition to use
      * @return array|string|null - The value of the field, or null if we couldn't look it up for some reason
-     * @todo refactor to something more readable
      * @todo reduced the array_merge need to something more effective
      */
     protected function getValueForField($object, $field)
@@ -180,39 +183,36 @@ class DocumentFactory
             $object = [$object];
         }
 
-        try {
-            foreach ($field['lookup_chain'] as $step) {
-                // Just fail if we've fallen off the end of the chain
-                if (!count($object)) {
-                    return null;
-                }
-
-                // If we're looking up this step on an array or SS_List, do the step on every item, merge result
-                $next = [];
-
-                foreach ($object as $item) {
-                    if ($step['call'] === 'method') { // php's built_in method_exists() is faster
-                        $method = $step['method'];
-                        $item = $item->$method();
-                    } else {
-                        $property = $step['property'];
-                        $item = $item->$property;
-                    }
-
-                    // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
-                    if ($item instanceof SS_List) {
-                        $next = array_merge($next, $item->toArray());
-                    } elseif (is_array($item)) {
-                        $next = array_merge($next, $item);
-                    } else {
-                        $next[] = $item;
-                    }
-                }
-
-                $object = $next;
+        foreach ($field['lookup_chain'] as $step) {
+            // Just fail if we've fallen off the end of the chain
+            if (!count($object)) {
+                return null;
             }
-        } catch (Exception $e) {
-            $object = null;
+
+            // If we're looking up this step on an array or SS_List, do the step on every item, merge result
+            $next = [];
+
+            foreach ($object as $item) {
+                if ($step['call'] === 'method') { // php's built_in method_exists() is faster
+                    $method = $step['method'];
+                    $item = $item->$method();
+                } else {
+                    $property = $step['property'];
+                    $item = $item->$property;
+                }
+
+                // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
+                if ($item instanceof SS_List) {
+                    $item = $item->toArray();
+                }
+                if (is_array($item)) {
+                    $next = array_merge($next, $item);
+                } else {
+                    $next[] = $item;
+                }
+            }
+
+            $object = $next;
         }
 
         return $object;

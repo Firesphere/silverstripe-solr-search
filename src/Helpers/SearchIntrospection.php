@@ -96,7 +96,6 @@ class SearchIntrospection
      * @param $field
      * @return array
      * @throws Exception
-     * @todo clean up this messy copy-pasta code
      *
      */
     public function getFieldIntrospection($field)
@@ -142,7 +141,7 @@ class SearchIntrospection
      * @return array
      * @throws Exception
      */
-    protected function getRelationIntrospection($source, $lookup, array $next)
+    protected function getRelationIntrospection($source, $lookup, array $next): array
     {
         $source = $this->getSourceName($source);
 
@@ -152,44 +151,35 @@ class SearchIntrospection
             $singleton = singleton($dataClass);
             $schema = DataObject::getSchema();
             $className = $singleton->getClassName();
+            $options['multi_valued'] = false;
+            $rel = false;
 
             if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
-                if ($this->checkRelationList($dataClass, $lookup, 'has_one')) {
-                    continue;
-                }
-
                 $class = $hasOne;
-                $options = $this->getLookupChain(
-                    $options,
-                    $lookup,
-                    'has_one',
-                    $dataClass,
-                    $class,
-                    $lookup . 'ID'
-                );
+                $key = $lookup . 'ID';
+                $rel = 'has_one';
             } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-                if ($this->checkRelationList($dataClass, $lookup, 'has_many')) {
-                    continue;
-                }
-
                 $class = $hasMany;
                 $options['multi_valued'] = true;
                 $key = $schema->getRemoteJoinField($className, $lookup);
-                $options = $this->getLookupChain($options, $lookup, 'has_many', $dataClass, $class, $key);
-            } elseif ($manyMany = $schema->manyManyComponent($className, $lookup)) {
-                if ($this->checkRelationList($dataClass, $lookup, 'many_many')) {
+                $rel = 'has_many';
+            } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
+                $class = $key['childClass'];
+                $options['multi_valued'] = true;
+                $rel = 'many_many';
+            }
+
+            if ($rel !== false) {
+                if ($this->checkRelationList($dataClass, $lookup, $rel)) {
                     continue;
                 }
-
-                $class = $manyMany['childClass'];
-                $options['multi_valued'] = true;
                 $options = $this->getLookupChain(
                     $options,
                     $lookup,
-                    'many_many',
+                    $rel,
                     $dataClass,
                     $class,
-                    $manyMany
+                    $key
                 );
             }
 
