@@ -79,22 +79,7 @@ class SearchResult
     public function getPaginatedMatches(HTTPRequest $request): PaginatedList
     {
         // Get all the items in the set and push them in to the list
-        $items = [];
-        $matches = $this->matches;
-        foreach ($matches as $match) {
-            $class = $match->ClassName;
-            $item = $class::get()->byID($match->ID);
-            $item->Excerpt = DBField::create_field(
-                'HTMLText',
-                str_replace(
-                    '&#65533;',
-                    '',
-                    $this->getHighlightByID($match->_documentid)
-                )
-            );
-            $items[] = $item;
-        }
-        $items = ArrayList::create($items);
+        $items = $this->getMatches();
         /** @var PaginatedList $paginated */
         $paginated = PaginatedList::create($items, $request);
         $paginated->setTotalItems($this->getTotalItems());
@@ -159,7 +144,23 @@ class SearchResult
      */
     public function getMatches(): ArrayList
     {
-        return $this->matches;
+        $matches = $this->matches;
+        $items = [];
+        foreach ($matches as $match) {
+            $class = $match->ClassName;
+            $item = $class::get()->byID($match->ID);
+            $item->Excerpt = DBField::create_field(
+                'HTMLText',
+                str_replace(
+                    '&#65533;',
+                    '',
+                    $this->getHighlightByID($match->_documentid)
+                )
+            );
+            $items[] = $item;
+        }
+
+        return ArrayList::create($items);
     }
 
     /**
