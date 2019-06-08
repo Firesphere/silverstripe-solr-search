@@ -8,6 +8,30 @@ use SilverStripe\Dev\Deprecation;
 trait GetterSetterTrait
 {
     /**
+     * @var array
+     */
+    protected $class = [];
+
+    /**
+     * Sets boosting at _index_ time
+     * [
+     *     'FieldName' => 2,
+     * ]
+     * @var array
+     */
+    protected $boostedFields = [];
+
+    /**
+     * Format:
+     * SiteTree::class   => [
+     *      'Field' => 'SiteTree_ChannelID',
+     *      'Title' => 'Channel'
+     * ],
+     * @var array
+     */
+    protected $facetFields = [];
+
+    /**
      * @param array $class
      * @return $this
      */

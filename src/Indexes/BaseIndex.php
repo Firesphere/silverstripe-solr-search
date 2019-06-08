@@ -53,19 +53,7 @@ abstract class BaseIndex
     /**
      * @var array
      */
-    protected $class = [];
-    /**
-     * @var array
-     */
     protected $fulltextFields = [];
-    /**
-     * Sets boosting at _index_ time
-     * [
-     *     'FieldName' => 2,
-     * ]
-     * @var array
-     */
-    protected $boostedFields = [];
     /**
      * @var array
      */
@@ -74,10 +62,6 @@ abstract class BaseIndex
      * @var array
      */
     protected $sortFields = [];
-    /**
-     * @var array
-     */
-    protected $facetFields = [];
     /**
      * @var array
      */

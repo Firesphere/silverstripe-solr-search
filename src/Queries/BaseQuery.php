@@ -19,11 +19,6 @@ class BaseQuery
     protected $history = [];
 
     /**
-     * @var array classes to be searched through
-     */
-    protected $class = [];
-
-    /**
      * Key-value pairs of fields and what to filter against
      *
      * @var array
@@ -62,24 +57,9 @@ class BaseQuery
     protected $spellcheck = true;
 
     /**
-     * Format:
-     * SiteTree::class   => [
-     *      'Field' => 'SiteTree_ChannelID',
-     *      'Title' => 'Channel'
-     * ],
-     * @var array
-     */
-    protected $facetFields = [];
-
-    /**
      * @var int
      */
     protected $facetsMinCount = 0;
-
-    /**
-     * @var array
-     */
-    protected $boostedFields = [];
 
     /**
      * @var array
