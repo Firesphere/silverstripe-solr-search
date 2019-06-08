@@ -15,12 +15,6 @@ class BaseQueryTest extends SapphireTest
      */
     protected $query;
 
-    protected function setUp()
-    {
-        $this->query = Injector::inst()->get(BaseQuery::class);
-        parent::setUp();
-    }
-
     public function testGetSet()
     {
         $this->assertEquals(0, $this->query->getStart());
@@ -85,5 +79,11 @@ class BaseQueryTest extends SapphireTest
         $this->assertEquals(['test'], $this->query->getHighlight());
         $this->query->addHighlight('test');
         $this->assertEquals(['test', 'test'], $this->query->getHighlight());
+    }
+
+    protected function setUp()
+    {
+        $this->query = Injector::inst()->get(BaseQuery::class);
+        parent::setUp();
     }
 }

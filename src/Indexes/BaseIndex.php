@@ -560,7 +560,7 @@ abstract class BaseIndex
                             'FulltextFields' => $this->getFulltextFields(),
                             'SortFields'     => $this->getSortFields(),
                             'FilterFields'   => $this->getFilterFields(),
-                            'BoostedFields'    => $this->getBoostedFields(),
+                            'BoostedFields'  => $this->getBoostedFields(),
                             'CopyFields'     => $this->getCopyFields(),
                             'DefaultField'   => $this->getDefaultField(),
                             'FacetFields'    => $this->getFacetFields(),

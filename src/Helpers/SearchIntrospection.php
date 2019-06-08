@@ -259,17 +259,6 @@ class SearchIntrospection
     }
 
     /**
-     * @param mixed $index
-     * @return $this
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
-
-        return $this;
-    }
-
-    /**
      * @param $field
      * @param array $sources
      * @param $fullfield
@@ -346,5 +335,16 @@ class SearchIntrospection
         }
 
         return $found;
+    }
+
+    /**
+     * @param mixed $index
+     * @return $this
+     */
+    public function setIndex($index)
+    {
+        $this->index = $index;
+
+        return $this;
     }
 }
