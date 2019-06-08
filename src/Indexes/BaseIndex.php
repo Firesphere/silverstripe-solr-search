@@ -170,7 +170,7 @@ abstract class BaseIndex
      * @param int $limit deprecated in favour of $query, exists for backward compatibility with FTS
      * @param array $params deprecated in favour of $query, exists for backward compatibility with FTS
      * @param bool $spellcheck deprecated in favour of #query, exists for backward compatibility with FTS
-     * @return SearchResult
+     * @return SearchResult|ArrayData|mixed
      * @deprecated This is used as an Fulltext Search compatibility method. Call doSearch instead with the correct Query
      */
     public function search($query, $start = 0, $limit = 10, $params = [], $spellcheck = true)
@@ -191,7 +191,7 @@ abstract class BaseIndex
      * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
      *
      * @param BaseQuery $query
-     * @return SearchResult|ArrayData
+     * @return SearchResult|ArrayData|mixed
      */
     public function doSearch(BaseQuery $query)
     {
@@ -248,7 +248,8 @@ abstract class BaseIndex
         $helper = $clientQuery->getHelper();
 
         $searchQuery = [];
-        foreach ($query->getTerms() as $search) {
+        $terms = $query->getTerms();
+        foreach ($terms as $search) {
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
             // We can add the same term multiple times with different boosts
@@ -306,11 +307,12 @@ abstract class BaseIndex
     protected function buildClassFilter(BaseQuery $query, $clientQuery): Query
     {
         if (count($query->getClasses())) {
-            foreach ($query->getClasses() as &$class) {
+            $classes = $query->getClasses();
+            foreach ($classes as &$class) {
                 $class = str_replace('\\', '\\\\', $class);
             }
             unset($class);
-            $criteria = Criteria::where('ClassHierarchy')->in($query->getClasses());
+            $criteria = Criteria::where('ClassHierarchy')->in($classes);
             $clientQuery->createFilterQuery('classes')
                 ->setQuery($criteria->getQuery());
         }
