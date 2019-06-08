@@ -81,5 +81,9 @@ class BaseQueryTest extends SapphireTest
         $this->assertEquals(2, $this->query->getBoostedFields()['Field1']);
         $this->query->setBoostedFields(['Field' => 2]);
         $this->assertEquals(2, $this->query->getBoostedFields()['Field']);
+        $this->query->setHighlight(['test']);
+        $this->assertEquals(['test'], $this->query->getHighlight());
+        $this->query->addHighlight('test');
+        $this->assertEquals(['test', 'test'], $this->query->getHighlight());
     }
 }
