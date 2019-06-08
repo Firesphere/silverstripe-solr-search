@@ -1,4 +1,4 @@
-FROM brettt89/silverstripe-web:7.1-alpine
+FROM brettt89/silverstripe-web:7.1-platform
 
 LABEL maintainer="Marco Hermo"
 
