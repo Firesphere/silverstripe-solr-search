@@ -52,6 +52,9 @@ class BaseIndexTest extends SapphireTest
         $this->assertFileExists(Director::baseFolder() . '/.solr/TestIndex/conf/schema.xml');
         $this->assertFileExists(Director::baseFolder() . '/.solr/TestIndex/conf/synonyms.txt');
         $this->assertFileExists(Director::baseFolder() . '/.solr/TestIndex/conf/stopwords.txt');
+
+        $xml = file_get_contents(Director::baseFolder() . '/.solr/TestIndex/conf/schema.xml');
+        $this->assertContains('<field name=\'SiteTree_Title\' type=\'string\' indexed=\'true\' stored=\'true\' multiValued=\'false\'/>', $xml);
     }
 
     protected function setUp()

@@ -3,25 +3,37 @@ Firesphere\SolrSearch\Helpers\Statics:
     "*": text
     HTMLVarchar: htmltext
     "SilverStripe\\ORM\\FieldType\\DBHTMLVarchar": htmltext
+    "DBHTMLVarchar": htmltext
     Varchar: string
     "SilverStripe\\ORM\\FieldType\\DBVarchar": string
+    "DBVarchar": string
     Text: string
     "SilverStripe\\ORM\\FieldType\\DBText": string
+    "DBText": string
     HTMLText: htmltext
     "SilverStripe\\ORM\\FieldType\\DBHTMLText": htmltext
+    "DBHTMLText": htmltext
     Boolean: boolean
     "SilverStripe\\ORM\\FieldType\\DBBoolean": boolean
+    "DBBoolean": boolean
     Date: tdate
     "SilverStripe\\ORM\\FieldType\\DBDate": tdate
+    "DBDate": tdate
     Datetime: tdate
     "SilverStripe\\ORM\\FieldType\\DBDatetime": tdate
+    "DBDatetime": tdate
     ForeignKey: tint
     "SilverStripe\\ORM\\FieldType\\DBForeignKey": tint
+    "DBForeignKey": tint
     Int: tint
     "SilverStripe\\ORM\\FieldType\\DBInt": tint
+    "DBInt": tint
     Float: tfloat
     "SilverStripe\\ORM\\FieldType\\DBFloat": tfloat
+    "DBFloat": tfloat
     Double: tdouble
     "SilverStripe\\ORM\\FieldType\\DBDouble": tdouble
+    "DBDouble": tdouble
     Money: tfloat
     "SilverStripe\\ORM\\FieldType\\DBMoney": tfloat
+    "DBMoney": tfloat

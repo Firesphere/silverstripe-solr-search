@@ -14,6 +14,8 @@ class TestIndex extends BaseIndex implements TestOnly
         $this->addClass(SiteTree::class);
         $this->addFulltextField('Title');
         $this->addFulltextField('Content');
+        $this->addFilterField('Title');
+        $this->addFilterField('Created');
     }
 
     public function getIndexName(): string
