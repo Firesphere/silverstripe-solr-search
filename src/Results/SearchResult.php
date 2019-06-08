@@ -90,6 +90,49 @@ class SearchResult
     }
 
     /**
+     * @return ArrayList
+     */
+    public function getMatches(): ArrayList
+    {
+        $matches = $this->matches;
+        $items = [];
+        foreach ($matches as $match) {
+            $class = $match->ClassName;
+            $item = $class::get()->byID($match->ID);
+            $item->Excerpt = DBField::create_field(
+                'HTMLText',
+                str_replace(
+                    '&#65533;',
+                    '',
+                    $this->getHighlightByID($match->_documentid)
+                )
+            );
+            $items[] = $item;
+        }
+
+        return ArrayList::create($items);
+    }
+
+    /**
+     * @param array $result
+     * @return $this
+     * @todo support multiple classes
+     */
+    protected function setMatches($result): self
+    {
+        $data = [];
+        /** @var Document $item */
+        foreach ($result as $item) {
+            $data[] = ArrayData::create($item->getFields());
+        }
+
+        $docs = ArrayList::create($data);
+        $this->matches = $docs;
+
+        return $this;
+    }
+
+    /**
      * @param $docID
      * @return string|null
      */
@@ -137,49 +180,6 @@ class SearchResult
         $this->matches = $matches;
 
         return $matches;
-    }
-
-    /**
-     * @return ArrayList
-     */
-    public function getMatches(): ArrayList
-    {
-        $matches = $this->matches;
-        $items = [];
-        foreach ($matches as $match) {
-            $class = $match->ClassName;
-            $item = $class::get()->byID($match->ID);
-            $item->Excerpt = DBField::create_field(
-                'HTMLText',
-                str_replace(
-                    '&#65533;',
-                    '',
-                    $this->getHighlightByID($match->_documentid)
-                )
-            );
-            $items[] = $item;
-        }
-
-        return ArrayList::create($items);
-    }
-
-    /**
-     * @param array $result
-     * @return $this
-     * @todo support multiple classes
-     */
-    protected function setMatches($result): self
-    {
-        $data = [];
-        /** @var Document $item */
-        foreach ($result as $item) {
-            $data[] = ArrayData::create($item->getFields());
-        }
-
-        $docs = ArrayList::create($data);
-        $this->matches = $docs;
-
-        return $this;
     }
 
     /**

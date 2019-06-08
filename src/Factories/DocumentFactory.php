@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Factories;
 
-use Composer\Autoload\ClassLoader;
 use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;

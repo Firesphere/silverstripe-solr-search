@@ -67,19 +67,6 @@ trait GetterSetterTrait
     }
 
     /**
-     * Boosted fields are used at index time, not at query time
-     *
-     * @param array $boostedFields
-     * @return $this
-     */
-    public function setBoostedFields($boostedFields): self
-    {
-        $this->boostedFields = $boostedFields;
-
-        return $this;
-    }
-
-    /**
      * Add a boosted field to be boosted at query time
      *
      * @param string $field
@@ -104,6 +91,19 @@ trait GetterSetterTrait
     public function getBoostedFields(): array
     {
         return $this->boostedFields;
+    }
+
+    /**
+     * Boosted fields are used at index time, not at query time
+     *
+     * @param array $boostedFields
+     * @return $this
+     */
+    public function setBoostedFields($boostedFields): self
+    {
+        $this->boostedFields = $boostedFields;
+
+        return $this;
     }
 
     /**

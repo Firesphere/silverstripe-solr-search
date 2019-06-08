@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Indexes;
 
-use Exception;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Queries\BaseQuery;
@@ -604,17 +603,6 @@ abstract class BaseIndex
     }
 
     /**
-     * @param string $fulltextField
-     * @return $this
-     */
-    public function addFulltextField($fulltextField): self
-    {
-        $this->fulltextFields[] = $fulltextField;
-
-        return $this;
-    }
-
-    /**
      * @param $sortField
      * @return $this
      */
@@ -625,6 +613,17 @@ abstract class BaseIndex
         $this->sortFields[] = $sortField;
 
         $this->setSortFields(array_unique($this->getSortFields()));
+
+        return $this;
+    }
+
+    /**
+     * @param string $fulltextField
+     * @return $this
+     */
+    public function addFulltextField($fulltextField): self
+    {
+        $this->fulltextFields[] = $fulltextField;
 
         return $this;
     }
