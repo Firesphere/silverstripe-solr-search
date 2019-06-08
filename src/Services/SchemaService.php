@@ -265,7 +265,7 @@ class SchemaService extends ViewableData
 
         $confDirs = SolrCoreService::config()->get('paths');
 
-        return sprintf($confDirs['extras'], $dir);
+        return sprintf($confDirs[5]['extras'], $dir);
     }
 
     /**
