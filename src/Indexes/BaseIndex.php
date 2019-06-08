@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use LogicException;
 use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Director;
@@ -34,6 +35,7 @@ abstract class BaseIndex
 {
     use Extensible;
     use Configurable;
+    use GetterSetterTrait;
 
     private static $fieldTypes = [
         'FulltextFields',
@@ -154,7 +156,7 @@ abstract class BaseIndex
             throw new LogicException('No classes to index found!');
         }
 
-        $this->setClass($config['Classes']);
+        $this->setClasses($config['Classes']);
 
         foreach (self::$fieldTypes as $type) {
             if (array_key_exists($type, $config)) {
@@ -216,7 +218,8 @@ abstract class BaseIndex
 
         // Set the start
         $clientQuery->setStart($query->getStart());
-        $clientQuery->setRows($query->getRows());
+        // Double the rows in case something has been deleted, but not from Solr
+        $clientQuery->setRows($query->getRows() * 2);
         // Add spellchecking
         if ($query->isSpellcheck()) {
             $this->buildSpellcheck($query, $clientQuery);
@@ -558,7 +561,7 @@ abstract class BaseIndex
                 BaseIndex::class => [
                     $this->getIndexName() =>
                         [
-                            'Classes'        => $this->getClass(),
+                            'Classes'        => $this->getClasses(),
                             'FulltextFields' => $this->getFulltextFields(),
                             'SortFields'     => $this->getSortFields(),
                             'FilterFields'   => $this->getFilterFields(),
@@ -576,46 +579,6 @@ abstract class BaseIndex
         }
 
         throw new LogicException('yaml-emit PHP module missing');
-    }
-
-    /**
-     * @return array
-     */
-    public function getClass(): array
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param array $class
-     * @return $this
-     */
-    public function setClass($class): self
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBoostedFields(): array
-    {
-        return $this->boostedFields;
-    }
-
-    /**
-     * Boosted fields are used at index time, not at query time
-     *
-     * @param array $boostedFields
-     * @return $this
-     */
-    public function setBoostedFields($boostedFields): self
-    {
-        $this->boostedFields = $boostedFields;
-
-        return $this;
     }
 
     /**
@@ -671,43 +634,6 @@ abstract class BaseIndex
     public function setFacetFields($facetFields): BaseIndex
     {
         $this->facetFields = $facetFields;
-
-        return $this;
-    }
-
-    /**
-     * $options is not used anymore, added for backward compatibility
-     * @param $class
-     * @param array $options
-     * @return $this
-     */
-    public function addClass($class, $options = array()): self
-    {
-        if (count($options)) {
-            Deprecation::notice('5.0', 'Options are not used anymore');
-        }
-        $this->class[] = $class;
-
-        return $this;
-    }
-
-    /**
-     * Extra options is not used, it's here for backward compatibility
-     *
-     * Boosted fields are used at index time, not at query time
-     * @param $field
-     * @param array $extraOptions
-     * @param int $boost
-     * @return $this
-     * @throws Exception
-     */
-    public function addBoostedField($field, $extraOptions = [], $boost = 2): self
-    {
-        if (!in_array($field, $this->getFulltextFields(), true)) {
-            $this->addFulltextField($field);
-        }
-
-        $this->addBoostedField($field, [], $boost);
 
         return $this;
     }

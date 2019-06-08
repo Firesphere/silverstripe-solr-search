@@ -3,12 +3,15 @@
 
 namespace Firesphere\SolrSearch\Queries;
 
+use Firesphere\SolrSearch\Traits\GetterSetterTrait;
+
 /**
  * Class BaseQuery
  * @package Firesphere\SolrSearch\Queries
  */
 class BaseQuery
 {
+    use GetterSetterTrait;
     /**
      * @todo add user search history through the Query
      * @var array
@@ -18,7 +21,7 @@ class BaseQuery
     /**
      * @var array classes to be searched through
      */
-    protected $classes = [];
+    protected $class = [];
 
     /**
      * Key-value pairs of fields and what to filter against
@@ -338,36 +341,6 @@ class BaseQuery
     }
 
     /**
-     * @param string $class
-     * @return $this
-     */
-    public function addClass($class): self
-    {
-        $this->classes[] = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getClasses(): array
-    {
-        return $this->classes;
-    }
-
-    /**
-     * @param array $classes
-     * @return $this
-     */
-    public function setClasses($classes): self
-    {
-        $this->classes = $classes;
-
-        return $this;
-    }
-
-    /**
      * @param $field
      * @return $this
      */
@@ -393,40 +366,6 @@ class BaseQuery
     public function setHighlight($highlight): self
     {
         $this->highlight = $highlight;
-
-        return $this;
-    }
-
-    /**
-     * Add a boosted field to be boosted at query time
-     *
-     * @param string $field
-     * @param string $boost
-     * @return $this
-     */
-    public function addBoostedField($field, $boost): self
-    {
-        $this->boostedFields[$field] = $boost;
-
-        return $this;
-    }
-
-    /**
-     * Set boosted fields to be boosted at query time
-     * @return array
-     */
-    public function getBoostedFields(): array
-    {
-        return $this->boostedFields;
-    }
-
-    /**
-     * @param array $boostedFields
-     * @return BaseQuery
-     */
-    public function setBoostedFields(array $boostedFields): BaseQuery
-    {
-        $this->boostedFields = $boostedFields;
 
         return $this;
     }

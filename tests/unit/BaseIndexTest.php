@@ -19,7 +19,7 @@ class BaseIndexTest extends SapphireTest
     public function testConstruct()
     {
         $this->assertInstanceOf(Client::class, $this->index->getClient());
-        $this->assertCount(1, $this->index->getClass());
+        $this->assertCount(1, $this->index->getClasses());
         $this->assertCount(2, $this->index->getFulltextFields());
     }
 

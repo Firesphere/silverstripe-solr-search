@@ -104,7 +104,7 @@ class SolrIndexTask extends BuildTask
             $index = Injector::inst()->get($indexName);
 
             // Only index the classes given in the var if needed, should be a single class
-            $classes = isset($vars['class']) ? [$vars['class']] : $index->getClass();
+            $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
             $client = $index->getClient();
             $group = $request->getVar('group') ?: 0; // allow starting from a specific group

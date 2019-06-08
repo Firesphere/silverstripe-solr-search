@@ -83,7 +83,7 @@ class SolrIndexJob extends AbstractQueuedJob
         ];
         /** @var BaseIndex $index */
         $index = Injector::inst()->get($this->indexes[0]);
-        $this->classToIndex = $this->classToIndex ?: $index->getClass();
+        $this->classToIndex = $this->classToIndex ?: $index->getClasses();
         /** @var SolrIndexTask $task */
         $task = Injector::inst()->get(SolrIndexTask::class);
         $request = new HTTPRequest(

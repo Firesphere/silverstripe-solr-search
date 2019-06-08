@@ -55,7 +55,7 @@ class DataObjectExtension extends DataExtension
             $index = Injector::inst()->get($index);
             // No point in sending a delete for something that's not in the index
             // @todo check the hierarchy, this could be a parent that should be indexed
-            if (in_array($this->owner->ClassName, $index->getClass(), true)) {
+            if (in_array($this->owner->ClassName, $index->getClasses(), true)) {
                 $client = $index->getClient();
 
                 try {

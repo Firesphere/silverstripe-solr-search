@@ -102,7 +102,7 @@ class SearchIntrospection
     public function getFieldIntrospection($field)
     {
         $fullfield = str_replace('.', '_', $field);
-        $sources = $this->index->getClass();
+        $sources = $this->index->getClasses();
 
         foreach ($sources as $source) {
             $sources[$source]['base'] = DataObject::getSchema()->baseDataClass($source);
