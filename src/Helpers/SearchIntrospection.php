@@ -62,8 +62,9 @@ class SearchIntrospection
      * @param bool $dataOnly - True to only return classes that have tables
      * @return array - Integer keys, String values as classes sorted by depth (most super first)
      */
-    public static function hierarchy($class, $includeSubclasses = true, $dataOnly = false)
+    public static function hierarchy($class, $includeSubclasses = true, $dataOnly = false): array
     {
+        // What does this actually do?
         $key = "$class!" . ($includeSubclasses ? 'sc' : 'an') . '!' . ($dataOnly ? 'do' : 'al');
 
         if (!isset(self::$hierarchy[$key])) {

@@ -226,7 +226,12 @@ class BaseQuery
         return $this;
     }
 
-    public function addFilter($field, $value)
+    /**
+     * @param string $field
+     * @param string $value
+     * @return $this
+     */
+    public function addFilter($field, $value): self
     {
         $this->filter[$field] = $value;
 
@@ -292,9 +297,9 @@ class BaseQuery
      *     'Field' => 'Name_of_Field',
      *     'Title' => 'TitleToUseForRetrieving'
      * ]
-     * @return BaseQuery
+     * @return self
      */
-    public function addFacetField($class, $options): BaseQuery
+    public function addFacetField($class, $options): self
     {
         $this->facetFields[$class] = $options;
 
@@ -341,9 +346,9 @@ class BaseQuery
 
     /**
      * @param bool $spellcheck
-     * @return BaseQuery
+     * @return self
      */
-    public function setSpellcheck(bool $spellcheck): BaseQuery
+    public function setSpellcheck(bool $spellcheck): self
     {
         $this->spellcheck = $spellcheck;
 

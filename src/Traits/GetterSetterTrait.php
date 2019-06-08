@@ -13,7 +13,7 @@ trait GetterSetterTrait
     protected $class = [];
 
     /**
-     * Sets boosting at _index_ time
+     * Sets boosting at _index_ time or _query_ time. Depending on the usage of this trait
      * [
      *     'FieldName' => 2,
      * ]
@@ -105,8 +105,7 @@ trait GetterSetterTrait
     {
         return $this->boostedFields;
     }
-
-
+    
     /**
      * @return array
      */
