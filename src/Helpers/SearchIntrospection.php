@@ -142,7 +142,7 @@ class SearchIntrospection
      * @return array
      * @throws Exception
      */
-    private function getRelationIntrospection($source, $lookup, array $next)
+    protected function getRelationIntrospection($source, $lookup, array $next)
     {
         $source = $this->getSourceName($source);
 
@@ -318,7 +318,7 @@ class SearchIntrospection
                         $type = $match[1];
                     }
                     // Get the origin
-                    $origin = isset($fieldoptions['origin']) ? $fieldoptions['origin'] : $dataclass;
+                    $origin = $fieldoptions['origin'] ?? $dataclass;
 
                     $found["{$origin}_{$fullfield}"] = array(
                         'name'         => "{$origin}_{$fullfield}",
