@@ -49,15 +49,17 @@ class SolrIndexJob extends AbstractQueuedJob
     public function __construct($params = array())
     {
         parent::__construct($params);
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        if (!count($this->indexes)) {
+            $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
-        foreach ($indexes as $index) {
-            // Skip the abstract base
-            $ref = new ReflectionClass($index);
-            if (!$ref->isInstantiable()) {
-                continue;
+            foreach ($indexes as $index) {
+                // Skip the abstract base
+                $ref = new ReflectionClass($index);
+                if (!$ref->isInstantiable()) {
+                    continue;
+                }
+                $this->indexes[] = $index;
             }
-            $this->indexes[] = $index;
         }
     }
 
