@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\CMS\Model\SiteTree;
@@ -12,12 +13,14 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
+use Solarium\Client;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
- * @property File|SiteConfig|SiteTree|Group|Member|DataObjectExtension $owner
+ * @property DataObject|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {
@@ -31,7 +34,6 @@ class DataObjectExtension extends DataExtension
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        $key = $this->owner->ClassName . '-' . $this->owner->ID;
     }
 
     /**
