@@ -1,0 +1,18 @@
+<?php
+use Firesphere\SolrSearch\Indexes\BaseIndex;
+use SilverStripe\CMS\Model\SiteTree;
+
+class CircleCITestIndex extends BaseIndex
+{
+    public function init(): void
+    {
+        $this->addClass(SiteTree::class);
+        $this->addFulltextField('Title');
+        $this->addFulltextField('Content');
+    }
+
+    public function getIndexName(): string
+    {
+        return 'CircleCITestIndex';
+    }
+}
