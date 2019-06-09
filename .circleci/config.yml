@@ -58,7 +58,16 @@ jobs:
             RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":5')
             if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
             echo "Solr has successfully indexed documents"
-      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
+      - run:
+          name: Permission changes and testing
+          command: |
+            usermod -a -G www-data solr
+            groups solr
+            usermod -a -G solr www-data
+            groups www-data
+            chown -R solr:www-data /var/www/html
+            chmod -R u+rwxs,g+rwxs /var/www/html
+      - run: su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
       - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
       - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
