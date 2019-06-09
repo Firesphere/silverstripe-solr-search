@@ -128,7 +128,7 @@ abstract class BaseIndex
     public function init()
     {
         if (!self::config()->get($this->getIndexName())) {
-            Deprecation::notice('5.0', 'The configuration should be set from YML now');
+            Deprecation::notice('4.0', 'Please set an index name');
 
             return;
         }
@@ -229,12 +229,7 @@ abstract class BaseIndex
             }
             // If boosting is set, add the fields to boost
             if ($search['boost'] > 1) {
-                foreach ($search['fields'] as $boostField) {
-                    $criteria = Criteria::where($boostField)
-                        ->is($term)
-                        ->boost($search['boost']);
-                    $searchQuery[] = $criteria->getQuery();
-                }
+                $searchQuery = $this->buildQueryBoost($search, $term, $searchQuery);
             }
         }
 
@@ -672,5 +667,23 @@ abstract class BaseIndex
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * @param $search
+     * @param string $term
+     * @param array $searchQuery
+     * @return array
+     */
+    protected function buildQueryBoost($search, string $term, array $searchQuery): array
+    {
+        foreach ($search['fields'] as $boostField) {
+            $criteria = Criteria::where($boostField)
+                ->is($term)
+                ->boost($search['boost']);
+            $searchQuery[] = $criteria->getQuery();
+        }
+
+        return $searchQuery;
     }
 }
