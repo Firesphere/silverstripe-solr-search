@@ -36,10 +36,7 @@ jobs:
           command: |
             if [ ! -d assets ]; then mkdir assets; fi
             cp .circleci/.env.test ./.env
-            cp tests/mocks/TestIndex.php app/src/CircleCITestIndex.php
-            sed -i -e 's/namespace Firesphere\\SolrSearch\\Tests;//' app/src/CircleCITestIndex.php
-            sed -i -e "s/ implements TestOnly//" app/src/CircleCITestIndex.php
-            sed -i -e "s/TestIndex/CircleCITestIndex/" app/src/CircleCITestIndex.php
+            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Run Solr Configure
