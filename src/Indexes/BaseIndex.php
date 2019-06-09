@@ -157,6 +157,36 @@ abstract class BaseIndex
     }
 
     /**
+     * Generate a yml version of the init method indexes
+     */
+    public function initToYml(): void
+    {
+        if (function_exists('yaml_emit')) {
+            $result = [
+                BaseIndex::class => [
+                    $this->getIndexName() =>
+                        [
+                            'Classes'        => $this->getClasses(),
+                            'FulltextFields' => $this->getFulltextFields(),
+                            'SortFields'     => $this->getSortFields(),
+                            'FilterFields'   => $this->getFilterFields(),
+                            'BoostedFields'  => $this->getBoostedFields(),
+                            'CopyFields'     => $this->getCopyFields(),
+                            'DefaultField'   => $this->getDefaultField(),
+                            'FacetFields'    => $this->getFacetFields(),
+                        ]
+                ]
+            ];
+
+            Debug::dump(yaml_emit($result));
+
+            return;
+        }
+
+        throw new LogicException('yaml-emit PHP module missing');
+    }
+
+    /**
      * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
      *
      * @param BaseQuery $query
@@ -395,6 +425,24 @@ abstract class BaseIndex
     }
 
     /**
+     * @param $search
+     * @param string $term
+     * @param array $searchQuery
+     * @return array
+     */
+    protected function buildQueryBoost($search, string $term, array $searchQuery): array
+    {
+        foreach ($search['fields'] as $boostField) {
+            $criteria = Criteria::where($boostField)
+                ->is($term)
+                ->boost($search['boost']);
+            $searchQuery[] = $criteria->getQuery();
+        }
+
+        return $searchQuery;
+    }
+
+    /**
      * Upload config for this index to the given store
      *
      * @param ConfigStore $store
@@ -511,36 +559,6 @@ abstract class BaseIndex
         $this->filterFields = $filterFields;
 
         return $this;
-    }
-
-    /**
-     * Generate a yml version of the init method indexes
-     */
-    public function initToYml(): void
-    {
-        if (function_exists('yaml_emit')) {
-            $result = [
-                BaseIndex::class => [
-                    $this->getIndexName() =>
-                        [
-                            'Classes'        => $this->getClasses(),
-                            'FulltextFields' => $this->getFulltextFields(),
-                            'SortFields'     => $this->getSortFields(),
-                            'FilterFields'   => $this->getFilterFields(),
-                            'BoostedFields'  => $this->getBoostedFields(),
-                            'CopyFields'     => $this->getCopyFields(),
-                            'DefaultField'   => $this->getDefaultField(),
-                            'FacetFields'    => $this->getFacetFields(),
-                        ]
-                ]
-            ];
-
-            Debug::dump(yaml_emit($result));
-
-            return;
-        }
-
-        throw new LogicException('yaml-emit PHP module missing');
     }
 
     /**
@@ -667,23 +685,5 @@ abstract class BaseIndex
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @param $search
-     * @param string $term
-     * @param array $searchQuery
-     * @return array
-     */
-    protected function buildQueryBoost($search, string $term, array $searchQuery): array
-    {
-        foreach ($search['fields'] as $boostField) {
-            $criteria = Criteria::where($boostField)
-                ->is($term)
-                ->boost($search['boost']);
-            $searchQuery[] = $criteria->getQuery();
-        }
-
-        return $searchQuery;
     }
 }
