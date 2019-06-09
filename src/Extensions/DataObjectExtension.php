@@ -5,7 +5,6 @@ namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
-use Firesphere\SolrSearch\Services\SolrCoreService;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\CMS\Model\SiteTree;
@@ -15,7 +14,6 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
-use Solarium\Client;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
