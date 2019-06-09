@@ -34,7 +34,6 @@ jobs:
       - run:
           name: Setup Integration Pre-requisites
           command: |
-            if [ ! -d assets ]; then mkdir assets; fi
             cp .circleci/.env.test ./.env
             cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
