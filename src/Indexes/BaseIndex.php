@@ -653,7 +653,7 @@ abstract class BaseIndex
     /**
      * @return Client
      */
-    public function getClient(): Client
+    public function getClient()
     {
         return $this->client;
     }

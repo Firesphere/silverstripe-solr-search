@@ -72,6 +72,27 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals('help me', $this->index->escapeSearch($term, $helper));
     }
 
+    public function testGetFieldsForIndexing()
+    {
+        $expected = [
+            'Title',
+            'Content',
+            'Title',
+            'Created'
+        ];
+        $this->assertEquals($expected, $this->index->getFieldsForIndexing());
+    }
+
+    public function testGetSetClient()
+    {
+        $client = $this->index->getClient();
+        // set client to something stupid
+        $this->index->setClient('test');
+        $this->assertEquals('test', $this->index->getClient());
+        $this->index->setClient($client);
+        $this->assertInstanceOf(Client::class, $this->index->getClient());
+    }
+
     protected function setUp()
     {
         $this->index = Injector::inst()->get(TestIndex::class);
