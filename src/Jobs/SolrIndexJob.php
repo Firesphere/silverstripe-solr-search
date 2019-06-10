@@ -46,10 +46,11 @@ class SolrIndexJob extends AbstractQueuedJob
      * @param array $params
      * @throws ReflectionException
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         parent::__construct($params);
-        if (!count($this->indexes)) {
+        // Make sure indexes are set on first run, but not again after that :)
+        if (!count($this->indexes)) { // If indexes are set, don't load them.
             $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
             foreach ($indexes as $index) {
@@ -98,10 +99,14 @@ class SolrIndexJob extends AbstractQueuedJob
         if ($result !== false) {
             $this->totalSteps = $result;
             // If the result is false, the job should fail too
+            // Thus, only set to true if the result isn't false :)
             $this->isComplete = true;
         }
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function afterComplete()
     {
         // No more steps to execute on this class, let's go to the next class

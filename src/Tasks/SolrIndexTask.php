@@ -70,6 +70,7 @@ class SolrIndexTask extends BuildTask
      * @todo clean up a bit, this is becoming a mess
      * @todo defer to background because it may run out of memory
      * @todo give Solr more time to respond
+     * @todo Change the debug messaging to use the logger
      */
     public function run($request)
     {
