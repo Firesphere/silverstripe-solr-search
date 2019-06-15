@@ -181,12 +181,6 @@ class SolrIndexTask extends BuildTask
                         $debug
                     );
                 } catch (Exception $e) {
-                    // get an update query instance
-                    $update = $client->createUpdate();
-                    $update->addCommit();
-                    // optimize the index
-                    $update->addOptimize(true, false, 5);
-                    $client->update($update);
                     Debug::message(date('Y-m-d H:i:s' . "\n"), false);
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;

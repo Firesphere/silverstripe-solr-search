@@ -9,7 +9,7 @@ Firesphere\SolrSearch\Services\SolrCoreService:
       localhost:
         host: 127.0.0.1
         port: 8983
-        timeout: 5
+        timeout: 10
         # set up timeouts
         index_timeout: 10
         optimize_timeout: 100
