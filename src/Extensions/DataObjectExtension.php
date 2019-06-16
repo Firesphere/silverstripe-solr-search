@@ -5,6 +5,8 @@ namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Models\DirtyClass;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\CMS\Model\SiteTree;
@@ -13,7 +15,10 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
+use Solarium\Core\Client\Client;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
@@ -29,9 +34,51 @@ class DataObjectExtension extends DataExtension
 
     protected $canViewClasses = [];
 
+    /**
+     * @throws ValidationException
+     */
     public function onAfterWrite()
     {
+        // Mark the current class as dirty
+        /** @var DirtyClass $record */
+        $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
+        if (!$record) {
+            $record = DirtyClass::create([
+                'Class' => $this->owner->ClassName,
+                'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
+                'IDs'   => json_encode([$this->owner->ID])
+            ]);
+            $record->write();
+        }
         parent::onAfterWrite();
+
+        $ids = json_decode($record->IDs);
+        $ids[] = $this->owner->ID;
+        try {
+            // Update the thingy
+            $class = $this->owner->ClassName;
+            /** @var DataList|$this->owner->ClassName[] $items */
+            $items = $class::get()->byIDs($ids);
+            // @todo add feature to the Index Task to handle this in the background
+            $client = new Client();
+            foreach ($items as $item) {
+                unset($ids[$item->ID]);
+            }
+            // If we don't get an exception, mark the item as clean
+            $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
+            $record->IDs = json_encode($ids);
+            $record->write();
+        } catch (Exception $e) {
+            $logger = Injector::inst()->get(LoggerInterface::class);
+            $logger->log(
+                sprintf(
+                    'Unable to update %s with ID %s',
+                    $this->owner->ClassName,
+                    $this->owner->ID
+                )
+            );
+            $logger->log($e->getMessage());
+        }
     }
 
     /**

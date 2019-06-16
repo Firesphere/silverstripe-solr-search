@@ -7,7 +7,8 @@
     "silverstripe",
     "search",
     "solr",
-    "configuration"
+    "configuration",
+    "solarium"
   ],
   "authors": [
     {
@@ -21,6 +22,7 @@
   ],
   "require": {
     "php": ">=7.1",
+    "ext-json": "*",
     "silverstripe/framework": "^4",
     "silverstripe/queuedjobs": "^4",
     "solarium/solarium": "^4.2",
