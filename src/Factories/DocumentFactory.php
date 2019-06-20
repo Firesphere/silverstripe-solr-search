@@ -12,6 +12,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
@@ -44,11 +45,12 @@ class DocumentFactory
      * @param $group
      * @param int $count
      * @param bool $debug
+     * @param null|ArrayList $items
      * @return array
      * @throws Exception
      * @todo this could be cleaner
      */
-    public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $debug = false)
+    public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $debug = false, $items = null)
     {
         $this->introspection->setIndex($index);
         $docs = [];
@@ -56,11 +58,13 @@ class DocumentFactory
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
         $batchLength = self::config()->get('batchLength');
-        // This limit is scientifically determined by keeping on trying until it didn't break anymore
-        $items = $baseClass::get()
-            ->sort('ID ASC')
-            ->limit($batchLength, ($group * $batchLength));
-        $count += $items->count();
+        if (!$items) {
+            // This limit is scientifically determined by keeping on trying until it didn't break anymore
+            $items = $baseClass::get()
+                ->sort('ID ASC')
+                ->limit($batchLength, ($group * $batchLength));
+            $count += $items->count();
+        }
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
         $boostFields = $index->getBoostedFields();
