@@ -11,7 +11,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
-use Solarium\QueryType\Update\Result;
+use Solarium\Core\Client\Response;
 
 class SolrUpdate
 {
@@ -19,10 +19,10 @@ class SolrUpdate
     public const UPDATE_TYPE = 'update';
 
     /**
-     * @todo use this helper in the IndexTask so it's not duplicated
+     * @todo use this helper in the IndexTask so it's not duplicated?
      * @param DataObject $object
      * @param string $type
-     * @return bool|Result
+     * @return bool|Response
      * @throws \ReflectionException
      * @throws \Exception
      */

@@ -303,10 +303,6 @@ abstract class BaseIndex
     {
         if (count($query->getClasses())) {
             $classes = $query->getClasses();
-            foreach ($classes as &$class) {
-                $class = str_replace('\\', '\\\\', $class);
-            }
-            unset($class);
             $criteria = Criteria::where('ClassHierarchy')->in($classes);
             $clientQuery->createFilterQuery('classes')
                 ->setQuery($criteria->getQuery());
