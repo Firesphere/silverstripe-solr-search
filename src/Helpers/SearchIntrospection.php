@@ -41,6 +41,7 @@ class SearchIntrospection
      * @param $extension
      * @param bool $includeSubclasses
      * @return bool
+     * @throws \ReflectionException
      */
     public static function hasExtension($class, $extension, $includeSubclasses = true)
     {
@@ -61,6 +62,7 @@ class SearchIntrospection
      * @param bool $includeSubclasses - True to return subclasses as well as super classes
      * @param bool $dataOnly - True to only return classes that have tables
      * @return array - Integer keys, String values as classes sorted by depth (most super first)
+     * @throws \ReflectionException
      */
     public static function hierarchy($class, $includeSubclasses = true, $dataOnly = false): array
     {
@@ -255,6 +257,7 @@ class SearchIntrospection
      * @param $fullfield
      * @param array $found
      * @return array
+     * @throws \ReflectionException
      */
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {

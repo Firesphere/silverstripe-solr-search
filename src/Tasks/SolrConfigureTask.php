@@ -8,6 +8,8 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
+use Firesphere\SolrSearch\Stores\PostConfigStore;
+use League\Flysystem\Config;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -92,15 +94,8 @@ class SolrConfigureTask extends BuildTask
     {
         $index = $instance->getIndexName();
 
-        // @todo load from config
-        $config = [
-            'mode' => 'file',
-            'path' => Director::baseFolder() . '/.solr'
-        ];
-        /** @todo make stores configurable */
-        /** @var ConfigStore $configStore */
-        $configStore = Injector::inst()->create(FileConfigStore::class, $config);
-        $instance->uploadConfig($configStore);
+        $storeConfig = SolrCoreService::config()->get('store');
+        $configStore = $this->getStore($storeConfig);
 
         // Then tell Solr to use those config files
         /** @var SolrCoreService $service */
@@ -110,17 +105,24 @@ class SolrConfigureTask extends BuildTask
         // And it has a start time.
         // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
         $status = $service->coreStatus($index);
+        $instance->uploadConfig($configStore);
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             try {
-                $service->coreReload($index);
+                $result = $service->coreReload($index);
             } catch (Exception $e) {
-                var_dump($e);
+                $this->logger->error($e->getMessage());
                 // Possibly a file error, try to unload and recreate the core
                 $service->coreUnload($index);
-                $service->coreCreate($index, $configStore->instanceDir($index));
+                $result = $service->coreCreate($index, $configStore);
             }
         } else {
-            $service->coreCreate($index, $configStore->instanceDir($index));
+            $result = $service->coreCreate($index, $configStore);
+        }
+
+        if ($result) {
+            $this->logger->info(sprintf('Core %s successfully loaded', $index));
+        } else {
+            $this->logger->warning(sprintf('Core %s could not be loaded successfully', $index));
         }
     }
 
@@ -142,5 +144,34 @@ class SolrConfigureTask extends BuildTask
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param $storeConfig
+     * @return ConfigStore
+     */
+    protected function getStore($storeConfig): ConfigStore
+    {
+        $configStore = null;
+
+        /** @var ConfigStore $configStore */
+        if ($storeConfig['mode'] === 'post') {
+            $configStore = Injector::inst()->create(PostConfigStore::class, $storeConfig);
+        } elseif ($storeConfig['mode'] === 'file') {
+            // A relative folder should be rewritten to a writeable folder for the system
+            if (Director::is_relative_url($storeConfig['path'])) {
+                $storeConfig['path'] = Director::baseFolder() . '/' . $storeConfig['path'];
+            }
+            $configStore = Injector::inst()->create(FileConfigStore::class, $storeConfig);
+        }
+
+        // Allow changing the configStore if it needs to change to a different store
+        $this->extend('onBeforeConfig', $configStore, $storeConfig);
+
+        if (!$configStore) {
+            throw new \LogicException('No functional config store found');
+        }
+
+        return $configStore;
     }
 }

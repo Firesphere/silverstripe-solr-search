@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Models;
 
-
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 
@@ -18,7 +17,6 @@ use SilverStripe\ORM\FieldType\DBDatetime;
  */
 class DirtyClass extends DataObject
 {
-
     private static $table_name = 'DirtyClass';
     /**
      * @var array

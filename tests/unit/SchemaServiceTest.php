@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SchemaService;
 use SilverStripe\Core\Injector\Injector;

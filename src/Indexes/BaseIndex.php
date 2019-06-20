@@ -128,7 +128,7 @@ abstract class BaseIndex
     public function init()
     {
         if (!self::config()->get($this->getIndexName())) {
-            Deprecation::notice('4.0', 'Please set an index name');
+            Deprecation::notice('5.0', 'Please set an index name');
 
             return;
         }

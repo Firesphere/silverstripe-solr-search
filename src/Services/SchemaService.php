@@ -7,6 +7,7 @@ use Exception;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use GuzzleHttp\Client;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\ORM\ArrayList;
@@ -196,9 +197,10 @@ class SchemaService extends ViewableData
     public function getTypes()
     {
         if (!$this->typesTemplate) {
-            // @todo configurable but with default to the current absolute path
+            $solrVersion = $this->getSolrVersion();
             $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
-            $this->setTypesTemplate($dir . '/Solr/5/templates/types.ss');
+            $template = sprintf('%s/Solr/%s/templates/types.ss', $dir, $solrVersion);
+            $this->setTypesTemplate($template);
         }
 
         return $this->renderWith($this->getTypesTemplate());
@@ -229,8 +231,10 @@ class SchemaService extends ViewableData
     public function generateSchema()
     {
         if (!$this->template) {
+            $solrVersion = $this->getSolrVersion();
             $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
-            $this->setTemplate($dir . '/Solr/5/templates/schema.ss');
+            $template = sprintf('%s/Solr/%s/templates/schema.ss', $dir, $solrVersion);
+            $this->setTemplate($template);
         }
 
         return $this->renderWith($this->getTemplate());
@@ -264,8 +268,9 @@ class SchemaService extends ViewableData
         $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
 
         $confDirs = SolrCoreService::config()->get('paths');
+        $solrVersion = $this->getSolrVersion();
 
-        return sprintf($confDirs[5]['extras'], $dir);
+        return sprintf($confDirs[$solrVersion]['extras'], $dir);
     }
 
     /**
@@ -304,5 +309,30 @@ class SchemaService extends ViewableData
         $this->introspection = $introspection;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getSolrVersion(): int
+    {
+        $config = SolrCoreService::config()->get('config');
+        $firstEndpoint = array_shift($config['endpoint']);
+        $clientConfig = [
+            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
+        ];
+
+        $client = new Client($clientConfig);
+
+        $result = $client->get('solr/admin/info/system');
+        $result = json_decode($result->getBody(), 1);
+
+        $solrVersion = 5;
+        $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
+        if ($version > 0) {
+            $solrVersion = 4;
+        }
+
+        return $solrVersion;
     }
 }

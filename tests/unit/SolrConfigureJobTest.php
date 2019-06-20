@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
