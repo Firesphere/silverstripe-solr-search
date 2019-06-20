@@ -28,4 +28,10 @@ interface ConfigStore
      * @return null|string
      */
     public function instanceDir($index);
+
+    /**
+     * Get the path of where the index configuration is stored
+     * @return string
+     */
+    public function getPath();
 }

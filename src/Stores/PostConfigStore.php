@@ -4,9 +4,39 @@
 namespace Firesphere\SolrSearch\Stores;
 
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use GuzzleHttp\Client;
+use Solarium\Exception\RuntimeException;
 
 class PostConfigStore implements ConfigStore
 {
+    /**
+     * @var array
+     */
+    protected $config;
+
+    protected static $extensions = [
+        'xml' => 'text/xml',
+        'txt' => 'text/plain',
+    ];
+
+    /**
+     * FileConfigStore constructor.
+     * @param array $config
+     */
+    public function __construct($config)
+    {
+        if (!$config) {
+            throw new RuntimeException('No config defined', 1);
+        }
+        if (!isset($config['path'])) {
+            $config['path'] = '/';
+        }
+        if (substr($config['path'], -1) !== '/') {
+            $config['path'] .= '/';
+        }
+
+        $this->config = $config;
+    }
 
     /**
      * Upload a file to Solr for index $index
@@ -16,7 +46,7 @@ class PostConfigStore implements ConfigStore
      */
     public function uploadFile($index, $file)
     {
-        // TODO: Implement uploadFile() method.
+        $this->uploadString($index, $file, file_get_contents($file));
     }
 
     /**
@@ -28,6 +58,34 @@ class PostConfigStore implements ConfigStore
      */
     public function uploadString($index, $filename, $string)
     {
+        $info = pathinfo($filename);
+        $clientConfig = [
+            'base_uri' => $this->config['uri'],
+            'headers'  => [
+                'Content-Type' => static::$extensions[$info['extension']]
+            ]
+        ];
+        // Add auth to the post if needed
+        if (isset($this->config['auth'])) {
+            $clientConfig['auth'] = [
+                $this->config['auth']['username'],
+                $this->config['auth']['password'],
+            ];
+        }
+
+        $client = new Client($clientConfig);
+
+        $path = sprintf('%sconfig/%s/%s', $this->getPath(), $index, $filename);
+
+        $client->post($path, ['body' => $string]);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPath()
+    {
+        return $this->config['path'];
     }
 
     /**
@@ -37,6 +95,6 @@ class PostConfigStore implements ConfigStore
      */
     public function instanceDir($index)
     {
-        return null;
+        return $index;
     }
 }

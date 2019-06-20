@@ -4,8 +4,7 @@
 namespace Firesphere\SolrSearch\Stores;
 
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
-use RuntimeException;
-use SilverStripe\Control\Director;
+use Solarium\Exception\RuntimeException;
 
 /**
  * Class FileConfigStore
@@ -15,23 +14,21 @@ class FileConfigStore implements ConfigStore
 {
 
     /**
-     * @var string
+     * @var array
      */
-    protected $path;
+    protected $config;
 
     /**
      * FileConfigStore constructor.
-     * @param null|array $config
+     * @param array $config
      */
-    public function __construct($config = null)
+    public function __construct($config)
     {
-        if (!$config) {
-            $path = Director::baseFolder() . '/.solr';
-        } else {
-            $path = $config['path'];
+        if (!$config || !isset($config['path'])) {
+            throw new RuntimeException('No valid config defined', 1);
         }
 
-        $this->path = $path;
+        $this->config = $config;
     }
 
     /**
@@ -53,7 +50,7 @@ class FileConfigStore implements ConfigStore
      */
     public function getTargetDir($index)
     {
-        $targetDir = "{$this->path}/{$index}/conf";
+        $targetDir = "{$this->getPath()}/{$index}/conf";
 
         if (!is_dir($targetDir)) {
             $worked = @mkdir($targetDir, 0770, true);
@@ -68,6 +65,11 @@ class FileConfigStore implements ConfigStore
         return $targetDir;
     }
 
+    public function getPath()
+    {
+        return $this->config['path'];
+    }
+
     /**
      * @param string $index
      * @param string $filename
@@ -77,7 +79,7 @@ class FileConfigStore implements ConfigStore
     public function uploadString($index, $filename, $string)
     {
         $targetDir = $this->getTargetDir($index);
-        file_put_contents("$targetDir/$filename", $string);
+        file_put_contents(sprintf('%s/%s', $targetDir, $filename), $string);
     }
 
     /**
@@ -86,24 +88,24 @@ class FileConfigStore implements ConfigStore
      */
     public function instanceDir($index)
     {
-        return $this->path . '/' . $index;
+        return $this->getPath() . '/' . $index;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getPath()
+    public function getConfig(): array
     {
-        return $this->path;
+        return $this->config;
     }
 
     /**
-     * @param string $path
-     * @return FileConfigStore
+     * @param array $config
+     * @return $this
      */
-    public function setPath($path)
+    public function setConfig(array $config): FileConfigStore
     {
-        $this->path = $path;
+        $this->config = $config;
 
         return $this;
     }

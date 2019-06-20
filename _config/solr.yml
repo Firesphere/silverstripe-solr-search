@@ -3,6 +3,7 @@ Name: SolrSearch
 ---
 Firesphere\SolrSearch\Factories\DocumentFactory:
   batchLength: 500
+# Should move to example docs
 Firesphere\SolrSearch\Services\SolrCoreService:
   config:
     endpoint:
@@ -25,3 +26,7 @@ Firesphere\SolrSearch\Services\SolrCoreService:
     4:
       schema: '%s/Solr/4/templates'
       extras: '%s/Solr/4/extras'
+  store:
+    mode: 'file'
+    path: '.solr'
+

@@ -2,6 +2,7 @@
 
 namespace Firesphere\SolrSearch\Services;
 
+use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use SilverStripe\Core\Config\Configurable;
 use Solarium\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
@@ -31,29 +32,29 @@ class SolrCoreService
     /**
      * Create a new core
      * @param $core string - The name of the core
-     * @param $instancedir string - The base path of the core on the server
-     * @return StatusResult|null
+     * @param ConfigStore $configStore
+     * @return bool
      */
-    public function coreCreate($core, $instancedir)
+    public function coreCreate($core, $configStore): bool
     {
         $action = $this->admin->createCreate();
 
         $action->setCore($core);
 
-        $action->setInstanceDir($instancedir);
+        $action->setInstanceDir($configStore->instanceDir($core));
 
         $this->admin->setAction($action);
 
         $response = $this->client->coreAdmin($this->admin);
 
-        return $response->getStatusResult();
+        return $response->getWasSuccessful();
     }
 
     /**
      * @param $core
      * @return StatusResult|null
      */
-    public function coreReload($core)
+    public function coreReload($core): ?StatusResult
     {
         $reload = $this->admin->createReload();
         $reload->setCore($core);
@@ -70,7 +71,7 @@ class SolrCoreService
      * @return StatusResult|null
      * @deprecated backward compatibility stub
      */
-    public function coreIsActive($core)
+    public function coreIsActive($core): ?StatusResult
     {
         return $this->coreStatus($core);
     }
@@ -79,7 +80,7 @@ class SolrCoreService
      * @param $core
      * @return StatusResult|null
      */
-    public function coreStatus($core)
+    public function coreStatus($core): ?StatusResult
     {
         $status = $this->admin->createStatus();
         $status->setCore($core);
@@ -95,7 +96,7 @@ class SolrCoreService
      * @param string $core core name
      * @return StatusResult|null A result is successful
      */
-    public function coreUnload($core)
+    public function coreUnload($core): ?StatusResult
     {
         $unload = $this->admin->createUnload();
         $unload->setCore($core);
@@ -109,7 +110,7 @@ class SolrCoreService
     /**
      * @return Client
      */
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }
@@ -118,7 +119,7 @@ class SolrCoreService
      * @param Client $client
      * @return SolrCoreService
      */
-    public function setClient($client)
+    public function setClient($client): SolrCoreService
     {
         $this->client = $client;
 
