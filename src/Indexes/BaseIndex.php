@@ -22,6 +22,7 @@ use SilverStripe\Dev\Deprecation;
 use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
+use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -87,6 +88,7 @@ abstract class BaseIndex
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $this->client = new Client($config);
+        $this->client->setAdapter(new Guzzle());
 
         // Set up the schema service, only used in the generation of the schema
         $schemaService = Injector::inst()->get(SchemaService::class);
