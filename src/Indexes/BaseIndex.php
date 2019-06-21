@@ -167,8 +167,9 @@ abstract class BaseIndex
     public function doSearch(BaseQuery $query)
     {
         $this->extend('onBeforeSearch', $query);
+        $clientQuery = $this->client->createSelect();
         // Build the actual query parameters
-        $clientQuery = $this->buildSolrQuery($query);
+        $queryArray = $this->buildSolrQuery($query, $clientQuery);
         // Build class filtering
         $this->buildClassFilter($query, $clientQuery);
         // Limit the results based on viewability
@@ -178,7 +179,7 @@ abstract class BaseIndex
         // And excludes
         $this->buildExcludes($query, $clientQuery);
         // Add boosting
-        $this->buildBoosts($query, $clientQuery);
+        $queryArray = $this->buildBoosts($query, $queryArray);
         // Add highlighting
         $clientQuery->getHighlighting()->setFields($query->getHighlight());
 
@@ -198,6 +199,9 @@ abstract class BaseIndex
             $clientQuery->setFields($query->getFields());
         }
 
+        $q = implode(' ', $queryArray);
+        $clientQuery->setQuery($q);
+
         $result = $this->client->select($clientQuery);
 
         // Handle the after search first. This gets a raw search result
@@ -212,11 +216,11 @@ abstract class BaseIndex
 
     /**
      * @param BaseQuery $query
-     * @return Query
+     * @param Query $clientQuery
+     * @return array
      */
-    protected function buildSolrQuery(BaseQuery $query): Query
+    protected function buildSolrQuery(BaseQuery $query, Query $clientQuery): array
     {
-        $clientQuery = $this->client->createSelect();
         $helper = $clientQuery->getHelper();
 
         $searchQuery = [];
@@ -235,11 +239,7 @@ abstract class BaseIndex
             }
         }
 
-        $term = implode(' ', $searchQuery);
-
-        $clientQuery->setQuery($term);
-
-        return $clientQuery;
+        return $searchQuery;
     }
 
     /**
@@ -342,22 +342,22 @@ abstract class BaseIndex
     /**
      * Add the index-time boosting to the query
      * @param BaseQuery $query
-     * @param Query $clientQuery
+     * @param array $queryArray
+     * @return array
      */
-    protected function buildBoosts(BaseQuery $query, Query $clientQuery): void
+    protected function buildBoosts(BaseQuery $query,$queryArray): array
     {
         $boosts = $query->getBoostedFields();
-        $q = $clientQuery->getQuery();
         foreach ($boosts as $field => $boost) {
             foreach ($query->getTerms() as $term) {
                 $booster = Criteria::where($field)
                     ->is($term)
                     ->boost($boost);
-                $q .= ' ' . $booster->getQuery();
+                $queryArray[] = $booster->getQuery();
             }
         }
 
-        $clientQuery->setQuery($q);
+        return $queryArray;
     }
 
     /**

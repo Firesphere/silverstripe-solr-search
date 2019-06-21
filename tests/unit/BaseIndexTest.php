@@ -5,8 +5,13 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
+use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
+use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
@@ -91,6 +96,25 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals('test', $this->index->getClient());
         $this->index->setClient($client);
         $this->assertInstanceOf(Client::class, $this->index->getClient());
+    }
+
+    public function testDoSearch()
+    {
+        /** @var SolrConfigureTask $task */
+        $task = Injector::inst()->get(SolrConfigureTask::class);
+        $task->run(new NullHTTPRequest());
+        /** @var SolrIndexTask $task2 */
+        $task2 = Injector::inst()->get(SolrIndexTask::class);
+        $task2->run(new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]));
+
+        $index = new TestIndex();
+
+        $query = new BaseQuery();
+        $query->addTerm('Welcome');
+        $query->addClass(SiteTree::class);
+
+        $result = $index->doSearch($query);
+        Debug::dump($result);
     }
 
     protected function setUp()

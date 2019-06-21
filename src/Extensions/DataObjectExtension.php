@@ -62,18 +62,7 @@ class DataObjectExtension extends DataExtension
                 $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
                 $record->IDs = json_encode($ids);
             } catch (Exception $e) {
-                $ids[] = $this->owner->ID;
-                $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
-                $record->IDs = json_encode($ids);
-                $logger = Injector::inst()->get(LoggerInterface::class);
-                $logger->log(
-                    sprintf(
-                        'Unable to update %s with ID %s',
-                        $this->owner->ClassName,
-                        $this->owner->ID
-                    )
-                );
-                $logger->log($e->getMessage());
+                $this->registerException($ids, $record, $e);
             }
             $record->write();
         }
@@ -101,19 +90,7 @@ class DataObjectExtension extends DataExtension
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {
-            $ids[] = $this->owner->ID;
-            // If we don't get an exception, mark the item as clean
-            $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
-            $record->IDs = json_encode($ids);
-            $logger = Injector::inst()->get(LoggerInterface::class);
-            $logger->log(
-                sprintf(
-                    'Unable to delete %s with ID %s',
-                    $this->owner->ClassName,
-                    $this->owner->ID
-                )
-            );
-            $logger->log($e->getMessage());
+            $this->registerException($ids, $record, $e);
         }
         $record->write();
     }
@@ -151,5 +128,27 @@ class DataObjectExtension extends DataExtension
         }
 
         return $return;
+    }
+
+    /**
+     * @param array $ids
+     * @param $record
+     * @param Exception $e
+     */
+    protected function registerException(array $ids, $record, Exception $e): void
+    {
+        $ids[] = $this->owner->ID;
+        // If we don't get an exception, mark the item as clean
+        $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
+        $record->IDs = json_encode($ids);
+        $logger = Injector::inst()->get(LoggerInterface::class);
+        $logger->log(
+            sprintf(
+                'Unable to delete %s with ID %s',
+                $this->owner->ClassName,
+                $this->owner->ID
+            )
+        );
+        $logger->log($e->getMessage());
     }
 }
