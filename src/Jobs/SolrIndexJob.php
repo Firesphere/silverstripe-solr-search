@@ -113,29 +113,35 @@ class SolrIndexJob extends AbstractQueuedJob
      */
     public function afterComplete()
     {
+        $currentStep = $this->currentStep;
+        $totalSteps = $this->totalSteps;
         // No more steps to execute on this class, let's go to the next class
         if ($this->currentStep >= $this->totalSteps) {
             array_shift($this->classToIndex);
+            // Reset the current step, a complete new set of data is coming
+            $currentStep = 0;
+            $totalSteps = 1;
         }
         // If there are no classes left in this index, go to the next index
         if (!count($this->classToIndex)) {
             array_shift($this->indexes);
+            // Reset the current step, a complete new set of data is coming
+            $currentStep = 0;
+            $totalSteps = 1;
         }
-        // No indexes left to run, let's call it a day
-        if (!count($this->indexes)) {
-            parent::afterComplete();
-        } else {
+        // If there are no indexes left to run, let's call it a day
+        if (count($this->indexes)) {
             $nextJob = new self();
-            $nextJob->currentStep = $this->currentStep + 1;
-            // Make sure the job doesn't stop if the current step accidentally is bigger than the total
-            $nextJob->totalSteps = $this->totalSteps ?: $this->currentStep + 1;
-            $nextJob->setClassToIndex($this->classToIndex);
-            $nextJob->setIndexes($this->indexes);
+            $jobData = new \stdClass();
+            $jobData->classToindex = $this->classToIndex;
+            $jobData->indexes = $this->indexes;
+            $nextJob->setJobData($totalSteps, $currentStep, false, $jobData, []);
 
             // Add a wee break to let the system recover from this heavy operation
             Injector::inst()->get(QueuedJobService::class)
                 ->queueJob($nextJob, date('Y-m-d H:i:00', strtotime('+1 minutes')));
         }
+        parent::afterComplete();
     }
 
     /**
