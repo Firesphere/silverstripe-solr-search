@@ -84,7 +84,8 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             'Title',
             'Content',
-            'Created'
+            'Created',
+            'SubsiteID'
         ];
         $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
     }
@@ -111,7 +112,7 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(1, $result->getTotalItems());
     }
 
-    public function testGetFields()
+    public function testGetFieldsForSubsites()
     {
         $this->assertContains('SubsiteID', $this->index->getFilterFields());
     }
