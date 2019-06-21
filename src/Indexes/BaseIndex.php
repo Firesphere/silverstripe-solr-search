@@ -321,7 +321,7 @@ abstract class BaseIndex
         // Filter by what the user is allowed to see
         $viewIDs = ['1-null']; // null is always an option as that means publicly visible
         $currentUser = Security::getCurrentUser();
-        if ($currentUser) {
+        if ($currentUser && $currentUser->exists()) {
             $viewIDs[] = '1-' . $currentUser->ID;
         }
         /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
@@ -340,7 +340,7 @@ abstract class BaseIndex
     {
         $filters = $query->getFilter();
         foreach ($filters as $field => $value) {
-            $value = is_array($value) ?: [$value];
+            $value = is_array($value) ? $value : [$value];
             $criteria = Criteria::where($field)->in($value);
             $clientQuery->createFilterQuery($field)
                 ->setQuery($criteria->getQuery());
@@ -358,7 +358,7 @@ abstract class BaseIndex
     {
         $filters = $query->getExclude();
         foreach ($filters as $field => $value) {
-            $value = is_array($value) ?: [$value];
+            $value = is_array($value) ? $value : [$value];
             $criteria = Criteria::where($field)
                 ->is($value)
                 ->not();
