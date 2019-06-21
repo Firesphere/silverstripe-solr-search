@@ -156,30 +156,12 @@ class SolrIndexTask extends BuildTask
         $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {
-            $this->doReindex(
-                $group,
-                $groups,
-                $client,
-                $class,
-                $fields,
-                $index,
-                $count,
-                $debug
-            );
+            $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
         } else {
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
                 try {
-                    [$count, $group] = $this->doReindex(
-                        $group,
-                        $groups,
-                        $client,
-                        $class,
-                        $fields,
-                        $index,
-                        $count,
-                        $debug
-                    );
+                    [$count, $group] = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
                 } catch (Exception $e) {
                     Debug::message(date('Y-m-d H:i:s' . "\n"), false);
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
