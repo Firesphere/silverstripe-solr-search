@@ -50,18 +50,7 @@ class SolrIndexJob extends AbstractQueuedJob
     {
         parent::__construct($params);
         // Make sure indexes are set on first run, but not again after that :)
-        if (!$this->indexes || !count($this->indexes)) { // If indexes are set, don't load them.
-            $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-
-            foreach ($indexes as $index) {
-                // Skip the abstract base
-                $ref = new ReflectionClass($index);
-                if (!$ref->isInstantiable()) {
-                    continue;
-                }
-                $this->indexes[] = $index;
-            }
-        }
+        $this->getJobData();
     }
 
     /**
@@ -79,9 +68,13 @@ class SolrIndexJob extends AbstractQueuedJob
      */
     public function process()
     {
+        $data = $this->jobData;
+
+        $this->configureRun($data);
+
         $this->currentStep = $this->currentStep ?: 0;
         $index = Injector::inst()->get($this->indexes[0]);
-        $this->classToIndex = $this->classToIndex ?: $index->getClasses();
+        $this->classToIndex = count($this->classToIndex) ? $this->classToIndex : $index->getClasses();
         $indexArgs = [
             'group' => $this->currentStep,
             'index' => $this->indexes[0],
@@ -113,7 +106,7 @@ class SolrIndexJob extends AbstractQueuedJob
      */
     public function afterComplete()
     {
-        $currentStep = $this->currentStep;
+        $currentStep = $this->currentStep + 1;
         $totalSteps = $this->totalSteps;
         // No more steps to execute on this class, let's go to the next class
         if ($this->currentStep >= $this->totalSteps) {
@@ -165,5 +158,29 @@ class SolrIndexJob extends AbstractQueuedJob
         $this->indexes = $indexes;
 
         return $this;
+    }
+
+    /**
+     * @param \stdClass $data
+     * @return mixed
+     * @throws ReflectionException
+     */
+    protected function configureRun(\stdClass $data)
+    {
+        if ($data->indexes === null || !count($data->indexes)) { // If indexes are set, don't load them.
+            $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+
+            foreach ($indexes as $index) {
+                // Skip the abstract base
+                $ref = new ReflectionClass($index);
+                if (!$ref->isInstantiable()) {
+                    continue;
+                }
+                $this->indexes[] = $index;
+            }
+        } else {
+            $this->indexes = $data->indexes;
+            $this->classToIndex = $data->classToIndex;
+        }
     }
 }
