@@ -67,8 +67,15 @@ jobs:
             groups www-data
             chown -R solr:www-data /var/www/html
             chmod -R u+rwxs,g+rwxs /var/www/html
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run: ./cc-test-reporter before-build
       - run: su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
       - run: bash <(curl -s https://codecov.io/bash) -f coverage.xml
+      - run: ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
       - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
           path: /var/www/html/coverage
