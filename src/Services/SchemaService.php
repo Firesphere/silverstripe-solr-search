@@ -274,44 +274,6 @@ class SchemaService extends ViewableData
     }
 
     /**
-     * @return bool
-     */
-    public function getStore()
-    {
-        return $this->store;
-    }
-
-    /**
-     * @param bool $store
-     * @return SchemaService
-     */
-    public function setStore($store)
-    {
-        $this->store = $store;
-
-        return $this;
-    }
-
-    /**
-     * @return SearchIntrospection
-     */
-    public function getIntrospection()
-    {
-        return $this->introspection;
-    }
-
-    /**
-     * @param SearchIntrospection $introspection
-     * @return SchemaService
-     */
-    public function setIntrospection($introspection)
-    {
-        $this->introspection = $introspection;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     protected function getSolrVersion(): int
