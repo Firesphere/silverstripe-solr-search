@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Services;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use SilverStripe\Core\Config\Configurable;
 use Solarium\Client;
+use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 
@@ -26,6 +27,7 @@ class SolrCoreService
     {
         $config = static::config()->get('config');
         $this->client = new Client($config);
+        $this->client->setAdapter(new Guzzle());
         $this->admin = $this->client->createCoreAdmin();
     }
 
