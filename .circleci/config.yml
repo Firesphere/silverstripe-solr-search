@@ -38,6 +38,7 @@ jobs:
           command: |
             cp .circleci/.env.test ./.env
             cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
+            cp .circleci/Subsite.phpsrc app/src/Subsite.php
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Run Solr Configure

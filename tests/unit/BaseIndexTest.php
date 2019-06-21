@@ -111,6 +111,11 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(1, $result->getTotalItems());
     }
 
+    public function testGetFields()
+    {
+        $this->assertContains('SubsiteID', $this->index->getFilterFields());
+    }
+
     protected function setUp()
     {
         $this->index = Injector::inst()->get(TestIndex::class);
