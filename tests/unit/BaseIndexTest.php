@@ -107,7 +107,7 @@ class BaseIndexTest extends SapphireTest
         $task2 = Injector::inst()->get(SolrIndexTask::class);
         $task2->run(new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]));
 
-        $index = new TestIndex();
+        $index = new \CircleCITestIndex();
 
         $query = new BaseQuery();
         $query->addTerm('Welcome');
