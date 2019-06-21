@@ -26,7 +26,7 @@ class SchemaServiceTest extends SapphireTest
     {
         $index = new TestIndex();
 
-        $this->assertNull($this->service->getIndex());
+        $this->assertInstanceOf(BaseIndex::class, $this->service->getIndex());
         $this->service->setIndex($index);
         $this->assertInstanceOf(BaseIndex::class, $this->service->getIndex());
     }

@@ -77,7 +77,6 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             'Title',
             'Content',
-            'Title',
             'Created'
         ];
         $this->assertEquals($expected, $this->index->getFieldsForIndexing());
