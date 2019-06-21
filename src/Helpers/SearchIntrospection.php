@@ -284,23 +284,16 @@ class SearchIntrospection
                 } else {
                     $singleton = singleton($dataclass);
 
-                    if ($singleton->hasMethod("get$field") || $singleton->hasField($field)) {
+                    if ($singleton->hasMethod("get$field")) {
                         $type = $singleton->castingClass($field);
                         if (!$type) {
                             $type = 'String';
                         }
 
-                        if ($singleton->hasMethod("get$field")) {
-                            $fieldoptions['lookup_chain'][] = [
-                                'call'   => 'method',
-                                'method' => "get$field"
-                            ];
-                        } else {
-                            $fieldoptions['lookup_chain'][] = [
-                                'call'     => 'property',
-                                'property' => $field
-                            ];
-                        }
+                        $fieldoptions['lookup_chain'][] = [
+                            'call'   => 'method',
+                            'method' => "get$field"
+                        ];
                     }
                 }
 
