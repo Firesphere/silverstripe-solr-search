@@ -30,15 +30,15 @@ class SolrUpdate
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $result = false;
-        foreach ($indexes as $index) {
+        foreach ($indexes as $indexString) {
             // Skip the abstract base
-            $ref = new ReflectionClass($index);
+            $ref = new ReflectionClass($indexString);
             if (!$ref->isInstantiable()) {
                 continue;
             }
 
             /** @var BaseIndex $index */
-            $index = Injector::inst()->get($index);
+            $index = Injector::inst()->get($indexString);
             // No point in sending a delete for something that's not in the index
             // @todo check the hierarchy, this could be a parent that should be indexed
             if (in_array($object->ClassName, $index->getClasses(), true)) {

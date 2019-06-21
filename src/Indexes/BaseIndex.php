@@ -495,10 +495,12 @@ abstract class BaseIndex
      */
     public function getFieldsForIndexing(): array
     {
-        return array_merge(
-            $this->getFulltextFields(),
-            $this->getSortFields(),
-            $this->getFilterFields()
+        return array_unique(
+            array_merge(
+                $this->getFulltextFields(),
+                $this->getSortFields(),
+                $this->getFilterFields()
+            )
         );
     }
 

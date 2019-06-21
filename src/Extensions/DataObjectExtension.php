@@ -14,6 +14,8 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Member;
+use SilverStripe\Versioned\ChangeSet;
+use SilverStripe\Versioned\ChangeSetItem;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
@@ -29,45 +31,52 @@ class DataObjectExtension extends DataExtension
 
     protected $canViewClasses = [];
 
+    protected static $excludedClasses = [
+        DirtyClass::class,
+        ChangeSet::class,
+        ChangeSetItem::class
+    ];
+
     /**
      * @throws ValidationException
      */
     public function onAfterWrite()
     {
-        // Mark the current class as dirty
-        /** @var DirtyClass $record */
-        $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
-        if (!$record) {
-            $record = DirtyClass::create([
-                'Class' => $this->owner->ClassName,
-                'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
-                'IDs'   => json_encode([$this->owner->ID])
-            ]);
+        parent::onAfterWrite();
+        if (!in_array($this->owner->ClassName, static::$excludedClasses, true)) {
+            // Mark the current class as dirty
+            /** @var DirtyClass $record */
+            $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
+            if (!$record) {
+                $record = DirtyClass::create([
+                    'Class' => $this->owner->ClassName,
+                    'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
+                ]);
+                $record->write();
+            }
+
+            $ids = json_decode($record->IDs) ?: [];
+            try {
+                SolrUpdate::updateObject($this->owner, SolrUpdate::UPDATE_TYPE);
+                // If we don't get an exception, mark the item as clean
+                $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
+                $record->IDs = json_encode($ids);
+            } catch (Exception $e) {
+                $ids[] = $this->owner->ID;
+                $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
+                $record->IDs = json_encode($ids);
+                $logger = Injector::inst()->get(LoggerInterface::class);
+                $logger->log(
+                    sprintf(
+                        'Unable to update %s with ID %s',
+                        $this->owner->ClassName,
+                        $this->owner->ID
+                    )
+                );
+                $logger->log($e->getMessage());
+            }
             $record->write();
         }
-
-        $ids = json_decode($record->IDs);
-        parent::onAfterWrite();
-        try {
-            SolrUpdate::updateObject($this->owner, SolrUpdate::UPDATE_TYPE);
-            $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
-            $record->IDs = json_encode($ids);
-        } catch (Exception $e) {
-            $ids[] = $this->owner->ID;
-            // If we don't get an exception, mark the item as clean
-            $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
-            $record->IDs = json_encode($ids);
-            $logger = Injector::inst()->get(LoggerInterface::class);
-            $logger->log(
-                sprintf(
-                    'Unable to update %s with ID %s',
-                    $this->owner->ClassName,
-                    $this->owner->ID
-                )
-            );
-            $logger->log($e->getMessage());
-        }
-        $record->write();
     }
 
     /**
@@ -81,15 +90,14 @@ class DataObjectExtension extends DataExtension
             $record = DirtyClass::create([
                 'Class' => $this->owner->ClassName,
                 'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
-                'IDs'   => json_encode([$this->owner->ID])
             ]);
             $record->write();
         }
 
-        $ids = json_decode($record->IDs);
+        $ids = json_decode($record->IDs) ?: [];
         parent::onAfterDelete();
         try {
-            SolrUpdate::updateObject($this->owner, SolrUpdate::UPDATE_TYPE);
+            SolrUpdate::updateObject($this->owner, SolrUpdate::DELETE_TYPE);
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {
