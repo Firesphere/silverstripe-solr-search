@@ -297,4 +297,12 @@ class SchemaService extends ViewableData
 
         return $solrVersion;
     }
+
+    /**
+     * @param bool $store
+     */
+    public function setStore(bool $store): void
+    {
+        $this->store = $store;
+    }
 }

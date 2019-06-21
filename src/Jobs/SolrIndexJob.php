@@ -50,7 +50,7 @@ class SolrIndexJob extends AbstractQueuedJob
     {
         parent::__construct($params);
         // Make sure indexes are set on first run, but not again after that :)
-        if (!count($this->indexes)) { // If indexes are set, don't load them.
+        if (!$this->indexes || !count($this->indexes)) { // If indexes are set, don't load them.
             $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
             foreach ($indexes as $index) {
@@ -79,14 +79,14 @@ class SolrIndexJob extends AbstractQueuedJob
     public function process()
     {
         $this->currentStep = $this->currentStep ?: 0;
+        $index = Injector::inst()->get($this->indexes[0]);
+        $this->classToIndex = $this->classToIndex ?: $index->getClasses();
         $indexArgs = [
             'group' => $this->currentStep,
             'index' => $this->indexes[0],
             'class' => $this->classToIndex[0]
         ];
         /** @var BaseIndex $index */
-        $index = Injector::inst()->get($this->indexes[0]);
-        $this->classToIndex = $this->classToIndex ?: $index->getClasses();
         /** @var SolrIndexTask $task */
         $task = Injector::inst()->get(SolrIndexTask::class);
         $request = new HTTPRequest(
