@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Helpers;
 
-
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;
