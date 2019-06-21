@@ -30,7 +30,7 @@ class DocumentFactoryTest extends SapphireTest
                     0 => '1-null',
                 ],
             'SiteTree_Title'   => 'Home',
-            'SiteTree_Content' => "<p>Welcome to SilverStripe! This is the default homepage. You can edit this page by opening <a href=\"admin/\">the CMS</a>.</p><p>You can now access the <a href=\"http:\/\/docs.silverstripe.org\">developer documentation</a>, or begin the <a href=\"http://www.silverstripe.org/learn/lessons\">SilverStripe lessons</a>.</p>",
+            'SiteTree_Content' => "<p>Welcome to SilverStripe! This is the default homepage. You can edit this page by opening <a href=\"admin/\">the CMS</a>.</p><p>You can now access the <a href=\"http://docs.silverstripe.org\">developer documentation</a>, or begin the <a href=\"http://www.silverstripe.org/learn/lessons\">SilverStripe lessons</a>.</p>",
             'SiteTree_Created' => '2019-06-21T13:59:50Z',
         ],
         [
@@ -142,8 +142,11 @@ class DocumentFactoryTest extends SapphireTest
         $this->assertInstanceOf(BaseIndex::class, $factory->getIntrospection()->getIndex());
         /** @var Document $doc */
         foreach ($docs as $i => $doc) {
+            // Debug::dump($doc->get
             $this->assertInstanceOf(Document::class, $doc);
-            $this->assertEquals(static::$expected_docs[$i], $doc->getFields());
+            $fields = $doc->getFields();
+            unset($fields['SiteTree_Created']); // Unset the Created, it changes per run
+            $this->assertEquals(static::$expected_docs[$i], $fields);
         }
     }
 }
