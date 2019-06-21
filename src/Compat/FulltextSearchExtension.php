@@ -3,10 +3,13 @@
 
 namespace Firesphere\SolrSearch\Compat;
 
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
+use LogicException;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Extension;
+use SilverStripe\Dev\Debug;
 use SilverStripe\View\ArrayData;
 
 /**
@@ -73,5 +76,35 @@ class FulltextSearchExtension extends Extension
     protected function getCollatedNice($spellcheck): string
     {
         return str_replace(' +', ' ', $spellcheck);
+    }
+
+    /**
+     * Generate a yml version of the init method indexes
+     */
+    public function initToYml(): void
+    {
+        if (function_exists('yaml_emit')) {
+            $result = [
+                BaseIndex::class => [
+                    $this->owner->getIndexName() =>
+                        [
+                            'Classes'        => $this->owner->getClasses(),
+                            'FulltextFields' => $this->owner->getFulltextFields(),
+                            'SortFields'     => $this->owner->getSortFields(),
+                            'FilterFields'   => $this->owner->getFilterFields(),
+                            'BoostedFields'  => $this->owner->getBoostedFields(),
+                            'CopyFields'     => $this->owner->getCopyFields(),
+                            'DefaultField'   => $this->owner->getDefaultField(),
+                            'FacetFields'    => $this->owner->getFacetFields(),
+                        ]
+                ]
+            ];
+
+            Debug::dump(yaml_emit($result));
+
+            return;
+        }
+
+        throw new LogicException('yaml-emit PHP module missing');
     }
 }

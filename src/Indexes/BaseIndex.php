@@ -159,36 +159,6 @@ abstract class BaseIndex
     }
 
     /**
-     * Generate a yml version of the init method indexes
-     */
-    public function initToYml(): void
-    {
-        if (function_exists('yaml_emit')) {
-            $result = [
-                BaseIndex::class => [
-                    $this->getIndexName() =>
-                        [
-                            'Classes'        => $this->getClasses(),
-                            'FulltextFields' => $this->getFulltextFields(),
-                            'SortFields'     => $this->getSortFields(),
-                            'FilterFields'   => $this->getFilterFields(),
-                            'BoostedFields'  => $this->getBoostedFields(),
-                            'CopyFields'     => $this->getCopyFields(),
-                            'DefaultField'   => $this->getDefaultField(),
-                            'FacetFields'    => $this->getFacetFields(),
-                        ]
-                ]
-            ];
-
-            Debug::dump(yaml_emit($result));
-
-            return;
-        }
-
-        throw new LogicException('yaml-emit PHP module missing');
-    }
-
-    /**
      * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
      *
      * @param BaseQuery $query
