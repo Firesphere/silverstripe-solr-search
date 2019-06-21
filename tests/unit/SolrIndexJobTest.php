@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Firesphere\SolrSearch\Jobs\SolrIndexJob;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor;
 use Symbiote\QueuedJobs\Services\QueuedJob;
@@ -50,7 +51,7 @@ class SolrIndexJobTest extends SapphireTest
 
         $job->process();
 
-//        $this->assertEquals(1, $job->totalSteps);
+        Debug::dump($job);
     }
 
     public function testAfterComplete()
