@@ -79,7 +79,7 @@ class BaseIndexTest extends SapphireTest
             'Content',
             'Created'
         ];
-        $this->assertEquals($expected, $this->index->getFieldsForIndexing());
+        $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
     }
 
     public function testGetSetClient()
