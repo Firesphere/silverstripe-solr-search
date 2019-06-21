@@ -121,7 +121,6 @@ class DocumentFactoryTest extends SapphireTest
 
     public function testBuildItems()
     {
-        $items = SiteTree::get();
         $factory = new DocumentFactory();
         $index = new TestIndex();
         $fields = $index->getFieldsForIndexing();
