@@ -5,6 +5,8 @@
 version: 2
 jobs:
   build:
+    environment:
+      CC_TEST_REPORTER_ID: 586f7041e9f71c44946cdfe8bce27d66c6271d173ec291c2a9aa7e1b56667873
     docker:
       - image: ssmarco/php-solr:latest
         environment:
