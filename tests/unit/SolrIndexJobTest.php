@@ -39,6 +39,6 @@ class SolrIndexJobTest extends SapphireTest
         $this->indexJob->setIndexes([\CircleCITestIndex::class]);
         $this->indexJob->process();
 
-        $this->assertCount(1, $this->indexJob->totalSteps);
+        $this->assertEquals(1, $this->indexJob->totalSteps);
     }
 }
