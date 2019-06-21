@@ -133,7 +133,8 @@ class SolrIndexJob extends AbstractQueuedJob
         if (count($this->indexes)) {
             $nextJob = new self();
             $jobData = new \stdClass();
-            $jobData->classToindex = $this->classToIndex;
+
+            $jobData->classToIndex = $this->classToIndex;
             $jobData->indexes = $this->indexes;
             $nextJob->setJobData($totalSteps, $currentStep, false, $jobData, []);
 
