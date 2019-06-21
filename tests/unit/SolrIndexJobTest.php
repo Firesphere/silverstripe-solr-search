@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Firesphere\SolrSearch\Jobs\SolrIndexJob;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
@@ -37,8 +38,8 @@ class SolrIndexJobTest extends SapphireTest
     {
         $this->job->process();
         $this->indexJob->setIndexes([\CircleCITestIndex::class]);
-        $this->indexJob->process();
+        $result = $this->indexJob->process();
 
-        $this->assertEquals(1, $this->indexJob->totalSteps);
+        $this->assertEquals(0, $result->totalSteps);
     }
 }
