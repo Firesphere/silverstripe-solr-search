@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
@@ -100,20 +101,14 @@ class BaseIndexTest extends SapphireTest
 
     public function testDoSearch()
     {
-        /** @var SolrConfigureTask $task */
-        $task = Injector::inst()->get(SolrConfigureTask::class);
-        $task->run(new NullHTTPRequest());
-        /** @var SolrIndexTask $task2 */
-        $task2 = Injector::inst()->get(SolrIndexTask::class);
-        $task2->run(new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]));
-
         $index = new \CircleCITestIndex();
 
         $query = new BaseQuery();
-        $query->addTerm('*:*');
+        $query->addTerm('Home');
 
         $result = $index->doSearch($query);
-        Debug::dump($result);
+        $this->assertInstanceOf(SearchResult::class, $result);
+        $this->assertEquals(1, $result->getTotalItems());
     }
 
     protected function setUp()

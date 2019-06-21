@@ -345,7 +345,7 @@ abstract class BaseIndex
      * @param array $queryArray
      * @return array
      */
-    protected function buildBoosts(BaseQuery $query,$queryArray): array
+    protected function buildBoosts(BaseQuery $query, $queryArray): array
     {
         $boosts = $query->getBoostedFields();
         foreach ($boosts as $field => $boost) {
