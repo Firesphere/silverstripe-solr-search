@@ -161,13 +161,18 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
-     * @param stdClass|null $data
+     * @param \stdClass|null $data
      * @return mixed
      * @throws ReflectionException
      */
     protected function configureRun($data)
     {
-        if ($data === null || $data->indexes === null || !count($data->indexes)) { // If indexes are set, don't load them.
+        // If null gets passed in, it goes a bit wonky with the check for indexes
+        if (!$data) {
+            $data = new \stdClass();
+            $data->indexes = null;
+        }
+        if ($data->indexes === null || !count($data->indexes)) { // If indexes are set, don't load them.
             $indexes = ClassInfo::subclassesFor(BaseIndex::class);
 
             foreach ($indexes as $index) {
