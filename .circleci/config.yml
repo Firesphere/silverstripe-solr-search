@@ -76,7 +76,11 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
       - run: ./cc-test-reporter before-build
-      - run: su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
+      - run:
+          name: Run tests
+          command: |
+            set +e
+            su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
       - run:
           name: Code coverage reportes
           command: |
