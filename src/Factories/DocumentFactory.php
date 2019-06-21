@@ -224,4 +224,12 @@ class DocumentFactory
 
         return $object;
     }
+
+    /**
+     * @return SearchIntrospection
+     */
+    public function getIntrospection(): SearchIntrospection
+    {
+        return $this->introspection;
+    }
 }
