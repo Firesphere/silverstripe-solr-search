@@ -30,12 +30,7 @@ class DocumentFactoryTest extends SapphireTest
                     0 => '1-null',
                 ],
             'SiteTree_Title'   => 'Home',
-            'SiteTree_Content' => '
-
-Welcome to SilverStripe! This is the default homepage. You can edit this page by opening the CMS.
-
-You can now access the developer documentation, or begin the SilverStripe lessons.
-',
+            'SiteTree_Content' => "<p>Welcome to SilverStripe! This is the default homepage. You can edit this page by opening <a href=\"admin/\">the CMS</a>.</p><p>You can now access the <a href=\"http:\/\/docs.silverstripe.org\">developer documentation</a>, or begin the <a href=\"http://www.silverstripe.org/learn/lessons\">SilverStripe lessons</a>.</p>",
             'SiteTree_Created' => '2019-06-21T13:59:50Z',
         ],
         [
@@ -54,10 +49,7 @@ You can now access the developer documentation, or begin the SilverStripe lesson
                     0 => '1-null',
                 ],
             'SiteTree_Title'   => 'About Us',
-            'SiteTree_Content' => '
-
-You can fill this page out with your own content, or delete it and create your own pages.
-',
+            'SiteTree_Content' => "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>",
             'SiteTree_Created' => '2019-06-21T13:59:51Z',
         ],
         [
@@ -76,10 +68,7 @@ You can fill this page out with your own content, or delete it and create your o
                     0 => '1-null',
                 ],
             'SiteTree_Title'   => 'Contact Us',
-            'SiteTree_Content' => '
-
-You can fill this page out with your own content, or delete it and create your own pages.
-',
+            'SiteTree_Content' => "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>",
             'SiteTree_Created' => '2019-06-21T13:59:51Z',
         ],
         [
@@ -99,12 +88,7 @@ You can fill this page out with your own content, or delete it and create your o
                     0 => '1-null',
                 ],
             'SiteTree_Title'   => 'Page not found',
-            'SiteTree_Content' => '
-
-Sorry, it seems you were trying to access a page that doesn\'t exist.
-
-Please check the spelling of the URL you were trying to access and try again.
-',
+            'SiteTree_Content' => '<p>Sorry, it seems you were trying to access a page that doesn\'t exist.</p><p>Please check the spelling of the URL you were trying to access and try again.</p>',
             'SiteTree_Created' => '2019-06-21T13:59:51Z',
         ],
         [
@@ -124,10 +108,7 @@ Please check the spelling of the URL you were trying to access and try again.
                     0 => '1-null',
                 ],
             'SiteTree_Title'   => 'Server error',
-            'SiteTree_Content' => '
-
-Sorry, there was a problem with handling your request.
-',
+            'SiteTree_Content' => '<p>Sorry, there was a problem with handling your request.</p>',
             'SiteTree_Created' => '2019-06-21T13:59:51Z',
         ],
     ];
