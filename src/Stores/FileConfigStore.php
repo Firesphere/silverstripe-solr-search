@@ -24,7 +24,7 @@ class FileConfigStore implements ConfigStore
      */
     public function __construct($config)
     {
-        if (!$config || !isset($config['path'])) {
+        if (empty($config) || !isset($config['path'])) {
             throw new RuntimeException('No valid config defined', 1);
         }
 

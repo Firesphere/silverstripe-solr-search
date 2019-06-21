@@ -70,8 +70,7 @@ class SolrConfigureTask extends BuildTask
             try {
                 $this->updateIndex($instance);
             } catch (Exception $e) {
-                // We got an exception. Warn, but continue to next index.
-                var_dump($e);
+                $this->logger->error($e->getMessage());
             }
         }
 

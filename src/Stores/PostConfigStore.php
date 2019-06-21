@@ -25,7 +25,7 @@ class PostConfigStore implements ConfigStore
      */
     public function __construct($config)
     {
-        if (!$config) {
+        if (empty($config)) {
             throw new RuntimeException('No config defined', 1);
         }
         if (!isset($config['path'])) {

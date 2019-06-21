@@ -34,8 +34,8 @@ class SolrConfigureJob extends AbstractQueuedJob
         $result = $task->run(new NullHTTPRequest());
 
         // If there's an exception, return the result
-        if ($result !== true) {
-            return $result;
+        if ($result instanceof Exception) {
+            $this->addMessage($result->getMessage());
         }
 
         // Mark as complete if everything is fine
