@@ -110,8 +110,7 @@ class BaseIndexTest extends SapphireTest
         $index = new \CircleCITestIndex();
 
         $query = new BaseQuery();
-        $query->addTerm('Welcome');
-        $query->addClass(SiteTree::class);
+        $query->addTerm('*:*');
 
         $result = $index->doSearch($query);
         Debug::dump($result);
