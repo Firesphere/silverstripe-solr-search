@@ -50,7 +50,6 @@ class SolrIndexJob extends AbstractQueuedJob
     {
         parent::__construct($params);
         // Make sure indexes are set on first run, but not again after that :)
-        $this->getJobData();
     }
 
     /**

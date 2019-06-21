@@ -5,11 +5,9 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Firesphere\SolrSearch\Jobs\SolrIndexJob;
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor;
-use Symbiote\QueuedJobs\Services\QueuedJob;
 
 class SolrIndexJobTest extends SapphireTest
 {
@@ -27,6 +25,7 @@ class SolrIndexJobTest extends SapphireTest
     {
         $this->job = Injector::inst()->get(SolrConfigureJob::class);
         $this->indexJob = Injector::inst()->get(SolrIndexJob::class);
+
         return parent::setUp();
     }
 
@@ -43,14 +42,18 @@ class SolrIndexJobTest extends SapphireTest
         $this->assertEquals(0, $result->totalSteps);
 
         $job = new SolrIndexJob();
-        $job->jobData = new \stdClass();
+        $data = new \stdClass();
 
-        $job->jobData->indexes = [\CircleCITestIndex::class];
-        $job->jobData->classToIndex = [];
+        $data->indexes = [\CircleCITestIndex::class];
+        $data->classToIndex = [];
+
+        $job->setJobData(0, 0, false, $data, []);
 
         $job->process();
 
-        $this->assertCount(1, $job->getJobData()->jobData->indexes);
+        $this->assertCount(1, $job->indexes);
+        $this->assertCount(1, $job->classToIndex);
+        $this->assertTrue($job->isComplete);
     }
 
     public function testAfterComplete()
