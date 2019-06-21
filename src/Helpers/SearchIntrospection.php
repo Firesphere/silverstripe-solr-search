@@ -341,4 +341,12 @@ class SearchIntrospection
 
         return $this;
     }
+
+    /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
+    }
 }
