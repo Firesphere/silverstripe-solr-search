@@ -91,7 +91,7 @@ abstract class BaseIndex
         $this->client->setAdapter(new Guzzle());
 
         // Set up the schema service, only used in the generation of the schema
-        $schemaService = Injector::inst()->get(SchemaService::class);
+        $schemaService = Injector::inst()->get(SchemaService::class, false);
         $schemaService->setIndex($this);
         $schemaService->setStore(Director::isDev());
         $this->schemaService = $schemaService;
@@ -178,6 +178,10 @@ abstract class BaseIndex
         $this->buildFilters($query, $clientQuery);
         // And excludes
         $this->buildExcludes($query, $clientQuery);
+        // Add spellchecking
+        if ($query->isSpellcheck()) {
+            $this->buildSpellcheck($clientQuery, $queryArray);
+        }
         // Add boosting
         $queryArray = $this->buildBoosts($query, $queryArray);
         // Add highlighting
@@ -190,10 +194,6 @@ abstract class BaseIndex
         $clientQuery->setStart($query->getStart());
         // Double the rows in case something has been deleted, but not from Solr
         $clientQuery->setRows($query->getRows() * 2);
-        // Add spellchecking
-        if ($query->isSpellcheck()) {
-            $this->buildSpellcheck($query, $clientQuery);
-        }
         // Filter out the fields we want to see if they're set
         if (count($query->getFields())) {
             $clientQuery->setFields($query->getFields());
@@ -374,13 +374,13 @@ abstract class BaseIndex
     }
 
     /**
-     * @param BaseQuery $query
      * @param Query $clientQuery
+     * @param array $queryArray
      */
-    protected function buildSpellcheck(BaseQuery $query, Query $clientQuery): void
+    protected function buildSpellcheck(Query $clientQuery, array $queryArray): void
     {
         // Assuming the first term is the term entered
-        $queryString = $query->getTerms()[0]['text'];
+        $queryString = implode(' ', $queryArray);
         // Arbitrarily limit to 5 if the config isn't set
         $count = static::config()->get('spellcheckCount') ?: 5;
         $spellcheck = $clientQuery->getSpellcheck();
