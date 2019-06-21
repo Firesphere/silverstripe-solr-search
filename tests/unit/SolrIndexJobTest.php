@@ -38,10 +38,19 @@ class SolrIndexJobTest extends SapphireTest
     public function testProcess()
     {
         $this->job->process();
-        $this->indexJob->setIndexes([\CircleCITestIndex::class]);
         $result = $this->indexJob->process();
 
         $this->assertEquals(0, $result->totalSteps);
+
+        $job = new SolrIndexJob();
+        $job->jobData = new \stdClass();
+
+        $job->jobData->indexes = [\CircleCITestIndex::class];
+        $job->jobData->classToIndex = [];
+
+        $job->process();
+
+        $this->assertEquals(1, $job->totalSteps);
     }
 
     public function testAfterComplete()
