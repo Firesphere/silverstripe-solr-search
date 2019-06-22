@@ -137,7 +137,7 @@ class DocumentFactory
 
         $value = $this->getValueForField($object, $field);
 
-        $type = isset($typeMap[$field['type']]) ? $typeMap[$field['type']] : $typeMap['*'];
+        $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         if (!is_array($value)) {
             $value = [$value];
