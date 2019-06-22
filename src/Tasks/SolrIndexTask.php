@@ -190,16 +190,8 @@ class SolrIndexTask extends BuildTask
      * @return array[int, int]
      * @throws Exception
      */
-    protected function doReindex(
-        $group,
-        $groups,
-        Client $client,
-        $class,
-        array $fields,
-        BaseIndex $index,
-        $count,
-        $debug
-    ): array {
+    protected function doReindex($group, $groups, Client $client, $class, array $fields, BaseIndex $index, $count = 0, $debug = false): array
+    {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();

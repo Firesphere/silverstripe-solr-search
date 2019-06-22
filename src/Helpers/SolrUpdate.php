@@ -54,16 +54,7 @@ class SolrUpdate
                     $fields = $index->getFieldsForIndexing();
                     $count = 0;
                     $factory = new DocumentFactory();
-                    $docs = $factory->buildItems(
-                        $object->ClassName,
-                        $fields,
-                        $index,
-                        $update,
-                        0,
-                        $count,
-                        $items,
-                        false
-                    );
+                    $docs = $factory->buildItems($object->ClassName, $fields, $index, $update, 0, $count, $items);
                     $update->addDocuments($docs);
                 }
                 $update->addCommit();
