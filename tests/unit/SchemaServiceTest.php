@@ -16,12 +16,6 @@ class SchemaServiceTest extends SapphireTest
      */
     protected $service;
 
-    protected function setUp()
-    {
-        $this->service = Injector::inst()->get(SchemaService::class);
-        return parent::setUp();
-    }
-
     public function testGetSetIndex()
     {
         $index = new TestIndex();
@@ -39,5 +33,12 @@ class SchemaServiceTest extends SapphireTest
         $this->assertEquals($index->getIndexName(), $this->service->getIndexName());
 
         $this->assertEquals($index->getDefaultField(), $this->service->getDefaultField());
+    }
+
+    protected function setUp()
+    {
+        $this->service = Injector::inst()->get(SchemaService::class);
+
+        return parent::setUp();
     }
 }

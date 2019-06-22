@@ -3,10 +3,12 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use CircleCITestIndex;
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Firesphere\SolrSearch\Jobs\SolrIndexJob;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
+use stdClass;
 use Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor;
 
 class SolrIndexJobTest extends SapphireTest
@@ -21,14 +23,6 @@ class SolrIndexJobTest extends SapphireTest
      */
     protected $indexJob;
 
-    protected function setUp()
-    {
-        $this->job = Injector::inst()->get(SolrConfigureJob::class);
-        $this->indexJob = Injector::inst()->get(SolrIndexJob::class);
-
-        return parent::setUp();
-    }
-
     public function testGetTitle()
     {
         $this->assertEquals('Index groups to Solr search', $this->indexJob->getTitle());
@@ -42,9 +36,9 @@ class SolrIndexJobTest extends SapphireTest
         $this->assertEquals(0, $result->totalSteps);
 
         $job = new SolrIndexJob();
-        $data = new \stdClass();
+        $data = new stdClass();
 
-        $data->indexes = [\CircleCITestIndex::class];
+        $data->indexes = [CircleCITestIndex::class];
         $data->classToIndex = [];
 
         $job->setJobData(0, 0, false, $data, []);
@@ -66,5 +60,13 @@ class SolrIndexJobTest extends SapphireTest
         $jobData = unserialize($newJob->SavedJobData);
         $this->assertCount(1, $jobData->indexes); // Set to default count as the index is shifted
         $this->assertCount(0, $jobData->classToIndex); // Set to default count as the index is shifted
+    }
+
+    protected function setUp()
+    {
+        $this->job = Injector::inst()->get(SolrConfigureJob::class);
+        $this->indexJob = Injector::inst()->get(SolrIndexJob::class);
+
+        return parent::setUp();
     }
 }

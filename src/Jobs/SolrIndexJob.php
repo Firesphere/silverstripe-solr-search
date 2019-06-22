@@ -11,6 +11,7 @@ use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
+use stdClass;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
 
@@ -101,6 +102,35 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * @param stdClass|null $data
+     * @return mixed
+     * @throws ReflectionException
+     */
+    protected function configureRun($data)
+    {
+        // If null gets passed in, it goes a bit wonky with the check for indexes
+        if (!$data) {
+            $data = new stdClass();
+            $data->indexes = null;
+        }
+        if (!isset($data->indexes) || !count($data->indexes)) { // If indexes are set, don't load them.
+            $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+
+            foreach ($indexes as $index) {
+                // Skip the abstract base
+                $ref = new ReflectionClass($index);
+                if (!$ref->isInstantiable()) {
+                    continue;
+                }
+                $this->indexes[] = $index;
+            }
+        } else {
+            $this->indexes = $data->indexes;
+            $this->classToIndex = $data->classToIndex;
+        }
+    }
+
+    /**
      * @throws ReflectionException
      */
     public function afterComplete()
@@ -124,7 +154,7 @@ class SolrIndexJob extends AbstractQueuedJob
         // If there are no indexes left to run, let's call it a day
         if (count($this->indexes)) {
             $nextJob = new self();
-            $jobData = new \stdClass();
+            $jobData = new stdClass();
 
             $jobData->classToIndex = $this->classToIndex;
             $jobData->indexes = $this->indexes;
@@ -157,34 +187,5 @@ class SolrIndexJob extends AbstractQueuedJob
         $this->indexes = $indexes;
 
         return $this;
-    }
-
-    /**
-     * @param \stdClass|null $data
-     * @return mixed
-     * @throws ReflectionException
-     */
-    protected function configureRun($data)
-    {
-        // If null gets passed in, it goes a bit wonky with the check for indexes
-        if (!$data) {
-            $data = new \stdClass();
-            $data->indexes = null;
-        }
-        if (!isset($data->indexes) || !count($data->indexes)) { // If indexes are set, don't load them.
-            $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-
-            foreach ($indexes as $index) {
-                // Skip the abstract base
-                $ref = new ReflectionClass($index);
-                if (!$ref->isInstantiable()) {
-                    continue;
-                }
-                $this->indexes[] = $index;
-            }
-        } else {
-            $this->indexes = $data->indexes;
-            $this->classToIndex = $data->classToIndex;
-        }
     }
 }

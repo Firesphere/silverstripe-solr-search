@@ -207,6 +207,31 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * @return int
+     */
+    protected function getSolrVersion(): int
+    {
+        $config = SolrCoreService::config()->get('config');
+        $firstEndpoint = array_shift($config['endpoint']);
+        $clientConfig = [
+            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
+        ];
+
+        $client = new Client($clientConfig);
+
+        $result = $client->get('solr/admin/info/system');
+        $result = json_decode($result->getBody(), 1);
+
+        $solrVersion = 5;
+        $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
+        if ($version > 0) {
+            $solrVersion = 4;
+        }
+
+        return $solrVersion;
+    }
+
+    /**
      * @return string
      */
     public function getTypesTemplate()
@@ -271,31 +296,6 @@ class SchemaService extends ViewableData
         $solrVersion = $this->getSolrVersion();
 
         return sprintf($confDirs[$solrVersion]['extras'], $dir);
-    }
-
-    /**
-     * @return int
-     */
-    protected function getSolrVersion(): int
-    {
-        $config = SolrCoreService::config()->get('config');
-        $firstEndpoint = array_shift($config['endpoint']);
-        $clientConfig = [
-            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
-        ];
-
-        $client = new Client($clientConfig);
-
-        $result = $client->get('solr/admin/info/system');
-        $result = json_decode($result->getBody(), 1);
-
-        $solrVersion = 5;
-        $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
-        if ($version > 0) {
-            $solrVersion = 4;
-        }
-
-        return $solrVersion;
     }
 
     /**

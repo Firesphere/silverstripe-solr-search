@@ -9,7 +9,7 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
-use League\Flysystem\Config;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -126,26 +126,6 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
-     * Get the monolog logger
-     *
-     * @return LoggerInterface
-     */
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    /**
-     * Assign a new logger
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    /**
      * @param $storeConfig
      * @return ConfigStore
      */
@@ -168,9 +148,29 @@ class SolrConfigureTask extends BuildTask
         $this->extend('onBeforeConfig', $configStore, $storeConfig);
 
         if (!$configStore) {
-            throw new \LogicException('No functional config store found');
+            throw new LogicException('No functional config store found');
         }
 
         return $configStore;
+    }
+
+    /**
+     * Get the monolog logger
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * Assign a new logger
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

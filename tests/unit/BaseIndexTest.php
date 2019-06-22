@@ -3,21 +3,17 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use CircleCITestIndex;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
-use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
-use Firesphere\SolrSearch\Tasks\SolrIndexTask;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
-use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use Solarium\Core\Client\Client;
-use SilverStripe\CMS\Model\SiteTree;
 
 class BaseIndexTest extends SapphireTest
 {
@@ -62,7 +58,10 @@ class BaseIndexTest extends SapphireTest
         $this->assertFileExists(Director::baseFolder() . '/.solr/TestIndex/conf/stopwords.txt');
 
         $xml = file_get_contents(Director::baseFolder() . '/.solr/TestIndex/conf/schema.xml');
-        $this->assertContains('<field name=\'SiteTree_Title\' type=\'string\' indexed=\'true\' stored=\'true\' multiValued=\'false\'/>', $xml);
+        $this->assertContains(
+            '<field name=\'SiteTree_Title\' type=\'string\' indexed=\'true\' stored=\'true\' multiValued=\'false\'/>',
+            $xml
+        );
     }
 
     public function testEscapeTerms()
@@ -102,7 +101,7 @@ class BaseIndexTest extends SapphireTest
 
     public function testDoSearch()
     {
-        $index = new \CircleCITestIndex();
+        $index = new CircleCITestIndex();
 
         $query = new BaseQuery();
         $query->addTerm('Home');

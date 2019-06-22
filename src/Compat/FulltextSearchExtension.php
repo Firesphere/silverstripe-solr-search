@@ -42,6 +42,16 @@ class FulltextSearchExtension extends Extension
         $results = ArrayData::create($data);
     }
 
+    /**
+     * Create a spellcheck string that's not the literal collation with Solr query parts
+     *
+     * @param string $spellcheck
+     * @return string mixed
+     */
+    protected function getCollatedNice($spellcheck): string
+    {
+        return str_replace(' +', ' ', $spellcheck);
+    }
 
     /**
      * @param BaseQuery $query
@@ -64,18 +74,6 @@ class FulltextSearchExtension extends Extension
         }
 
         return $this->owner->doSearch($query);
-    }
-
-
-    /**
-     * Create a spellcheck string that's not the literal collation with Solr query parts
-     *
-     * @param string $spellcheck
-     * @return string mixed
-     */
-    protected function getCollatedNice($spellcheck): string
-    {
-        return str_replace(' +', ' ', $spellcheck);
     }
 
     /**

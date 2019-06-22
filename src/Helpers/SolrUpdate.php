@@ -3,9 +3,11 @@
 
 namespace Firesphere\SolrSearch\Helpers;
 
+use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;
+use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
@@ -22,8 +24,8 @@ class SolrUpdate
      * @param DataObject $object
      * @param string $type
      * @return bool|Response
-     * @throws \ReflectionException
-     * @throws \Exception
+     * @throws ReflectionException
+     * @throws Exception
      */
     public static function updateObject($object, $type)
     {

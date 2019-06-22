@@ -9,15 +9,14 @@ use Solarium\Exception\RuntimeException;
 
 class PostConfigStore implements ConfigStore
 {
-    /**
-     * @var array
-     */
-    protected $config;
-
     protected static $extensions = [
         'xml' => 'text/xml',
         'txt' => 'text/plain',
     ];
+    /**
+     * @var array
+     */
+    protected $config;
 
     /**
      * FileConfigStore constructor.

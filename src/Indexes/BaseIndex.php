@@ -264,6 +264,24 @@ abstract class BaseIndex
     }
 
     /**
+     * @param $search
+     * @param string $term
+     * @param array $searchQuery
+     * @return array
+     */
+    protected function buildQueryBoost($search, string $term, array $searchQuery): array
+    {
+        foreach ($search['fields'] as $boostField) {
+            $criteria = Criteria::where($boostField)
+                ->is($term)
+                ->boost($search['boost']);
+            $searchQuery[] = $criteria->getQuery();
+        }
+
+        return $searchQuery;
+    }
+
+    /**
      * Add filtered queries based on class hierarchy
      * We only need the class itself, since the hierarchy will take care of the rest
      * @param BaseQuery $query
@@ -339,6 +357,25 @@ abstract class BaseIndex
     }
 
     /**
+     * @param Query $clientQuery
+     * @param array $queryArray
+     */
+    protected function buildSpellcheck(Query $clientQuery, array $queryArray): void
+    {
+        // Assuming the first term is the term entered
+        $queryString = implode(' ', $queryArray);
+        // Arbitrarily limit to 5 if the config isn't set
+        $count = static::config()->get('spellcheckCount') ?: 5;
+        $spellcheck = $clientQuery->getSpellcheck();
+        $spellcheck->setQuery($queryString);
+        $spellcheck->setCount($count);
+        $spellcheck->setBuild(true);
+        $spellcheck->setCollate(true);
+        $spellcheck->setExtendedResults(true);
+        $spellcheck->setCollateExtendedResults(true);
+    }
+
+    /**
      * Add the index-time boosting to the query
      * @param BaseQuery $query
      * @param array $queryArray
@@ -370,43 +407,6 @@ abstract class BaseIndex
             $facets->createFacetField($config['Title'])->setField($config['Field']);
         }
         $facets->setMinCount($query->getFacetsMinCount());
-    }
-
-    /**
-     * @param Query $clientQuery
-     * @param array $queryArray
-     */
-    protected function buildSpellcheck(Query $clientQuery, array $queryArray): void
-    {
-        // Assuming the first term is the term entered
-        $queryString = implode(' ', $queryArray);
-        // Arbitrarily limit to 5 if the config isn't set
-        $count = static::config()->get('spellcheckCount') ?: 5;
-        $spellcheck = $clientQuery->getSpellcheck();
-        $spellcheck->setQuery($queryString);
-        $spellcheck->setCount($count);
-        $spellcheck->setBuild(true);
-        $spellcheck->setCollate(true);
-        $spellcheck->setExtendedResults(true);
-        $spellcheck->setCollateExtendedResults(true);
-    }
-
-    /**
-     * @param $search
-     * @param string $term
-     * @param array $searchQuery
-     * @return array
-     */
-    protected function buildQueryBoost($search, string $term, array $searchQuery): array
-    {
-        foreach ($search['fields'] as $boostField) {
-            $criteria = Criteria::where($boostField)
-                ->is($term)
-                ->boost($search['boost']);
-            $searchQuery[] = $criteria->getQuery();
-        }
-
-        return $searchQuery;
     }
 
     /**

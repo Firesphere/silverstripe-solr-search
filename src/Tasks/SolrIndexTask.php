@@ -116,14 +116,8 @@ class SolrIndexTask extends BuildTask
             }
 
             foreach ($classes as $class) {
-                [$groups, $group] = $this->reindexClass(
-                    $request->getVar('group'),
-                    $class,
-                    $debug,
-                    $index,
-                    $group,
-                    $client
-                );
+                $isGroup = $request->getVar('group');
+                [$groups, $group] = $this->reindexClass($isGroup, $class, $debug, $index, $group, $client);
             }
         }
         $end = time();
@@ -161,7 +155,16 @@ class SolrIndexTask extends BuildTask
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
                 try {
-                    [$count, $group] = $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
+                    [$count, $group] = $this->doReindex(
+                        $group,
+                        $groups,
+                        $client,
+                        $class,
+                        $fields,
+                        $index,
+                        $count,
+                        $debug
+                    );
                 } catch (Exception $e) {
                     Debug::message(date('Y-m-d H:i:s' . "\n"), false);
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
@@ -190,12 +193,29 @@ class SolrIndexTask extends BuildTask
      * @return array[int, int]
      * @throws Exception
      */
-    protected function doReindex($group, $groups, Client $client, $class, array $fields, BaseIndex $index, $count = 0, $debug = false): array
-    {
+    protected function doReindex(
+        $group,
+        $groups,
+        Client $client,
+        $class,
+        array $fields,
+        BaseIndex $index,
+        $count = 0,
+        $debug = false
+    ): array {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
-        $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, null, $debug);
+        $docs = $this->factory->buildItems(
+            $class,
+            array_unique($fields),
+            $index,
+            $update,
+            $group,
+            $count,
+            null,
+            $debug
+        );
         $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
         $client->update($update);
         $group++;
