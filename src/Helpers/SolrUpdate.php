@@ -61,8 +61,8 @@ class SolrUpdate
                         $update,
                         0,
                         $count,
-                        false,
-                        $items
+                        $items,
+                        false
                     );
                     $update->addDocuments($docs);
                 }

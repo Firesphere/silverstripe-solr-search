@@ -50,7 +50,7 @@ class DocumentFactory
      * @throws Exception
      * @todo this could be cleaner
      */
-    public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $debug = false, $items = null)
+    public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $items = null, $debug = false)
     {
         $this->introspection->setIndex($index);
         $docs = [];
@@ -68,23 +68,14 @@ class DocumentFactory
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
         $boostFields = $index->getBoostedFields();
-        // @todo this is intense and could hopefully be simplified?
+        // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
         foreach ($items as $item) {
             $debugString .= "$item->ID, ";
             /** @var Document $doc */
             $doc = $update->createDocument();
             $this->addDefaultFields($doc, $item);
 
-            foreach ($fields as $field) {
-                $fieldData = $this->introspection->getFieldIntrospection($field);
-                foreach ($fieldData as $dataField => $options) {
-                    // Only one field per class, so let's take the f
-                    $this->addField($doc, $item, $fieldData[$dataField]);
-                    if (array_key_exists($field, $boostFields)) {
-                        $doc->setFieldBoost($dataField, $boostFields[$field]);
-                    }
-                }
-            }
+            $this->buildField($fields, $doc, $item, $boostFields);
             $item->destroy();
 
             $docs[] = $doc;
@@ -231,5 +222,26 @@ class DocumentFactory
     public function getIntrospection(): SearchIntrospection
     {
         return $this->introspection;
+    }
+
+    /**
+     * @param $fields
+     * @param Document $doc
+     * @param DataObject $item
+     * @param array $boostFields
+     * @throws Exception
+     */
+    protected function buildField($fields, Document $doc, DataObject $item, array $boostFields): void
+    {
+        foreach ($fields as $field) {
+            $fieldData = $this->introspection->getFieldIntrospection($field);
+            foreach ($fieldData as $dataField => $options) {
+                // Only one field per class, so let's take the fieldData. This will override previous additions
+                $this->addField($doc, $item, $fieldData[$dataField]);
+                if (array_key_exists($field, $boostFields)) {
+                    $doc->setFieldBoost($dataField, $boostFields[$field]);
+                }
+            }
+        }
     }
 }

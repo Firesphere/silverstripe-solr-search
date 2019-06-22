@@ -129,6 +129,7 @@ class DocumentFactoryTest extends SapphireTest
             $update,
             0,
             $count,
+            null,
             false
         );
 

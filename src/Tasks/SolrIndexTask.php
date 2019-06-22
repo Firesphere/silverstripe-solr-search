@@ -203,7 +203,7 @@ class SolrIndexTask extends BuildTask
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
-        $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, $debug);
+        $docs = $this->factory->buildItems($class, array_unique($fields), $index, $update, $group, $count, null, $debug);
         $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
         $client->update($update);
         $group++;
