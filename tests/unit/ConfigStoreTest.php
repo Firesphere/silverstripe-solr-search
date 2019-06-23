@@ -19,11 +19,28 @@ class ConfigStoreTest extends SapphireTest
         new FileConfigStore([]);
     }
 
+    public function testFileConstructGood()
+    {
+        $store = new FileConfigStore(['path' => 'test']);
+        $this->assertEquals('test/lol', $store->instanceDir('lol'));
+
+        $this->assertEquals(['path' => 'test'], $store->getConfig());
+    }
+
     /**
      * @expectedException \Solarium\Exception\RuntimeException
      */
     public function testPostConstruct()
     {
         new PostConfigStore([]);
+    }
+
+    public function testPostConstructGood()
+    {
+        $store = new PostConfigStore(['path' => 'test']);
+
+        $this->assertEquals(['path' => 'test/'], $store->getPath());
+
+        $this->assertEquals('lol', $store->instanceDir('lol'));
     }
 }
