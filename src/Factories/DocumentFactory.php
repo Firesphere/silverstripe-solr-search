@@ -30,6 +30,16 @@ class DocumentFactory
     protected $introspection;
 
     /**
+     * @var null|ArrayList|DataList
+     */
+    protected $items;
+
+    /**
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
      * DocumentFactory constructor, sets up introspection
      */
     public function __construct()
@@ -44,13 +54,11 @@ class DocumentFactory
      * @param Query $update
      * @param $group
      * @param int $count
-     * @param bool $debug
-     * @param null|ArrayList $items
      * @return array
      * @throws Exception
      * @todo this could be cleaner
      */
-    public function buildItems($class, $fields, $index, $update, $group, &$count = 0, $items = null, $debug = false)
+    public function buildItems($class, $fields, $index, $update, $group, &$count = 0): array
     {
         $this->introspection->setIndex($index);
         $docs = [];
@@ -58,18 +66,18 @@ class DocumentFactory
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
         $batchLength = self::config()->get('batchLength');
-        if (!$items) {
+        if (!$this->items) {
             // This limit is scientifically determined by keeping on trying until it didn't break anymore
-            $items = $baseClass::get()
+            $this->items = $baseClass::get()
                 ->sort('ID ASC')
                 ->limit($batchLength, ($group * $batchLength));
-            $count += $items->count();
+            $count += $this->items->count();
         }
 
         $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
         $boostFields = $index->getBoostedFields();
         // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
-        foreach ($items as $item) {
+        foreach ($this->items as $item) {
             $debugString .= "$item->ID, ";
             /** @var Document $doc */
             $doc = $update->createDocument();
@@ -81,7 +89,7 @@ class DocumentFactory
             $docs[] = $doc;
         }
 
-        if ($debug) {
+        if ($this->debug) {
             Debug::message(rtrim($debugString, ', ') . "]\n", false);
             Debug::message(sprintf("Total added items: %s\n", $count), false);
         }
@@ -139,9 +147,7 @@ class DocumentFactory
 
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
-        if (!is_array($value)) {
-            $value = [$value];
-        }
+        $value = (!is_array($value)) ? [$value] : $value;
 
         foreach ($value as $item) {
             /* Solr requires dates in the form 1995-12-31T23:59:59Z */
@@ -211,6 +217,7 @@ class DocumentFactory
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
             $next = [];
 
+            // @todo this could be a while loop as long as the item is an array greater than 1
             foreach ($object as $item) {
                 if ($step['call'] === 'method') { // php's built_in method_exists() is faster
                     $method = $step['method'];
@@ -243,5 +250,27 @@ class DocumentFactory
     public function getIntrospection(): SearchIntrospection
     {
         return $this->introspection;
+    }
+
+    /**
+     * @param ArrayList|DataList|null $items
+     * @return DocumentFactory
+     */
+    public function setItems($items): DocumentFactory
+    {
+        $this->items = $items;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $debug
+     * @return DocumentFactory
+     */
+    public function setDebug(bool $debug): DocumentFactory
+    {
+        $this->debug = $debug;
+
+        return $this;
     }
 }

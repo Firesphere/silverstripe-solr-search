@@ -47,6 +47,11 @@ class SolrIndexTask extends BuildTask
     protected $factory;
 
     /**
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
      * SolrIndexTask constructor. Sets up the document factory
      */
     public function __construct()
@@ -87,9 +92,9 @@ class SolrIndexTask extends BuildTask
         }
         // If all else fails, assume we're running a full index.
 
-        $debug = isset($vars['debug']) ? true : false;
+        $this->debug = isset($vars['debug']) ? true : false;
         // Debug if in dev or CLI, or debug is requested explicitly
-        $debug = (Director::isDev() || Director::is_cli()) || $debug;
+        $this->debug = (Director::isDev() || Director::is_cli()) || $this->debug;
 
         Debug::message(date('Y-m-d H:i:s' . "\n"));
 
@@ -117,7 +122,7 @@ class SolrIndexTask extends BuildTask
 
             foreach ($classes as $class) {
                 $isGroup = $request->getVar('group');
-                [$groups, $group] = $this->reindexClass($isGroup, $class, $debug, $index, $group, $client);
+                [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group, $client);
             }
         }
         $end = time();
@@ -132,25 +137,24 @@ class SolrIndexTask extends BuildTask
     /**
      * @param $isGroup
      * @param $class
-     * @param bool $debug
      * @param BaseIndex $index
      * @param int $group
      * @param Client $client
      * @return array
      * @throws Exception
      */
-    protected function reindexClass($isGroup, $class, bool $debug, BaseIndex $index, int $group, Client $client): array
+    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client): array
     {
         $batchLength = DocumentFactory::config()->get('batchLength');
         $groups = (int)ceil($class::get()->count() / $batchLength);
-        if ($debug) {
+        if ($this->debug) {
             Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
         }
         $count = 0;
         $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {
-            $this->doReindex($group, $groups, $client, $class, $fields, $index, $count, $debug);
+            $this->doReindex($group, $groups, $client, $class, $fields, $index, $count);
         } else {
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
@@ -162,8 +166,7 @@ class SolrIndexTask extends BuildTask
                         $class,
                         $fields,
                         $index,
-                        $count,
-                        $debug
+                        $count
                     );
                 } catch (Exception $e) {
                     Debug::message(date('Y-m-d H:i:s' . "\n"), false);
@@ -189,7 +192,6 @@ class SolrIndexTask extends BuildTask
      * @param array $fields
      * @param BaseIndex $index
      * @param int $count
-     * @param bool $debug
      * @return array[int, int]
      * @throws Exception
      */
@@ -200,21 +202,19 @@ class SolrIndexTask extends BuildTask
         $class,
         array $fields,
         BaseIndex $index,
-        $count = 0,
-        $debug = false
+        $count = 0
     ): array {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
+        $this->factory->setDebug($this->debug);
         $docs = $this->factory->buildItems(
             $class,
             array_unique($fields),
             $index,
             $update,
             $group,
-            $count,
-            null,
-            $debug
+            $count
         );
         $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
         $client->update($update);

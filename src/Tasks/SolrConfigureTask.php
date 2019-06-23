@@ -86,7 +86,6 @@ class SolrConfigureTask extends BuildTask
     /**
      * Update the index on the given store
      *
-     * @todo make this a tad cleaner, it's a bit unreadable
      * @param BaseIndex $instance Instance
      */
     protected function updateIndex($instance): void
@@ -107,21 +106,25 @@ class SolrConfigureTask extends BuildTask
         $instance->uploadConfig($configStore);
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             try {
-                $result = $service->coreReload($index);
+                $service->coreReload($index);
             } catch (Exception $e) {
+                $this->logger->error(sprintf('Error reloading core %s, attempting unload and recreating', $index));
                 $this->logger->error($e->getMessage());
                 // Possibly a file error, try to unload and recreate the core
                 $service->coreUnload($index);
-                $result = $service->coreCreate($index, $configStore);
+                if ($service->coreCreate($index, $configStore)) {
+                    unset($e);
+                }
             }
         } else {
-            $result = $service->coreCreate($index, $configStore);
+            $service->coreCreate($index, $configStore);
         }
 
-        if ($result) {
+        if (!isset($e)) {
             $this->logger->info(sprintf('Core %s successfully loaded', $index));
         } else {
             $this->logger->warning(sprintf('Core %s could not be loaded successfully', $index));
+            $this->logger->warning(sprintf('Message: %s', $e->getMessage()));
         }
     }
 
