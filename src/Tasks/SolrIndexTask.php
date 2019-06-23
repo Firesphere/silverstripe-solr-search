@@ -16,7 +16,6 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Versioned\Versioned;
 use Solarium\Core\Client\Client;
 
@@ -53,6 +52,11 @@ class SolrIndexTask extends BuildTask
     protected $debug = false;
 
     /**
+     * @var null|LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * SolrIndexTask constructor. Sets up the document factory
      */
     public function __construct()
@@ -61,6 +65,8 @@ class SolrIndexTask extends BuildTask
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
+        $this->logger = Injector::inst()->get(LoggerInterface::class);
+
 
         $this->introspection = new SearchIntrospection();
     }
@@ -94,7 +100,7 @@ class SolrIndexTask extends BuildTask
 
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
-        Debug::message(date('Y-m-d H:i:s' . "\n"));
+        $this->logger->info(date('Y-m-d H:i:s' . "\n"));
         $group = $request->getVar('group') ?: 0; // allow starting from a specific group
         $start = $request->getVar('start') ?: 0;
 
@@ -127,8 +133,8 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $startTime)), false);
-        Debug::message("done!\n", false);
+        $this->logger->info(sprintf("It took me %d seconds to do all the indexing\n", ($end - $startTime)));
+        $this->logger->info("done!\n");
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $groups;
@@ -147,7 +153,7 @@ class SolrIndexTask extends BuildTask
     {
         $group = $group ?: 0;
         if ($this->debug) {
-            Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
+            $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
         }
         $count = 0;
         $fields = $index->getFieldsForIndexing();
@@ -171,7 +177,7 @@ class SolrIndexTask extends BuildTask
                 } catch (Exception $e) {
                     Injector::inst()->get(LoggerInterface::class)->error($e->getMessage());
                     if ($this->debug) {
-                        Debug::message(date('Y-m-d H:i:s') . "\n", false);
+                        $this->logger->error(date('Y-m-d H:i:s') . "\n", false);
                     }
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
