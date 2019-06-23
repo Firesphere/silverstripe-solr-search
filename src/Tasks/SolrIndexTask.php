@@ -92,13 +92,9 @@ class SolrIndexTask extends BuildTask
         }
         // If all else fails, assume we're running a full index.
 
-        $this->debug = isset($vars['debug']) ? true : false;
-        // Debug if in dev or CLI, or debug is requested explicitly
-        $this->debug = (Director::isDev() || Director::is_cli()) || $this->debug;
+        $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
-        if ($this->debug) {
-            Debug::message(date('Y-m-d H:i:s' . "\n"));
-        }
+        Debug::message(date('Y-m-d H:i:s' . "\n"));
 
         $groups = 0;
         foreach ($indexes as $indexName) {
@@ -130,9 +126,7 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        if ($this->debug) {
-            Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
-        }
+        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
         Debug::message("done!\n", false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
