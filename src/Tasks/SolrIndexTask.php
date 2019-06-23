@@ -218,6 +218,10 @@ class SolrIndexTask extends BuildTask
             $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
             $update->addCommit();
             $client->update($update);
+            // Clear out the docs when done
+            foreach ($docs as $doc) {
+                unset($doc);
+            }
         }
         $group++;
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory

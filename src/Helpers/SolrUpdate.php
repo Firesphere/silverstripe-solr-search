@@ -61,6 +61,11 @@ class SolrUpdate
                     $update->addDocuments($docs);
                     $update->addCommit();
                     $client->update($update);
+                    // Does this clear out the memory properly?
+                    foreach ($docs as $doc) {
+                        unset($doc);
+                    }
+                    gc_collect_cycles();
                 }
             }
         }

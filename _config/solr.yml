@@ -2,7 +2,7 @@
 Name: SolrSearch
 ---
 Firesphere\SolrSearch\Factories\DocumentFactory:
-  batchLength: 500
+  batchLength: 1000
 # Should move to example docs
 Firesphere\SolrSearch\Services\SolrCoreService:
   config:
