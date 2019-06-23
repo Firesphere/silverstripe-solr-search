@@ -121,8 +121,8 @@ class SolrIndexTask extends BuildTask
             }
 
             foreach ($classes as $class) {
-               $isGroup = $request->getVar('group');
-               [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group, $client);
+                $isGroup = $request->getVar('group');
+                [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group, $client);
             }
         }
         $end = time();
