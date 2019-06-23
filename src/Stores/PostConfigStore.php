@@ -79,7 +79,7 @@ class PostConfigStore implements ConfigStore
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPath()
     {
@@ -89,7 +89,7 @@ class PostConfigStore implements ConfigStore
     /**
      * Get the instanceDir to tell Solr to use for index $index
      * @param string|null $index string - The name of an index (which is also used as the name of the Solr core for the index)
-     * @return null
+     * @return null|string
      */
     public function instanceDir($index)
     {
