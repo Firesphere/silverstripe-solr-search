@@ -95,8 +95,8 @@ class SolrIndexTask extends BuildTask
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
         Debug::message(date('Y-m-d H:i:s' . "\n"));
-
         $group = $request->getVar('group') ?: 0; // allow starting from a specific group
+        $start = $request->getVar('start') ?: 0;
 
         $groups = 0;
         foreach ($indexes as $indexName) {
@@ -115,15 +115,14 @@ class SolrIndexTask extends BuildTask
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
             $client = $index->getClient();
-            $start = $request->getVar('start') ?: 0;
             // Set the start point to the requested value, if there is only one class to index
             if ($start > $group && count($classes) === 1) {
                 $group = $start;
             }
 
             foreach ($classes as $class) {
-                $isGroup = $request->getVar('group');
-                $this->reindexClass($isGroup, $class, $index, $group, $client);
+               $isGroup = $request->getVar('group');
+               [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group, $client);
             }
         }
         $end = time();
@@ -141,10 +140,12 @@ class SolrIndexTask extends BuildTask
      * @param BaseIndex $index
      * @param int $group
      * @param Client $client
+     * @return array
      * @throws Exception
      */
-    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client)
+    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client): array
     {
+        $group = $group ?: 0;
         if ($this->debug) {
             Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
         }
@@ -179,6 +180,8 @@ class SolrIndexTask extends BuildTask
                 }
             }
         }
+
+        return [$groups, $group];
     }
 
     /**
