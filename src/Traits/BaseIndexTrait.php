@@ -7,7 +7,7 @@ use Solarium\Core\Client\Client;
 
 /**
  * This is slightly cheating, but it works and also makes things more readable.
- * 
+ *
  * Trait BaseIndexTrait
  * @package Firesphere\SolrSearch\Traits
  */
