@@ -96,6 +96,8 @@ class SolrIndexTask extends BuildTask
 
         Debug::message(date('Y-m-d H:i:s' . "\n"));
 
+        $group = $request->getVar('group') ?: 0; // allow starting from a specific group
+
         $groups = 0;
         foreach ($indexes as $indexName) {
             // Skip the abstract base
@@ -113,7 +115,6 @@ class SolrIndexTask extends BuildTask
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
             $client = $index->getClient();
-            $group = $request->getVar('group') ?: 0; // allow starting from a specific group
             $start = $request->getVar('start') ?: 0;
             // Set the start point to the requested value, if there is only one class to index
             if ($start > $group && count($classes) === 1) {
@@ -122,7 +123,7 @@ class SolrIndexTask extends BuildTask
 
             foreach ($classes as $class) {
                 $isGroup = $request->getVar('group');
-                [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group, $client);
+                $this->reindexClass($isGroup, $class, $index, $group, $client);
             }
         }
         $end = time();
@@ -140,10 +141,9 @@ class SolrIndexTask extends BuildTask
      * @param BaseIndex $index
      * @param int $group
      * @param Client $client
-     * @return array
      * @throws Exception
      */
-    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client): array
+    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client)
     {
         if ($this->debug) {
             Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
@@ -178,13 +178,7 @@ class SolrIndexTask extends BuildTask
                     continue;
                 }
             }
-            // Reset the group for the next class
-            if ($group >= $groups) {
-                $group = 0;
-            }
         }
-
-        return [$groups, $group];
     }
 
     /**
