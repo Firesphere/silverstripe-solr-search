@@ -208,7 +208,7 @@ class DocumentFactory
             $object = [$object];
         }
 
-        while($step = array_shift($field['lookup_chain'])) {
+        while ($step = array_shift($field['lookup_chain'])) {
 
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
             $next = [];
