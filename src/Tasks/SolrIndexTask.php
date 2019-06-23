@@ -216,6 +216,7 @@ class SolrIndexTask extends BuildTask
         // If there are no docs, no need to execute an action
         if (count($docs)) {
             $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
+            $update->addCommit();
             $client->update($update);
         }
         $group++;

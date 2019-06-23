@@ -59,9 +59,9 @@ class SolrUpdate
                     $factory->setItems($items);
                     $docs = $factory->buildItems($object->ClassName, $fields, $index, $update, 0, $count);
                     $update->addDocuments($docs);
+                    $update->addCommit();
+                    $client->update($update);
                 }
-                $update->addCommit();
-                $result = $client->update($update)->getResponse();
             }
         }
 
