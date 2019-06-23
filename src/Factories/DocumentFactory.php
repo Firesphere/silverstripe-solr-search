@@ -208,18 +208,14 @@ class DocumentFactory
             $object = [$object];
         }
 
-        foreach ($field['lookup_chain'] as $step) {
-            // Just fail if we've fallen off the end of the chain
-            if (!count($object)) {
-                return null;
-            }
+        while($step = array_shift($field['lookup_chain'])) {
 
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
             $next = [];
 
             // @todo this could be a while loop as long as the item is an array greater than 1
             foreach ($object as $item) {
-                if ($step['call'] === 'method') { // php's built_in method_exists() is faster
+                if ($step['call'] === 'method') {
                     $method = $step['method'];
                     $item = $item->$method();
                 } else {

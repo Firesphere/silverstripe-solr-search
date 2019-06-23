@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
@@ -57,7 +58,6 @@ class SolrIndexTask extends BuildTask
     public function __construct()
     {
         parent::__construct();
-        $this->factory = Injector::inst()->get(DocumentFactory::class);
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
@@ -96,7 +96,9 @@ class SolrIndexTask extends BuildTask
         // Debug if in dev or CLI, or debug is requested explicitly
         $this->debug = (Director::isDev() || Director::is_cli()) || $this->debug;
 
-        Debug::message(date('Y-m-d H:i:s' . "\n"));
+        if ($this->debug) {
+            Debug::message(date('Y-m-d H:i:s' . "\n"));
+        }
 
         $groups = 0;
         foreach ($indexes as $indexName) {
@@ -106,6 +108,7 @@ class SolrIndexTask extends BuildTask
                 continue;
             }
 
+            $this->factory = Injector::inst()->get(DocumentFactory::class, false);
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
 
@@ -127,7 +130,9 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
+        if ($this->debug) {
+            Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
+        }
         Debug::message("done!\n", false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
@@ -145,8 +150,6 @@ class SolrIndexTask extends BuildTask
      */
     protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client): array
     {
-        $batchLength = DocumentFactory::config()->get('batchLength');
-        $groups = (int)ceil($class::get()->count() / $batchLength);
         if ($this->debug) {
             Debug::message(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
         }
@@ -154,8 +157,11 @@ class SolrIndexTask extends BuildTask
         $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {
-            $this->doReindex($group, $groups, $client, $class, $fields, $index, $count);
+            $groups = $group;
+            $this->doReindex($group, $group, $client, $class, $fields, $index, $count);
         } else {
+            $batchLength = DocumentFactory::config()->get('batchLength');
+            $groups = (int)ceil($class::get()->count() / $batchLength);
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
                 try {
@@ -169,7 +175,10 @@ class SolrIndexTask extends BuildTask
                         $count
                     );
                 } catch (Exception $e) {
-                    Debug::message(date('Y-m-d H:i:s' . "\n"), false);
+                    Injector::inst()->get(LoggerInterface::class)->error($e->getMessage());
+                    if ($this->debug) {
+                        Debug::message(date('Y-m-d H:i:s') . "\n", false);
+                    }
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
                     continue;
@@ -208,6 +217,7 @@ class SolrIndexTask extends BuildTask
         Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
         $this->factory->setDebug($this->debug);
+        $this->factory->setItems(null);
         $docs = $this->factory->buildItems(
             $class,
             array_unique($fields),
@@ -216,16 +226,15 @@ class SolrIndexTask extends BuildTask
             $group,
             $count
         );
-        $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
-        $client->update($update);
+        // If there are no docs, no need to execute an action
+        if (count($docs)) {
+            $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
+            $client->update($update);
+        }
         $group++;
-        // get an update query instance
-        $update = $client->createUpdate();
-        // optimize the index
-        $update->addOptimize(true, false, 5);
-        $update->addCommit();
-        $client->update($update);
-        Debug::message(date('Y-m-d H:i:s' . "\n"), false);
+        if ($this->debug) {
+            Debug::message(date('Y-m-d H:i:s' . "\n"), false);
+        }
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return [$count, $group];
