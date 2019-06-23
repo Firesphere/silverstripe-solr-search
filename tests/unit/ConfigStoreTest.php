@@ -39,7 +39,7 @@ class ConfigStoreTest extends SapphireTest
     {
         $store = new PostConfigStore(['path' => 'test']);
 
-        $this->assertEquals(['path' => 'test/'], $store->getPath());
+        $this->assertEquals('test/', $store->getPath());
 
         $this->assertEquals('lol', $store->instanceDir('lol'));
     }
