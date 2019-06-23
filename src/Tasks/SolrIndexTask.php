@@ -79,7 +79,7 @@ class SolrIndexTask extends BuildTask
      */
     public function run($request)
     {
-        $start = time();
+        $startTime = time();
         $vars = $request->getVars();
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         // If the given index is not an actual index, skip
@@ -127,7 +127,7 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $start)), false);
+        Debug::message(sprintf("It took me %d seconds to do all the indexing\n", ($end - $startTime)), false);
         Debug::message("done!\n", false);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 

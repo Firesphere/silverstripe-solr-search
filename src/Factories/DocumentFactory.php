@@ -94,6 +94,7 @@ class DocumentFactory
             Debug::message(sprintf("Total added items: %s\n", $count), false);
         }
 
+        reset($this->items);
         return $docs;
     }
 
@@ -128,6 +129,8 @@ class DocumentFactory
                     $doc->setFieldBoost($dataField, $boostFields[$field]);
                 }
             }
+            unset($field);
+            gc_collect_cycles();
         }
     }
 
@@ -167,7 +170,10 @@ class DocumentFactory
             $name = end($name);
 
             $doc->addField($name, $item);
+            unset($item);
+            gc_collect_cycles();
         }
+        gc_collect_cycles();
     }
 
     /**
@@ -234,6 +240,7 @@ class DocumentFactory
             }
 
             $object = $next;
+            unset($next);
         }
 
         return $object;
