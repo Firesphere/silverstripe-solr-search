@@ -133,8 +133,8 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        $this->logger->info(sprintf("It took me %d seconds to do all the indexing\n", ($end - $startTime)));
-        $this->logger->info("done!\n");
+        $this->logger->info(sprintf("It took me %d seconds to do all the indexing\n", ($end - $startTime)), []);
+        $this->logger->info("done!\n", []);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $groups;
@@ -153,7 +153,7 @@ class SolrIndexTask extends BuildTask
     {
         $group = $group ?: 0;
         if ($this->debug) {
-            $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), false);
+            $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
         }
         $count = 0;
         $fields = $index->getFieldsForIndexing();
@@ -177,7 +177,7 @@ class SolrIndexTask extends BuildTask
                 } catch (Exception $e) {
                     Injector::inst()->get(LoggerInterface::class)->error($e->getMessage());
                     if ($this->debug) {
-                        $this->logger->error(date('Y-m-d H:i:s') . "\n", false);
+                        $this->logger->error(date('Y-m-d H:i:s') . "\n", []);
                     }
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
