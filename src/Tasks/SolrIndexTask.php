@@ -153,7 +153,6 @@ class SolrIndexTask extends BuildTask
         $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {
-            $groups = $group;
             $this->doReindex($group, $client, $class, $fields, $index, $count);
         } else {
             $batchLength = DocumentFactory::config()->get('batchLength');
