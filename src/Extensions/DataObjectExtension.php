@@ -80,7 +80,7 @@ class DataObjectExtension extends DataExtension
         $logger = Injector::inst()->get(LoggerInterface::class);
         $logger->log(
             sprintf(
-                'Unable to delete %s with ID %s',
+                'Unable to alter %s with ID %s',
                 $this->owner->ClassName,
                 $this->owner->ID
             )
