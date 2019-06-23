@@ -105,6 +105,7 @@ class SolrIndexTask extends BuildTask
             }
 
             $this->factory = Injector::inst()->get(DocumentFactory::class, false);
+            $this->factory->setDebug($this->debug);
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
 
@@ -152,7 +153,7 @@ class SolrIndexTask extends BuildTask
         // Run a single group
         if ($isGroup) {
             $groups = $group;
-            $this->doReindex($group, $group, $client, $class, $fields, $index, $count);
+            $this->doReindex($group, $client, $class, $fields, $index, $count);
         } else {
             $batchLength = DocumentFactory::config()->get('batchLength');
             $groups = (int)ceil($class::get()->count() / $batchLength);
@@ -161,7 +162,6 @@ class SolrIndexTask extends BuildTask
                 try {
                     [$count, $group] = $this->doReindex(
                         $group,
-                        $groups,
                         $client,
                         $class,
                         $fields,
@@ -189,7 +189,6 @@ class SolrIndexTask extends BuildTask
 
     /**
      * @param int $group
-     * @param int $groups
      * @param Client $client
      * @param string $class
      * @param array $fields
@@ -200,7 +199,6 @@ class SolrIndexTask extends BuildTask
      */
     protected function doReindex(
         $group,
-        $groups,
         Client $client,
         $class,
         array $fields,
@@ -208,9 +206,7 @@ class SolrIndexTask extends BuildTask
         $count = 0
     ): array {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-        Debug::message(sprintf('Indexing %s group of %s', $group, $groups), false);
         $update = $client->createUpdate();
-        $this->factory->setDebug($this->debug);
         $this->factory->setItems(null);
         $docs = $this->factory->buildItems(
             $class,
@@ -226,9 +222,6 @@ class SolrIndexTask extends BuildTask
             $client->update($update);
         }
         $group++;
-        if ($this->debug) {
-            Debug::message(date('Y-m-d H:i:s' . "\n"), false);
-        }
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return [$count, $group];
