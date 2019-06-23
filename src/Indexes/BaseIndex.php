@@ -48,30 +48,6 @@ abstract class BaseIndex
         'FacetFields',
     ];
     /**
-     * @var Client
-     */
-    protected $client;
-    /**
-     * @var array
-     */
-    protected $fulltextFields = [];
-    /**
-     * @var array
-     */
-    protected $filterFields = [];
-    /**
-     * @var array
-     */
-    protected $sortFields = [];
-    /**
-     * @var array
-     */
-    protected $copyFields = [
-        '_text' => [
-            '*'
-        ],
-    ];
-    /**
      * @var string
      */
     protected $defaultField = '_text';

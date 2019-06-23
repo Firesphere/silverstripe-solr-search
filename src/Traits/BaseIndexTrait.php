@@ -8,6 +8,30 @@ use Solarium\Core\Client\Client;
 trait BaseIndexTrait
 {
     /**
+     * @var Client
+     */
+    protected $client;
+    /**
+     * @var array
+     */
+    protected $fulltextFields = [];
+    /**
+     * @var array
+     */
+    protected $filterFields = [];
+    /**
+     * @var array
+     */
+    protected $sortFields = [];
+    /**
+     * @var array
+     */
+    protected $copyFields = [
+        '_text' => [
+            '*'
+        ],
+    ];
+    /**
      * @return array
      */
     public function getFulltextFields(): array
