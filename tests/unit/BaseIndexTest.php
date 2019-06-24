@@ -13,6 +13,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Security\DefaultAdminService;
 use Solarium\Core\Client\Client;
 
 class BaseIndexTest extends SapphireTest
@@ -109,6 +110,19 @@ class BaseIndexTest extends SapphireTest
         $result = $index->doSearch($query);
         $this->assertInstanceOf(SearchResult::class, $result);
         $this->assertEquals(1, $result->getTotalItems());
+
+        $admin = singleton(DefaultAdminService::class)->findOrCreateDefaultAdmin();
+        $this->loginAs($admin);
+        // Result should be the same for now
+        $result2 = $index->doSearch($query);
+        $this->assertEquals($result, $result2);
+
+        $query->addClass(SiteTree::class);
+
+        $result3 = $index->doSearch($query);
+        foreach ($result3->getMatches() as $match) {
+            $this->assertContains(SiteTree::class, $match->Hierarchy);
+        }
     }
 
     public function testGetFieldsForSubsites()
