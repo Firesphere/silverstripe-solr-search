@@ -49,6 +49,9 @@ class SearchResult
      */
     protected $spellcheck;
 
+    /**
+     * @var string
+     */
     protected $collatedSpellcheck;
 
     /**
@@ -309,5 +312,13 @@ class SearchResult
 
         // Return an ArrayList of the results
         return ArrayData::create($facetArray);
+    }
+
+    /**
+     * @return BaseQuery
+     */
+    public function getQuery(): BaseQuery
+    {
+        return $this->query;
     }
 }
