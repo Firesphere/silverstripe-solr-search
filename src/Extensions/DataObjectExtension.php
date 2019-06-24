@@ -45,7 +45,7 @@ class DataObjectExtension extends DataExtension
             // Mark the current class as dirty
             /** @var DirtyClass $record */
             $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
-            if (!$record) {
+            if (!$record || !$record->exists()) {
                 $record = DirtyClass::create([
                     'Class' => $this->owner->ClassName,
                     'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
@@ -95,7 +95,7 @@ class DataObjectExtension extends DataExtension
     {
         /** @var DirtyClass $record */
         $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
-        if (!$record) {
+        if (!$record || !$record->exists()) {
             $record = DirtyClass::create([
                 'Class' => $this->owner->ClassName,
                 'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),

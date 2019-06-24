@@ -219,7 +219,6 @@ class DocumentFactory
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
             $next = [];
 
-            // @todo this could be a while loop as long as the item is an array greater than 1
             foreach ($object as $item) {
                 if ($step['call'] === 'method') {
                     $method = $step['method'];
@@ -242,6 +241,7 @@ class DocumentFactory
 
             $object = $next;
             unset($next);
+            gc_collect_cycles();
         }
 
         return $object;

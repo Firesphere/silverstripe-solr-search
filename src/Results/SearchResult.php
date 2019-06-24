@@ -213,10 +213,10 @@ class SearchResult
     }
 
     /**
-     * @param FacetSet $facets
+     * @param FacetSet|null $facets
      * @return $this
      */
-    protected function setFacets(FacetSet $facets): self
+    protected function setFacets($facets): self
     {
         $this->facets = $this->buildFacets($facets);
 
@@ -278,10 +278,10 @@ class SearchResult
 
     /**
      * Build the given list of key-value pairs in to a SilverStripe useable array
-     * @param FacetSet $facets
+     * @param FacetSet|null $facets
      * @return ArrayData
      */
-    protected function buildFacets(FacetSet $facets): ArrayData
+    protected function buildFacets($facets): ArrayData
     {
         $facetArray = [];
         if ($facets) {
