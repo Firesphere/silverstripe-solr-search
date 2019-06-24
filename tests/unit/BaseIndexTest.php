@@ -26,7 +26,7 @@ class BaseIndexTest extends SapphireTest
     {
         $this->assertInstanceOf(Client::class, $this->index->getClient());
         $this->assertCount(1, $this->index->getClasses());
-        $this->assertCount(2, $this->index->getFulltextFields());
+        $this->assertCount(1, $this->index->getFulltextFields());
         $this->assertContains(SiteTree::class, $this->index->getClasses());
     }
 
@@ -81,8 +81,8 @@ class BaseIndexTest extends SapphireTest
     public function testGetFieldsForIndexing()
     {
         $expected = [
-            'Title',
             'Content',
+            'Title',
             'Created',
             'SubsiteID'
         ];
