@@ -95,6 +95,7 @@ class DocumentFactory
         }
 
         reset($this->items);
+
         return $docs;
     }
 

@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use SilverStripe\Control\Director;
@@ -174,8 +175,8 @@ class SolrIndexTask extends BuildTask
                         $index,
                         $count
                     );
-                } catch (Exception $e) {
-                    Injector::inst()->get(LoggerInterface::class)->error($e->getMessage());
+                } catch (RequestException $e) {
+                    $this->logger->error($e->getResponse()->getBody());
                     if ($this->debug) {
                         $this->logger->error(date('Y-m-d H:i:s') . "\n", []);
                     }

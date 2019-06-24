@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Indexes;
 
+use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Queries\BaseQuery;
@@ -19,7 +20,6 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
-use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
@@ -57,6 +57,11 @@ abstract class BaseIndex
     protected $schemaService;
 
     /**
+     * @var QueryComponentFactory
+     */
+    protected $queryFactory;
+
+    /**
      * BaseIndex constructor.
      */
     public function __construct()
@@ -72,6 +77,7 @@ abstract class BaseIndex
         $schemaService->setIndex($this);
         $schemaService->setStore(Director::isDev());
         $this->schemaService = $schemaService;
+        $this->queryFactory = Injector::inst()->get(QueryComponentFactory::class);
 
         $this->extend('onBeforeInit');
         $this->init();
@@ -144,40 +150,8 @@ abstract class BaseIndex
     public function doSearch(BaseQuery $query)
     {
         $this->extend('onBeforeSearch', $query);
-        $clientQuery = $this->client->createSelect();
         // Build the actual query parameters
-        $queryArray = $this->buildSolrQuery($query, $clientQuery);
-        // Build class filtering
-        $this->buildClassFilter($query, $clientQuery);
-        // Limit the results based on viewability
-        $this->buildViewFilter($clientQuery);
-        // Add filters
-        $this->buildFilters($query, $clientQuery);
-        // And excludes
-        $this->buildExcludes($query, $clientQuery);
-        // Add spellchecking
-        if ($query->isSpellcheck()) {
-            $this->buildSpellcheck($clientQuery, $queryArray);
-        }
-        // Add boosting
-        $queryArray = $this->buildBoosts($query, $queryArray);
-        // Add highlighting
-        $clientQuery->getHighlighting()->setFields($query->getHighlight());
-
-        // Setup the facets
-        $this->buildFacets($query, $clientQuery);
-
-        // Set the start
-        $clientQuery->setStart($query->getStart());
-        // Double the rows in case something has been deleted, but not from Solr
-        $clientQuery->setRows($query->getRows() * 2);
-        // Filter out the fields we want to see if they're set
-        if (count($query->getFields())) {
-            $clientQuery->setFields($query->getFields());
-        }
-
-        $q = implode(' ', $queryArray);
-        $clientQuery->setQuery($q);
+        $clientQuery = $this->buildSolrQuery($query);
 
         $result = $this->client->select($clientQuery);
 
@@ -193,15 +167,41 @@ abstract class BaseIndex
 
     /**
      * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return array
+     * @return Query
      */
-    protected function buildSolrQuery(BaseQuery $query, Query $clientQuery): array
+    protected function buildSolrQuery(BaseQuery $query): Query
     {
+        $clientQuery = $this->client->createSelect();
+
         $helper = $clientQuery->getHelper();
 
-        $searchQuery = [];
+        $queryArray = $this->buildTerms($query, $helper);
+
+        $this->queryFactory->setQueryArray($queryArray);
+        $this->queryFactory->setQuery($query);
+        $this->queryFactory->setClientQuery($clientQuery);
+        $this->queryFactory->setHelper($helper);
+
+        $clientQuery = $this->queryFactory->buildQuery();
+        $queryArray = $this->queryFactory->getQueryArray();
+
+        $q = implode(' ', $queryArray);
+        $clientQuery->setQuery($q);
+
+        return $clientQuery;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Helper $helper
+     * @return array
+     */
+    protected function buildTerms($query, Helper $helper): array
+    {
         $terms = $query->getTerms();
+
+        $searchQuery = [];
+
         foreach ($terms as $search) {
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
@@ -260,131 +260,17 @@ abstract class BaseIndex
     }
 
     /**
-     * Add filtered queries based on class hierarchy
-     * We only need the class itself, since the hierarchy will take care of the rest
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return Query
-     */
-    protected function buildClassFilter(BaseQuery $query, $clientQuery): Query
-    {
-        if (count($query->getClasses())) {
-            $classes = $query->getClasses();
-            $criteria = Criteria::where('ClassHierarchy')->in($classes);
-            $clientQuery->createFilterQuery('classes')
-                ->setQuery($criteria->getQuery());
-        }
-
-        return $clientQuery;
-    }
-
-    /**
-     * @param Query $clientQuery
-     */
-    protected function buildViewFilter(Query $clientQuery): void
-    {
-        // Filter by what the user is allowed to see
-        $viewIDs = ['1-null']; // null is always an option as that means publicly visible
-        $currentUser = Security::getCurrentUser();
-        if ($currentUser && $currentUser->exists()) {
-            $viewIDs[] = '1-' . $currentUser->ID;
-        }
-        /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
-        $query = Criteria::where('ViewStatus')->in($viewIDs);
-
-        $clientQuery->createFilterQuery('ViewStatus')
-            ->setQuery($query->getQuery());
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return Query
-     */
-    protected function buildFilters(BaseQuery $query, Query $clientQuery): Query
-    {
-        $filters = $query->getFilter();
-        foreach ($filters as $field => $value) {
-            $value = is_array($value) ? $value : [$value];
-            $criteria = Criteria::where($field)->in($value);
-            $clientQuery->createFilterQuery($field)
-                ->setQuery($criteria->getQuery());
-        }
-
-        return $clientQuery;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return Query
-     */
-    protected function buildExcludes(BaseQuery $query, Query $clientQuery): Query
-    {
-        $filters = $query->getExclude();
-        foreach ($filters as $field => $value) {
-            $value = is_array($value) ? $value : [$value];
-            $criteria = Criteria::where($field)
-                ->is($value)
-                ->not();
-            $clientQuery->createFilterQuery($field)
-                ->setQuery($criteria->getQuery());
-        }
-
-        return $clientQuery;
-    }
-
-    /**
-     * @param Query $clientQuery
-     * @param array $queryArray
-     */
-    protected function buildSpellcheck(Query $clientQuery, array $queryArray): void
-    {
-        // Assuming the first term is the term entered
-        $queryString = implode(' ', $queryArray);
-        // Arbitrarily limit to 5 if the config isn't set
-        $count = static::config()->get('spellcheckCount') ?: 5;
-        $spellcheck = $clientQuery->getSpellcheck();
-        $spellcheck->setQuery($queryString);
-        $spellcheck->setCount($count);
-        $spellcheck->setBuild(true);
-        $spellcheck->setCollate(true);
-        $spellcheck->setExtendedResults(true);
-        $spellcheck->setCollateExtendedResults(true);
-    }
-
-    /**
-     * Add the index-time boosting to the query
-     * @param BaseQuery $query
-     * @param array $queryArray
      * @return array
      */
-    protected function buildBoosts(BaseQuery $query, $queryArray): array
+    public function getFieldsForIndexing(): array
     {
-        $boosts = $query->getBoostedFields();
-        foreach ($boosts as $field => $boost) {
-            foreach ($query->getTerms() as $term) {
-                $booster = Criteria::where($field)
-                    ->is($term)
-                    ->boost($boost);
-                $queryArray[] = $booster->getQuery();
-            }
-        }
-
-        return $queryArray;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     */
-    protected function buildFacets(BaseQuery $query, Query $clientQuery): void
-    {
-        $facets = $clientQuery->getFacetSet();
-        foreach ($query->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
-        }
-        $facets->setMinCount($query->getFacetsMinCount());
+        return array_unique(
+            array_merge(
+                $this->getFulltextFields(),
+                $this->getSortFields(),
+                $this->getFilterFields()
+            )
+        );
     }
 
     /**
@@ -435,19 +321,5 @@ abstract class BaseIndex
         }
 
         return $engSynonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
-    }
-
-    /**
-     * @return array
-     */
-    public function getFieldsForIndexing(): array
-    {
-        return array_unique(
-            array_merge(
-                $this->getFulltextFields(),
-                $this->getSortFields(),
-                $this->getFilterFields()
-            )
-        );
     }
 }

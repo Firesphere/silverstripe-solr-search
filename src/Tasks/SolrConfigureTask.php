@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
+use GuzzleHttp\Exception\RequestException;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -69,8 +70,8 @@ class SolrConfigureTask extends BuildTask
 
             try {
                 $this->updateIndex($instance);
-            } catch (Exception $e) {
-                $this->logger->error($e->getMessage());
+            } catch (RequestException $e) {
+                $this->logger->error($e->getResponse()->getBody());
             }
         }
 
@@ -107,9 +108,9 @@ class SolrConfigureTask extends BuildTask
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             try {
                 $service->coreReload($index);
-            } catch (Exception $e) {
+            } catch (RequestException $e) {
                 $this->logger->error(sprintf('Error reloading core %s, attempting unload and recreating', $index));
-                $this->logger->error($e->getMessage());
+                $this->logger->error($e->getResponse()->getBody());
                 // Possibly a file error, try to unload and recreate the core
                 $service->coreUnload($index);
                 if ($service->coreCreate($index, $configStore)) {
@@ -124,7 +125,7 @@ class SolrConfigureTask extends BuildTask
             $this->logger->info(sprintf('Core %s successfully loaded', $index));
         } else {
             $this->logger->warning(sprintf('Core %s could not be loaded successfully', $index));
-            $this->logger->warning(sprintf('Message: %s', $e->getMessage()));
+            $this->logger->warning(sprintf('Message: %s', $e->getResponse()->getBody()));
         }
     }
 

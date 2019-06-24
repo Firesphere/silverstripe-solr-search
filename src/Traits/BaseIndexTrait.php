@@ -37,62 +37,6 @@ trait BaseIndexTrait
             '*'
         ],
     ];
-    /**
-     * @return array
-     */
-    public function getFulltextFields(): array
-    {
-        return $this->fulltextFields;
-    }
-
-    /**
-     * @param array $fulltextFields
-     * @return $this
-     */
-    public function setFulltextFields($fulltextFields): self
-    {
-        $this->fulltextFields = $fulltextFields;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSortFields(): array
-    {
-        return $this->sortFields;
-    }
-
-    /**
-     * @param array $sortFields
-     * @return $this
-     */
-    public function setSortFields($sortFields): self
-    {
-        $this->sortFields = $sortFields;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFilterFields(): array
-    {
-        return $this->filterFields;
-    }
-
-    /**
-     * @param array $filterFields
-     * @return $this
-     */
-    public function setFilterFields($filterFields): self
-    {
-        $this->filterFields = $filterFields;
-
-        return $this;
-    }
 
     /**
      * @return array
@@ -159,6 +103,25 @@ trait BaseIndexTrait
     }
 
     /**
+     * @return array
+     */
+    public function getSortFields(): array
+    {
+        return $this->sortFields;
+    }
+
+    /**
+     * @param array $sortFields
+     * @return $this
+     */
+    public function setSortFields($sortFields): self
+    {
+        $this->sortFields = $sortFields;
+
+        return $this;
+    }
+
+    /**
      * @param $field
      * @param array $options
      * @return $this
@@ -170,6 +133,25 @@ trait BaseIndexTrait
         if (!in_array($field, $this->getFilterFields(), true)) {
             $this->addFilterField($field);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterFields(): array
+    {
+        return $this->filterFields;
+    }
+
+    /**
+     * @param array $filterFields
+     * @return $this
+     */
+    public function setFilterFields($filterFields): self
+    {
+        $this->filterFields = $filterFields;
 
         return $this;
     }
@@ -197,6 +179,25 @@ trait BaseIndexTrait
         if (!in_array($field, $this->getFulltextFields(), true)) {
             $this->addFulltextField($field);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFulltextFields(): array
+    {
+        return $this->fulltextFields;
+    }
+
+    /**
+     * @param array $fulltextFields
+     * @return $this
+     */
+    public function setFulltextFields($fulltextFields): self
+    {
+        $this->fulltextFields = $fulltextFields;
 
         return $this;
     }
