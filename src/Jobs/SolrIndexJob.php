@@ -45,7 +45,6 @@ class SolrIndexJob extends AbstractQueuedJob
     /**
      * SolrIndexJob constructor.
      * @param array $params
-     * @throws ReflectionException
      */
     public function __construct($params = [])
     {
@@ -131,7 +130,6 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
-     * @throws ReflectionException
      */
     public function afterComplete()
     {
@@ -187,5 +185,21 @@ class SolrIndexJob extends AbstractQueuedJob
         $this->indexes = $indexes;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClassToIndex(): array
+    {
+        return $this->classToIndex;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIndexes(): array
+    {
+        return $this->indexes;
     }
 }

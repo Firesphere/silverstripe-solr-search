@@ -205,14 +205,17 @@ abstract class BaseIndex
         foreach ($terms as $search) {
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
-            $prefix = ''; // When doing fuzzy search, prefix, otherwise, don't
+            $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
             if ($search['fuzzy']) {
-                $prefix = '~';
+                $postfix = '~';
+                if (is_numeric($search['fuzzy'])) {
+                    $postfix .= $search['fuzzy'];
+                }
             }
             // We can add the same term multiple times with different boosts
             // Not ideal, but it might happen, so let's add the term itself only once
             if (!in_array($term, $searchQuery, true)) {
-                $searchQuery[] = $prefix . $term;
+                $searchQuery[] = $term . $postfix;
             }
             // If boosting is set, add the fields to boost
             if ($search['boost'] > 1) {

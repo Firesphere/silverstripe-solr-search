@@ -97,7 +97,11 @@ trait BaseIndexTrait
      */
     public function addFulltextField($fulltextField): self
     {
-        $this->fulltextFields[] = $fulltextField;
+        $key = array_search($fulltextField, $this->getFilterFields(), true);
+
+        if (!$key) {
+            $this->fulltextFields[] = $fulltextField;
+        }
 
         return $this;
     }

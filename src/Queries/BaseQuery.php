@@ -211,7 +211,7 @@ class BaseQuery
      * @param string $term Term to search for
      * @param array $fields fields to boost on
      * @param int $boost Boost value
-     * @param bool $fuzzy Unused
+     * @param bool|float $fuzzy True or a value to the maximum amount of iterations
      * @return $this
      */
     public function addTerm($term, $fields = [], $boost = 0, $fuzzy = false): self

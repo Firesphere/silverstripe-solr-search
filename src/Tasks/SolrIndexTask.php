@@ -58,6 +58,11 @@ class SolrIndexTask extends BuildTask
     protected $logger;
 
     /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
      * SolrIndexTask constructor. Sets up the document factory
      */
     public function __construct()
@@ -117,11 +122,11 @@ class SolrIndexTask extends BuildTask
             $this->factory->setDebug($this->debug);
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
+            $this->client = $index->getClient();
 
             // Only index the classes given in the var if needed, should be a single class
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
-            $client = $index->getClient();
             // Set the start point to the requested value, if there is only one class to index
             if ($start > $group && count($classes) === 1) {
                 $group = $start;
@@ -129,7 +134,7 @@ class SolrIndexTask extends BuildTask
 
             foreach ($classes as $class) {
                 $isGroup = $request->getVar('group');
-                [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group, $client);
+                [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group);
             }
         }
         $end = time();
@@ -146,11 +151,10 @@ class SolrIndexTask extends BuildTask
      * @param $class
      * @param BaseIndex $index
      * @param int $group
-     * @param Client $client
      * @return array
      * @throws Exception
      */
-    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group, Client $client): array
+    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group): array
     {
         $group = $group ?: 0;
         if ($this->debug) {
@@ -160,7 +164,7 @@ class SolrIndexTask extends BuildTask
         $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {
-            $this->doReindex($group, $client, $class, $fields, $index, $count);
+            $this->doReindex($group, $class, $fields, $index, $count);
         } else {
             $batchLength = DocumentFactory::config()->get('batchLength');
             $groups = (int)ceil($class::get()->count() / $batchLength);
@@ -169,7 +173,6 @@ class SolrIndexTask extends BuildTask
                 try {
                     [$count, $group] = $this->doReindex(
                         $group,
-                        $client,
                         $class,
                         $fields,
                         $index,
@@ -192,7 +195,6 @@ class SolrIndexTask extends BuildTask
 
     /**
      * @param int $group
-     * @param Client $client
      * @param string $class
      * @param array $fields
      * @param BaseIndex $index
@@ -202,14 +204,13 @@ class SolrIndexTask extends BuildTask
      */
     protected function doReindex(
         $group,
-        Client $client,
         $class,
         array $fields,
         BaseIndex $index,
         $count = 0
     ): array {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-        $update = $client->createUpdate();
+        $update = $this->getClient()->createUpdate();
         $this->factory->setItems(null);
         $docs = $this->factory->buildItems(
             $class,
@@ -223,7 +224,7 @@ class SolrIndexTask extends BuildTask
         if (count($docs)) {
             $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
             $update->addCommit();
-            $client->update($update);
+            $this->client->update($update);
             // Clear out the docs when done
             foreach ($docs as $doc) {
                 unset($doc);
@@ -233,5 +234,24 @@ class SolrIndexTask extends BuildTask
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return [$count, $group];
+    }
+
+    /**
+     * @param Client $client
+     * @return SolrIndexTask
+     */
+    public function setClient(Client $client): SolrIndexTask
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
     }
 }
