@@ -118,7 +118,12 @@ class SolrConfigureTask extends BuildTask
                 }
             }
         } else {
-            $service->coreCreate($index, $configStore);
+            try {
+                $service->coreCreate($index, $configStore);
+            } catch (RequestException $e) {
+                $this->logger->error(sprintf('Error reloading core %s, attempting unload and recreating', $index));
+                $this->logger->error($e->getResponse()->getBody());
+            }
         }
 
         if (!isset($e)) {
