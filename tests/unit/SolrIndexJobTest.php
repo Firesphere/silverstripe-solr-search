@@ -46,7 +46,7 @@ class SolrIndexJobTest extends SapphireTest
         $job->process();
 
         $this->assertCount(1, $job->getIndexes());
-        $this->assertCount(0, $job->getClassToIndex());
+        $this->assertCount(1, $job->getClassToIndex());
     }
 
     public function testAfterComplete()
