@@ -162,8 +162,10 @@ trait BaseIndexTrait
      */
     public function addFilterField($filterField): self
     {
-        if (in_array($filterField, $this->fulltextFields, true)) {
-            unset($this->fulltextFields[$filterField]);
+        $key = array_search($filterField, $this->getFulltextFields(), true);
+        if ($key !== false) {
+            // prevent duplicates
+            unset($this->fulltextFields[$key]);
         }
         $this->filterFields[] = $filterField;
 
