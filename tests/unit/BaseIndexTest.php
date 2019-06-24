@@ -116,13 +116,6 @@ class BaseIndexTest extends SapphireTest
         // Result should be the same for now
         $result2 = $index->doSearch($query);
         $this->assertEquals($result, $result2);
-
-        $query->addClass(SiteTree::class);
-
-        $result3 = $index->doSearch($query);
-        foreach ($result3->getMatches() as $match) {
-            $this->assertContains(SiteTree::class, $match->Hierarchy);
-        }
     }
 
     public function testGetFieldsForSubsites()
