@@ -58,28 +58,16 @@ class DocumentFactory
      * @param $fields
      * @param BaseIndex $index
      * @param Query $update
-     * @param $group
      * @param int $count
      * @return array
      * @throws Exception
      * @todo this could be cleaner
      */
-    public function buildItems($fields, $index, $update, $group, &$count = 0): array
+    public function buildItems($fields, $index, $update, &$count = 0): array
     {
         $class = $this->class;
         $this->introspection->setIndex($index);
         $docs = [];
-        // Generate filtered list of local records
-        $baseClass = DataObject::getSchema()->baseDataClass($class);
-        /** @var DataList|DataObject[] $items */
-        $batchLength = self::config()->get('batchLength');
-        if (!$this->items) {
-            // This limit is scientifically determined by keeping on trying until it didn't break anymore
-            $this->items = $baseClass::get()
-                ->sort('ID ASC')
-                ->limit($batchLength, ($group * $batchLength));
-            $count += $this->items->count();
-        }
 
         $debugString = sprintf('Adding %s to %s%s[', $class, PHP_EOL, $index->getIndexName());
         $boostFields = $index->getBoostedFields();

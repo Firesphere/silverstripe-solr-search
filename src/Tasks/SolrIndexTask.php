@@ -6,17 +6,18 @@ namespace Firesphere\SolrSearch\Tasks;
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
-use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 use Solarium\Core\Client\Client;
 
@@ -41,11 +42,6 @@ class SolrIndexTask extends BuildTask
      * @var SearchIntrospection
      */
     protected $introspection;
-
-    /**
-     * @var DocumentFactory
-     */
-    protected $factory;
 
     /**
      * @var bool
@@ -117,9 +113,6 @@ class SolrIndexTask extends BuildTask
             if (!$ref->isInstantiable()) {
                 continue;
             }
-
-            $this->factory = Injector::inst()->get(DocumentFactory::class, false);
-            $this->factory->setDebug($this->debug);
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
             $this->client = $index->getClient();
@@ -139,7 +132,8 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        $this->logger->info(sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL), []);
+        $this->logger->info(sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL),
+            []);
         $this->logger->info('done!' . PHP_EOL, []);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
@@ -162,10 +156,9 @@ class SolrIndexTask extends BuildTask
         }
         $count = 0;
         $groups = 0;
-        $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {
-            $this->doReindex($group, $class, $fields, $index, $count);
+            $this->doReindex($group, $class, $index, $count);
         } else {
             $batchLength = DocumentFactory::config()->get('batchLength');
             $groups = (int)ceil($class::get()->count() / $batchLength);
@@ -175,7 +168,6 @@ class SolrIndexTask extends BuildTask
                     [$count, $group] = $this->doReindex(
                         $group,
                         $class,
-                        $fields,
                         $index,
                         $count
                     );
@@ -197,44 +189,43 @@ class SolrIndexTask extends BuildTask
     /**
      * @param int $group
      * @param string $class
-     * @param array $fields
      * @param BaseIndex $index
      * @param int $count
      * @return array[int, int]
      * @throws Exception
      */
-    protected function doReindex(
-        $group,
-        $class,
-        array $fields,
-        BaseIndex $index,
-        $count = 0
-    ): array {
+    protected function doReindex($group, $class, BaseIndex $index, $count = 0): array {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
-        $update = $this->getClient()->createUpdate();
-        $this->factory->setItems(null);
-        $this->factory->setClass($class);
-        $docs = $this->factory->buildItems(
-            $fields,
-            $index,
-            $update,
-            $group,
-            $count
-        );
-        // If there are no docs, no need to execute an action
-        if (count($docs)) {
-            $update->addDocuments($docs, true, Config::inst()->get(SolrCoreService::class, 'commit_within'));
+        // Generate filtered list of local records
+        $baseClass = DataObject::getSchema()->baseDataClass($class);
+        /** @var DataList|DataObject[] $items */
+        $batchLength = DocumentFactory::config()->get('batchLength');
+        // This limit is scientifically determined by keeping on trying until it didn't break anymore
+        $items = $baseClass::get()
+            ->sort('ID ASC')
+            ->limit($batchLength, ($group * $batchLength));
+        $count += $items->count();
+        if ($items->count()) {
+            $update = $this->getClient()->createUpdate();
+            $solrUpdate = new SolrUpdate();
+            $solrUpdate->setDebug($this->debug);
+            $solrUpdate->updateIndex($index, $items, $update);
+            // If there are no docs, no need to execute an action
             $update->addCommit();
             $this->client->update($update);
-            // Clear out the docs when done
-            foreach ($docs as $doc) {
-                unset($doc);
-            }
         }
         $group++;
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return [$count, $group];
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
     }
 
     /**
@@ -246,13 +237,5 @@ class SolrIndexTask extends BuildTask
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @return Client
-     */
-    public function getClient(): Client
-    {
-        return $this->client;
     }
 }

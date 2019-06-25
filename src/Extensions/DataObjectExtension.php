@@ -106,7 +106,7 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs) ?: [];
         parent::onAfterDelete();
         try {
-            SolrUpdate::updateItems($this->owner, SolrUpdate::DELETE_TYPE);
+            (new SolrUpdate())->updateItems($this->owner, SolrUpdate::DELETE_TYPE);
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {

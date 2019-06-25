@@ -14,12 +14,15 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use Solarium\Core\Client\Response;
+use Solarium\QueryType\Update\Query\Query;
 
 class SolrUpdate
 {
     public const DELETE_TYPE = 'delete';
     public const UPDATE_TYPE = 'update';
     public const CREATE_TYPE = 'create';
+
+    protected $debug;
 
     /**
      * @todo use this helper in the IndexTask so it's not duplicated?
@@ -29,7 +32,7 @@ class SolrUpdate
      * @throws ReflectionException
      * @throws Exception
      */
-    public static function updateItems($items, $type)
+    public function updateItems($items, $type)
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $result = false;
@@ -62,15 +65,7 @@ class SolrUpdate
                     $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
                 }
             } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
-                $fields = $index->getFieldsForIndexing();
-                $count = 0;
-                $factory = self::getFactory($items);
-                $docs = $factory->buildItems($fields, $index, $update, 0, $count);
-                $update->addDocuments($docs);
-                // Does this clear out the memory properly?
-                foreach ($docs as $doc) {
-                    unset($doc);
-                }
+                $this->updateIndex($index, $items, $update);
             }
             $update->addCommit();
             $client->update($update);
@@ -81,15 +76,48 @@ class SolrUpdate
     }
 
     /**
+     * @param BaseIndex $index
+     * @param ArrayList|DataList $items
+     * @param Query $update
+     * @throws Exception
+     */
+    public function updateIndex($index, $items, $update): void
+    {
+        $fields = $index->getFieldsForIndexing();
+        $count = 0;
+        $factory = $this->getFactory($items);
+        $docs = $factory->buildItems($fields, $index, $update, $count);
+        if (count($docs)) {
+            $update->addDocuments($docs);
+        }
+        // Does this clear out the memory properly?
+        foreach ($docs as $doc) {
+            unset($doc);
+        }
+    }
+
+    /**
      * @param ArrayList|DataList $items
      * @return DocumentFactory
      */
-    protected static function getFactory($items): DocumentFactory
+    protected function getFactory($items): DocumentFactory
     {
         $factory = new DocumentFactory();
         $factory->setItems($items);
         $factory->setClass($items->first()->ClassName);
+        $factory->setDebug($this->debug);
 
         return $factory;
+    }
+
+    /**
+     * @param mixed $debug
+     * @return SolrUpdate
+     */
+    public function setDebug($debug): SolrUpdate
+    {
+        $this->debug = $debug;
+
+        return $this;
     }
 }
