@@ -68,7 +68,7 @@ class DocumentFactory
         $this->introspection->setIndex($index);
         $docs = [];
 
-        $debugString = sprintf('Adding %s to %s%s[', $class, PHP_EOL, $index->getIndexName());
+        $debugString = sprintf('Adding %s to %s%s[', $class, $index->getIndexName(), PHP_EOL);
         $boostFields = $index->getBoostedFields();
         // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
         foreach ($this->items as $item) {

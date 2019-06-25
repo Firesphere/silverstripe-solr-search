@@ -103,7 +103,6 @@ class SolrIndexTask extends BuildTask
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
         $this->logger->info(date('Y-m-d H:i:s') . PHP_EOL);
-        $group = $request->getVar('group') ?: 0; // allow starting from a specific group
         $start = $request->getVar('start') ?: 0;
 
         $groups = 0;
@@ -120,20 +119,23 @@ class SolrIndexTask extends BuildTask
             // Only index the classes given in the var if needed, should be a single class
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
-            // Set the start point to the requested value, if there is only one class to index
-            if ($start > $group && count($classes) === 1) {
-                $group = $start;
-            }
 
             foreach ($classes as $class) {
+                $group = $request->getVar('group') ?: 0;
                 $isGroup = $request->getVar('group');
-                [$groups, $group] = $this->reindexClass($isGroup, $class, $index, $group);
+                // Set the start point to the requested value, if there is only one class to index
+                if ($start > $group && count($classes) === 1) {
+                    $group = $start;
+                }
+                $this->reindexClass($isGroup, $class, $index, $group);
             }
         }
         $end = time();
 
-        $this->logger->info(sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL),
-            []);
+        $this->logger->info(
+            sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL),
+            []
+        );
         $this->logger->info('done!' . PHP_EOL, []);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
@@ -145,16 +147,15 @@ class SolrIndexTask extends BuildTask
      * @param $class
      * @param BaseIndex $index
      * @param int $group
-     * @return array
      * @throws Exception
      */
-    protected function reindexClass($isGroup, $class, BaseIndex $index, int $group): array
+    private function reindexClass($isGroup, $class, BaseIndex $index, int $group): void
     {
         $group = $group ?: 0;
         if ($this->debug) {
             $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
         }
-        $groups = 0;
+
         // Run a single group
         if ($isGroup) {
             $this->doReindex($group, $class, $index);
@@ -164,24 +165,17 @@ class SolrIndexTask extends BuildTask
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
                 try {
-                    $group = $this->doReindex(
-                        $group,
-                        $class,
-                        $index
-                    );
+                    $this->logger->info(sprintf('Indexing group %s', $group));
+                    $group = $this->doReindex($group, $class, $index);
                 } catch (RequestException $e) {
                     $this->logger->error($e->getResponse()->getBody());
-                    if ($this->debug) {
-                        $this->logger->error(date('Y-m-d H:i:s') . PHP_EOL, []);
-                    }
+                    $this->logger->error(date('Y-m-d H:i:s') . PHP_EOL, []);
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
                     continue;
                 }
             }
         }
-
-        return [$groups, $group];
     }
 
     /**
@@ -191,7 +185,7 @@ class SolrIndexTask extends BuildTask
      * @return int
      * @throws Exception
      */
-    protected function doReindex($group, $class, BaseIndex $index): int
+    private function doReindex($group, $class, BaseIndex $index): int
     {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         // Generate filtered list of local records

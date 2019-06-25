@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Firesphere\SolrSearch\Jobs\SolrIndexJob;
 use SilverStripe\CMS\Model\SiteTree;
@@ -34,6 +35,7 @@ class SolrIndexJobTest extends SapphireTest
         $this->job->process();
         $result = $this->indexJob->process();
 
+        $this->assertNotContains(BaseIndex::class, $this->job->getIndexes());
         $this->assertEquals(0, $result->totalSteps);
 
         $job = new SolrIndexJob();
