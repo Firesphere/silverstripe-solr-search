@@ -11,26 +11,32 @@ use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\SS_List;
 use Solarium\Core\Client\Response;
 
 class SolrUpdate
 {
     public const DELETE_TYPE = 'delete';
     public const UPDATE_TYPE = 'update';
+    public const CREATE_TYPE = 'create';
 
     /**
      * @todo use this helper in the IndexTask so it's not duplicated?
-     * @param DataObject $object
+     * @param ArrayList|DataList|DataObject $items
      * @param string $type
      * @return bool|Response
      * @throws ReflectionException
      * @throws Exception
      */
-    public static function updateObject($object, $type)
+    public static function updateItems($items, $type)
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $result = false;
+        if ($items instanceof DataObject) {
+            $items = ArrayList::create([$items]);
+        }
         foreach ($indexes as $indexString) {
             // Skip the abstract base
             $ref = new ReflectionClass($indexString);
@@ -42,7 +48,7 @@ class SolrUpdate
             $index = Injector::inst()->get($indexString);
             // No point in sending a delete for something that's not in the index
             // @todo check the hierarchy, this could be a parent that should be indexed
-            if (in_array($object->ClassName, $index->getClasses(), true)) {
+            if (in_array($items->first()->ClassName, $index->getClasses(), true)) {
                 $client = $index->getClient();
 
                 // get an update query instance
@@ -50,23 +56,25 @@ class SolrUpdate
 
                 // add the delete query and a commit command to the update query
                 if ($type === static::DELETE_TYPE) {
-                    $update->addDeleteById(sprintf('%s-%s', $object->ClassName, $object->ID));
-                } elseif ($type === static::UPDATE_TYPE) {
-                    $items = ArrayList::create([$object]);
+                    foreach ($items as $item) {
+                        $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
+                    }
+                } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
                     $fields = $index->getFieldsForIndexing();
                     $count = 0;
                     $factory = new DocumentFactory();
                     $factory->setItems($items);
-                    $docs = $factory->buildItems($object->ClassName, $fields, $index, $update, 0, $count);
+                    $factory->setClass($items->first()->ClassName);
+                    $docs = $factory->buildItems($fields, $index, $update, 0, $count);
                     $update->addDocuments($docs);
-                    $update->addCommit();
-                    $client->update($update);
                     // Does this clear out the memory properly?
                     foreach ($docs as $doc) {
                         unset($doc);
                     }
-                    gc_collect_cycles();
                 }
+                $update->addCommit();
+                $client->update($update);
+                gc_collect_cycles();
             }
         }
 

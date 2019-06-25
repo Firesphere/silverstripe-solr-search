@@ -212,8 +212,8 @@ class SolrIndexTask extends BuildTask
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         $update = $this->getClient()->createUpdate();
         $this->factory->setItems(null);
+        $this->factory->setClass($class);
         $docs = $this->factory->buildItems(
-            $class,
             array_unique($fields),
             $index,
             $update,

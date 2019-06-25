@@ -35,6 +35,11 @@ class DocumentFactory
     protected $items;
 
     /**
+     * @var string
+     */
+    protected $class;
+
+    /**
      * @var bool
      */
     protected $debug = false;
@@ -58,8 +63,9 @@ class DocumentFactory
      * @throws Exception
      * @todo this could be cleaner
      */
-    public function buildItems($class, $fields, $index, $update, $group, &$count = 0): array
+    public function buildItems($fields, $index, $update, $group, &$count = 0): array
     {
+        $class = $this->class;
         $this->introspection->setIndex($index);
         $docs = [];
         // Generate filtered list of local records
@@ -273,6 +279,17 @@ class DocumentFactory
     public function setDebug(bool $debug): DocumentFactory
     {
         $this->debug = $debug;
+
+        return $this;
+    }
+
+    /**
+     * @param string $class
+     * @return DocumentFactory
+     */
+    public function setClass(string $class): DocumentFactory
+    {
+        $this->class = $class;
 
         return $this;
     }
