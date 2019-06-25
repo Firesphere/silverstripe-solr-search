@@ -13,7 +13,6 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\SS_List;
 use Solarium\Core\Client\Response;
 
 class SolrUpdate
@@ -46,38 +45,51 @@ class SolrUpdate
 
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexString);
-            // No point in sending a delete for something that's not in the index
+            // No point in sending a delete|update|create for something that's not in the index
             // @todo check the hierarchy, this could be a parent that should be indexed
-            if (in_array($items->first()->ClassName, $index->getClasses(), true)) {
-                $client = $index->getClient();
-
-                // get an update query instance
-                $update = $client->createUpdate();
-
-                // add the delete query and a commit command to the update query
-                if ($type === static::DELETE_TYPE) {
-                    foreach ($items as $item) {
-                        $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
-                    }
-                } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
-                    $fields = $index->getFieldsForIndexing();
-                    $count = 0;
-                    $factory = new DocumentFactory();
-                    $factory->setItems($items);
-                    $factory->setClass($items->first()->ClassName);
-                    $docs = $factory->buildItems($fields, $index, $update, 0, $count);
-                    $update->addDocuments($docs);
-                    // Does this clear out the memory properly?
-                    foreach ($docs as $doc) {
-                        unset($doc);
-                    }
-                }
-                $update->addCommit();
-                $client->update($update);
-                gc_collect_cycles();
+            if (!in_array($items->first()->ClassName, $index->getClasses(), true)) {
+                continue;
             }
+
+            $client = $index->getClient();
+
+            // get an update query instance
+            $update = $client->createUpdate();
+
+            // add the delete query and a commit command to the update query
+            if ($type === static::DELETE_TYPE) {
+                foreach ($items as $item) {
+                    $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
+                }
+            } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
+                $fields = $index->getFieldsForIndexing();
+                $count = 0;
+                $factory = self::getFactory($items);
+                $docs = $factory->buildItems($fields, $index, $update, 0, $count);
+                $update->addDocuments($docs);
+                // Does this clear out the memory properly?
+                foreach ($docs as $doc) {
+                    unset($doc);
+                }
+            }
+            $update->addCommit();
+            $client->update($update);
         }
+        gc_collect_cycles();
 
         return $result;
+    }
+
+    /**
+     * @param ArrayList|DataList $items
+     * @return DocumentFactory
+     */
+    protected static function getFactory($items): DocumentFactory
+    {
+        $factory = new DocumentFactory();
+        $factory->setItems($items);
+        $factory->setClass($items->first()->ClassName);
+
+        return $factory;
     }
 }
