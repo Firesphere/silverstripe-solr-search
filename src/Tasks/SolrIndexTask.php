@@ -154,22 +154,20 @@ class SolrIndexTask extends BuildTask
         if ($this->debug) {
             $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
         }
-        $count = 0;
         $groups = 0;
         // Run a single group
         if ($isGroup) {
-            $this->doReindex($group, $class, $index, $count);
+            $this->doReindex($group, $class, $index);
         } else {
             $batchLength = DocumentFactory::config()->get('batchLength');
             $groups = (int)ceil($class::get()->count() / $batchLength);
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
                 try {
-                    [$count, $group] = $this->doReindex(
+                    $group = $this->doReindex(
                         $group,
                         $class,
-                        $index,
-                        $count
+                        $index
                     );
                 } catch (RequestException $e) {
                     $this->logger->error($e->getResponse()->getBody());
@@ -190,11 +188,11 @@ class SolrIndexTask extends BuildTask
      * @param int $group
      * @param string $class
      * @param BaseIndex $index
-     * @param int $count
-     * @return array[int, int]
+     * @return int
      * @throws Exception
      */
-    protected function doReindex($group, $class, BaseIndex $index, $count = 0): array {
+    protected function doReindex($group, $class, BaseIndex $index): int
+    {
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
@@ -204,7 +202,6 @@ class SolrIndexTask extends BuildTask
         $items = $baseClass::get()
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
-        $count += $items->count();
         if ($items->count()) {
             $update = $this->getClient()->createUpdate();
             $solrUpdate = new SolrUpdate();
@@ -217,7 +214,7 @@ class SolrIndexTask extends BuildTask
         $group++;
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
-        return [$count, $group];
+        return $group;
     }
 
     /**

@@ -123,7 +123,7 @@ class DocumentFactoryTest extends SapphireTest
         $update = $client->createUpdate();
         $count = 0;
         $factory->setClass(SiteTree::class);
-        $docs = $factory->buildItems($fields, $index, $update, 0, $count);
+        $docs = $factory->buildItems($fields, $index, $update);
 
         $this->assertCount($count, $docs);
         $this->assertInternalType('array', $docs);

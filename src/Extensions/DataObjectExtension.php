@@ -78,7 +78,7 @@ class DataObjectExtension extends DataExtension
         $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
         $record->IDs = json_encode($ids);
         $logger = Injector::inst()->get(LoggerInterface::class);
-        $logger->log(
+        $logger->warn(
             sprintf(
                 'Unable to alter %s with ID %s',
                 $this->owner->ClassName,

@@ -58,12 +58,11 @@ class DocumentFactory
      * @param $fields
      * @param BaseIndex $index
      * @param Query $update
-     * @param int $count
      * @return array
      * @throws Exception
      * @todo this could be cleaner
      */
-    public function buildItems($fields, $index, $update, &$count = 0): array
+    public function buildItems($fields, $index, $update): array
     {
         $class = $this->class;
         $this->introspection->setIndex($index);
@@ -86,7 +85,6 @@ class DocumentFactory
 
         if ($this->debug) {
             Debug::message(rtrim($debugString, ', ') . ']' . PHP_EOL, false);
-            Debug::message(sprintf('Total added items: %s%s', $count, PHP_EOL), false);
         }
 
         reset($this->items);

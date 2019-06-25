@@ -84,9 +84,8 @@ class SolrUpdate
     public function updateIndex($index, $items, $update): void
     {
         $fields = $index->getFieldsForIndexing();
-        $count = 0;
         $factory = $this->getFactory($items);
-        $docs = $factory->buildItems($fields, $index, $update, $count);
+        $docs = $factory->buildItems($fields, $index, $update);
         if (count($docs)) {
             $update->addDocuments($docs);
         }
