@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 use CircleCITestIndex;
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Firesphere\SolrSearch\Jobs\SolrIndexJob;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use stdClass;
@@ -60,6 +61,14 @@ class SolrIndexJobTest extends SapphireTest
         $jobData = unserialize($newJob->SavedJobData);
         $this->assertCount(1, $jobData->indexes); // Set to default count as the index is shifted
         $this->assertCount(0, $jobData->classToIndex); // Set to default count as the index is shifted
+    }
+
+    public function testGettersSetters()
+    {
+        $this->indexJob->setIndexes([CircleCITestIndex::class]);
+        $this->assertEquals([CircleCITestIndex::class], $this->indexJob->getIndexes());
+        $this->indexJob->setClassToIndex([SiteTree::class]);
+        $this->assertEquals([SiteTree::class], $this->indexJob->getClassToIndex());
     }
 
     protected function setUp()

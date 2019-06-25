@@ -124,8 +124,8 @@ class SolrIndexJob extends AbstractQueuedJob
                 $this->indexes[] = $index;
             }
         } else {
-            $this->indexes = $data->indexes;
-            $this->classToIndex = $data->classToIndex;
+            $this->setIndexes($data->indexes);
+            $this->setClassToIndex($data->classToIndex);
         }
     }
 
@@ -154,8 +154,8 @@ class SolrIndexJob extends AbstractQueuedJob
             $nextJob = new self();
             $jobData = new stdClass();
 
-            $jobData->classToIndex = $this->classToIndex;
-            $jobData->indexes = $this->indexes;
+            $jobData->classToIndex = $this->getClassToIndex();
+            $jobData->indexes = $this->getIndexes();
             $nextJob->setJobData($totalSteps, $currentStep, false, $jobData, []);
 
             // Add a wee break to let the system recover from this heavy operation
