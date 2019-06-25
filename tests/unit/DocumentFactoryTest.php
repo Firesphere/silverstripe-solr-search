@@ -123,6 +123,7 @@ class DocumentFactoryTest extends SapphireTest
         $update = $client->createUpdate();
         $count = 0;
         $factory->setClass(SiteTree::class);
+        $factory->setItems(\Page::get());
         $docs = $factory->buildItems($fields, $index, $update);
 
         $this->assertCount($count, $docs);
