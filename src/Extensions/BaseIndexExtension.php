@@ -21,7 +21,7 @@ class BaseIndexExtension extends Extension
      */
     public function onAfterSearch($results): void
     {
-        if (Director::isDev() && Controller::curr()->getRequest()->getVar('debugquery')) {
+        if (Director::isDev() && Director::is_cli() && Controller::curr()->getRequest()->getVar('debugquery')) {
             /** @var \Solarium\Component\Result\Debug\Result $result */
             $result = $results->getDebug();
             Debug::message("Query string:\n" . $result->getQueryString());

@@ -81,7 +81,7 @@ class DocumentFactory
             $count += $this->items->count();
         }
 
-        $debugString = sprintf("Adding %s to %s\n[", $class, $index->getIndexName());
+        $debugString = sprintf('Adding %s to %s%s[', $class, PHP_EOL, $index->getIndexName());
         $boostFields = $index->getBoostedFields();
         // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
         foreach ($this->items as $item) {
@@ -97,8 +97,8 @@ class DocumentFactory
         }
 
         if ($this->debug) {
-            Debug::message(rtrim($debugString, ', ') . "]\n", false);
-            Debug::message(sprintf("Total added items: %s\n", $count), false);
+            Debug::message(rtrim($debugString, ', ') . ']' . PHP_EOL, false);
+            Debug::message(sprintf('Total added items: %s%s', $count, PHP_EOL), false);
         }
 
         reset($this->items);

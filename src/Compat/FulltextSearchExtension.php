@@ -17,7 +17,7 @@ use SilverStripe\View\ArrayData;
  * Backward compatibility stubs for the Full text search module
  *
  * @package Firesphere\SolrSearch\Extensions
- * @property FulltextSearchExtension $owner
+ * @property FulltextSearchExtension|BaseIndex $owner
  */
 class FulltextSearchExtension extends Extension
 {
@@ -64,11 +64,9 @@ class FulltextSearchExtension extends Extension
      */
     public function search($query, $start = 0, $limit = 10, $params = [], $spellcheck = true)
     {
-        $query->getStart() ?: $query->setStart($start);
-        $query->getRows() ?: $query->setRows($limit);
-        if ($query->isSpellcheck() !== $spellcheck) {
-            $query->setSpellcheck($spellcheck);
-        }
+        $query->getStart() === $start ?: $query->setStart($start);
+        $query->getRows() === $limit ?: $query->setRows($limit);
+        $query->isSpellcheck() !== $spellcheck ?: $query->setSpellcheck($spellcheck);
         if (isset($params['fq']) && !count($query->getFields())) {
             $query->setFields($params['fq']);
         }

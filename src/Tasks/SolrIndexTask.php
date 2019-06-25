@@ -106,7 +106,7 @@ class SolrIndexTask extends BuildTask
 
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
-        $this->logger->info(date('Y-m-d H:i:s' . "\n"));
+        $this->logger->info(date('Y-m-d H:i:s') . PHP_EOL);
         $group = $request->getVar('group') ?: 0; // allow starting from a specific group
         $start = $request->getVar('start') ?: 0;
 
@@ -139,8 +139,8 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        $this->logger->info(sprintf("It took me %d seconds to do all the indexing\n", ($end - $startTime)), []);
-        $this->logger->info("done!\n", []);
+        $this->logger->info(sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL), []);
+        $this->logger->info('done!' . PHP_EOL, []);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $groups;
@@ -182,7 +182,7 @@ class SolrIndexTask extends BuildTask
                 } catch (RequestException $e) {
                     $this->logger->error($e->getResponse()->getBody());
                     if ($this->debug) {
-                        $this->logger->error(date('Y-m-d H:i:s') . "\n", []);
+                        $this->logger->error(date('Y-m-d H:i:s') . PHP_EOL, []);
                     }
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
