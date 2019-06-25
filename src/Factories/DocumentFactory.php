@@ -87,7 +87,7 @@ class DocumentFactory
             Debug::message(rtrim($debugString, ', ') . ']' . PHP_EOL, false);
         }
 
-        reset($this->items);
+        unset($this->items);
 
         return $docs;
     }
