@@ -215,7 +215,7 @@ class SolrIndexTask extends BuildTask
         $this->factory->setItems(null);
         $this->factory->setClass($class);
         $docs = $this->factory->buildItems(
-            array_unique($fields),
+            $fields,
             $index,
             $update,
             $group,
