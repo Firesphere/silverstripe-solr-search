@@ -161,6 +161,7 @@ class SolrIndexTask extends BuildTask
             $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
         }
         $count = 0;
+        $groups = 0;
         $fields = $index->getFieldsForIndexing();
         // Run a single group
         if ($isGroup) {

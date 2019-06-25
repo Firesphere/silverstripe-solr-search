@@ -53,7 +53,8 @@ class DocumentFactory
     }
 
     /**
-     * @param $class
+     * Note, it can only take one type of class at a time!
+     * So make sure you properly loop and set $class
      * @param $fields
      * @param BaseIndex $index
      * @param Query $update
