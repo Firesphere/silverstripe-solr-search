@@ -121,7 +121,7 @@ class DocumentFactoryTest extends SapphireTest
         $fields = $index->getFieldsForIndexing();
         $client = new Client([]);
         $update = $client->createUpdate();
-        $count = 0;
+        $count = 5;
         $factory->setClass(SiteTree::class);
         $factory->setItems(\Page::get());
         $docs = $factory->buildItems($fields, $index, $update);
