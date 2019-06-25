@@ -35,7 +35,7 @@ class SolrIndexJobTest extends SapphireTest
         $this->job->process();
         $result = $this->indexJob->process();
 
-        $this->assertNotContains(BaseIndex::class, $this->job->getIndexes());
+        $this->assertNotContains(BaseIndex::class, $this->indexJob->getIndexes());
         $this->assertEquals(0, $result->totalSteps);
 
         $job = new SolrIndexJob();
