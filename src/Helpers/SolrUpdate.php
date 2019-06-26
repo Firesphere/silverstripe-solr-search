@@ -26,7 +26,6 @@ class SolrUpdate
     protected $debug;
 
     /**
-     * @todo use this helper in the IndexTask so it's not duplicated?
      * @param ArrayList|DataList|DataObject $items
      * @param string $type
      * @return bool|Response
