@@ -7,20 +7,24 @@ use Exception;
 use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Psr\Log\LoggerInterface;
+use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\ValidationException;
+use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
- * @property File|SiteConfig|SiteTree|Group|Member|DataObjectExtension $owner
+ * @property File|SiteConfig|SiteTree|Group|Member|DataObject|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {
