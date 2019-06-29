@@ -7,7 +7,6 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\Framework\Tests\ClassI;
 use SilverStripe\ORM\DataObject;
 
 /**

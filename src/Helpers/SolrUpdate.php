@@ -47,6 +47,7 @@ class SolrUpdate
         }
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
+        // @todo clean this up so it's better readable
         foreach ($indexes as $indexString) {
             // Skip the abstract base
             $ref = new ReflectionClass($indexString);
@@ -59,7 +60,7 @@ class SolrUpdate
             $classes = $index->getClasses();
             $inArray = array_intersect($classes, $hierarchy);
             // No point in sending a delete|update|create for something that's not in the index
-            if (count($inArray) > 0 && !in_array($items->first()->ClassName, $hierarchy, true)) {
+            if (!count($inArray)) {
                 continue;
             }
 
@@ -92,6 +93,7 @@ class SolrUpdate
      */
     public function updateIndex($index, $items, $update): void
     {
+        gc_collect_cycles();
         $fields = $index->getFieldsForIndexing();
         $factory = $this->getFactory($items);
         $docs = $factory->buildItems($fields, $index, $update);
@@ -100,6 +102,7 @@ class SolrUpdate
         }
         // Does this clear out the memory properly?
         reset($docs);
+        gc_collect_cycles();
     }
 
     /**
