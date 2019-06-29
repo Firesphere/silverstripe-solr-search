@@ -30,15 +30,7 @@ jobs:
     steps:
       - run: cd /var/www/html
       - checkout
-      - restore_cache:
-          keys:
-            - solr-{{ checksum "composer.json" }}
-            - solr- # used if checksum fails
       - run: composer require silverstripe/recipe-cms
-      - save_cache:
-          key: solr-{{ checksum "composer.json" }}
-          paths:
-            - "vendor"
       - run: composer update -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
       - run:
