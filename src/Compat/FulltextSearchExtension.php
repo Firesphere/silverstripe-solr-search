@@ -66,7 +66,7 @@ class FulltextSearchExtension extends Extension
     {
         $query->getStart() === $start ?: $query->setStart($start);
         $query->getRows() === $limit ?: $query->setRows($limit);
-        $query->isSpellcheck() !== $spellcheck ?: $query->setSpellcheck($spellcheck);
+        $query->hasSpellcheck() !== $spellcheck ?: $query->setSpellcheck($spellcheck);
         if (isset($params['fq']) && !count($query->getFields())) {
             $query->setFields($params['fq']);
         }

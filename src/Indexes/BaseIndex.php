@@ -193,6 +193,7 @@ abstract class BaseIndex
         $this->queryFactory->setQuery($query);
         $this->queryFactory->setClientQuery($clientQuery);
         $this->queryFactory->setHelper($helper);
+        $this->queryFactory->setIndex($this);
 
         $clientQuery = $this->queryFactory->buildQuery();
         $queryArray = $this->queryFactory->getQueryArray();

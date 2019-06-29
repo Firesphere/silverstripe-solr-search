@@ -70,7 +70,7 @@ class BaseQueryTest extends SapphireTest
         );
         $this->assertCount(1, $this->query->getFacetFields());
         $this->query->setSpellcheck(false);
-        $this->assertFalse($this->query->isSpellcheck());
+        $this->assertFalse($this->query->hasSpellcheck());
         $this->query->addBoostedField('Field1', 2);
         $this->assertEquals(2, $this->query->getBoostedFields()['Field1']);
         $this->query->setBoostedFields(['Field' => 2]);

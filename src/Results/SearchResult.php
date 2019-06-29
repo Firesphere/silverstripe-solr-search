@@ -69,7 +69,7 @@ class SearchResult
         $this->setFacets($result->getFacetSet());
         $this->setHighlight($result->getHighlighting());
         $this->setTotalItems($result->getNumFound());
-        if ($query->isSpellcheck()) {
+        if ($query->hasSpellcheck()) {
             $this->setSpellcheck($result->getSpellcheck());
             $this->setCollatedSpellcheck($result->getSpellcheck());
         }

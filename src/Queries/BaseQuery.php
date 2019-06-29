@@ -339,7 +339,7 @@ class BaseQuery
     /**
      * @return bool
      */
-    public function isSpellcheck(): bool
+    public function hasSpellcheck(): bool
     {
         return $this->spellcheck;
     }

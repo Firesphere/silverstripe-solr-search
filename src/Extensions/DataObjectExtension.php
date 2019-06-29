@@ -49,7 +49,10 @@ class DataObjectExtension extends DataExtension
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        if (Controller::curr()->getRequest()->getURL() && strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false) {
+        if (
+            Controller::curr()->getRequest()->getURL() &&
+            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false
+        ) {
             return null;
         }
         if (!in_array($this->owner->ClassName, static::$excludedClasses, true)) {
@@ -80,28 +83,6 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
-     * @param array $ids
-     * @param $record
-     * @param Exception $e
-     */
-    protected function registerException(array $ids, $record, Exception $e): void
-    {
-        $ids[] = $this->owner->ID;
-        // If we don't get an exception, mark the item as clean
-        $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
-        $record->IDs = json_encode($ids);
-        $logger = Injector::inst()->get(LoggerInterface::class);
-        $logger->warn(
-            sprintf(
-                'Unable to alter %s with ID %s',
-                $this->owner->ClassName,
-                $this->owner->ID
-            )
-        );
-        $logger->error($e->getMessage());
-    }
-
-    /**
      * @throws ValidationException
      */
     public function onAfterDelete(): void
@@ -126,6 +107,28 @@ class DataObjectExtension extends DataExtension
             $this->registerException($ids, $record, $e);
         }
         $record->write();
+    }
+
+    /**
+     * @param array $ids
+     * @param $record
+     * @param Exception $e
+     */
+    protected function registerException(array $ids, $record, Exception $e): void
+    {
+        $ids[] = $this->owner->ID;
+        // If we don't get an exception, mark the item as clean
+        $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
+        $record->IDs = json_encode($ids);
+        $logger = Injector::inst()->get(LoggerInterface::class);
+        $logger->warn(
+            sprintf(
+                'Unable to alter %s with ID %s',
+                $this->owner->ClassName,
+                $this->owner->ID
+            )
+        );
+        $logger->error($e->getMessage());
     }
 
     /**

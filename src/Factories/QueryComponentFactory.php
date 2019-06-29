@@ -33,6 +33,11 @@ class QueryComponentFactory
     protected $queryArray;
 
     /**
+     * @var BaseIndex
+     */
+    protected $index;
+
+    /**
      * Build the full query
      * @return Query
      */
@@ -123,9 +128,11 @@ class QueryComponentFactory
     protected function buildFacets(): void
     {
         $facets = $this->clientQuery->getFacetSet();
-        foreach ($this->query->getFacetFields() as $field => $config) {
+        // Facets should be set from the index configuration
+        foreach ($this->index->getFacetFields() as $field => $config) {
             $facets->createFacetField($config['Title'])->setField($config['Field']);
         }
+        // Count however, comes from the query
         $facets->setMinCount($this->query->getFacetsMinCount());
     }
 
@@ -234,5 +241,24 @@ class QueryComponentFactory
         $this->queryArray = $queryArray;
 
         return $this;
+    }
+
+    /**
+     * @param BaseIndex $index
+     * @return QueryComponentFactory
+     */
+    public function setIndex(BaseIndex $index): QueryComponentFactory
+    {
+        $this->index = $index;
+
+        return $this;
+    }
+
+    /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
     }
 }
