@@ -109,6 +109,25 @@ trait BaseIndexTrait
     /**
      * @return array
      */
+    public function getFilterFields(): array
+    {
+        return $this->filterFields;
+    }
+
+    /**
+     * @param array $filterFields
+     * @return $this
+     */
+    public function setFilterFields($filterFields): self
+    {
+        $this->filterFields = $filterFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
     public function getSortFields(): array
     {
         return $this->sortFields;
@@ -142,25 +161,6 @@ trait BaseIndexTrait
     }
 
     /**
-     * @return array
-     */
-    public function getFilterFields(): array
-    {
-        return $this->filterFields;
-    }
-
-    /**
-     * @param array $filterFields
-     * @return $this
-     */
-    public function setFilterFields($filterFields): self
-    {
-        $this->filterFields = $filterFields;
-
-        return $this;
-    }
-
-    /**
      * @param $filterField
      * @return $this
      */
@@ -172,22 +172,6 @@ trait BaseIndexTrait
             unset($this->fulltextFields[$key]);
         }
         $this->filterFields[] = $filterField;
-
-        return $this;
-    }
-
-    /**
-     * @param string $field Name of the copyfield
-     * @param array $options Array of all fields that should be copied to this copyfield
-     * @return $this
-     */
-    public function addCopyField($field, $options): self
-    {
-        $this->copyFields[$field] = $options;
-
-        if (!in_array($field, $this->getFulltextFields(), true)) {
-            $this->addFulltextField($field);
-        }
 
         return $this;
     }
@@ -207,6 +191,22 @@ trait BaseIndexTrait
     public function setFulltextFields($fulltextFields): self
     {
         $this->fulltextFields = $fulltextFields;
+
+        return $this;
+    }
+
+    /**
+     * @param string $field Name of the copyfield
+     * @param array $options Array of all fields that should be copied to this copyfield
+     * @return $this
+     */
+    public function addCopyField($field, $options): self
+    {
+        $this->copyFields[$field] = $options;
+
+        if (!in_array($field, $this->getFulltextFields(), true)) {
+            $this->addFulltextField($field);
+        }
 
         return $this;
     }

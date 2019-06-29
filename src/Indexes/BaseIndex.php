@@ -62,6 +62,17 @@ abstract class BaseIndex
     protected $queryFactory;
 
     /**
+     * The query terms as an arary
+     * @var array
+     */
+    protected $queryTerms = [];
+
+    /**
+     * @var array
+     */
+    protected $boostTerms = [];
+
+    /**
      * BaseIndex constructor.
      */
     public function __construct()
@@ -184,8 +195,11 @@ abstract class BaseIndex
 
         $clientQuery = $this->queryFactory->buildQuery();
         $queryArray = $this->queryFactory->getQueryArray();
+        $this->queryTerms = $queryArray;
 
-        $q = implode(' ', $queryArray);
+        $q = array_merge($this->queryTerms, $this->boostTerms);
+
+        $q = implode(' ', $q);
         $clientQuery->setQuery($q);
 
         return $clientQuery;
@@ -200,7 +214,9 @@ abstract class BaseIndex
     {
         $terms = $query->getTerms();
 
-        $searchQuery = [];
+        $termsArray = [];
+
+        $boostArray = [];
 
         foreach ($terms as $search) {
             $term = $search['text'];
@@ -214,16 +230,17 @@ abstract class BaseIndex
             }
             // We can add the same term multiple times with different boosts
             // Not ideal, but it might happen, so let's add the term itself only once
-            if (!in_array($term, $searchQuery, true)) {
-                $searchQuery[] = $term . $postfix;
+            if (!in_array($term, $termsArray, true)) {
+                $termsArray[] = $term . $postfix;
             }
             // If boosting is set, add the fields to boost
             if ($search['boost'] > 1) {
-                $searchQuery[] = $this->buildQueryBoost($search, $term, $searchQuery);
+                $boost = $this->buildQueryBoost($search, $term, $boostArray);
+                $this->boostTerms = array_merge($boostArray, $boost);
             }
         }
 
-        return $searchQuery;
+        return array_unique($termsArray);
     }
 
     /**
@@ -249,7 +266,9 @@ abstract class BaseIndex
     }
 
     /**
-     * @param $search
+     * Set boosting at Query time
+     *
+     * @param array $search
      * @param string $term
      * @param array $searchQuery
      * @return array
@@ -328,5 +347,21 @@ abstract class BaseIndex
         }
 
         return $engSynonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryTerms(): array
+    {
+        return $this->queryTerms;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostTerms(): array
+    {
+        return $this->boostTerms;
     }
 }

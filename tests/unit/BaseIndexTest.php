@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
+use GraphQL\Error\Debug;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
@@ -122,6 +123,20 @@ class BaseIndexTest extends SapphireTest
         $result3 = $index->doSearch($query);
 
         $this->assertContains(SiteTree::class, $result3->getQuery()->getClasses());
+
+        $query = new BaseQuery();
+        $query->addTerm('Home', ['SiteTree_Title'], 5);
+        $result4 = $index->doSearch($query);
+
+        $this->assertEquals(['SiteTree_Title:Home^5.0'], $index->getBoostTerms());
+        $this->assertEquals(['Home'], $index->getQueryTerms());
+        $this->assertEquals(1, $result4->getTotalItems());
+
+        $query = new BaseQuery();
+        $query->addTerm('Home', [], 0, true);
+        $index->doSearch($query);
+
+        $this->assertContains('Home~', $index->getQueryTerms());
     }
 
     public function testGetFieldsForSubsites()

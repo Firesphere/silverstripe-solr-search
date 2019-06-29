@@ -166,6 +166,14 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * @return array
+     */
+    public function getClassToIndex(): array
+    {
+        return $this->classToIndex;
+    }
+
+    /**
      * @param array $classToIndex
      * @return SolrIndexJob
      */
@@ -177,6 +185,14 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * @return array
+     */
+    public function getIndexes(): array
+    {
+        return $this->indexes;
+    }
+
+    /**
      * @param array $indexes
      * @return SolrIndexJob
      */
@@ -185,21 +201,5 @@ class SolrIndexJob extends AbstractQueuedJob
         $this->indexes = $indexes;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getClassToIndex(): array
-    {
-        return $this->classToIndex;
-    }
-
-    /**
-     * @return array
-     */
-    public function getIndexes(): array
-    {
-        return $this->indexes;
     }
 }

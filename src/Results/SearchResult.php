@@ -277,6 +277,14 @@ class SearchResult
     }
 
     /**
+     * @return BaseQuery
+     */
+    public function getQuery(): BaseQuery
+    {
+        return $this->query;
+    }
+
+    /**
      * Build the given list of key-value pairs in to a SilverStripe useable array
      * @param FacetSet|null $facets
      * @return ArrayData
@@ -312,13 +320,5 @@ class SearchResult
 
         // Return an ArrayList of the results
         return ArrayData::create($facetArray);
-    }
-
-    /**
-     * @return BaseQuery
-     */
-    public function getQuery(): BaseQuery
-    {
-        return $this->query;
     }
 }
