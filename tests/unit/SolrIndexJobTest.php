@@ -35,8 +35,8 @@ class SolrIndexJobTest extends SapphireTest
         $this->job->process();
         $result = $this->indexJob->process();
 
-        $this->assertNotContains(BaseIndex::class, $this->indexJob->getIndexes());
-        $this->assertEquals(0, $result->totalSteps);
+        $this->assertNotContains(BaseIndex::class, $this->indexJob->getIndexes(), 'Test index removed');
+        $this->assertEquals(0, $result->totalSteps, 'Test reset total count');
 
         $job = new SolrIndexJob();
         $data = new stdClass();
@@ -48,8 +48,8 @@ class SolrIndexJobTest extends SapphireTest
 
         $job->process();
 
-        $this->assertCount(1, $job->getIndexes());
-        $this->assertCount(1, $job->getClassToIndex());
+        $this->assertCount(1, $job->getIndexes(), 'Test index count');
+        $this->assertCount(1, $job->getClassToIndex(), 'Test class count');
     }
 
     public function testAfterComplete()
