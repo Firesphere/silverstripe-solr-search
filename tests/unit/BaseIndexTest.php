@@ -13,6 +13,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Security\DefaultAdminService;
@@ -125,7 +126,8 @@ class BaseIndexTest extends SapphireTest
         $request = new NullHTTPRequest();
         $this->assertInstanceOf(PaginatedList::class, $result3->getPaginatedMatches($request));
         $this->assertEquals($result3->getTotalItems(), $result3->getPaginatedMatches($request)->getTotalItems());
-        $this->assertCount(0, $result3->getFacets());
+        Debug::dump($result3->getFacets());
+        $this->assertCount(1, $result3->getFacets());
 
         $this->assertContains(SiteTree::class, $result3->getQuery()->getClasses());
 
