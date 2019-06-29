@@ -11,6 +11,7 @@ use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -45,6 +46,7 @@ class SolrUpdate
             throw new LogicException('Missing items, can\'t index an empty set');
         }
         foreach ($indexes as $indexString) {
+            Debug::dump($indexString);
             // Skip the abstract base
             $ref = new ReflectionClass($indexString);
             if (!$ref->isInstantiable()) {
