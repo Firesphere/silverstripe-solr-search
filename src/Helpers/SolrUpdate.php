@@ -56,6 +56,8 @@ class SolrUpdate
             $index = Injector::inst()->get($indexString);
             // No point in sending a delete|update|create for something that's not in the index
             // @todo check the hierarchy, this could be a parent that should be indexed
+            Debug::dump(in_array($items->first()->ClassName, $index->getClasses());
+            Debug::dump(in_array($items->first()->ClassName, $index->getClasses(), true);
             if (!in_array($items->first()->ClassName, $index->getClasses(), true)) {
                 continue;
             }
