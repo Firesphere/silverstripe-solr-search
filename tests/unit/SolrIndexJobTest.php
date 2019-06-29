@@ -61,8 +61,8 @@ class SolrIndexJobTest extends SapphireTest
 
         $newJob = QueuedJobDescriptor::get()->filter(['Implementation' => SolrIndexJob::class])->first();
         $jobData = unserialize($newJob->SavedJobData);
-        $this->assertCount(1, $jobData->indexes); // Set to default count as the index is shifted
-        $this->assertCount(0, $jobData->classToIndex); // Set to default count as the index is shifted
+        $this->assertCount(1, $jobData->indexes, 'Should have one index after complete');
+        $this->assertCount(0, $jobData->classToIndex, 'Set to default count as the index is shifted');
     }
 
     public function testGettersSetters()

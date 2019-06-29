@@ -62,12 +62,13 @@ abstract class BaseIndex
     protected $queryFactory;
 
     /**
-     * The query terms as an arary
+     * The query terms as an array
      * @var array
      */
     protected $queryTerms = [];
 
     /**
+     * The boosting as an array
      * @var array
      */
     protected $boostTerms = [];
