@@ -7,6 +7,7 @@ use CircleCITestIndex;
 use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrUpdateTest extends SapphireTest
@@ -33,6 +34,7 @@ class SolrUpdateTest extends SapphireTest
         $items = SiteTree::get();
 
         $result = $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE);
+        Debug::dump($result);
         $this->assertEquals(200, $result->getResponse()->getStatusCode());
 
         $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE);

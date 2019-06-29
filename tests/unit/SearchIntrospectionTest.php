@@ -10,31 +10,6 @@ use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\VirtualPage;
-use SilverStripe\CMS\Tests\Controllers\CMSMainTest_ClassA;
-use SilverStripe\CMS\Tests\Controllers\CMSMainTest_ClassB;
-use SilverStripe\CMS\Tests\Controllers\CMSMainTest_HiddenClass;
-use SilverStripe\CMS\Tests\Controllers\CMSMainTest_NotRoot;
-use SilverStripe\CMS\Tests\Controllers\ContentControllerTest_Page;
-use SilverStripe\CMS\Tests\Controllers\ContentControllerTestPage;
-use SilverStripe\CMS\Tests\Controllers\ContentControllerTestPageWithoutController;
-use SilverStripe\CMS\Tests\Model\SiteTreeActionsTest_Page;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_AdminDenied;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_ClassA;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_ClassB;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_ClassC;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_ClassCext;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_ClassD;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_ClassE;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_Conflicted;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_LegacyControllerName;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_NotRoot;
-use SilverStripe\CMS\Tests\Model\SiteTreeTest_PageNode;
-use SilverStripe\CMS\Tests\Model\VirtualPageTest_ClassA;
-use SilverStripe\CMS\Tests\Model\VirtualPageTest_ClassB;
-use SilverStripe\CMS\Tests\Model\VirtualPageTest_ClassC;
-use SilverStripe\CMS\Tests\Model\VirtualPageTest_NotRoot;
-use SilverStripe\CMS\Tests\Model\VirtualPageTest_PageWithAllowedChildren;
-use SilverStripe\CMS\Tests\Model\VirtualPageTest_VirtualPageSub;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ErrorPage\ErrorPage;
 
@@ -56,35 +31,10 @@ class SearchIntrospectionTest extends SapphireTest
         // Expected Hierarchy is all pagetypes, including the test ones
         $expected = [
             SiteTree::class,
-            'Page',
+            Page::class,
             ErrorPage::class,
             RedirectorPage::class,
             VirtualPage::class,
-            CMSMainTest_ClassA::class,
-            CMSMainTest_ClassB::class,
-            CMSMainTest_HiddenClass::class,
-            CMSMainTest_NotRoot::class,
-            ContentControllerTestPage::class,
-            ContentControllerTestPageWithoutController::class,
-            ContentControllerTest_Page::class,
-            SiteTreeActionsTest_Page::class,
-            SiteTreeTest_AdminDenied::class,
-            SiteTreeTest_ClassA::class,
-            SiteTreeTest_ClassB::class,
-            SiteTreeTest_ClassC::class,
-            SiteTreeTest_ClassD::class,
-            SiteTreeTest_ClassE::class,
-            SiteTreeTest_Conflicted::class,
-            SiteTreeTest_LegacyControllerName::class,
-            SiteTreeTest_NotRoot::class,
-            SiteTreeTest_PageNode::class,
-            VirtualPageTest_ClassA::class,
-            VirtualPageTest_ClassB::class,
-            VirtualPageTest_ClassC::class,
-            VirtualPageTest_NotRoot::class,
-            VirtualPageTest_PageWithAllowedChildren::class,
-            VirtualPageTest_VirtualPageSub::class,
-            SiteTreeTest_ClassCext::class,
         ];
 
         $test = SearchIntrospection::hierarchy(Page::class, true, false);
