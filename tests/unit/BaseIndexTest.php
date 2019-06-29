@@ -11,8 +11,10 @@ use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Security\DefaultAdminService;
 use Solarium\Core\Client\Client;
 
@@ -120,6 +122,9 @@ class BaseIndexTest extends SapphireTest
         $query->addClass(SiteTree::class);
 
         $result3 = $index->doSearch($query);
+        $request = new NullHTTPRequest();
+        $this->assertInstanceOf(PaginatedList::class, $result3->getPaginatedMatches($request));
+        $this->assertEquals($result3->getTotalItems(), $result3->getPaginatedMatches($request)->getTotalItems());
 
         $this->assertContains(SiteTree::class, $result3->getQuery()->getClasses());
 

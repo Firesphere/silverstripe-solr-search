@@ -147,11 +147,13 @@ class QueryComponentFactory
             $filterFacets = array_merge($filterFacets, Controller::curr()->getRequest()->postVars());
         }
         foreach ($this->index->getFacetFields() as $class => $config) {
-            $filter = array_filter($filterFacets[$config['Title']], 'strlen');
-            if (array_key_exists($config['Title'], $filterFacets) && count($filter)) {
-                $criteria = Criteria::where($config['Field'])->in($filter);
-                $this->clientQuery->createFilterQuery('facet-' . $config['Title'])
-                    ->setQuery($criteria->getQuery());
+            if (array_key_exists($config['Title'], $filterFacets)) {
+                $filter = array_filter($filterFacets[$config['Title']], 'strlen');
+                if (count($filter)) {
+                    $criteria = Criteria::where($config['Field'])->in($filter);
+                    $this->clientQuery->createFilterQuery('facet-' . $config['Title'])
+                        ->setQuery($criteria->getQuery());
+                }
             }
         }
     }

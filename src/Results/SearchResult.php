@@ -93,8 +93,13 @@ class SearchResult
         $items = $this->getMatches();
         /** @var PaginatedList $paginated */
         $paginated = PaginatedList::create($items, $request);
+        // Do not limit the pagination, it's done at Solr level
+        $paginated->setLimitItems(false);
+        // Override the count that's set from the item count
         $paginated->setTotalItems($this->getTotalItems());
-        $paginated->setPageStart($this->query->getStart());
+        // Set the start to the current page from start. It needs to be divided by the rows
+        $paginated->setCurrentPage($this->query->getStart() / $this->query->getRows());
+        // The amount of items per page to display
         $paginated->setPageLength($this->query->getRows());
 
         return $paginated;
