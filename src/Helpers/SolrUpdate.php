@@ -46,7 +46,6 @@ class SolrUpdate
             throw new LogicException('Missing items, can\'t index an empty set');
         }
         foreach ($indexes as $indexString) {
-            Debug::dump($indexString);
             // Skip the abstract base
             $ref = new ReflectionClass($indexString);
             if (!$ref->isInstantiable()) {
@@ -61,6 +60,7 @@ class SolrUpdate
                 continue;
             }
 
+            Debug::dump($indexString);
             $client = $index->getClient();
 
             // get an update query instance
