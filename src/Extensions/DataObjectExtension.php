@@ -35,7 +35,8 @@ class DataObjectExtension extends DataExtension
     protected static $excludedClasses = [
         DirtyClass::class,
         ChangeSet::class,
-        ChangeSetItem::class
+        ChangeSetItem::class,
+        SiteConfig::class
     ];
     protected $canViewClasses = [];
 

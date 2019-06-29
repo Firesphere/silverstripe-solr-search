@@ -40,7 +40,7 @@ class SolrUpdate
     public function updateItems($items, $type)
     {
         if (Controller::curr() instanceof DevBuildController) {
-            return;
+            return null;
         }
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $result = false;
