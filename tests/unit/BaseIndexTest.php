@@ -137,6 +137,12 @@ class BaseIndexTest extends SapphireTest
         $index->doSearch($query);
 
         $this->assertContains('Home~', $index->getQueryTerms());
+
+        $query = new BaseQuery();
+        $query->addTerm('Home', [], 0, 2);
+        $index->doSearch($query);
+
+        $this->assertContains('Home~2', $index->getQueryTerms());
     }
 
     public function testGetFieldsForSubsites()
