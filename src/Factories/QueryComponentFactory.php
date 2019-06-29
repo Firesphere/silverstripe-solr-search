@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Factories;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
+use SilverStripe\Control\Controller;
 use SilverStripe\Security\Security;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -52,6 +53,8 @@ class QueryComponentFactory
         $this->buildExcludes();
         // Setup the facets
         $this->buildFacets();
+        // Build the facet filters
+        $this->buildFacetQuery();
         // Add spellchecking
         $this->buildSpellcheck();
         // Set the start
@@ -134,6 +137,23 @@ class QueryComponentFactory
         }
         // Count however, comes from the query
         $facets->setMinCount($this->query->getFacetsMinCount());
+    }
+
+    protected function buildFacetQuery()
+    {
+        $filterFacets = [];
+        if (Controller::curr()) {
+            $filterFacets = Controller::curr()->getRequest()->getVars();
+            $filterFacets = array_merge($filterFacets, Controller::curr()->getRequest()->postVars());
+        }
+        foreach ($this->index->getFacetFields() as $class => $config) {
+            $filter = array_filter($filterFacets[$config['Title']], 'strlen');
+            if (array_key_exists($config['Title'], $filterFacets) && count($filter)) {
+                $criteria = Criteria::where($config['Field'])->in($filter);
+                $this->clientQuery->createFilterQuery('facet-' . $config['Title'])
+                    ->setQuery($criteria->getQuery());
+            }
+        }
     }
 
     protected function buildSpellcheck(): void
