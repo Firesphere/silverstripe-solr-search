@@ -49,7 +49,9 @@ class DataObjectExtension extends DataExtension
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        Debug::dump(Controller::curr());
+        if (strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false) {
+            return null;
+        }
         if (!in_array($this->owner->ClassName, static::$excludedClasses, true)) {
             // Mark the current class as dirty
             /** @var DirtyClass $record */
