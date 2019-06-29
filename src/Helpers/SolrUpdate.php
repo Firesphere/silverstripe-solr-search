@@ -9,9 +9,12 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
+use SilverStripe\Dev\DevBuildController;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -36,6 +39,9 @@ class SolrUpdate
      */
     public function updateItems($items, $type)
     {
+        if (Controller::curr() instanceof DevBuildController) {
+            return;
+        }
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $result = false;
         if ($items instanceof DataObject) {
