@@ -37,7 +37,6 @@ class SolrUpdate
      */
     public function updateItems($items, $type)
     {
-        Debug::dump(Controller::curr()->ClassName);
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $result = false;
         if ($items instanceof DataObject) {

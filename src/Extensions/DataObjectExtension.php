@@ -9,7 +9,9 @@ use Firesphere\SolrSearch\Models\DirtyClass;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -47,6 +49,7 @@ class DataObjectExtension extends DataExtension
     public function onAfterWrite()
     {
         parent::onAfterWrite();
+        Debug::dump(Controller::curr());
         if (!in_array($this->owner->ClassName, static::$excludedClasses, true)) {
             // Mark the current class as dirty
             /** @var DirtyClass $record */
