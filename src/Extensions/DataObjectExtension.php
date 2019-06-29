@@ -49,7 +49,7 @@ class DataObjectExtension extends DataExtension
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        if (strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false) {
+        if (Controller::curr()->getRequest()->getURL() && strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false) {
             return null;
         }
         if (!in_array($this->owner->ClassName, static::$excludedClasses, true)) {
