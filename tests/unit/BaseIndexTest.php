@@ -125,6 +125,7 @@ class BaseIndexTest extends SapphireTest
         $request = new NullHTTPRequest();
         $this->assertInstanceOf(PaginatedList::class, $result3->getPaginatedMatches($request));
         $this->assertEquals($result3->getTotalItems(), $result3->getPaginatedMatches($request)->getTotalItems());
+        $this->assertCount(0, $result3->getFacets());
 
         $this->assertContains(SiteTree::class, $result3->getQuery()->getClasses());
 
