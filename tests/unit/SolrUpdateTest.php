@@ -34,7 +34,6 @@ class SolrUpdateTest extends SapphireTest
         $items = SiteTree::get();
 
         $result = $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE);
-        Debug::dump($result);
         $this->assertEquals(200, $result->getResponse()->getStatusCode());
 
         $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE);

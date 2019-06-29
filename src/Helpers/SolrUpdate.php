@@ -15,7 +15,6 @@ use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-use Solarium\Core\Client\Response;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
 
@@ -45,6 +44,8 @@ class SolrUpdate
         if (!$items) {
             throw new LogicException('Missing items, can\'t index an empty set');
         }
+        $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
+
         foreach ($indexes as $indexString) {
             // Skip the abstract base
             $ref = new ReflectionClass($indexString);
@@ -54,14 +55,13 @@ class SolrUpdate
 
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexString);
+            $classes = $index->getClasses();
+            $inArray = array_intersect($classes, $hierarchy);
             // No point in sending a delete|update|create for something that's not in the index
-            // @todo check the hierarchy, this could be a parent that should be indexed
-            Debug::dump($index->getClasses());
-            if (!in_array($items->first()->ClassName, $index->getClasses(), true)) {
+            if (count($inArray) > 0 && !in_array($items->first()->ClassName, $hierarchy, true)) {
                 continue;
             }
 
-            Debug::dump($indexString);
             $client = $index->getClient();
 
             // get an update query instance
