@@ -36,7 +36,8 @@ class DataObjectExtension extends DataExtension
         DirtyClass::class,
         ChangeSet::class,
         ChangeSetItem::class,
-        SiteConfig::class
+        SiteConfig::class,
+        SiteTree::class
     ];
     protected $canViewClasses = [];
 
