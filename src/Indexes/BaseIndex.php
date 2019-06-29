@@ -169,7 +169,7 @@ abstract class BaseIndex
 
         // Handle the after search first. This gets a raw search result
         $this->extend('onAfterSearch', $result);
-        $searchResult = new SearchResult($result, $query);
+        $searchResult = new SearchResult($result, $query, $this);
 
         // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);

@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Results;
 
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
@@ -23,6 +24,11 @@ class SearchResult
      * @var BaseQuery
      */
     protected $query;
+
+    /**
+     * @var BaseIndex
+     */
+    protected $index;
 
     /**
      * @var ArrayList
@@ -60,10 +66,12 @@ class SearchResult
      * See Solarium docs for this.
      *
      * @param Result $result
-     * @param $query
+     * @param BaseQuery $query
+     * @param BaseIndex $index
      */
-    public function __construct(Result $result, BaseQuery $query)
+    public function __construct(Result $result, BaseQuery $query, BaseIndex $index)
     {
+        $this->index = $index;
         $this->query = $query;
         $this->setMatches($result->getDocuments());
         $this->setFacets($result->getFacetSet());
@@ -285,6 +293,14 @@ class SearchResult
     }
 
     /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
+    }
+
+    /**
      * Build the given list of key-value pairs in to a SilverStripe useable array
      * @param FacetSet|null $facets
      * @return ArrayData
@@ -293,7 +309,7 @@ class SearchResult
     {
         $facetArray = [];
         if ($facets) {
-            $facetTypes = $this->query->getFacetFields();
+            $facetTypes = $this->index->getFacetFields();
             // Loop all available facet fields by type
             foreach ($facetTypes as $class => $options) {
                 // Get the facets by its title
