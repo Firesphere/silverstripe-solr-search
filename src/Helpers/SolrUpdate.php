@@ -16,6 +16,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use Solarium\Core\Client\Response;
 use Solarium\QueryType\Update\Query\Query;
+use Solarium\QueryType\Update\Result;
 
 class SolrUpdate
 {
@@ -23,12 +24,12 @@ class SolrUpdate
     public const UPDATE_TYPE = 'update';
     public const CREATE_TYPE = 'create';
 
-    protected $debug;
+    protected $debug = false;
 
     /**
      * @param ArrayList|DataList|DataObject $items
      * @param string $type
-     * @return bool|Response
+     * @return bool|Result
      * @throws ReflectionException
      * @throws LogicException
      * @throws Exception
@@ -72,7 +73,7 @@ class SolrUpdate
                 $this->updateIndex($index, $items, $update);
             }
             $update->addCommit();
-            $client->update($update);
+            $result = $client->update($update);
         }
         gc_collect_cycles();
 
@@ -94,9 +95,7 @@ class SolrUpdate
             $update->addDocuments($docs);
         }
         // Does this clear out the memory properly?
-        foreach ($docs as $doc) {
-            unset($doc);
-        }
+        reset($docs);
     }
 
     /**

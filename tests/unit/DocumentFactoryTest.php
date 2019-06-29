@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Page;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use Solarium\Core\Client\Client;
@@ -123,7 +124,7 @@ class DocumentFactoryTest extends SapphireTest
         $update = $client->createUpdate();
         $count = 5;
         $factory->setClass(SiteTree::class);
-        $factory->setItems(\Page::get());
+        $factory->setItems(Page::get());
         $docs = $factory->buildItems($fields, $index, $update);
 
         $this->assertCount($count, $docs);

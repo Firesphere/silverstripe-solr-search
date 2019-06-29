@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Framework\Tests\ClassI;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -23,8 +24,8 @@ class SearchIntrospection
 
     /**
      * Check if class is subclass of (a) the class in $of, or (b) any of the classes in the array $of
-     * @param  $class
-     * @param  $of
+     * @param string $class Name of the class to test
+     * @param array|string $of Class ancestry it should be in
      * @return bool
      * @todo remove in favour of DataObjectSchema
      * @static
@@ -67,15 +68,19 @@ class SearchIntrospection
      */
     public static function hierarchy($class, $includeSubclasses = true, $dataOnly = false): array
     {
-        // What does this actually do?
+        // Generate the unique key for this class and it's call type
         $key = "$class!" . ($includeSubclasses ? 'sc' : 'an') . '!' . ($dataOnly ? 'do' : 'al');
 
         if (!isset(self::$hierarchy[$key])) {
             $classes = array_values(ClassInfo::ancestry($class));
             if ($includeSubclasses) {
-                $classes = array_unique(array_merge($classes, array_values(ClassInfo::subclassesFor($class))));
+                $subClasses = ClassInfo::subclassesFor($class);
+                $classes = array_merge($classes, array_values($subClasses));
             }
 
+            $classes = array_unique($classes);
+
+            // Remove all classes below DataObject from the list
             $idx = array_search(DataObject::class, $classes, true);
             if ($idx !== false) {
                 array_splice($classes, 0, $idx + 1);
