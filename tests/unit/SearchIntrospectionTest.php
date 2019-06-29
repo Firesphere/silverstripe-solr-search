@@ -32,6 +32,7 @@ class SearchIntrospectionTest extends SapphireTest
         $expected = [
             SiteTree::class,
             Page::class,
+            TestPage::class,
             ErrorPage::class,
             RedirectorPage::class,
             VirtualPage::class,
