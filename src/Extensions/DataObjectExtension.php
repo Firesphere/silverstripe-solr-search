@@ -96,7 +96,7 @@ class DataObjectExtension extends DataExtension
                 $this->owner->ID
             )
         );
-        $logger->log($e->getMessage());
+        $logger->warn($e->getMessage());
     }
 
     /**
