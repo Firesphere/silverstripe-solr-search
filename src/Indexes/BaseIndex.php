@@ -216,7 +216,7 @@ abstract class BaseIndex
 
         $termsArray = [];
 
-        $boostArray = [];
+        $boostTerms = $this->boostTerms;
 
         foreach ($terms as $search) {
             $term = $search['text'];
@@ -235,8 +235,8 @@ abstract class BaseIndex
             }
             // If boosting is set, add the fields to boost
             if ($search['boost'] > 1) {
-                $boost = $this->buildQueryBoost($search, $term, $boostArray);
-                $this->boostTerms = array_merge($boostArray, $boost);
+                $boost = $this->buildQueryBoost($search, $term, $boostTerms);
+                $this->boostTerms = array_merge($boostTerms, $boost);
             }
         }
 
@@ -276,6 +276,7 @@ abstract class BaseIndex
     protected function buildQueryBoost($search, string $term, array $searchQuery): array
     {
         foreach ($search['fields'] as $boostField) {
+            $boostField = str_replace('.', '_', $boostField);
             $criteria = Criteria::where($boostField)
                 ->is($term)
                 ->boost($search['boost']);

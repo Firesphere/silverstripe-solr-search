@@ -124,6 +124,7 @@ class BaseIndexTest extends SapphireTest
 
         $this->assertContains(SiteTree::class, $result3->getQuery()->getClasses());
 
+        $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('Home', ['SiteTree_Title'], 5);
         $result4 = $index->doSearch($query);
@@ -132,12 +133,23 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(['Home'], $index->getQueryTerms());
         $this->assertEquals(1, $result4->getTotalItems());
 
+        $index = new CircleCITestIndex();
+        $query = new BaseQuery();
+        $query->addTerm('Home', ['SiteTree.Title'], 3);
+        $result4 = $index->doSearch($query);
+
+        $this->assertEquals(['SiteTree_Title:Home^5.0'], $index->getBoostTerms());
+        $this->assertEquals(['Home'], $index->getQueryTerms());
+        $this->assertEquals(1, $result4->getTotalItems());
+
+        $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('Home', [], 0, true);
         $index->doSearch($query);
 
         $this->assertContains('Home~', $index->getQueryTerms());
 
+        $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('Home', [], 0, 2);
         $index->doSearch($query);
