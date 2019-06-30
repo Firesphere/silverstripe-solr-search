@@ -36,7 +36,7 @@ jobs:
             - solr8-
       - run: composer require silverstripe/recipe-cms
       - save_cache:
-          key: solr8-{{ checksum ".circlecy/config.yml" }}
+          key: solr8-{{ checksum ".circleci/config.yml" }}
           paths:
             - "vendor"
       - run: composer update -n --prefer-dist --ignore-platform-reqs
