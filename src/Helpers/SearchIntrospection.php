@@ -72,18 +72,10 @@ class SearchIntrospection
 
         if (!isset(self::$hierarchy[$key])) {
             $classes = array_values(ClassInfo::ancestry($class));
-            if ($includeSubclasses) {
-                $subClasses = ClassInfo::subclassesFor($class);
-                $classes = array_merge($classes, array_values($subClasses));
-            }
+            $classes = self::getSubClasses($class, $includeSubclasses, $classes);
 
             $classes = array_unique($classes);
-
-            // Remove all classes below DataObject from the list
-            $idx = array_search(DataObject::class, $classes, true);
-            if ($idx !== false) {
-                array_splice($classes, 0, $idx + 1);
-            }
+            $classes = self::excludeDataObjectIDx($classes);
 
             if ($dataOnly) {
                 foreach ($classes as $i => $schemaClass) {
@@ -97,6 +89,38 @@ class SearchIntrospection
         }
 
         return self::$hierarchy[$key];
+    }
+
+    /**
+     * @param $class
+     * @param $includeSubclasses
+     * @param array $classes
+     * @return array
+     * @throws ReflectionException
+     */
+    protected static function getSubClasses($class, $includeSubclasses, array $classes): array
+    {
+        if ($includeSubclasses) {
+            $subClasses = ClassInfo::subclassesFor($class);
+            $classes = array_merge($classes, array_values($subClasses));
+        }
+
+        return $classes;
+    }
+
+    /**
+     * @param array $classes
+     * @return array
+     */
+    protected static function excludeDataObjectIDx(array $classes): array
+    {
+        // Remove all classes below DataObject from the list
+        $idx = array_search(DataObject::class, $classes, true);
+        if ($idx !== false) {
+            array_splice($classes, 0, $idx + 1);
+        }
+
+        return $classes;
     }
 
 
@@ -160,22 +184,8 @@ class SearchIntrospection
             $schema = DataObject::getSchema();
             $className = $singleton->getClassName();
             $options['multi_valued'] = false;
-            $rel = false;
 
-            if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
-                $class = $hasOne;
-                $key = $lookup . 'ID';
-                $rel = 'has_one';
-            } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-                $class = $hasMany;
-                $options['multi_valued'] = true;
-                $key = $schema->getRemoteJoinField($className, $lookup);
-                $rel = 'has_many';
-            } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
-                $class = $key['childClass'];
-                $options['multi_valued'] = true;
-                $rel = 'many_many';
-            }
+            [$class, $key, $rel, $options] = $this->getRelationData($lookup, $schema, $className, $options);
 
             if ($rel !== false) {
                 if ($this->checkRelationList($dataClass, $lookup, $rel)) {
@@ -346,5 +356,37 @@ class SearchIntrospection
         $this->index = $index;
 
         return $this;
+    }
+
+    /**
+     * @param $lookup
+     * @param \SilverStripe\ORM\DataObjectSchema $schema
+     * @param $className
+     * @param array $options
+     * @return array
+     * @throws Exception
+     */
+    protected function getRelationData(
+        $lookup,
+        \SilverStripe\ORM\DataObjectSchema $schema,
+        $className,
+        array $options
+    ): array {
+        if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
+            $class = $hasOne;
+            $key = $lookup . 'ID';
+            $rel = 'has_one';
+        } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
+            $class = $hasMany;
+            $options['multi_valued'] = true;
+            $key = $schema->getRemoteJoinField($className, $lookup);
+            $rel = 'has_many';
+        } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
+            $class = $key['childClass'];
+            $options['multi_valued'] = true;
+            $rel = 'many_many';
+        }
+
+        return array($class, $key, $rel, $options);
     }
 }

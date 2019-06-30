@@ -320,7 +320,6 @@ class SearchResult
                 // Get the facets by its title
                 /** @var Field $typeFacets */
                 $typeFacets = $facets->getFacet($options['Title']);
-                // @todo bugfix this. It doesn't consistently return something
                 $values = $typeFacets->getValues();
                 $results = ArrayList::create();
                 // If there are values, get the items one by one and push them in to the list
