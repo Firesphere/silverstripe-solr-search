@@ -15,8 +15,11 @@ use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Security\DefaultAdminService;
+use SilverStripe\View\ArrayData;
+use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\Core\Client\Client;
 
 class BaseIndexTest extends SapphireTest
@@ -126,7 +129,10 @@ class BaseIndexTest extends SapphireTest
         $request = new NullHTTPRequest();
         $this->assertInstanceOf(PaginatedList::class, $result3->getPaginatedMatches($request));
         $this->assertEquals($result3->getTotalItems(), $result3->getPaginatedMatches($request)->getTotalItems());
-        $this->assertEquals(0, $result3->getFacets()->count());
+        $this->assertInstanceOf(ArrayData::class, $result3->getFacets());
+        $this->assertInstanceOf(CircleCITestIndex::class, $result3->getIndex());
+        $this->assertInstanceOf(ArrayList::class, $result3->getSpellcheck());
+        $this->assertInstanceOf(Highlighting::class, $result3->getHighlight());
 
         $this->assertContains(SiteTree::class, $result3->getQuery()->getClasses());
 
