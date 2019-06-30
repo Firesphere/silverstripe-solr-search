@@ -57,16 +57,7 @@ class DataObjectExtension extends DataExtension
         /** @var DataObject $owner */
         $owner = $this->owner;
         if (!in_array($owner->ClassName, static::$excludedClasses, true)) {
-            // Mark the current class as dirty
-            /** @var DirtyClass $record */
-            $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
-            if (!$record || !$record->exists()) {
-                $record = DirtyClass::create([
-                    'Class' => $owner->ClassName,
-                    'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
-                ]);
-                $record->write();
-            }
+            $record = $this->getDirtyClass($owner);
 
             $ids = json_decode($record->IDs) ?: [];
             try {
@@ -91,14 +82,7 @@ class DataObjectExtension extends DataExtension
         /** @var DataObject $owner */
         $owner = $this->owner;
         /** @var DirtyClass $record */
-        $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
-        if (!$record || !$record->exists()) {
-            $record = DirtyClass::create([
-                'Class' => $owner->ClassName,
-                'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
-            ]);
-            $record->write();
-        }
+        $record = $this->getDirtyClass($owner);
 
         $ids = json_decode($record->IDs) ?: [];
         parent::onAfterDelete();
@@ -171,5 +155,26 @@ class DataObjectExtension extends DataExtension
         }
 
         return $return;
+    }
+
+    /**
+     * @param DataObject $owner
+     * @return DirtyClass
+     * @throws ValidationException
+     */
+    protected function getDirtyClass(DataObject $owner)
+    {
+        // Get the DirtyClass object for this item
+        /** @var DirtyClass|null $record */
+        $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
+        if (!$record || !$record->exists()) {
+            $record = DirtyClass::create([
+                'Class' => $owner->ClassName,
+                'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
+            ]);
+            $record->write();
+        }
+
+        return $record;
     }
 }
