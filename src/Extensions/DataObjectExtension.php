@@ -54,13 +54,15 @@ class DataObjectExtension extends DataExtension
         ) {
             return null;
         }
-        if (!in_array($this->owner->ClassName, static::$excludedClasses, true)) {
+        /** @var DataObject $owner */
+        $owner = $this->owner;
+        if (!in_array($owner->ClassName, static::$excludedClasses, true)) {
             // Mark the current class as dirty
             /** @var DirtyClass $record */
-            $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
+            $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
             if (!$record || !$record->exists()) {
                 $record = DirtyClass::create([
-                    'Class' => $this->owner->ClassName,
+                    'Class' => $owner->ClassName,
                     'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
                 ]);
                 $record->write();
@@ -70,7 +72,7 @@ class DataObjectExtension extends DataExtension
             try {
                 $update = new SolrUpdate();
                 $update->setDebug(false);
-                $update->updateItems($this->owner, SolrUpdate::UPDATE_TYPE);
+                $update->updateItems($owner, SolrUpdate::UPDATE_TYPE);
                 // If we don't get an exception, mark the item as clean
                 $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
                 $record->IDs = json_encode($ids);
@@ -86,11 +88,13 @@ class DataObjectExtension extends DataExtension
      */
     public function onAfterDelete(): void
     {
+        /** @var DataObject $owner */
+        $owner = $this->owner;
         /** @var DirtyClass $record */
-        $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName])->first();
+        $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
         if (!$record || !$record->exists()) {
             $record = DirtyClass::create([
-                'Class' => $this->owner->ClassName,
+                'Class' => $owner->ClassName,
                 'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
             ]);
             $record->write();
@@ -99,7 +103,7 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs) ?: [];
         parent::onAfterDelete();
         try {
-            (new SolrUpdate())->updateItems($this->owner, SolrUpdate::DELETE_TYPE);
+            (new SolrUpdate())->updateItems($owner, SolrUpdate::DELETE_TYPE);
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {
@@ -115,7 +119,9 @@ class DataObjectExtension extends DataExtension
      */
     protected function registerException(array $ids, $record, Exception $e): void
     {
-        $ids[] = $this->owner->ID;
+        /** @var DataObject $owner */
+        $owner = $this->owner;
+        $ids[] = $owner->ID;
         // If we don't get an exception, mark the item as clean
         $record->Dirty = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
         $record->IDs = json_encode($ids);
@@ -123,8 +129,8 @@ class DataObjectExtension extends DataExtension
         $logger->warn(
             sprintf(
                 'Unable to alter %s with ID %s',
-                $this->owner->ClassName,
-                $this->owner->ID
+                $owner->ClassName,
+                $owner->ID
             )
         );
         $logger->error($e->getMessage());
@@ -136,14 +142,16 @@ class DataObjectExtension extends DataExtension
      */
     public function getViewStatus(): array
     {
-        if (array_key_exists($this->owner->ClassName, $this->canViewClasses) &&
-            !$this->owner instanceof SiteTree
+        /** @var DataObject $owner */
+        $owner = $this->owner;
+        if (array_key_exists($owner->ClassName, $this->canViewClasses) &&
+            !$owner instanceof SiteTree
         ) {
-            return $this->canViewClasses[$this->owner->ClassName];
+            return $this->canViewClasses[$owner->ClassName];
         }
         $return = [];
         // Add null users if it's publicly viewable
-        if ($this->owner->canView()) {
+        if ($owner->canView()) {
             $return = ['1-null'];
 
             return $return;
@@ -154,12 +162,12 @@ class DataObjectExtension extends DataExtension
         }
 
         foreach (self::$members as $member) {
-            $return[] = $this->owner->canView($member) . '-' . $member->ID;
+            $return[] = $owner->canView($member) . '-' . $member->ID;
         }
 
         // Dont record sitetree activity, it'll take up much needed memory
-        if (!$this->owner instanceof SiteTree) {
-            $this->canViewClasses[$this->owner->ClassName] = $return;
+        if (!$owner instanceof SiteTree) {
+            $this->canViewClasses[$owner->ClassName] = $return;
         }
 
         return $return;
