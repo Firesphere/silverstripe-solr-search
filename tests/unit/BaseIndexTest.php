@@ -37,6 +37,13 @@ class BaseIndexTest extends SapphireTest
         $this->assertContains(SiteTree::class, $this->index->getClasses());
     }
 
+    public function testInit()
+    {
+        $this->index->init();
+        $this->assertNotEmpty($this->index->getFulltextFields());
+        $this->assertNotEmpty($this->index->getFieldsForIndexing());
+    }
+
     public function testGetSynonyms()
     {
         $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms());
