@@ -62,21 +62,7 @@ class SolrUpdate
                 continue;
             }
 
-            $client = $index->getClient();
-
-            // get an update query instance
-            $update = $client->createUpdate();
-
-            // add the delete query and a commit command to the update query
-            if ($type === static::DELETE_TYPE) {
-                foreach ($items as $item) {
-                    $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
-                }
-            } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
-                $this->updateIndex($index, $items, $update);
-            }
-            $update->addCommit();
-            $result = $client->update($update);
+            $result = $this->doUpdate($items, $type, $index);
         }
         gc_collect_cycles();
 
@@ -126,5 +112,31 @@ class SolrUpdate
         $this->debug = $debug;
 
         return $this;
+    }
+
+    /**
+     * @param $items
+     * @param $type
+     * @param BaseIndex $index
+     * @return Result
+     * @throws Exception
+     */
+    protected function doUpdate($items, $type, BaseIndex $index): Result
+    {
+        $client = $index->getClient();
+
+        // get an update query instance
+        $update = $client->createUpdate();
+
+        // add the delete query and a commit command to the update query
+        if ($type === static::DELETE_TYPE) {
+            foreach ($items as $item) {
+                $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
+            }
+        } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
+            $this->updateIndex($index, $items, $update);
+        }
+        $update->addCommit();
+        return $client->update($update);
     }
 }
