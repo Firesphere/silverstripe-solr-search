@@ -30,17 +30,9 @@ jobs:
     steps:
       - run: cd /var/www/html
       - checkout
-      - restore_cache:
-          keys:
-            - solr8-{{ checksum ".circleci/config.yml" }}
-            - solr8-
       - run: composer require silverstripe/recipe-cms
       - run: composer update -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
-      - save_cache:
-          key: solr8-{{ checksum ".circleci/config.yml" }}
-          paths:
-            - "vendor"
       - run:
           name: Setup Integration Pre-requisites
           command: |
