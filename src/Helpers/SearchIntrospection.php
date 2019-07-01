@@ -182,7 +182,6 @@ class SearchIntrospection
         $source = $this->getSourceName($source);
 
         foreach (self::hierarchy($source) as $dataClass) {
-            $class = null;
             $options = [];
             $singleton = singleton($dataClass);
             $schema = DataObject::getSchema();
@@ -253,7 +252,7 @@ class SearchIntrospection
      * @param string $type
      * @param string $dataClass
      * @param string $class
-     * @param string $key
+     * @param string|array $key
      * @return array
      */
     public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key): array
@@ -280,21 +279,20 @@ class SearchIntrospection
      */
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
-        foreach ($sources as $class => $fieldoptions) {
+        foreach ($sources as $class => $fieldOptions) {
             if (is_int($class)) {
-                $class = $fieldoptions;
-                $fieldoptions = [];
+                $class = $fieldOptions;
+                $fieldOptions = [];
             }
             $class = $this->getSourceName($class);
             $dataclasses = self::hierarchy($class);
 
             while (count($dataclasses)) {
                 $dataclass = array_shift($dataclasses);
-                $type = null;
 
                 $fields = DataObject::getSchema()->databaseFields($class);
 
-                [$type, $fieldoptions] = $this->getCallType($field, $fields, $fieldoptions, $dataclass);
+                [$type, $fieldOptions] = $this->getCallType($field, $fields, $fieldOptions, $dataclass);
 
                 if ($type) {
                     // Don't search through child classes of a class we matched on. TODO: Should we?
@@ -304,7 +302,7 @@ class SearchIntrospection
                         $type = $match[1];
                     }
                     // Get the origin
-                    $origin = $fieldoptions['origin'] ?? $dataclass;
+                    $origin = $fieldOptions['origin'] ?? $dataclass;
 
                     $found["{$origin}_{$fullfield}"] = array(
                         'name'         => "{$origin}_{$fullfield}",
@@ -312,9 +310,9 @@ class SearchIntrospection
                         'fullfield'    => $fullfield,
                         'origin'       => $origin,
                         'class'        => $dataclass,
-                        'lookup_chain' => $fieldoptions['lookup_chain'],
+                        'lookup_chain' => $fieldOptions['lookup_chain'],
                         'type'         => $type,
-                        'multi_valued' => isset($fieldoptions['multi_valued']) ? true : false,
+                        'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
                     );
                 }
             }
@@ -350,12 +348,8 @@ class SearchIntrospection
      * @return array
      * @throws Exception
      */
-    protected function getRelationData(
-        $lookup,
-        DataObjectSchema $schema,
-        $className,
-        array $options
-    ): array {
+    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array $options): array
+    {
         $class = null;
         $relationType = false;
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {

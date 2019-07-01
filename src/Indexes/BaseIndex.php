@@ -223,13 +223,7 @@ abstract class BaseIndex
         foreach ($terms as $search) {
             $term = $search['text'];
             $term = $this->escapeSearch($term, $helper);
-            $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
-            if ($search['fuzzy']) {
-                $postfix = '~';
-                if (is_numeric($search['fuzzy'])) {
-                    $postfix .= $search['fuzzy'];
-                }
-            }
+            $postfix = $this->isFuzzy($search);
             // We can add the same term multiple times with different boosts
             // Not ideal, but it might happen, so let's add the term itself only once
             if (!in_array($term, $termsArray, true)) {
@@ -366,5 +360,22 @@ abstract class BaseIndex
     public function getBoostTerms(): array
     {
         return $this->boostTerms;
+    }
+
+    /**
+     * @param $search
+     * @return string
+     */
+    protected function isFuzzy($search): string
+    {
+        $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
+        if ($search['fuzzy']) {
+            $postfix = '~';
+            if (is_numeric($search['fuzzy'])) {
+                $postfix .= $search['fuzzy'];
+            }
+        }
+
+        return $postfix;
     }
 }

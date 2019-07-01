@@ -117,7 +117,7 @@ class SolrConfigureTask extends BuildTask
                         unset($e);
                     }
                 } catch (RequestException $e) {
-                    $this->logger->error('Error attempting to create core %s', $index);
+                    $this->logger->error(sprintf('Error attempting to create core %s', $index));
                     $this->logger->error($e->getResponse()->getBody());
                 }
             }
