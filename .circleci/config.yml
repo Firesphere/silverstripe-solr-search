@@ -37,7 +37,7 @@ jobs:
             - cache-
       - run: composer require silverstripe/recipe-cms
       - save_cache:
-          keys: cache-{{ checksum "src" }}
+          key: cache-{{ checksum "src" }}
           paths:
             # fallback to using the latest cache if no exact match is found
             - vendor
