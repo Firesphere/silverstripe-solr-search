@@ -60,7 +60,6 @@ class DocumentFactory
      * @param Query $update
      * @return array
      * @throws Exception
-     * @todo this could be cleaner
      */
     public function buildItems($fields, $index, $update): array
     {
@@ -68,11 +67,16 @@ class DocumentFactory
         $this->introspection->setIndex($index);
         $docs = [];
 
-        $debugString = sprintf('Adding %s to %s%s[', $class, $index->getIndexName(), PHP_EOL);
+        $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
+        if ($this->debug){
+            $debugString .= '[';
+        }
         $boostFields = $index->getBoostedFields();
         // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
         foreach ($this->items as $item) {
-            $debugString .= "$item->ID, ";
+            if ($this->debug){
+                $debugString .= "$item->ID, ";
+            }
             /** @var Document $doc */
             $doc = $update->createDocument();
             $this->addDefaultFields($doc, $item);
@@ -84,6 +88,7 @@ class DocumentFactory
         }
 
         if ($this->debug) {
+            // @todo switch to the logger
             Debug::message(rtrim($debugString, ', ') . ']' . PHP_EOL, false);
         }
 
@@ -208,34 +213,7 @@ class DocumentFactory
             $object = [$object];
         }
 
-        while ($step = array_shift($field['lookup_chain'])) {
-            // If we're looking up this step on an array or SS_List, do the step on every item, merge result
-            $next = [];
-
-            foreach ($object as $item) {
-                if ($step['call'] === 'method') {
-                    $method = $step['method'];
-                    $item = $item->$method();
-                } else {
-                    $property = $step['property'];
-                    $item = $item->$property;
-                }
-
-                // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
-                if ($item instanceof SS_List) {
-                    $item = $item->toArray();
-                }
-                if (is_array($item)) {
-                    $next = array_merge($next, $item);
-                } else {
-                    $next[] = $item;
-                }
-            }
-
-            $object = $next;
-            unset($next);
-            gc_collect_cycles();
-        }
+        $object = $this->findObjectData($object, $field);
 
         return $object;
     }
@@ -279,5 +257,45 @@ class DocumentFactory
         $this->class = $class;
 
         return $this;
+    }
+
+    /**
+     * @param $object
+     * @param $field
+     * @return array
+     */
+    protected function  findObjectData($object, $field): array
+    {
+        while ($step = array_shift($field['lookup_chain'])) {
+            // If we're looking up this step on an array or SS_List, do the step on every item, merge result
+            $next = [];
+
+            foreach ($object as $item) {
+                if ($step['call'] === 'method') {
+                    $method = $step['method'];
+                    $item = $item->$method();
+                } else {
+                    $property = $step['property'];
+                    $item = $item->$property;
+                }
+
+                // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
+                if ($item instanceof SS_List) {
+                    $item = $item->toArray();
+                }
+                if (is_array($item)) {
+                    // @todo remove the merge, it's inefficient
+                    $next = array_merge($next, $item);
+                } else {
+                    $next[] = $item;
+                }
+            }
+
+            $object = $next;
+            unset($next);
+            gc_collect_cycles();
+        }
+
+        return $object;
     }
 }
