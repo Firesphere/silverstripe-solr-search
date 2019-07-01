@@ -45,7 +45,6 @@ class SolrUpdate
         }
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
-        // @todo clean this up so it's better readable
         foreach ($indexes as $indexString) {
             // Skip the abstract base
             $ref = new ReflectionClass($indexString);

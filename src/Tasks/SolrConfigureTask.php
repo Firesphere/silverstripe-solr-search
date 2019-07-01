@@ -112,9 +112,13 @@ class SolrConfigureTask extends BuildTask
                 $this->logger->error(sprintf('Error reloading core %s, attempting unload and recreating', $index));
                 $this->logger->error($e->getResponse()->getBody());
                 // Possibly a file error, try to unload and recreate the core
-                $service->coreUnload($index);
-                if ($service->coreCreate($index, $configStore)) {
-                    unset($e);
+                try {
+                    if ($service->coreCreate($index, $configStore)) {
+                        unset($e);
+                    }
+                } catch (RequestException $e) {
+                    $this->logger->error('Error attempting to create core %s', $index);
+                    $this->logger->error($e->getResponse()->getBody());
                 }
             }
         } else {

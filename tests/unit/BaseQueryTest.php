@@ -52,23 +52,6 @@ class BaseQueryTest extends SapphireTest
         $this->assertCount(1, $this->query->getFilter());
         $this->query->setFilter([['Field1' => 'Test']]);
         $this->assertCount(1, $this->query->getFilter());
-        $this->query->addFacetField(
-            SiteTree::class,
-            [
-                'Field' => 'Name_of_Field',
-                'Title' => 'TitleToUseForRetrieving'
-            ]
-        );
-        $this->assertCount(1, $this->query->getFacetFields());
-        $this->query->setFacetFields(
-            [
-                SiteTree::class => [
-                    'Field' => 'Name_of_Field',
-                    'Title' => 'TitleToUseForRetrieving'
-                ]
-            ]
-        );
-        $this->assertCount(1, $this->query->getFacetFields());
         $this->query->setSpellcheck(false);
         $this->assertFalse($this->query->hasSpellcheck());
         $this->query->addBoostedField('Field1', 2);

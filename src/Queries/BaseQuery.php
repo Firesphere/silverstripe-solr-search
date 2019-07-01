@@ -289,24 +289,6 @@ class BaseQuery
     }
 
     /**
-     * Add a facet field. Format:
-     *
-     * @param string $class The ClassName that's supposed to be faceted
-     * @param array $options :
-     * [
-     *     'Field' => 'Name_of_Field',
-     *     'Title' => 'TitleToUseForRetrieving'
-     * ]
-     * @return self
-     */
-    public function addFacetField($class, $options): self
-    {
-        $this->facetFields[$class] = $options;
-
-        return $this;
-    }
-
-    /**
      * @param $field
      * @return $this
      */
