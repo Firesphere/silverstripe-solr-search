@@ -8,7 +8,6 @@ use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\DataObjectSchema;
 
 /**
  * Some additional introspection tools that are used often by the fulltext search code
@@ -69,10 +68,9 @@ class SearchIntrospection
     public static function hierarchy($class, $includeSubclasses = true, $dataOnly = false): array
     {
         // Generate the unique key for this class and it's call type
-        // It's a short-lived cache key for the duration of the request
-        $cacheKey = sprintf('%s-%s-%s', $class, $includeSubclasses ? 'sc' : 'an', $dataOnly ? 'do' : 'al');
+        $key = "$class!" . ($includeSubclasses ? 'sc' : 'an') . '!' . ($dataOnly ? 'do' : 'al');
 
-        if (!isset(self::$hierarchy[$cacheKey])) {
+        if (!isset(self::$hierarchy[$key])) {
             $classes = array_values(ClassInfo::ancestry($class));
             $classes = self::getSubClasses($class, $includeSubclasses, $classes);
 
@@ -87,12 +85,10 @@ class SearchIntrospection
                 }
             }
 
-            self::$hierarchy[$cacheKey] = $classes;
-
-            return $classes;
+            self::$hierarchy[$key] = $classes;
         }
 
-        return self::$hierarchy[$cacheKey];
+        return self::$hierarchy[$key];
     }
 
     /**
@@ -147,7 +143,7 @@ class SearchIntrospection
         $found = [];
 
         if (strpos($field, '.') !== false) {
-            $lookups = explode('.', $field);
+            $lookups = explode(".", $field);
             $field = array_pop($lookups);
 
             foreach ($lookups as $lookup) {
@@ -189,16 +185,16 @@ class SearchIntrospection
             $className = $singleton->getClassName();
             $options['multi_valued'] = false;
 
-            [$class, $key, $relationType, $options] = $this->getRelationData($lookup, $schema, $className, $options);
+            [$class, $key, $rel, $options] = $this->getRelationData($lookup, $schema, $className, $options);
 
-            if ($relationType !== false) {
-                if ($this->checkRelationList($dataClass, $lookup, $relationType)) {
+            if ($rel !== false) {
+                if ($this->checkRelationList($dataClass, $lookup, $rel)) {
                     continue;
                 }
                 $options = $this->getLookupChain(
                     $options,
                     $lookup,
-                    $relationType,
+                    $rel,
                     $dataClass,
                     $class,
                     $key
@@ -249,14 +245,14 @@ class SearchIntrospection
 
     /**
      * @param array $options
-     * @param string $lookup
-     * @param string $type
-     * @param string $dataClass
-     * @param string $class
-     * @param string $key
+     * @param $lookup
+     * @param $type
+     * @param $dataClass
+     * @param $class
+     * @param $key
      * @return array
      */
-    public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key): array
+    public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key)
     {
         $options['lookup_chain'][] = array(
             'call'       => 'method',
@@ -294,7 +290,27 @@ class SearchIntrospection
 
                 $fields = DataObject::getSchema()->databaseFields($class);
 
-                [$type, $fieldoptions] = $this->getCallType($field, $fields, $fieldoptions, $dataclass);
+                if (isset($fields[$field])) {
+                    $type = $fields[$field];
+                    $fieldoptions['lookup_chain'][] = [
+                        'call'     => 'property',
+                        'property' => $field
+                    ];
+                } else {
+                    $singleton = singleton($dataclass);
+
+                    if ($singleton->hasMethod("get$field")) {
+                        $type = $singleton->castingClass($field);
+                        if (!$type) {
+                            $type = 'String';
+                        }
+
+                        $fieldoptions['lookup_chain'][] = [
+                            'call'   => 'method',
+                            'method' => "get$field"
+                        ];
+                    }
+                }
 
                 if ($type) {
                     // Don't search through child classes of a class we matched on. TODO: Should we?
@@ -344,7 +360,7 @@ class SearchIntrospection
 
     /**
      * @param $lookup
-     * @param DataObjectSchema $schema
+     * @param \SilverStripe\ORM\DataObjectSchema $schema
      * @param $className
      * @param array $options
      * @return array
@@ -352,64 +368,25 @@ class SearchIntrospection
      */
     protected function getRelationData(
         $lookup,
-        DataObjectSchema $schema,
+        \SilverStripe\ORM\DataObjectSchema $schema,
         $className,
         array $options
     ): array {
-        $class = null;
-        $relationType = false;
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
             $class = $hasOne;
             $key = $lookup . 'ID';
-            $relationType = 'has_one';
+            $rel = 'has_one';
         } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
             $class = $hasMany;
             $options['multi_valued'] = true;
             $key = $schema->getRemoteJoinField($className, $lookup);
-            $relationType = 'has_many';
+            $rel = 'has_many';
         } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
             $class = $key['childClass'];
             $options['multi_valued'] = true;
-            $relationType = 'many_many';
+            $rel = 'many_many';
         }
 
-        return [$class, $key, $relationType, $options];
-    }
-
-    /**
-     * @param $field
-     * @param array $fields
-     * @param array $fieldoptions
-     * @param $dataclass
-     * @return array
-     */
-    protected function getCallType($field, array $fields, array $fieldoptions, $dataclass): array
-    {
-        $type = null;
-        $singleton = singleton($dataclass);
-
-        if ($singleton->hasMethod("get$field")) {
-            $type = $singleton->castingClass($field);
-            if (!$type) {
-                $type = 'String';
-            }
-
-            $fieldoptions['lookup_chain'][] = [
-                'call'   => 'method',
-                'method' => "get$field"
-            ];
-        }
-
-        // Set to a field property if there's both a method and a property
-        // That's why this one is after the singleton check
-        if (isset($fields[$field])) {
-            $type = $fields[$field];
-            $fieldoptions['lookup_chain'][] = [
-                'call'     => 'property',
-                'property' => $field
-            ];
-        }
-
-        return [$type, $fieldoptions];
+        return array($class, $key, $rel, $options);
     }
 }
