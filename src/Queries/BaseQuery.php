@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Queries;
 
-use Firesphere\SolrSearch\Traits\BaseQueryTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 
 /**
@@ -13,7 +12,6 @@ use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 class BaseQuery
 {
     use GetterSetterTrait;
-    use BaseQueryTrait;
     /**
      * @todo add user search history through the Query
      * @var array
