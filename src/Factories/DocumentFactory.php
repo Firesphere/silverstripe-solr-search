@@ -68,13 +68,13 @@ class DocumentFactory
         $docs = [];
 
         $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
-        if ($this->debug){
+        if ($this->debug) {
             $debugString .= '[';
         }
         $boostFields = $index->getBoostedFields();
         // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
         foreach ($this->items as $item) {
-            if ($this->debug){
+            if ($this->debug) {
                 $debugString .= "$item->ID, ";
             }
             /** @var Document $doc */
@@ -264,7 +264,7 @@ class DocumentFactory
      * @param $field
      * @return array
      */
-    protected function  findObjectData($object, $field): array
+    protected function findObjectData($object, $field): array
     {
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
