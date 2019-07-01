@@ -32,12 +32,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - cache-{{ checksum "src" }}
+            - cache-{{ checksum "composer.json" }}
             # fallback to using the latest cache if no exact match is found
             - cache-
       - run: composer require silverstripe/recipe-cms
       - save_cache:
-          key: cache-{{ checksum "src" }}
+          key: cache-{{ checksum "composer.json" }}
           paths:
             # fallback to using the latest cache if no exact match is found
             - vendor
