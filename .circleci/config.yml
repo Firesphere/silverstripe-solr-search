@@ -32,15 +32,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - cache-{{ checksum "composer.json" }}
+            - cache-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found
             - cache-
       - run: composer require silverstripe/recipe-cms
       - save_cache:
-          key: cache-{{ checksum "composer.json" }}
+          key: cache-{{ checksum "composer.lock" }}
           paths:
             # fallback to using the latest cache if no exact match is found
             - vendor
+            - app
       - run: composer update -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
       - run:
