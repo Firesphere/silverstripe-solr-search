@@ -30,6 +30,8 @@ jobs:
     steps:
       - run: cd /var/www/html
       - checkout
+      - run: touch composer.lock # Create an empty lockfile
+      - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
             - silverstripe-search-cache-{{ checksum "composer.lock" }}
