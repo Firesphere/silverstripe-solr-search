@@ -127,13 +127,13 @@ abstract class BaseIndex
         if (!self::config()->get($this->getIndexName())) {
             Deprecation::notice('5.0', 'Please set an index name');
 
+            // If the old init method is found, skip the config based init
+            if (count($this->getClasses())) {
+                Deprecation::notice('You are running init at the top of your method. The new API requires it to be at the bottom');
+            }
             return;
         }
 
-        // If the old init method is found, skip the config based init
-        if (count($this->getClasses())) {
-            return;
-        }
 
         $config = self::config()->get($this->getIndexName());
 
