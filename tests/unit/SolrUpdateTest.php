@@ -6,10 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 use CircleCITestIndex;
 use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Queries\BaseQuery;
-use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Control\NullHTTPRequest;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrUpdateTest extends SapphireTest
@@ -43,7 +40,7 @@ class SolrUpdateTest extends SapphireTest
     }
 
     /**
-     * @expectedException \ReflectionException
+     * @expectedException \LogicException
      */
     public function testWrongUpdateItems()
     {

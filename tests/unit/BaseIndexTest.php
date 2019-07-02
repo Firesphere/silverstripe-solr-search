@@ -41,11 +41,12 @@ class BaseIndexTest extends SapphireTest
         $this->index->init();
         $this->assertNotEmpty($this->index->getFulltextFields());
         $this->assertNotEmpty($this->index->getFieldsForIndexing());
-        $expected = array(
+        $expected = [
             'Content',
             'Title',
-            'Created'
-        );
+            'Created',
+            'SubsiteID'
+        ];
 
         $this->assertEquals($expected, $this->index->getFieldsForIndexing());
     }
