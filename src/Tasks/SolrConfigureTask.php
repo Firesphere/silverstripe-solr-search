@@ -74,7 +74,7 @@ class SolrConfigureTask extends BuildTask
                 $this->extend('onAfterSolrConfigureTask', $request);
 
                 return true;
-            } catch (RuntimeException $e) {
+            } catch (RequestException $e) {
                 $this->logger->error($e->getResponse()->getBody());
                 throw new RuntimeException($e);
             }

@@ -31,12 +31,15 @@ class SolrUpdate
      * @param null|string $index
      * @return bool|Result
      * @throws ReflectionException
+     * @throws Exception
      */
     public function updateItems($items, $type, $index = null)
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         if ($index && in_array($index, $indexes)) {
             $indexes = [$index];
+        } else {
+            throw new LogicException('Incorrect index ' . $index);
         }
         $result = false;
         if ($items instanceof DataObject) {
@@ -138,6 +141,7 @@ class SolrUpdate
             $this->updateIndex($index, $items, $update);
         }
         $update->addCommit();
+
         return $client->update($update);
     }
 }

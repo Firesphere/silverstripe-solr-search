@@ -30,7 +30,6 @@ class SolrUpdateTest extends SapphireTest
 
     public function testUpdateItems()
     {
-        (new SolrConfigureTask())->run(new NullHTTPRequest());
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('*:*');
@@ -41,6 +40,16 @@ class SolrUpdateTest extends SapphireTest
 
         $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
+    }
+
+    /**
+     * @expectedException \ReflectionException
+     */
+    public function testWrongUpdateItems()
+    {
+        $items = SiteTree::get();
+
+        $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE, 'NonExisting');
     }
 
     protected function setUp()

@@ -13,7 +13,6 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -42,6 +41,13 @@ class BaseIndexTest extends SapphireTest
         $this->index->init();
         $this->assertNotEmpty($this->index->getFulltextFields());
         $this->assertNotEmpty($this->index->getFieldsForIndexing());
+        $expected = array(
+            'Content',
+            'Title',
+            'Created'
+        );
+
+        $this->assertEquals($expected, $this->index->getFieldsForIndexing());
     }
 
     public function testGetSynonyms()
