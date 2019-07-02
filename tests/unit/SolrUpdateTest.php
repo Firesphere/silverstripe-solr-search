@@ -36,10 +36,10 @@ class SolrUpdateTest extends SapphireTest
         $query->addTerm('*:*');
         $items = SiteTree::get();
 
-        $result = $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE);
+        $result = $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(200, $result->getResponse()->getStatusCode());
 
-        $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE);
+        $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
     }
 

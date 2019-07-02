@@ -28,14 +28,16 @@ class SolrUpdate
     /**
      * @param ArrayList|DataList|DataObject $items
      * @param string $type
+     * @param null|string $index
      * @return bool|Result
      * @throws ReflectionException
-     * @throws LogicException
-     * @throws Exception
      */
-    public function updateItems($items, $type)
+    public function updateItems($items, $type, $index = null)
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        if ($index && in_array($index, $indexes)) {
+            $indexes = [$index];
+        }
         $result = false;
         if ($items instanceof DataObject) {
             $items = ArrayList::create([$items]);
