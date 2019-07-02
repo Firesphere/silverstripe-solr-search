@@ -287,11 +287,16 @@ abstract class BaseIndex
      */
     public function getFieldsForIndexing(): array
     {
-        return array_unique(
-            array_merge(
-                $this->getFulltextFields(),
-                $this->getSortFields(),
-                $this->getFilterFields()
+        // Return values to make the key reset
+        return array_values(
+            // Only return unique values
+            array_unique(
+                // Make it all a single array
+                array_merge(
+                    $this->getFulltextFields(),
+                    $this->getSortFields(),
+                    $this->getFilterFields()
+                )
             )
         );
     }

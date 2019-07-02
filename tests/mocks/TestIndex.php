@@ -19,6 +19,7 @@ class TestIndex extends BaseIndex implements TestOnly
         $this->addFilterField('Title');
         $this->addFilterField('Created');
 //        $this->addFacetField(TestObject::class, ['Field' => 'SiteTree_TestObjectID', 'Title' => 'TestObject']);
+        parent::init();
     }
 
     public function getIndexName(): string

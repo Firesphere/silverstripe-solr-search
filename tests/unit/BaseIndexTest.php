@@ -38,7 +38,7 @@ class BaseIndexTest extends SapphireTest
 
     public function testInit()
     {
-        $this->index->init();
+        $this->assertNull($this->index->init());
         $this->assertNotEmpty($this->index->getFulltextFields());
         $this->assertNotEmpty($this->index->getFieldsForIndexing());
         $expected = [
