@@ -14,6 +14,7 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
@@ -69,19 +70,15 @@ class SolrConfigureTask extends BuildTask
             $instance = Injector::inst()->get($index);
 
             try {
-                $this->updateIndex($instance);
-            } catch (RequestException $e) {
+                $this->configureIndex($instance);
+                $this->extend('onAfterSolrConfigureTask', $request);
+
+                return true;
+            } catch (RuntimeException $e) {
                 $this->logger->error($e->getResponse()->getBody());
+                throw new RuntimeException($e);
             }
         }
-
-        if (!isset($e)) {
-            $this->extend('onAfterSolrConfigureTask', $request);
-
-            return true;
-        }
-
-        return $e;
     }
 
     /**
@@ -89,7 +86,7 @@ class SolrConfigureTask extends BuildTask
      *
      * @param BaseIndex $instance Instance
      */
-    protected function updateIndex($instance): void
+    protected function configureIndex($instance): void
     {
         $index = $instance->getIndexName();
 
@@ -105,36 +102,39 @@ class SolrConfigureTask extends BuildTask
         // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
         $status = $service->coreStatus($index);
         $instance->uploadConfig($configStore);
+        // I don't want to turn this in to an endless try-catch, so lets just break at level 2
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             try {
                 $service->coreReload($index);
+                $this->logger->info(sprintf('Core %s successfully reloaded', $index));
             } catch (RequestException $e) {
-                $this->logger->error(sprintf('Error reloading core %s, attempting unload and recreating', $index));
-                $this->logger->error($e->getResponse()->getBody());
-                // Possibly a file error, try to unload and recreate the core
+                // A common scenario, a reload fails at first try, hence a double run
                 try {
-                    if ($service->coreCreate($index, $configStore)) {
-                        unset($e);
-                    }
+                    $service->coreCreate($index, $configStore);
+                    $this->logger->info(sprintf('Core %s successfully loaded', $index));
                 } catch (RequestException $e) {
-                    $this->logger->error(sprintf('Error attempting to create core %s', $index));
+                    $this->logger->error(sprintf('Error attempting to reload core %s', $index));
                     $this->logger->error($e->getResponse()->getBody());
+                    throw new RuntimeException($e);
                 }
             }
         } else {
             try {
                 $service->coreCreate($index, $configStore);
+                $this->logger->info(sprintf('Core %s successfully created', $index));
             } catch (RequestException $e) {
-                $this->logger->error(sprintf('Error reloading core %s, attempting unload and recreating', $index));
-                $this->logger->error($e->getResponse()->getBody());
+                // A common scenario, a create fails at first try, hence a double run
+                // Most commonly, this happens when an existing core in FileStore mode is attempted
+                // to be reloaded again, but hasn't been loaded in to Solr yet (e.g. Solr restart)
+                try {
+                    $service->coreCreate($index, $configStore);
+                    $this->logger->info(sprintf('Core %s successfully created', $index));
+                } catch (RequestException $e) {
+                    $this->logger->error(sprintf('Failed creating core %s', $index));
+                    $this->logger->error($e->getResponse()->getBody());
+                    throw new RuntimeException($e);
+                }
             }
-        }
-
-        if (!isset($e)) {
-            $this->logger->info(sprintf('Core %s successfully loaded', $index));
-        } else {
-            $this->logger->warning(sprintf('Core %s could not be loaded successfully', $index));
-            $this->logger->warning(sprintf('Message: %s', $e->getResponse()->getBody()));
         }
     }
 
