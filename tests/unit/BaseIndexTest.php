@@ -42,8 +42,8 @@ class BaseIndexTest extends SapphireTest
         $this->assertNotEmpty($this->index->getFulltextFields());
         $this->assertNotEmpty($this->index->getFieldsForIndexing());
         $expected = [
-            'Content',
             'Title',
+            'Content',
             'Created',
             'SubsiteID'
         ];
@@ -109,8 +109,8 @@ class BaseIndexTest extends SapphireTest
     public function testGetFieldsForIndexing()
     {
         $expected = [
-            'Content',
             'Title',
+            'Content',
             'Created',
             'SubsiteID'
         ];
