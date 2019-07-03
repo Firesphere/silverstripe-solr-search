@@ -87,10 +87,12 @@ class SolrConfigureTask extends BuildTask
      */
     protected function configureIndex($index): void
     {
+        /** @var BaseIndex $instance */
         $instance = Injector::inst()->get($index);
 
         $storeConfig = SolrCoreService::config()->get('store');
         $configStore = $this->getStore($storeConfig);
+        $index = $instance->getIndexName();
 
         // Then tell Solr to use those config files
         /** @var SolrCoreService $service */
