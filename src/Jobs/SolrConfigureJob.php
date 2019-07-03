@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Jobs;
 
 use Exception;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
+use GuzzleHttp\Exception\RequestException;
 use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -23,7 +24,7 @@ class SolrConfigureJob extends AbstractQueuedJob
 
     /**
      * Do some processing yourself!
-     * @return false|null
+     * @return void
      * @throws ReflectionException
      */
     public function process()
@@ -31,11 +32,10 @@ class SolrConfigureJob extends AbstractQueuedJob
         /** @var SolrConfigureTask $task */
         $task = Injector::inst()->get(SolrConfigureTask::class);
         /** @var bool|Exception $result */
-        $result = $task->run(new NullHTTPRequest());
-
-        // If there's an exception, return the result
-        if ($result instanceof Exception) {
-            $this->addMessage($result->getMessage());
+        try {
+            $task->run(new NullHTTPRequest());
+        } catch (RequestException $e) {
+            $this->addMessage($e->getResponse()->getBody()->getContents());
         }
 
         // Mark as complete if everything is fine

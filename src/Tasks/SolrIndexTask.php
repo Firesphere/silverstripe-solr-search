@@ -168,7 +168,7 @@ class SolrIndexTask extends BuildTask
                     $this->logger->info(sprintf('Indexing group %s', $group));
                     $group = $this->doReindex($group, $class, $index);
                 } catch (RequestException $e) {
-                    $this->logger->error($e->getResponse()->getBody());
+                    $this->logger->error($e->getResponse()->getBody()->getContents());
                     $this->logger->error(date('Y-m-d H:i:s') . PHP_EOL, []);
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;

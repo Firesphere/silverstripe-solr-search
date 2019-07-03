@@ -67,14 +67,12 @@ class SolrConfigureTask extends BuildTask
             if (!$ref->isInstantiable()) {
                 continue;
             }
-            /** @var BaseIndex $instance */
-            $instance = Injector::inst()->get($index);
 
             try {
-                $this->configureIndex($instance);
+                $this->configureIndex($index);
                 $this->extend('onAfterSolrConfigureTask', $request);
             } catch (RequestException $e) {
-                $this->logger->error($e->getResponse()->getBody());
+                $this->logger->error($e->getResponse()->getBody()->getContents());
                 throw new RuntimeException($e);
             }
         }
@@ -85,11 +83,11 @@ class SolrConfigureTask extends BuildTask
     /**
      * Update the index on the given store
      *
-     * @param BaseIndex $instance Instance
+     * @param string $index
      */
-    protected function configureIndex($instance): void
+    protected function configureIndex($index): void
     {
-        $index = $instance->getIndexName();
+        $instance = Injector::inst()->get($index);
 
         $storeConfig = SolrCoreService::config()->get('store');
         $configStore = $this->getStore($storeConfig);
@@ -115,7 +113,7 @@ class SolrConfigureTask extends BuildTask
                     $this->logger->info(sprintf('Core %s successfully loaded', $index));
                 } catch (RequestException $e) {
                     $this->logger->error(sprintf('Error attempting to reload core %s', $index));
-                    $this->logger->error($e->getResponse()->getBody());
+                    $this->logger->error($e->getResponse()->getBody()->getContents());
                     throw new RuntimeException($e);
                 }
             }
@@ -132,7 +130,7 @@ class SolrConfigureTask extends BuildTask
                     $this->logger->info(sprintf('Core %s successfully created', $index));
                 } catch (RequestException $e) {
                     $this->logger->error(sprintf('Failed creating core %s', $index));
-                    $this->logger->error($e->getResponse()->getBody());
+                    $this->logger->error($e->getResponse()->getBody()->getContents());
                     throw new RuntimeException($e);
                 }
             }
