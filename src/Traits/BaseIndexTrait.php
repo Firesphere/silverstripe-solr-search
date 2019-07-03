@@ -181,7 +181,11 @@ trait BaseIndexTrait
      */
     public function getFulltextFields(): array
     {
-        return $this->fulltextFields;
+        return array_values(
+            array_unique(
+                $this->fulltextFields
+            )
+        );
     }
 
     /**
