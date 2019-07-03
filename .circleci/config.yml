@@ -52,6 +52,7 @@ jobs:
             cp .circleci/.env.test ./.env
             cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
             cp .circleci/Subsite.phpsrc app/src/Subsite.php
+            cp .circlecy/TestIndexTwo.yml app/_config/search.yml
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Run Solr Configure

@@ -26,7 +26,7 @@ use SilverStripe\Versioned\ChangeSetItem;
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
- * @property File|SiteConfig|SiteTree|Group|Member|DataObject|DataObjectExtension $owner
+ * @property File|SiteConfig|SiteTree|Group|Member|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {

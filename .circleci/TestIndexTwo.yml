@@ -1,0 +1,22 @@
+Firesphere\SolrSearch\Indexes\BaseIndex:
+  TestIndexTwo:
+    Classes:
+      - SilverStripe\CMS\Model\SiteTree
+    FulltextFields:
+      - Content
+      - TestObject.Title
+      - TestObject.TestRelation.Title
+    SortFields: []
+    FilterFields:
+      - Title
+      - Created
+      - Firesphere\SolrSearch\Tests\TestObject
+    BoostedFields: []
+    CopyFields:
+      _text:
+        - '*'
+    DefaultField: _text
+    FacetFields:
+      Firesphere\SolrSearch\Tests\TestObject:
+        Field: SiteTree_TestObjectID
+        Title: TestObject

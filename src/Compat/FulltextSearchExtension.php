@@ -17,7 +17,7 @@ use SilverStripe\View\ArrayData;
  * Backward compatibility stubs for the Full text search module
  *
  * @package Firesphere\SolrSearch\Extensions
- * @property FulltextSearchExtension|BaseIndex $owner
+ * @property BaseIndex|FulltextSearchExtension $owner
  */
 class FulltextSearchExtension extends Extension
 {
@@ -85,7 +85,7 @@ class FulltextSearchExtension extends Extension
                     $this->owner->getIndexName() =>
                         [
                             'Classes'        => $this->owner->getClasses(),
-                            'FulltextFields' => $this->owner->getFulltextFields(),
+                            'FulltextFields' => array_values($this->owner->getFulltextFields()),
                             'SortFields'     => $this->owner->getSortFields(),
                             'FilterFields'   => $this->owner->getFilterFields(),
                             'BoostedFields'  => $this->owner->getBoostedFields(),
