@@ -132,11 +132,11 @@ class SolrIndexTask extends BuildTask
         }
         $end = time();
 
-        $this->logger->info(
+        $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL),
             []
         );
-        $this->logger->info('done!' . PHP_EOL, []);
+        $this->getLogger()->info('done!' . PHP_EOL, []);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $groups;
@@ -153,7 +153,7 @@ class SolrIndexTask extends BuildTask
     {
         $group = $group ?: 0;
         if ($this->debug) {
-            $this->logger->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
+            $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
         }
 
         // Run a single group
@@ -165,12 +165,12 @@ class SolrIndexTask extends BuildTask
             // Otherwise, run them all
             while ($group <= $groups) { // Run from oldest to newest
                 try {
-                    $this->logger->info(sprintf('Indexing group %s', $group));
+                    $this->getLogger()->info(sprintf('Indexing group %s', $group));
                     $group = $this->doReindex($group, $class, $index);
                 } catch (RequestException $e) {
-                    $this->logger->error($e->getResponse()->getBody()->getContents());
-                    $this->logger->error(date('Y-m-d H:i:s') . PHP_EOL, []);
-                    $this->logger->info(sprintf('Failure indexing at group %s', $group));
+                    $this->getLogger()->error($e->getResponse()->getBody()->getContents());
+                    $this->getLogger()->error(date('Y-m-d H:i:s') . PHP_EOL, []);
+                    $this->getLogger()->info(sprintf('Failure indexing at group %s', $group));
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
                     continue;
