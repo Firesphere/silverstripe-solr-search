@@ -102,7 +102,7 @@ class SolrIndexTask extends BuildTask
 
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
-        $this->logger->info(date('Y-m-d H:i:s') . PHP_EOL);
+        $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
         $start = $request->getVar('start') ?: 0;
 
         $groups = 0;
@@ -170,6 +170,7 @@ class SolrIndexTask extends BuildTask
                 } catch (RequestException $e) {
                     $this->logger->error($e->getResponse()->getBody()->getContents());
                     $this->logger->error(date('Y-m-d H:i:s') . PHP_EOL, []);
+                    $this->logger->info(sprintf('Failure indexing at group %s', $group));
                     gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
                     continue;
@@ -228,5 +229,13 @@ class SolrIndexTask extends BuildTask
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * @return LoggerInterface|null
+     */
+    public function getLogger(): ?LoggerInterface
+    {
+        return $this->logger;
     }
 }

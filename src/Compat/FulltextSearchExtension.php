@@ -80,18 +80,20 @@ class FulltextSearchExtension extends Extension
     public function initToYml(): void
     {
         if (function_exists('yaml_emit')) {
+            /** @var BaseIndex $owner */
+            $owner = $this->owner;
             $result = [
                 BaseIndex::class => [
-                    $this->owner->getIndexName() =>
+                    $owner->getIndexName() =>
                         [
-                            'Classes'        => $this->owner->getClasses(),
-                            'FulltextFields' => array_values($this->owner->getFulltextFields()),
-                            'SortFields'     => $this->owner->getSortFields(),
-                            'FilterFields'   => $this->owner->getFilterFields(),
-                            'BoostedFields'  => $this->owner->getBoostedFields(),
-                            'CopyFields'     => $this->owner->getCopyFields(),
-                            'DefaultField'   => $this->owner->getDefaultField(),
-                            'FacetFields'    => $this->owner->getFacetFields(),
+                            'Classes'        => $owner->getClasses(),
+                            'FulltextFields' => array_values($owner->getFulltextFields()),
+                            'SortFields'     => $owner->getSortFields(),
+                            'FilterFields'   => $owner->getFilterFields(),
+                            'BoostedFields'  => $owner->getBoostedFields(),
+                            'CopyFields'     => $owner->getCopyFields(),
+                            'DefaultField'   => $owner->getDefaultField(),
+                            'FacetFields'    => $owner->getFacetFields(),
                         ]
                 ]
             ];
