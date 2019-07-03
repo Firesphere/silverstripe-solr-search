@@ -20,6 +20,7 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\Dev\Debug;
 
 class SolrConfigureTask extends BuildTask
 {
@@ -72,13 +73,13 @@ class SolrConfigureTask extends BuildTask
             try {
                 $this->configureIndex($instance);
                 $this->extend('onAfterSolrConfigureTask', $request);
-
-                return true;
             } catch (RequestException $e) {
                 $this->logger->error($e->getResponse()->getBody());
                 throw new RuntimeException($e);
             }
         }
+
+        return true;
     }
 
     /**
