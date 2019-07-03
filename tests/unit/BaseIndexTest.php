@@ -55,7 +55,7 @@ class BaseIndexTest extends SapphireTest
         $this->assertCount(3, $index->getFulltextFields());
         $this->assertCount(1, $index->getFacetFields());
         $facets = $index->getFacetFields();
-        $this->assertEquals(['Field' => 'SiteTree_TestObjectID', 'Title' => 'TestObject'], $facets[TestObject::class);
+        $this->assertEquals(['Field' => 'SiteTree_TestObjectID', 'Title' => 'TestObject'], $facets[TestObject::class]);
     }
 
     public function testGetSynonyms()
