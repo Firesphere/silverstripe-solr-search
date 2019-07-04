@@ -310,9 +310,9 @@ abstract class BaseIndex
     {
         // Return values to make the key reset
         return array_values(
-        // Only return unique values
+            // Only return unique values
             array_unique(
-            // Make it all a single array
+                // Make it all a single array
                 array_merge(
                     $this->getFulltextFields(),
                     $this->getSortFields(),
