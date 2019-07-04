@@ -199,18 +199,18 @@ class SearchResult
     }
 
     /**
-     * @return Highlighting
+     * @return Highlighting|null
      */
-    public function getHighlight()
+    public function getHighlight(): ?Highlighting
     {
         return $this->highlight;
     }
 
     /**
-     * @param Highlighting $result
+     * @param Highlighting|null $result
      * @return $this
      */
-    protected function setHighlight(Highlighting $result): self
+    protected function setHighlight($result): self
     {
         $this->highlight = $result;
 

@@ -51,14 +51,14 @@ class DataObjectExtension extends DataExtension
         if (Controller::curr()->getRequest()->getURL() &&
             strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false
         ) {
-            return null;
+            return;
         }
         /** @var DataObject $owner */
         $owner = $this->owner;
         if (!in_array($owner->ClassName, static::$excludedClasses, true)) {
             $record = $this->getDirtyClass($owner);
 
-            $ids = json_decode($record->IDs) ?: [];
+            $ids = json_decode($record->IDs, 1) ?: [];
             try {
                 $update = new SolrUpdate();
                 $update->setDebug(false);
@@ -81,7 +81,7 @@ class DataObjectExtension extends DataExtension
     protected function getDirtyClass(DataObject $owner)
     {
         // Get the DirtyClass object for this item
-        /** @var DirtyClass|null $record */
+        /** @var null|DirtyClass $record */
         $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
         if (!$record || !$record->exists()) {
             $record = DirtyClass::create([
@@ -128,7 +128,7 @@ class DataObjectExtension extends DataExtension
         /** @var DirtyClass $record */
         $record = $this->getDirtyClass($owner);
 
-        $ids = json_decode($record->IDs) ?: [];
+        $ids = json_decode($record->IDs, 1) ?: [];
         parent::onAfterDelete();
         try {
             (new SolrUpdate())->updateItems($owner, SolrUpdate::DELETE_TYPE);
