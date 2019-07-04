@@ -19,7 +19,7 @@ class SubsitesExtension extends DataExtension
         if (class_exists('SilverStripe\\Subsites\\Model\\Subsite')) {
             /** @var BaseIndex $owner */
             $owner = $this->owner;
-            $addFilterField('SubsiteID');
+            $owner->addFilterField('SubsiteID');
         }
     }
 }
