@@ -149,8 +149,6 @@ class DocumentFactory
 
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
-        $value = (!is_array($value)) ? [$value] : $value;
-
         foreach ($value as $item) {
             /* Solr requires dates in the form 1995-12-31T23:59:59Z */
             if ($type === 'tdate' || $item instanceof DBDate) {
@@ -238,7 +236,6 @@ class DocumentFactory
                     $item = $item->$property;
                 }
 
-                // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
                 if ($item instanceof SS_List) {
                     $item = $item->toArray();
                 }

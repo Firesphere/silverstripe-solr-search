@@ -17,7 +17,9 @@ class SubsitesExtension extends DataExtension
     {
         // Add default support for Subsites.
         if (class_exists('SilverStripe\\Subsites\\Model\\Subsite')) {
-            $this->owner->addFilterField('SubsiteID');
+            /** @var BaseIndex $owner */
+            $owner = $this->owner;
+            $addFilterField('SubsiteID');
         }
     }
 }

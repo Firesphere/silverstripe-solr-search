@@ -48,10 +48,6 @@ abstract class BaseIndex
         'FacetFields',
     ];
     /**
-     * @var string
-     */
-    protected $defaultField = '_text';
-    /**
      * @var SchemaService
      */
     protected $schemaService;

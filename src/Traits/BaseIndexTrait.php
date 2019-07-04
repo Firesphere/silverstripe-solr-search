@@ -20,6 +20,10 @@ trait BaseIndexTrait
     /**
      * @var array
      */
+    protected $facetFields = [];
+    /**
+     * @var array
+     */
     protected $fulltextFields = [];
     /**
      * @var array
@@ -29,6 +33,10 @@ trait BaseIndexTrait
      * @var array
      */
     protected $sortFields = [];
+    /**
+     * @var string
+     */
+    protected $defaultField = '_text';
     /**
      * @var array
      */

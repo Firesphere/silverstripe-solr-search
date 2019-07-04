@@ -71,7 +71,10 @@ class FulltextSearchExtension extends Extension
             $query->setFields($params['fq']);
         }
 
-        return $this->owner->doSearch($query);
+        /** @var BaseIndex $owner */
+        $owner = $this->owner;
+
+        return $owner->doSearch($query);
     }
 
     /**
