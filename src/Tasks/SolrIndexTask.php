@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -89,16 +90,7 @@ class SolrIndexTask extends BuildTask
     {
         $startTime = time();
         $vars = $request->getVars();
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-        // If the given index is not an actual index, skip
-        if (isset($vars['index']) && !in_array($vars['index'], $indexes, true)) {
-            return false;
-        }
-        // If above doesn't fail, make the set var into an array to be indexed downstream, or continue with all indexes
-        if (isset($vars['index']) && in_array($vars['index'], $indexes, true)) {
-            $indexes = [$vars['index']];
-        }
-        // If all else fails, assume we're running a full index.
+        $indexes = (new SolrCoreService())->getValidIndexes($request->getVar('index'));
 
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 

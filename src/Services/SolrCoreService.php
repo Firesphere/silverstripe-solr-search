@@ -2,7 +2,11 @@
 
 namespace Firesphere\SolrSearch\Services;
 
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use LogicException;
+use ReflectionClass;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Guzzle;
@@ -107,6 +111,34 @@ class SolrCoreService
         $response = $this->client->coreAdmin($this->admin);
 
         return $response->getStatusResult();
+    }
+
+    /**
+     * Get valid indexes for the project
+     * @param null|string $index
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function getValidIndexes($index = null): ?array
+    {
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        if ($index && !in_array($index, $indexes, true)) {
+            throw new LogicException('Incorrect index ' . $index);
+        }
+
+        if ($index) {
+            return [$index];
+        }
+
+        foreach ($indexes as $key => $subindex) {
+            $ref = new ReflectionClass($subindex);
+            if (!$ref->isInstantiable()) {
+                unset($indexes[$key]);
+            }
+        }
+
+        // return the array values, to reset the keys
+        return array_values($indexes);
     }
 
     /**

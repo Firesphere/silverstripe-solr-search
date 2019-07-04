@@ -61,13 +61,9 @@ class SolrConfigureTask extends BuildTask
     {
         $this->extend('onBeforeSolrConfigureTask', $request);
 
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-        foreach ($indexes as $index) {
-            $ref = new ReflectionClass($index);
-            if (!$ref->isInstantiable()) {
-                continue;
-            }
+        $indexes = (new SolrCoreService())->getValidIndexes();
 
+        foreach ($indexes as $index) {
             try {
                 $this->configureIndex($index);
                 $this->extend('onAfterSolrConfigureTask', $request);

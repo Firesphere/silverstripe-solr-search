@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Helpers;
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
@@ -35,18 +36,15 @@ class SolrUpdate
      */
     public function updateItems($items, $type, $index = null)
     {
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-        if ($index && in_array($index, $indexes)) {
-            $indexes = [$index];
-        } else {
-            throw new LogicException('Incorrect index ' . $index);
+        $indexes = (new SolrCoreService())->getValidIndexes($index);
+
+        if (!$items) {
+            throw new LogicException('Missing items, can\'t index an empty set');
         }
+
         $result = false;
         if ($items instanceof DataObject) {
             $items = ArrayList::create([$items]);
-        }
-        if (!$items) {
-            throw new LogicException('Missing items, can\'t index an empty set');
         }
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
