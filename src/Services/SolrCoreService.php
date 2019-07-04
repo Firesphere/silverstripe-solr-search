@@ -6,6 +6,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use LogicException;
 use ReflectionClass;
+use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use Solarium\Client;
@@ -117,7 +118,7 @@ class SolrCoreService
      * Get valid indexes for the project
      * @param null|string $index
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getValidIndexes($index = null): ?array
     {

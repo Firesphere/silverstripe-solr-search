@@ -12,15 +12,12 @@ use Firesphere\SolrSearch\Stores\PostConfigStore;
 use GuzzleHttp\Exception\RequestException;
 use LogicException;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Dev\Debug;
 
 class SolrConfigureTask extends BuildTask
 {

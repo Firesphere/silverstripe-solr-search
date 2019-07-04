@@ -10,7 +10,6 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
@@ -72,6 +71,33 @@ class SolrUpdate
     }
 
     /**
+     * @param $items
+     * @param $type
+     * @param BaseIndex $index
+     * @return Result
+     * @throws Exception
+     */
+    protected function doUpdate($items, $type, BaseIndex $index): Result
+    {
+        $client = $index->getClient();
+
+        // get an update query instance
+        $update = $client->createUpdate();
+
+        // add the delete query and a commit command to the update query
+        if ($type === static::DELETE_TYPE) {
+            foreach ($items as $item) {
+                $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
+            }
+        } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
+            $this->updateIndex($index, $items, $update);
+        }
+        $update->addCommit();
+
+        return $client->update($update);
+    }
+
+    /**
      * @param BaseIndex $index
      * @param ArrayList|DataList $items
      * @param Query $update
@@ -114,32 +140,5 @@ class SolrUpdate
         $this->debug = $debug;
 
         return $this;
-    }
-
-    /**
-     * @param $items
-     * @param $type
-     * @param BaseIndex $index
-     * @return Result
-     * @throws Exception
-     */
-    protected function doUpdate($items, $type, BaseIndex $index): Result
-    {
-        $client = $index->getClient();
-
-        // get an update query instance
-        $update = $client->createUpdate();
-
-        // add the delete query and a commit command to the update query
-        if ($type === static::DELETE_TYPE) {
-            foreach ($items as $item) {
-                $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
-            }
-        } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
-            $this->updateIndex($index, $items, $update);
-        }
-        $update->addCommit();
-
-        return $client->update($update);
     }
 }

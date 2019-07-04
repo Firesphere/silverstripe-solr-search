@@ -232,6 +232,36 @@ class SearchIntrospection
     }
 
     /**
+     * @param $lookup
+     * @param DataObjectSchema $schema
+     * @param $className
+     * @param array $options
+     * @return array
+     * @throws Exception
+     */
+    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array $options): array
+    {
+        $class = null;
+        $relationType = false;
+        if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
+            $class = $hasOne;
+            $key = $lookup . 'ID';
+            $relationType = 'has_one';
+        } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
+            $class = $hasMany;
+            $options['multi_valued'] = true;
+            $key = $schema->getRemoteJoinField($className, $lookup);
+            $relationType = 'has_many';
+        } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
+            $class = $key['childClass'];
+            $options['multi_valued'] = true;
+            $relationType = 'many_many';
+        }
+
+        return [$class, $key, $relationType, $options];
+    }
+
+    /**
      * @param $dataClass
      * @param $lookup
      * @param $relation
@@ -322,55 +352,6 @@ class SearchIntrospection
     }
 
     /**
-     * @return BaseIndex
-     */
-    public function getIndex(): BaseIndex
-    {
-        return $this->index;
-    }
-
-    /**
-     * @param mixed $index
-     * @return $this
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
-
-        return $this;
-    }
-
-    /**
-     * @param $lookup
-     * @param DataObjectSchema $schema
-     * @param $className
-     * @param array $options
-     * @return array
-     * @throws Exception
-     */
-    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array $options): array
-    {
-        $class = null;
-        $relationType = false;
-        if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
-            $class = $hasOne;
-            $key = $lookup . 'ID';
-            $relationType = 'has_one';
-        } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-            $class = $hasMany;
-            $options['multi_valued'] = true;
-            $key = $schema->getRemoteJoinField($className, $lookup);
-            $relationType = 'has_many';
-        } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
-            $class = $key['childClass'];
-            $options['multi_valued'] = true;
-            $relationType = 'many_many';
-        }
-
-        return [$class, $key, $relationType, $options];
-    }
-
-    /**
      * @param $field
      * @param array $fields
      * @param array $fieldoptions
@@ -404,5 +385,24 @@ class SearchIntrospection
         }
 
         return [$type, $fieldoptions];
+    }
+
+    /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
+    }
+
+    /**
+     * @param mixed $index
+     * @return $this
+     */
+    public function setIndex($index)
+    {
+        $this->index = $index;
+
+        return $this;
     }
 }

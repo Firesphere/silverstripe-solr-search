@@ -11,7 +11,6 @@ use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -75,25 +74,24 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * @param DataObject $owner
+     * @return DirtyClass
      * @throws ValidationException
      */
-    public function onAfterDelete(): void
+    protected function getDirtyClass(DataObject $owner)
     {
-        /** @var DataObject $owner */
-        $owner = $this->owner;
-        /** @var DirtyClass $record */
-        $record = $this->getDirtyClass($owner);
-
-        $ids = json_decode($record->IDs) ?: [];
-        parent::onAfterDelete();
-        try {
-            (new SolrUpdate())->updateItems($owner, SolrUpdate::DELETE_TYPE);
-            $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
-            $record->IDs = json_encode($ids);
-        } catch (Exception $e) {
-            $this->registerException($ids, $record, $e);
+        // Get the DirtyClass object for this item
+        /** @var DirtyClass|null $record */
+        $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
+        if (!$record || !$record->exists()) {
+            $record = DirtyClass::create([
+                'Class' => $owner->ClassName,
+                'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
+            ]);
+            $record->write();
         }
-        $record->write();
+
+        return $record;
     }
 
     /**
@@ -118,6 +116,28 @@ class DataObjectExtension extends DataExtension
             )
         );
         $logger->error($e->getMessage());
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function onAfterDelete(): void
+    {
+        /** @var DataObject $owner */
+        $owner = $this->owner;
+        /** @var DirtyClass $record */
+        $record = $this->getDirtyClass($owner);
+
+        $ids = json_decode($record->IDs) ?: [];
+        parent::onAfterDelete();
+        try {
+            (new SolrUpdate())->updateItems($owner, SolrUpdate::DELETE_TYPE);
+            $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
+            $record->IDs = json_encode($ids);
+        } catch (Exception $e) {
+            $this->registerException($ids, $record, $e);
+        }
+        $record->write();
     }
 
     /**
@@ -155,26 +175,5 @@ class DataObjectExtension extends DataExtension
         }
 
         return $return;
-    }
-
-    /**
-     * @param DataObject $owner
-     * @return DirtyClass
-     * @throws ValidationException
-     */
-    protected function getDirtyClass(DataObject $owner)
-    {
-        // Get the DirtyClass object for this item
-        /** @var DirtyClass|null $record */
-        $record = DirtyClass::get()->filter(['Class' => $owner->ClassName])->first();
-        if (!$record || !$record->exists()) {
-            $record = DirtyClass::create([
-                'Class' => $owner->ClassName,
-                'Dirty' => DBDatetime::now()->Format(DBDatetime::ISO_DATETIME),
-            ]);
-            $record->write();
-        }
-
-        return $record;
     }
 }

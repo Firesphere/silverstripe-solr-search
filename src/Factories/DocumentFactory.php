@@ -219,6 +219,46 @@ class DocumentFactory
     }
 
     /**
+     * @param $object
+     * @param $field
+     * @return array
+     */
+    protected function findObjectData($object, $field): array
+    {
+        while ($step = array_shift($field['lookup_chain'])) {
+            // If we're looking up this step on an array or SS_List, do the step on every item, merge result
+            $next = [];
+
+            foreach ($object as $item) {
+                if ($step['call'] === 'method') {
+                    $method = $step['method'];
+                    $item = $item->$method();
+                } else {
+                    $property = $step['property'];
+                    $item = $item->$property;
+                }
+
+                // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
+                if ($item instanceof SS_List) {
+                    $item = $item->toArray();
+                }
+                if (is_array($item)) {
+                    // @todo remove the merge, it's inefficient
+                    $next = array_merge($next, $item);
+                } else {
+                    $next[] = $item;
+                }
+            }
+
+            $object = $next;
+            unset($next);
+            gc_collect_cycles();
+        }
+
+        return $object;
+    }
+
+    /**
      * @return SearchIntrospection
      */
     public function getIntrospection(): SearchIntrospection
@@ -257,45 +297,5 @@ class DocumentFactory
         $this->class = $class;
 
         return $this;
-    }
-
-    /**
-     * @param $object
-     * @param $field
-     * @return array
-     */
-    protected function findObjectData($object, $field): array
-    {
-        while ($step = array_shift($field['lookup_chain'])) {
-            // If we're looking up this step on an array or SS_List, do the step on every item, merge result
-            $next = [];
-
-            foreach ($object as $item) {
-                if ($step['call'] === 'method') {
-                    $method = $step['method'];
-                    $item = $item->$method();
-                } else {
-                    $property = $step['property'];
-                    $item = $item->$property;
-                }
-
-                // @todo don't merge inside the foreach but merge after for memory/cpu efficiency
-                if ($item instanceof SS_List) {
-                    $item = $item->toArray();
-                }
-                if (is_array($item)) {
-                    // @todo remove the merge, it's inefficient
-                    $next = array_merge($next, $item);
-                } else {
-                    $next[] = $item;
-                }
-            }
-
-            $object = $next;
-            unset($next);
-            gc_collect_cycles();
-        }
-
-        return $object;
     }
 }

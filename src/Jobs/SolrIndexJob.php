@@ -5,11 +5,10 @@ namespace Firesphere\SolrSearch\Jobs;
 
 use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
-use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use stdClass;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
@@ -89,12 +88,10 @@ class SolrIndexJob extends AbstractQueuedJob
         );
 
         $result = $task->run($request);
-        if ($result !== false) {
-            $this->totalSteps = $result;
-            // If the result is false, the job should fail too
-            // Thus, only set to true if the result isn't false :)
-            $this->isComplete = true;
-        }
+        $this->totalSteps = $result;
+        // If the result is false, the job should fail too
+        // Thus, only set to true if the result isn't false :)
+        $this->isComplete = true;
 
         /** @var self $this */
         return $this;
@@ -113,16 +110,7 @@ class SolrIndexJob extends AbstractQueuedJob
             $data->indexes = null;
         }
         if (!isset($data->indexes) || !count($data->indexes)) { // If indexes are set, don't load them.
-            $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-
-            foreach ($indexes as $index) {
-                // Skip the abstract base
-                $ref = new ReflectionClass($index);
-                if (!$ref->isInstantiable()) {
-                    continue;
-                }
-                $this->indexes[] = $index;
-            }
+            $this->indexes = (new SolrCoreService())->getValidIndexes();
         } else {
             $this->setIndexes($data->indexes);
             $this->setClassToIndex($data->classToIndex);

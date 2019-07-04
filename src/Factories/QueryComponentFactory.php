@@ -266,6 +266,14 @@ class QueryComponentFactory
     }
 
     /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
+    }
+
+    /**
      * @param BaseIndex $index
      * @return QueryComponentFactory
      */
@@ -274,13 +282,5 @@ class QueryComponentFactory
         $this->index = $index;
 
         return $this;
-    }
-
-    /**
-     * @return BaseIndex
-     */
-    public function getIndex(): BaseIndex
-    {
-        return $this->index;
     }
 }

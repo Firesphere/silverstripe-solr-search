@@ -129,8 +129,12 @@ abstract class BaseIndex
 
             // If the old init method is found, skip the config based init
             if (count($this->getClasses())) {
-                Deprecation::notice('5', 'You are running init at the top of your method. The new API requires it to be at the bottom');
+                Deprecation::notice(
+                    '5',
+                    'You are running init at the top of your method. The new API requires it to be at the bottom'
+                );
             }
+
             return;
         }
 
@@ -262,6 +266,23 @@ abstract class BaseIndex
     }
 
     /**
+     * @param $search
+     * @return string
+     */
+    protected function isFuzzy($search): string
+    {
+        $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
+        if ($search['fuzzy']) {
+            $postfix = '~';
+            if (is_numeric($search['fuzzy'])) {
+                $postfix .= $search['fuzzy'];
+            }
+        }
+
+        return $postfix;
+    }
+
+    /**
      * Set boosting at Query time
      *
      * @param array $search
@@ -289,9 +310,9 @@ abstract class BaseIndex
     {
         // Return values to make the key reset
         return array_values(
-            // Only return unique values
+        // Only return unique values
             array_unique(
-                // Make it all a single array
+            // Make it all a single array
                 array_merge(
                     $this->getFulltextFields(),
                     $this->getSortFields(),
@@ -365,22 +386,5 @@ abstract class BaseIndex
     public function getBoostTerms(): array
     {
         return $this->boostTerms;
-    }
-
-    /**
-     * @param $search
-     * @return string
-     */
-    protected function isFuzzy($search): string
-    {
-        $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
-        if ($search['fuzzy']) {
-            $postfix = '~';
-            if (is_numeric($search['fuzzy'])) {
-                $postfix .= $search['fuzzy'];
-            }
-        }
-
-        return $postfix;
     }
 }

@@ -14,7 +14,6 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DataList;
@@ -135,6 +134,14 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * @return LoggerInterface|null
+     */
+    public function getLogger(): ?LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
      * @param $isGroup
      * @param $class
      * @param BaseIndex $index
@@ -221,13 +228,5 @@ class SolrIndexTask extends BuildTask
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @return LoggerInterface|null
-     */
-    public function getLogger(): ?LoggerInterface
-    {
-        return $this->logger;
     }
 }
