@@ -102,15 +102,9 @@ class SolrConfigureTask extends BuildTask
                 $service->coreReload($index);
                 $this->logger->info(sprintf('Core %s successfully reloaded', $index));
             } catch (RequestException $e) {
-                // A common scenario, a reload fails at first try, hence a double run
-                try {
-                    $service->coreCreate($index, $configStore);
-                    $this->logger->info(sprintf('Core %s successfully loaded', $index));
-                } catch (RequestException $e) {
-                    $this->logger->error(sprintf('Error attempting to reload core %s', $index));
-                    $this->logger->error($e->getResponse()->getBody()->getContents());
-                    throw new RuntimeException($e);
-                }
+                $this->logger->error(sprintf('Error attempting to reload core %s', $index));
+                $this->logger->error($e->getResponse()->getBody()->getContents());
+                throw new RuntimeException($e);
             }
         } else {
             try {
