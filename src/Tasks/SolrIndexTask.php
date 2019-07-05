@@ -163,7 +163,6 @@ class SolrIndexTask extends BuildTask
                     $this->getLogger()->error($e->getResponse()->getBody()->getContents());
                     $this->getLogger()->error(date('Y-m-d H:i:s') . PHP_EOL, []);
                     $this->getLogger()->info(sprintf('Failure indexing at group %s', $group));
-                    gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
                     $group++;
                     continue;
                 }
@@ -180,7 +179,6 @@ class SolrIndexTask extends BuildTask
      */
     private function doReindex($group, $class, BaseIndex $index): int
     {
-        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
@@ -195,12 +193,10 @@ class SolrIndexTask extends BuildTask
             $solrUpdate = Injector::inst()->get(SolrUpdate::class);
             $solrUpdate->setDebug($this->debug);
             $solrUpdate->updateIndex($index, $items, $update);
-            // If there are no docs, no need to execute an action
             $update->addCommit();
             $this->client->update($update);
         }
         $group++;
-        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $group;
     }

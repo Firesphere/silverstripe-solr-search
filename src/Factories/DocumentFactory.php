@@ -230,7 +230,6 @@ class DocumentFactory
                 }
                 // Destroy the item(s) to clear out memory
                 unset($item);
-                gc_collect_cycles();
             }
 
             // When all objects have been processed, put them in to objects

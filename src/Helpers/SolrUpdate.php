@@ -105,9 +105,6 @@ class SolrUpdate
         if (count($docs)) {
             $update->addDocuments($docs);
         }
-        // Does this clear out the memory properly?
-        reset($docs);
-        gc_collect_cycles();
     }
 
     /**
