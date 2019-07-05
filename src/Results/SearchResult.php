@@ -290,22 +290,6 @@ class SearchResult
     }
 
     /**
-     * @return BaseQuery
-     */
-    public function getQuery(): BaseQuery
-    {
-        return $this->query;
-    }
-
-    /**
-     * @return BaseIndex
-     */
-    public function getIndex(): BaseIndex
-    {
-        return $this->index;
-    }
-
-    /**
      * Build the given list of key-value pairs in to a SilverStripe useable array
      * @param FacetSet|null $facets
      * @return ArrayData
@@ -324,14 +308,7 @@ class SearchResult
                 $results = ArrayList::create();
                 // If there are values, get the items one by one and push them in to the list
                 if (count($values)) {
-                    $items = $class::get()->byIds(array_keys($values));
-                    foreach ($items as $item) {
-                        // Set the FacetCount value to be sorted on later
-                        $item->FacetCount = $values[$item->ID];
-                        $results->push($item);
-                    }
-                    // Sort the results by FacetCount
-                    $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
+                    $this->getClassFacets($class, $values, $results);
                 }
                 // Put the results in to the array
                 $facetArray[$options['Title']] = $results;
@@ -340,5 +317,38 @@ class SearchResult
 
         // Return an ArrayList of the results
         return ArrayData::create($facetArray);
+    }
+
+    /**
+     * @param $class
+     * @param array $values
+     * @param ArrayList $results
+     */
+    protected function getClassFacets($class, array $values, &$results): void
+    {
+        $items = $class::get()->byIds(array_keys($values));
+        foreach ($items as $item) {
+            // Set the FacetCount value to be sorted on later
+            $item->FacetCount = $values[$item->ID];
+            $results->push($item);
+        }
+        // Sort the results by FacetCount
+        $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
+    }
+    
+    /**
+     * @return BaseQuery
+     */
+    public function getQuery(): BaseQuery
+    {
+        return $this->query;
+    }
+
+    /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
     }
 }
