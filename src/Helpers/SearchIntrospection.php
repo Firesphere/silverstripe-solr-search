@@ -58,7 +58,6 @@ class SearchIntrospection
         $schemaHelper = DataObject::getSchema();
         foreach ($sources as $source) {
             $buildSources[$source]['base'] = $schemaHelper->baseDataClass($source);
-            $buildSources[$source]['lookup_chain'] = [];
         }
 
         $found = [];
@@ -102,14 +101,7 @@ class SearchIntrospection
             $className = $singleton->getClassName();
             $options['multi_valued'] = false;
 
-            [$class, $key, $relationType] = $this->getRelationData($lookup, $schema, $className, $options);
-
-            if ($relationType !== false) {
-                if ($this->checkRelationList($dataClass, $lookup, $relationType)) {
-                    continue;
-                }
-                $options = $this->getLookupChain($options, $lookup, $relationType, $dataClass, $class, $key);
-            }
+            $class = $this->getRelationData($lookup, $schema, $className, $options);
 
             if (is_string($class) && $class) {
                 if (!isset($options['origin'])) {
@@ -131,7 +123,7 @@ class SearchIntrospection
      * @param string $source
      * @return string
      */
-    protected function getSourceName($source)
+    private function getSourceName($source)
     {
         $explodedSource = explode('|xkcd|', $source);
 
@@ -184,7 +176,7 @@ class SearchIntrospection
      * @return array
      * @throws ReflectionException
      */
-    protected static function getSubClasses($class, $includeSubclasses, array $classes): array
+    private static function getSubClasses($class, $includeSubclasses, array $classes): array
     {
         if ($includeSubclasses) {
             $subClasses = ClassInfo::subclassesFor($class);
@@ -198,7 +190,7 @@ class SearchIntrospection
      * @param array $classes
      * @return array
      */
-    protected static function excludeDataObjectIDx(array $classes): array
+    private static function excludeDataObjectIDx(array $classes): array
     {
         // Remove all classes below DataObject from the list
         $idx = array_search(DataObject::class, $classes, true);
@@ -214,67 +206,23 @@ class SearchIntrospection
      * @param DataObjectSchema $schema
      * @param $className
      * @param array $options
-     * @return array
+     * @return array|null
      * @throws Exception
      */
-    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options): array
+    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options)
     {
         $class = null;
-        $relationType = false;
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
             $class = $hasOne;
-            $key = $lookup . 'ID';
-            $relationType = 'has_one';
         } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
             $class = $hasMany;
             $options['multi_valued'] = true;
-            $key = $schema->getRemoteJoinField($className, $lookup);
-            $relationType = 'has_many';
         } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
             $class = $key['childClass'];
             $options['multi_valued'] = true;
-            $relationType = 'many_many';
         }
 
-        return [$class, $key, $relationType];
-    }
-
-    /**
-     * @param $dataClass
-     * @param $lookup
-     * @param $relation
-     * @return bool
-     */
-    public function checkRelationList($dataClass, $lookup, $relation)
-    {
-        // we only want to include base class for relation, omit classes that inherited the relation
-        $relationList = Config::inst()->get($dataClass, $relation, Config::UNINHERITED);
-        $relationList = $relationList ?? [];
-
-        return (!array_key_exists($lookup, $relationList));
-    }
-
-    /**
-     * @param array $options
-     * @param string $lookup
-     * @param string $type
-     * @param string $dataClass
-     * @param string $class
-     * @param string|array $key
-     * @return array
-     */
-    public function getLookupChain($options, $lookup, $type, $dataClass, $class, $key): array
-    {
-        $options['lookup_chain'][] = array(
-            'call'       => 'method',
-            'method'     => $lookup,
-            'through'    => $type,
-            'class'      => $dataClass,
-            'otherclass' => $class,
-            'foreignkey' => $key
-        );
-
-        return $options;
+        return $class;
     }
 
     /**
@@ -285,12 +233,11 @@ class SearchIntrospection
      * @return array
      * @throws ReflectionException
      */
-    protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
+    public function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
             if (is_int($class)) {
                 $class = $fieldOptions;
-                $fieldOptions = ['lookup_chain' => []];
             }
             if (!empty($this->found[$class . '_' . $field])) {
                 return $this->found[$class . '_' . $field];
@@ -303,7 +250,6 @@ class SearchIntrospection
                 $type = $this->getType($fields, $field, $dataclass);
 
                 if ($type) {
-                    $fieldOptions = $this->getOptions($field, $fields, $fieldOptions, $dataclass);
                     // Don't search through child classes of a class we matched on. TODO: Should we?
                     $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
                     // Trim arguments off the type string
@@ -350,36 +296,6 @@ class SearchIntrospection
     }
 
     /**
-     * @param $field
-     * @param array $fields
-     * @param array $fieldoptions
-     * @param $dataclass
-     * @return array
-     */
-    protected function getOptions($field, array $fields, array $fieldoptions, $dataclass): array
-    {
-        if (isset($fields[$field])) {
-            $fieldoptions['lookup_chain'][] = [
-                'call'     => 'property',
-                'property' => $field
-            ];
-
-            return $fieldoptions;
-        }
-
-        $singleton = singleton($dataclass);
-
-        if ($singleton->hasMethod("get$field")) {
-            $fieldoptions['lookup_chain'][] = [
-                'call'   => 'method',
-                'method' => "get$field"
-            ];
-        }
-
-        return $fieldoptions;
-    }
-
-    /**
      * @param string $field
      * @param string $fullfield
      * @param array $fieldOptions
@@ -388,7 +304,7 @@ class SearchIntrospection
      * @param array $found
      * @return array
      */
-    protected function getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found): array
+    private function getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found): array
     {
         // Get the origin
         $origin = $fieldOptions['origin'] ?? $dataclass;
@@ -399,7 +315,6 @@ class SearchIntrospection
             'fullfield'    => $fullfield,
             'origin'       => $origin,
             'class'        => $dataclass,
-            'lookup_chain' => $fieldOptions['lookup_chain'],
             'type'         => $type,
             'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
         ];

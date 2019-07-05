@@ -4,6 +4,8 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
+use Firesphere\SolrSearch\Compat\SubsitesExtension;
+use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
@@ -18,8 +20,10 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\Security\DefaultAdminService;
 use SilverStripe\View\ArrayData;
@@ -28,6 +32,24 @@ use Solarium\Core\Client\Client;
 
 class BaseIndexTest extends SapphireTest
 {
+    protected static $fixture_file = '../fixtures/DataResolver.yml';
+    /**
+     * @var array
+     */
+    protected static $extra_dataobjects = [
+        TestObject::class,
+        TestPage::class,
+        TestRelationObject::class,
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $required_extensions = [
+        DataObject::class => [DataObjectExtension::class],
+        BaseIndex::class  => [SubsitesExtension::class],
+    ];
+
     /**
      * @var BaseIndex
      */
@@ -49,9 +71,9 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             'Title',
             'Content',
+            'ParentID',
             'SubsiteID',
             'Created',
-            'ParentID',
         ];
 
         $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
@@ -65,11 +87,13 @@ class BaseIndexTest extends SapphireTest
     public function testFacetFields()
     {
         /** @var Page $parent */
-        $parent = Page::get()->filter(['Title' => 'Home'])->first();
-        $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
+        $parent = $this->objFromFixture(Page::class, 'homepage');
+        $id = $parent->write();
+        $parent->publishRecursive();
+        $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $id, 'ShowInSearch' => true]);
         $page1->write();
         $page1->publishRecursive();
-        $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
+        $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $id, 'ShowInSearch' => true]);
         $page2->write();
         $page2->publishRecursive();
         $task = new SolrIndexTask();
@@ -79,7 +103,7 @@ class BaseIndexTest extends SapphireTest
         $facets = $index->getFacetFields();
         $this->assertEquals([
             'Title' => 'Parent',
-            'Field' => 'SiteTree.ParentID'
+            'Field' => 'ParentID'
         ], $facets[SiteTree::class]);
         $query = new BaseQuery();
         $query->addTerm('Test');
@@ -90,9 +114,13 @@ class BaseIndexTest extends SapphireTest
         $facets = $result->getFacets();
         /** @var ArrayList $parents */
         $parents = $facets->Parent;
-        $this->assertCount(1, $parents);
         $this->assertEquals('Home', $parents->first()->Title);
         $this->assertEquals(2, $parents->first()->FacetCount);
+        $this->assertCount(1, $parents);
+        $query->addFacetFilter('Parent', $id);
+        $result = $index->buildSolrQuery($query);
+        $filterQuery = $result->getFilterQuery('facet-Parent');
+        $this->assertEquals('SiteTree_ParentID:' . $id, $filterQuery->getQuery());
     }
 
     public function testStoredFields()
@@ -156,9 +184,9 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             'Title',
             'Content',
+            'ParentID',
             'SubsiteID',
             'Created',
-            'ParentID',
         ];
         $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
     }
@@ -249,7 +277,7 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             SiteTree::class => [
                 'Title' => 'Parent',
-                'Field' => 'SiteTree.ParentID'
+                'Field' => 'ParentID'
             ],
             Page::class     => [
                 'Title' => 'Title',
@@ -261,10 +289,10 @@ class BaseIndexTest extends SapphireTest
 
     public function testAddCopyField()
     {
-        $this->index->addCopyField('myfield', ['Content']);
+        $this->index->addCopyField('mycopyfield', ['Content']);
         $expected = [
             '_text'   => ['*'],
-            'myfield' => ['Content']
+            'mycopyfield' => ['Content']
         ];
         $this->assertEquals($expected, $this->index->getCopyFields());
     }
@@ -275,8 +303,8 @@ class BaseIndexTest extends SapphireTest
         $task->setLogger(new NullLogger());
         $task->run(new NullHTTPRequest());
 
-        $this->index = Injector::inst()->get(TestIndex::class);
+        $this->index = Injector::inst()->get(TestIndex::class, false);
 
-        return parent::setUp();
+        parent::setUp();
     }
 }

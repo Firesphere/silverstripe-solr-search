@@ -1,0 +1,76 @@
+Page:
+  homepage:
+    CanEditType: Inherit
+    CanViewType: Inherit
+    ClassName: Page
+    Content: "<p>Welcome to SilverStripe! This is the default homepage. You can edit this page by opening <a href=\"admin/\">the CMS</a>.</p><p>You can now access the <a href=\"http://docs.silverstripe.org\">developer documentation</a>, or begin the <a href=\"http://www.silverstripe.org/learn/lessons\">SilverStripe lessons</a>.</p>"
+    Created: "2019-06-05 21:51:13"
+    HasBrokenFile: 0
+    HasBrokenLink: 0
+    LastEdited: "2019-06-05 21:51:13"
+    ParentID: 0
+    RecordClassName: Page
+    ShowInMenus: 1
+    ShowInSearch: 1
+    Sort: 1
+    Title: Home
+    URLSegment: home
+    Version: 2
+  aboutpage:
+    CanEditType: Inherit
+    CanViewType: Inherit
+    ClassName: Page
+    Content: "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>"
+    Created: "2019-06-05 21:51:13"
+    HasBrokenFile: 0
+    HasBrokenLink: 0
+    LastEdited: "2019-06-05 21:51:13"
+    ParentID: 0
+    RecordClassName: Page
+    ShowInMenus: 1
+    ShowInSearch: 1
+    Sort: 2
+    Title: "About Us"
+    URLSegment: about-us
+    Version: 2
+  contactpage:
+    CanEditType: Inherit
+    CanViewType: Inherit
+    ClassName: Page
+    Content: "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>"
+    Created: "2019-06-05 21:51:13"
+    HasBrokenFile: 0
+    HasBrokenLink: 0
+    LastEdited: "2019-06-05 21:51:13"
+    ParentID: 0
+    RecordClassName: Page
+    ShowInMenus: 1
+    ShowInSearch: 1
+    Sort: 3
+    Title: "Contact Us"
+    URLSegment: contact-us
+    Version: 2
+Firesphere\SolrSearch\Tests\TestObject:
+  objectOne:
+    Title: Object One
+    ShowInSearch: 0
+Firesphere\SolrSearch\Tests\TestPage:
+  pageOne:
+    SubsiteID: 0
+    Title: Page One
+    Content: This is page one content
+    ShowInSearch: 1
+    TestObject: =>Firesphere\SolrSearch\Tests\TestObject.objectOne
+  pageTwo:
+    SubsiteID: 0
+    Title: Page Two
+    Content: This is page two content
+    ShowInSearch: 1
+    TestObject: =>Firesphere\SolrSearch\Tests\TestObject.objectOne
+Firesphere\SolrSearch\Tests\TestRelationObject:
+  relationOne:
+    Title: Relation Object One
+    TestObject: =>Firesphere\SolrSearch\Tests\TestObject.objectOne
+  relationTwo:
+    Title: Relation Object Two
+    TestObject: =>Firesphere\SolrSearch\Tests\TestObject.objectOne

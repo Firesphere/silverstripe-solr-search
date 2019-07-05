@@ -9,6 +9,7 @@ class CircleCITestIndex extends BaseIndex
         $this->addClass(SiteTree::class);
         $this->addFulltextField('Title');
         $this->addFulltextField('Content');
+        parent::init();
     }
 
     public function getIndexName(): string

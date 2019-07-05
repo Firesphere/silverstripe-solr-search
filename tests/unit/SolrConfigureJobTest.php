@@ -3,12 +3,22 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
+use Page;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrConfigureJobTest extends SapphireTest
 {
+    protected static $fixture_file = '../fixtures/DataResolver.yml';
+    protected static $extra_dataobjects = [
+        TestObject::class,
+        TestPage::class,
+        TestRelationObject::class,
+    ];
+
     /**
      * @var SolrConfigureJob
      */
@@ -30,8 +40,12 @@ class SolrConfigureJobTest extends SapphireTest
 
     protected function setUp()
     {
+        Injector::inst()->get(Page::class)->requireDefaultRecords();
+        foreach (self::$extra_dataobjects as $className) {
+            Config::modify()->merge($className, 'extensions', [DataObjectExtension::class]);
+        }
         $this->job = Injector::inst()->get(SolrConfigureJob::class);
 
-        return parent::setUp();
+        parent::setUp();
     }
 }

@@ -5,12 +5,14 @@ namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
+use Firesphere\SolrSearch\Helpers\DataResolver;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\DocumentFactoryTrait;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
@@ -18,7 +20,6 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\ORM\SS_List;
 use Solarium\QueryType\Update\Query\Document\Document;
 use Solarium\QueryType\Update\Query\Query;
 
@@ -130,8 +131,10 @@ class DocumentFactory
 
     /**
      * @param Document $doc
-     * @param $object
-     * @param $field
+     * @param          $object
+     * @param          $field
+     *
+     * @throws LogicException
      */
     protected function addField($doc, $object, $field): void
     {
@@ -139,7 +142,11 @@ class DocumentFactory
             return;
         }
 
-        $valuesForField = $this->getValueForField($object, $field);
+        try {
+            $valuesForField = [DataResolver::identify($object, $field['field'])];
+        } catch (Exception $e) {
+            $valuesForField = [];
+        }
 
         $typeMap = Statics::getTypeMap();
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
@@ -180,96 +187,6 @@ class DocumentFactory
     protected function classEquals($class, $base): bool
     {
         return $class === $base || ($class instanceof $base);
-    }
-
-    /**
-     * Given an object and a field definition get the current value of that field on that object
-     *
-     * @param DataObject|array $objects - The object to get the value from
-     * @param array $field - The field definition to use
-     * @return array Technically, it's always an array
-     */
-    protected function getValueForField($objects, $field): array
-    {
-        // Make sure we always have an array to iterate
-        $objects = is_array($objects) ? $objects : [$objects];
-
-        while ($step = array_shift($field['lookup_chain'])) {
-            // If we're looking up this step on an array or SS_List, do the step on every item, merge result
-            $objects = $this->getNext($objects, $step);
-        }
-
-        return $objects;
-    }
-
-    /**
-     * @param $objects
-     * @param $step
-     * @return array
-     */
-    protected function getNext($objects, $step): array
-    {
-        $next = [];
-
-        foreach ($objects as $item) {
-            $item = $this->getItemForStep($step, $item);
-            $next = is_array($item) ? array_merge($next, $item) : [$item];
-        }
-
-        // When all items have been processed, put them in to objects
-        // This ensures the next step is an array of the correct objects to index
-        $objects = $next;
-        unset($next);
-
-        return $objects;
-    }
-
-    /**
-     * Find the item for the current ste
-     * This can be a DataList or ArrayList, or a string
-     * @param $step
-     * @param $item
-     * @return array
-     */
-    protected function getItemForStep($step, $item)
-    {
-        if ($step['call'] === 'method') {
-            $item = $this->getItemMethod($step, $item);
-        } else {
-            $item = $this->getItemProperty($step, $item);
-        }
-
-        if ($item instanceof SS_List) {
-            $item = $item->toArray();
-        }
-
-        return is_array($item) ? $item : [$item];
-    }
-
-    /**
-     * @param $step
-     * @param $item
-     * @return mixed
-     */
-    protected function getItemMethod($step, $item)
-    {
-        $method = $step['method'];
-        $item = $item->$method();
-
-        return $item;
-    }
-
-    /**
-     * @param $step
-     * @param $item
-     * @return mixed
-     */
-    protected function getItemProperty($step, $item)
-    {
-        $property = $step['property'];
-        $item = $item->$property;
-
-        return $item;
     }
 
     /**

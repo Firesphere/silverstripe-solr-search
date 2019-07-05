@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
+use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
@@ -11,8 +12,10 @@ use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Page;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
@@ -20,6 +23,13 @@ use Solarium\Core\Client\Client;
 
 class SolrCoreServiceTest extends SapphireTest
 {
+    protected static $fixture_file = '../fixtures/DataResolver.yml';
+    protected static $extra_dataobjects = [
+        TestObject::class,
+        TestPage::class,
+        TestRelationObject::class,
+    ];
+
     /**
      * @var SolrCoreService
      */
@@ -62,7 +72,7 @@ class SolrCoreServiceTest extends SapphireTest
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testWrongUpdateItems()
     {
@@ -125,9 +135,12 @@ class SolrCoreServiceTest extends SapphireTest
 
     protected function setUp()
     {
+        parent::setUp();
+        Injector::inst()->get(Page::class)->requireDefaultRecords();
+        foreach (self::$extra_dataobjects as $className) {
+            Config::modify()->merge($className, 'extensions', [DataObjectExtension::class]);
+        }
         $this->service = new SolrCoreService();
-
-        return parent::setUp();
     }
 
     protected function tearDown()

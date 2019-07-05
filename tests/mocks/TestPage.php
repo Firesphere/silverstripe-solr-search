@@ -14,4 +14,9 @@ class TestPage extends Page implements TestOnly
 
     private static $has_many = [
     ];
+
+    public function getSalutation()
+    {
+        return sprintf('Dear %s', $this->Title);
+    }
 }

@@ -235,7 +235,7 @@ class SearchResult
      * @param string $classIDField
      * @return DataObject|bool
      */
-    protected function isDataObject($match, string $classIDField): DataObject
+    protected function isDataObject($match, string $classIDField)
     {
         if (!$match instanceof DataObject) {
             $class = $match->ClassName;

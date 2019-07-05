@@ -22,11 +22,12 @@ use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
- * @property File|SiteConfig|SiteTree|Group|Member|DataObjectExtension $owner
+ * @property CarouselItem|BlocksPage|Item|File|Image|SiteConfig|ChangeSetItem|SecurityAlert|Package|ElementalArea|ElementForm|Blog|SiteTree|Group|Member|EditableCustomRule|EditableFormField|UserDefinedForm|EditableOption|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {
@@ -56,31 +57,25 @@ class DataObjectExtension extends DataExtension
     {
         /** @var DataObject $owner */
         $owner = $this->owner;
-        parent::onAfterWrite();
         if (in_array($owner->ClassName, static::$excludedClasses, true) ||
             (Controller::curr()->getRequest()->getURL() &&
                 strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false)
         ) {
             return;
         }
-        /** @var DataObject $owner */
-        $record = $this->getDirtyClass($owner, self::WRITE);
-
-        $ids = json_decode($record->IDs, 1) ?: [];
-        try {
-            $service = new SolrCoreService();
-            $service->setInDebugMode(false);
-            $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
-            // If we don't get an exception, mark the item as clean
-            // Added bonus, array_flip removes duplicates
-            $values = array_flip($ids);
-            unset($values[$owner->ID]);
-
-            $record->IDs = json_encode(array_keys($values));
-            $record->write();
-        } catch (Exception $error) {
-            $this->registerException($ids, $record, $error);
+        if (!$owner->hasExtension(Versioned::class)) {
+            $this->pushToSolr($owner);
         }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function onAfterPublish()
+    {
+        /** @var DataObject $owner */
+        $owner = $this->owner;
+        $this->pushToSolr($owner);
     }
 
     /**
@@ -184,21 +179,19 @@ class DataObjectExtension extends DataExtension
         $currMember = Security::getCurrentUser();
         Security::setCurrentUser(null);
 
-        // Add null users if it's publicly viewable
-        if ($owner->canView(null)) {
-            Security::setCurrentUser($currMember);
-            self::$canViewClasses[$owner->ClassName] = ['1-null'];
-
-            return ['1-null'];
-        }
-
-        if (!self::$members) {
-            self::$members = Member::get();
-        }
         $return = [];
 
-        foreach (self::$members as $member) {
-            $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
+        if ($owner->canView(null)) {
+            $return[] = '1-null';
+        } else {
+            // Return a default '0-0' to basically say "noboday can view"
+            $return[] = '0-0';
+            if (!self::$members) {
+                self::$members = Member::get();
+            }
+            foreach (self::$members as $member) {
+                $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
+            }
         }
 
 
@@ -209,5 +202,35 @@ class DataObjectExtension extends DataExtension
         Security::setCurrentUser($currMember);
 
         return $return;
+    }
+
+    /**
+     * @param DataObject $owner
+     * @throws ValidationException
+     */
+    protected function pushToSolr(DataObject $owner): void
+    {
+        /** @var DataObject $owner */
+        $record = $this->getDirtyClass($owner, self::WRITE);
+
+        $ids = json_decode($record->IDs, 1) ?: [];
+        $mode = Versioned::get_reading_mode();
+        try {
+            Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
+            $service = new SolrCoreService();
+            $service->setInDebugMode(false);
+            $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
+            // If we don't get an exception, mark the item as clean
+            // Added bonus, array_flip removes duplicates
+            $values = array_flip($ids);
+            unset($values[$owner->ID]);
+
+            $record->IDs = json_encode(array_keys($values));
+            $record->write();
+            Versioned::set_reading_mode($mode);
+        } catch (Exception $error) {
+            Versioned::set_reading_mode($mode);
+            $this->registerException($ids, $record, $error);
+        }
     }
 }

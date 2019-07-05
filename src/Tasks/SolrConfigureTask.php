@@ -75,7 +75,7 @@ class SolrConfigureTask extends BuildTask
     protected function configureIndex($index): void
     {
         /** @var BaseIndex $instance */
-        $instance = Injector::inst()->get($index);
+        $instance = Injector::inst()->get($index, false);
 
         $index = $instance->getIndexName();
 

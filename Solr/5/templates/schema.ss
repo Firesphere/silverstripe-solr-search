@@ -16,10 +16,10 @@
  limitations under the License.
 -->
 
-<!--  
+<!--
  This is the Solr schema file. This file should be named "schema.xml" and
  should be in the conf directory under the solr home
- (i.e. ./solr/conf/schema.xml by default) 
+ (i.e. ./solr/conf/schema.xml by default)
  or located where the classloader for the Solr webapp can find it.
 
  This example schema is the recommended starting point for users.
@@ -56,13 +56,16 @@
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
         <field name='ViewStatus' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
+<%--        Copyfields--%>
         <% loop $CopyFields %>
             <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
         <% end_loop %>
+<%--        Fulltext fields--%>
         <% loop $FulltextFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
 
+<%--        Filter/Facet fields--%>
         <% loop $FilterFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
