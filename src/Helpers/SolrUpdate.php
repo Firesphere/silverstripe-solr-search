@@ -48,12 +48,6 @@ class SolrUpdate
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
         foreach ($indexes as $indexString) {
-            // Skip the abstract base
-            $ref = new ReflectionClass($indexString);
-            if (!$ref->isInstantiable()) {
-                continue;
-            }
-
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexString);
             $classes = $index->getClasses();
@@ -105,7 +99,6 @@ class SolrUpdate
      */
     public function updateIndex($index, $items, $update): void
     {
-        gc_collect_cycles();
         $fields = $index->getFieldsForIndexing();
         $factory = $this->getFactory($items);
         $docs = $factory->buildItems($fields, $index, $update);
@@ -123,7 +116,7 @@ class SolrUpdate
      */
     protected function getFactory($items): DocumentFactory
     {
-        $factory = new DocumentFactory();
+        $factory = Injector::inst()->get(DocumentFactory::class);
         $factory->setItems($items);
         $factory->setClass($items->first()->ClassName);
         $factory->setDebug($this->debug);

@@ -45,6 +45,16 @@ class DocumentFactory
     protected $debug = false;
 
     /**
+     * Numeral types in Solr
+     * @var array
+     */
+    protected static $numerals = [
+        'tint',
+        'tfloat',
+        'tdouble'
+    ];
+
+    /**
      * DocumentFactory constructor, sets up introspection
      */
     public function __construct()
@@ -63,7 +73,7 @@ class DocumentFactory
      */
     public function buildItems($fields, $index, $update): array
     {
-        $class = $this->class;
+        $class = $this->getClass();
         $this->introspection->setIndex($index);
         $docs = [];
 
@@ -72,7 +82,7 @@ class DocumentFactory
             $debugString .= '[';
         }
         $boostFields = $index->getBoostedFields();
-        foreach ($this->items as $item) {
+        foreach ($this->getItems() as $item) {
             if ($this->debug) {
                 $debugString .= "$item->ID, ";
             }
@@ -143,30 +153,30 @@ class DocumentFactory
             return;
         }
 
-        $value = $this->getValueForField($object, $field);
+        $valuesForField = $this->getValueForField($object, $field);
 
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
-        while ($item = array_shift($value)) {
-            if (!$item) {
+        while ($value = array_shift($valuesForField)) {
+            if (!$value) {
                 continue;
             }
             /* Solr requires dates in the form 1995-12-31T23:59:59Z */
-            if ($type === 'tdate' || $item instanceof DBDate) {
-                $item = gmdate('Y-m-d\TH:i:s\Z', strtotime($item));
+            if ($type === 'tdate' || $value instanceof DBDate) {
+                $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
             }
 
             /* Solr requires numbers to be valid if presented, not just empty */
-            if (($type === 'tint' || $type === 'tfloat' || $type === 'tdouble') && !is_numeric($item)) {
+            if (!is_numeric($value) && in_array($type, static::$numerals, true)) {
                 continue;
             }
 
             $name = explode('\\', $field['name']);
             $name = end($name);
 
-            $doc->addField($name, $item);
+            $doc->addField($name, $value);
         }
-        unset($item, $value, $type);
+        unset($value, $valuesForField, $type);
         gc_collect_cycles();
     }
 
@@ -294,5 +304,21 @@ class DocumentFactory
         $this->class = $class;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    /**
+     * @return ArrayList|DataList|null
+     */
+    public function getItems()
+    {
+        return $this->items;
     }
 }

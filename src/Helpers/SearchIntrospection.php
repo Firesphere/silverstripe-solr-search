@@ -21,6 +21,10 @@ class SearchIntrospection
      * @var BaseIndex
      */
     protected $index;
+    /**
+     * @var array
+     */
+    protected $found = [];
 
     /**
      * Check if class is subclass of (a) the class in $of, or (b) any of the classes in the array $of
@@ -138,6 +142,10 @@ class SearchIntrospection
     {
         $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
+
+        if (in_array($fullfield, $this->found, true)) {
+            return $this->found[$fullfield];
+        }
 
         foreach ($sources as $source) {
             $sources[$source]['base'] = DataObject::getSchema()->baseDataClass($source);
@@ -348,6 +356,8 @@ class SearchIntrospection
             }
         }
 
+        $this->found[$fullfield] = $found;
+
         return $found;
     }
 
@@ -404,5 +414,13 @@ class SearchIntrospection
         $this->index = $index;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFound(): array
+    {
+        return $this->found;
     }
 }

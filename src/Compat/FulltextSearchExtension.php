@@ -17,7 +17,7 @@ use SilverStripe\View\ArrayData;
  * Backward compatibility stubs for the Full text search module
  *
  * @package Firesphere\SolrSearch\Extensions
- * @property BaseIndex|FulltextSearchExtension $owner
+ * @property FulltextSearchExtension $owner
  */
 class FulltextSearchExtension extends Extension
 {

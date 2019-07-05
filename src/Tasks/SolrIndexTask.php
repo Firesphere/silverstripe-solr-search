@@ -191,7 +191,8 @@ class SolrIndexTask extends BuildTask
             ->limit($batchLength, ($group * $batchLength));
         if ($items->count()) {
             $update = $this->getClient()->createUpdate();
-            $solrUpdate = new SolrUpdate();
+            /** @var SolrUpdate $solrUpdate */
+            $solrUpdate = Injector::inst()->get(SolrUpdate::class);
             $solrUpdate->setDebug($this->debug);
             $solrUpdate->updateIndex($index, $items, $update);
             // If there are no docs, no need to execute an action
