@@ -11,7 +11,6 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -80,10 +79,8 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request
      * @return int|bool
      * @throws Exception
-     * @todo clean up a bit, this is becoming a mess
      * @todo defer to background because it may run out of memory
      * @todo give Solr more time to respond
-     * @todo Change the debug messaging to use the logger
      */
     public function run($request)
     {
@@ -94,7 +91,9 @@ class SolrIndexTask extends BuildTask
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
         $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
-        $start = $request->getVar('start') ?: 0;
+        $start = $vars['start'] ?? 0;
+        $group = $vars['group'] ?? 0;
+        $isGroup = empty($vars['group']);
 
         $groups = 0;
         foreach ($indexes as $indexName) {
@@ -105,13 +104,10 @@ class SolrIndexTask extends BuildTask
             // Only index the classes given in the var if needed, should be a single class
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
+            // Set the start point to the requested value, if there is only one class to index
+            $group = ($start > $group && count($classes) === 1) ? $start : $group;
+
             foreach ($classes as $class) {
-                $group = $request->getVar('group') ?: 0;
-                $isGroup = $request->getVar('group');
-                // Set the start point to the requested value, if there is only one class to index
-                if ($start > $group && count($classes) === 1) {
-                    $group = $start;
-                }
                 $this->reindexClass($isGroup, $class, $index, $group);
             }
         }
