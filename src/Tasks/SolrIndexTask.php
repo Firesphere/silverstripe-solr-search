@@ -141,24 +141,23 @@ class SolrIndexTask extends BuildTask
             $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
         }
 
-        // Run a single group
-        if ($isGroup) {
-            $this->doReindex($group, $class, $index);
-        } else {
-            $batchLength = DocumentFactory::config()->get('batchLength');
-            $groups = (int)ceil($class::get()->count() / $batchLength);
-            // Otherwise, run them all
-            while ($group <= $groups) { // Run from oldest to newest
-                try {
-                    $this->getLogger()->info(sprintf('Indexing group %s', $group));
-                    $group = $this->doReindex($group, $class, $index);
-                } catch (RequestException $e) {
-                    $this->getLogger()->error($e->getResponse()->getBody()->getContents());
-                    $this->getLogger()->error(date('Y-m-d H:i:s') . PHP_EOL, []);
-                    $this->getLogger()->info(sprintf('Failure indexing at group %s', $group));
-                    $group++;
-                    continue;
-                }
+        $batchLength = DocumentFactory::config()->get('batchLength');
+        $groups = (int)ceil($class::get()->count() / $batchLength);
+        // Otherwise, run them all
+        while ($group <= $groups) { // Run from oldest to newest
+            try {
+                $this->getLogger()->info(sprintf('Indexing group %s', $group));
+                $group = $this->doReindex($group, $class, $batchLength, $index);
+            } catch (RequestException $e) {
+                $this->getLogger()->error($e->getResponse()->getBody()->getContents());
+                $this->getLogger()->error(date('Y-m-d H:i:s') . PHP_EOL, []);
+                $this->getLogger()->info(sprintf('Failure indexing at group %s', $group));
+                $group++;
+                continue;
+            }
+            // If it's a specific group to index, break after the first run
+            if ($isGroup) {
+                break;
             }
         }
     }
@@ -166,17 +165,16 @@ class SolrIndexTask extends BuildTask
     /**
      * @param int $group
      * @param string $class
+     * @param int $batchLength
      * @param BaseIndex $index
      * @return int
      * @throws Exception
      */
-    private function doReindex($group, $class, BaseIndex $index): int
+    private function doReindex($group, $class, $batchLength, BaseIndex $index): int
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
-        $batchLength = DocumentFactory::config()->get('batchLength');
-        // This limit is scientifically determined by keeping on trying until it didn't break anymore
         $items = $baseClass::get()
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
