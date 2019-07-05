@@ -8,15 +8,12 @@ use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
-use Firesphere\SolrSearch\Services\SchemaService;
-use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\Traits\BaseIndexTrait;
-use Firesphere\SolrSearch\Traits\GetterSetterTrait;
+use Firesphere\SolrSearch\Services;
+use Firesphere\SolrSearch\Traits;
 use LogicException;
 use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Config;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
@@ -34,9 +31,9 @@ use Solarium\QueryType\Select\Query\Query;
 abstract class BaseIndex
 {
     use Extensible;
-    use Configurable;
-    use GetterSetterTrait;
-    use BaseIndexTrait;
+    use Config\Configurable;
+    use Traits\GetterSetterTrait;
+    use Traits\BaseIndexTrait;
 
     private static $fieldTypes = [
         'FulltextFields',
@@ -48,7 +45,7 @@ abstract class BaseIndex
         'FacetFields',
     ];
     /**
-     * @var SchemaService
+     * @var Services\SchemaService
      */
     protected $schemaService;
 
@@ -75,13 +72,13 @@ abstract class BaseIndex
     public function __construct()
     {
         // Set up the client
-        $config = Config::inst()->get(SolrCoreService::class, 'config');
+        $config = Config\Config::inst()->get(Services\SchemaService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $this->client = new Client($config);
         $this->client->setAdapter(new Guzzle());
 
         // Set up the schema service, only used in the generation of the schema
-        $schemaService = Injector::inst()->get(SchemaService::class, false);
+        $schemaService = Injector::inst()->get(Services\SchemaService::class, false);
         $schemaService->setIndex($this);
         $schemaService->setStore(Director::isDev());
         $this->schemaService = $schemaService;
@@ -199,9 +196,9 @@ abstract class BaseIndex
         $queryArray = $this->queryFactory->getQueryArray();
         $this->queryTerms = $queryArray;
 
-        $queryData= array_merge($this->queryTerms, $this->boostTerms);
+        $queryData = array_merge($this->queryTerms, $this->boostTerms);
 
-        $queryData= implode(' ', $queryData);
+        $queryData = implode(' ', $queryData);
         $clientQuery->setQuery($queryData);
 
         return $clientQuery;
@@ -306,9 +303,9 @@ abstract class BaseIndex
     {
         // Return values to make the key reset
         return array_values(
-            // Only return unique values
+        // Only return unique values
             array_unique(
-                // Make it all a single array
+            // Make it all a single array
                 array_merge(
                     $this->getFulltextFields(),
                     $this->getSortFields(),
