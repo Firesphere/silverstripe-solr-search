@@ -105,7 +105,6 @@ class SolrIndexTask extends BuildTask
             // Only index the classes given in the var if needed, should be a single class
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
-
             foreach ($classes as $class) {
                 $group = $request->getVar('group') ?: 0;
                 $isGroup = $request->getVar('group');
@@ -116,10 +115,8 @@ class SolrIndexTask extends BuildTask
                 $this->reindexClass($isGroup, $class, $index, $group);
             }
         }
-        $end = time();
-
         $this->getLogger()->info(
-            sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL)
+            sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
         );
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
