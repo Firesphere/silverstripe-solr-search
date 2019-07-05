@@ -216,7 +216,6 @@ class DocumentFactory
                 $item = $this->getItemForStep($step, $item);
 
                 if (is_array($item)) {
-                    // @todo remove the merge, it's inefficient
                     $next = array_merge($next, $item);
                 } else {
                     $next[] = $item;
@@ -239,9 +238,9 @@ class DocumentFactory
      * This can be a DataList or ArrayList, or a string
      * @param $step
      * @param $item
-     * @return array
+     * @return array|string
      */
-    protected function getItemForStep($step, $item): array
+    protected function getItemForStep($step, $item)
     {
         if ($step['call'] === 'method') {
             $method = $step['method'];
