@@ -148,11 +148,11 @@ class DocumentFactory
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         while ($item = array_shift($value)) {
+            if (!$item) {
+                continue;
+            }
             /* Solr requires dates in the form 1995-12-31T23:59:59Z */
             if ($type === 'tdate' || $item instanceof DBDate) {
-                if (!$item) {
-                    continue;
-                }
                 $item = gmdate('Y-m-d\TH:i:s\Z', strtotime($item));
             }
 
@@ -175,8 +175,6 @@ class DocumentFactory
      * @param string|array $class
      * @param array|string $base Class or list of base classes
      * @return bool
-     * @todo copy-paste, needs refactoring
-     * @todo This can be handled by PHP built-in Class determination, e.g. InstanceOf
      */
     protected function classIs($class, $base): bool
     {
@@ -220,13 +218,13 @@ class DocumentFactory
                 } else {
                     $next[] = $item;
                 }
-
-                // To lower memory footprint, if the item is a DO, destroy it after use
-                if ($item instanceof DataObject) {
-                    $item->destroy();
-                }
+                // Destroy the item(s) to clear out memory
+                unset($item);
+                gc_collect_cycles();
             }
 
+            // When all objects have been processed, put them in to objects
+            // This ensures the next step is an array of the correct objects to index
             $objects = $next;
         }
 
