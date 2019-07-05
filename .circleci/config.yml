@@ -95,13 +95,13 @@ jobs:
           name: Run tests
           command: |
             set +e
-            su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
+            su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=coverage.clover --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
       - run:
           name: Code coverage reportes
           command: |
             wget https://scrutinizer-ci.com/ocular.phar
-            php ocular.phar code-coverage:upload --format=php-clover clover.xml
-            bash <(curl -s https://codecov.io/bash) -f clover.xml
+            php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+            bash <(curl -s https://codecov.io/bash) -f coverage.clover
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
       - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
