@@ -98,11 +98,6 @@ class SolrIndexTask extends BuildTask
 
         $groups = 0;
         foreach ($indexes as $indexName) {
-            // Skip the abstract base
-            $ref = new ReflectionClass($indexName);
-            if (!$ref->isInstantiable()) {
-                continue;
-            }
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
             $this->client = $index->getClient();
@@ -124,10 +119,8 @@ class SolrIndexTask extends BuildTask
         $end = time();
 
         $this->getLogger()->info(
-            sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL),
-            []
+            sprintf('It took me %d seconds to do all the indexing%s', ($end - $startTime), PHP_EOL)
         );
-        $this->getLogger()->info('done!' . PHP_EOL, []);
         gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $groups;
