@@ -66,6 +66,7 @@ class SolrConfigureTask extends BuildTask
                 $this->extend('onAfterSolrConfigureTask', $request);
             } catch (RequestException $e) {
                 $this->logger->error($e->getResponse()->getBody()->getContents());
+                $this->logger->error(sprintf('Core loading failed for %s', $index));
                 throw new RuntimeException($e);
             }
         }
@@ -102,8 +103,6 @@ class SolrConfigureTask extends BuildTask
                 $service->coreReload($index);
                 $this->logger->info(sprintf('Core %s successfully reloaded', $index));
             } catch (RequestException $e) {
-                $this->logger->error(sprintf('Error attempting to reload core %s', $index));
-                $this->logger->error($e->getResponse()->getBody()->getContents());
                 throw new RuntimeException($e);
             }
         } else {
@@ -111,17 +110,7 @@ class SolrConfigureTask extends BuildTask
                 $service->coreCreate($index, $configStore);
                 $this->logger->info(sprintf('Core %s successfully created', $index));
             } catch (RequestException $e) {
-                // A common scenario, a create fails at first try, hence a double run
-                // Most commonly, this happens when an existing core in FileStore mode is attempted
-                // to be reloaded again, but hasn't been loaded in to Solr yet (e.g. Solr restart)
-                try {
-                    $service->coreCreate($index, $configStore);
-                    $this->logger->info(sprintf('Core %s successfully created', $index));
-                } catch (RequestException $e) {
-                    $this->logger->error(sprintf('Failed creating core %s', $index));
-                    $this->logger->error($e->getResponse()->getBody()->getContents());
-                    throw new RuntimeException($e);
-                }
+                throw new RuntimeException($e);
             }
         }
     }
