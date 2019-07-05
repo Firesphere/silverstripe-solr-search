@@ -72,7 +72,6 @@ class DocumentFactory
             $debugString .= '[';
         }
         $boostFields = $index->getBoostedFields();
-        // @todo this is intense and could hopefully be simplified? Senor Sheepy is on it
         foreach ($this->items as $item) {
             if ($this->debug) {
                 $debugString .= "$item->ID, ";
@@ -88,7 +87,6 @@ class DocumentFactory
         }
 
         if ($this->debug) {
-            // @todo switch to the logger
             Debug::message(rtrim($debugString, ', ') . ']' . PHP_EOL, false);
         }
 
@@ -138,7 +136,7 @@ class DocumentFactory
      * @param $object
      * @param $field
      */
-    protected function addField($doc, $object, $field)
+    protected function addField($doc, $object, $field): void
     {
         $typeMap = Statics::getTypeMap();
         if (!$this->classIs($object, $field['origin'])) {
@@ -149,7 +147,7 @@ class DocumentFactory
 
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
-        foreach ($value as $item) {
+        while ($item = array_shift($value)) {
             /* Solr requires dates in the form 1995-12-31T23:59:59Z */
             if ($type === 'tdate' || $item instanceof DBDate) {
                 if (!$item) {
@@ -167,9 +165,8 @@ class DocumentFactory
             $name = end($name);
 
             $doc->addField($name, $item);
-            unset($item);
-            gc_collect_cycles();
         }
+        unset($item, $value, $type);
         gc_collect_cycles();
     }
 
@@ -181,7 +178,7 @@ class DocumentFactory
      * @todo copy-paste, needs refactoring
      * @todo This can be handled by PHP built-in Class determination, e.g. InstanceOf
      */
-    protected function classIs($class, $base)
+    protected function classIs($class, $base): bool
     {
         if (is_array($base)) {
             foreach ($base as $nextBase) {
@@ -198,61 +195,67 @@ class DocumentFactory
     }
 
     /**
-     * Given an object and a field definition  get the current value of that field on that object
+     * Given an object and a field definition get the current value of that field on that object
      *
-     * @param DataObject|array|SS_List $object - The object to get the value from
+     * @param DataObject|array|SS_List|DataObject $objects - The object to get the value from
      * @param array $field - The field definition to use
      * @return array|string|null - The value of the field, or null if we couldn't look it up for some reason
      * @todo reduced the array_merge need to something more effective
      */
-    protected function getValueForField($object, $field)
+    protected function getValueForField($objects, $field)
     {
-        if (!is_array($object)) {
-            $object = [$object];
+        if (!is_array($objects)) {
+            $objects = [$objects];
         }
 
-        $object = $this->findObjectData($object, $field);
-
-        return $object;
-    }
-
-    /**
-     * @param $object
-     * @param $field
-     * @return array
-     */
-    protected function findObjectData($object, $field): array
-    {
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
             $next = [];
 
-            foreach ($object as $item) {
-                if ($step['call'] === 'method') {
-                    $method = $step['method'];
-                    $item = $item->$method();
-                } else {
-                    $property = $step['property'];
-                    $item = $item->$property;
-                }
+            foreach ($objects as $item) {
+                $item = $this->getItemForStep($step, $item);
 
-                if ($item instanceof SS_List) {
-                    $item = $item->toArray();
-                }
                 if (is_array($item)) {
                     // @todo remove the merge, it's inefficient
                     $next = array_merge($next, $item);
                 } else {
                     $next[] = $item;
                 }
+
+                // To lower memory footprint, if the item is a DO, destroy it after use
+                if ($item instanceof DataObject) {
+                    $item->destroy();
+                }
             }
 
-            $object = $next;
-            unset($next);
-            gc_collect_cycles();
+            $objects = $next;
         }
 
-        return $object;
+        return $objects;
+    }
+
+    /**
+     * Find the item for the current ste
+     * This can be a DataList or ArrayList, or a string
+     * @param $step
+     * @param $item
+     * @return array
+     */
+    protected function getItemForStep($step, $item): array
+    {
+        if ($step['call'] === 'method') {
+            $method = $step['method'];
+            $item = $item->$method();
+        } else {
+            $property = $step['property'];
+            $item = $item->$property;
+        }
+
+        if ($item instanceof SS_List) {
+            $item = $item->toArray();
+        }
+
+        return $item;
     }
 
     /**
