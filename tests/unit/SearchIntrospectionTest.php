@@ -15,6 +15,13 @@ use SilverStripe\ErrorPage\ErrorPage;
 
 class SearchIntrospectionTest extends SapphireTest
 {
+    protected static $fixture_file = '../fixtures/DataResolver.yml';
+    protected static $extra_dataobjects = [
+        TestObject::class,
+        TestPage::class,
+        TestRelationObject::class,
+    ];
+
     /**
      * @var SearchIntrospection
      */
@@ -60,14 +67,6 @@ class SearchIntrospectionTest extends SapphireTest
                     'fullfield'    => 'Content',
                     'origin'       => SiteTree::class,
                     'class'        => SiteTree::class,
-                    'lookup_chain' =>
-                        [
-                            0 =>
-                                [
-                                    'call'     => 'property',
-                                    'property' => 'Content',
-                                ],
-                        ],
                     'type'         => 'HTMLText',
                     'multi_valued' => false,
                 ],

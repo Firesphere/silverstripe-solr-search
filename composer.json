@@ -37,11 +37,16 @@
   "extra": {
     "branch-alias": {
       "dev-master": "1.0.x-dev"
-    },
-    "autoload": {
-      "psr-4": {
-        "Firesphere\\SolrSearch": "src"
-      }
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Firesphere\\SolrSearch\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Firesphere\\SolrSearch\\Tests\\": "tests"
     }
   },
   "support": {

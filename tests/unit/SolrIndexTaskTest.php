@@ -3,14 +3,39 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Firesphere\SolrSearch\Compat\SubsitesExtension;
+use Firesphere\SolrSearch\Extensions\DataObjectExtension;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\SiteConfig\SiteConfig;
 
 class SolrIndexTaskTest extends SapphireTest
 {
+    protected static $fixture_file = '../fixtures/DataResolver.yml';
+    protected static $extra_dataobjects = [
+        TestObject::class,
+        TestPage::class,
+        TestRelationObject::class,
+    ];
+
+    protected static $required_extensions = [
+        DataObject::class => [DataObjectExtension::class],
+        BaseIndex::class  => [SubsitesExtension::class],
+    ];
+
+    public function setUp()
+    {
+        $siteConfig = SiteConfig::current_site_config();
+        $siteConfig->CanViewType = 'Anyone';
+        $siteConfig->write();
+        parent::setUp();
+    }
+
     public function testRun()
     {
         $getVars = [
@@ -44,7 +69,7 @@ class SolrIndexTaskTest extends SapphireTest
 
         $result = $task->run($request);
 
-        $this->assertEquals(1, $result);
+        $this->assertEquals(0, $result);
     }
 
     public function testGetLogger()

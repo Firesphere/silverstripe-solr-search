@@ -10,6 +10,12 @@ use SilverStripe\Dev\SapphireTest;
 
 class ConfigStoreTest extends SapphireTest
 {
+    protected static $fixture_file = '../fixtures/DataResolver.yml';
+    protected static $extra_dataobjects = [
+        TestObject::class,
+        TestPage::class,
+        TestRelationObject::class,
+    ];
 
     /**
      * @expectedException \Solarium\Exception\RuntimeException

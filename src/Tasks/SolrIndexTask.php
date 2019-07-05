@@ -101,7 +101,7 @@ class SolrIndexTask extends BuildTask
 
         foreach ($indexes as $indexName) {
             /** @var BaseIndex $index */
-            $index = Injector::inst()->get($indexName);
+            $index = Injector::inst()->get($indexName, false);
 
             $indexClasses = $index->getClasses();
             $classes = $this->getClasses($vars, $indexClasses);
@@ -205,6 +205,7 @@ class SolrIndexTask extends BuildTask
                 $this->doReindex($group, $class, $batchLength, $index);
             } catch (Exception $e) {
                 $this->getLogger()->error($e->getMessage());
+                $group++;
                 continue;
             }
             $group++;

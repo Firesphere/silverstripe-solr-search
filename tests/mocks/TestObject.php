@@ -11,7 +11,8 @@ class TestObject extends DataObject implements TestOnly
     private static $table_name = 'TestObject';
 
     private static $db = [
-        'Title' => 'Varchar(255)'
+        'Title'        => 'Varchar(255)',
+        'ShowInSearch' => 'Boolean',
     ];
 
     private static $has_many = [

@@ -13,6 +13,16 @@ class TestRelationObject extends DataObject implements TestOnly
     ];
 
     private static $has_one = [
-        'Test' => TestObject::class
+        'TestObject' => TestObject::class
     ];
+
+    public function canView($member = null)
+    {
+        return true;
+    }
+
+    public function getFarmAnimals()
+    {
+        return ['cow', 'sheep'];
+    }
 }

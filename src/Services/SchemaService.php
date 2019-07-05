@@ -7,6 +7,7 @@ use Exception;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\ORM\ArrayList;
@@ -140,15 +141,13 @@ class SchemaService extends ViewableData
     {
         $field = $this->introspection->getFieldIntrospection($fieldName);
         $typeMap = Statics::getTypeMap();
-        $boostedFields = $this->index->getBoostedFields();
-        $storedFields = $this->index->getStoredFields();
-        $storeFields = array_merge($storedFields, array_keys($boostedFields));
+        $storeFields = $this->getStoreFields();
         foreach ($field as $name => $options) {
             // Temporary short-name solution until the Introspection is properly solved
             $name = explode('\\', $name);
             $name = end($name);
             // Boosted fields are always stored
-            $store = ($this->store || array_key_exists($fieldName, $storeFields)) ? 'true' : 'false';
+            $store = ($this->store || array_key_exists($options['name'], $storeFields)) ? 'true' : 'false';
             $item = [
                 'Field'       => $name,
                 'Type'        => $typeMap[$options['type']],
@@ -212,14 +211,12 @@ class SchemaService extends ViewableData
     {
         $return = ArrayList::create();
         $originalStore = $this->store;
-        $this->store = false;
+        $this->store = Director::isDev() ? true : false;
         $fields = $this->index->getFilterFields();
-        $fields = array_unique(
-            array_merge(
-                $fields,
-                array_keys($this->index->getFacetFields())
-            )
-        );
+        foreach ($this->index->getFacetFields() as $facetField) {
+            $fields[] = $facetField['Field'];
+        }
+        $fields = array_unique($fields);
         foreach ($fields as $field) {
             $this->getFieldDefinition($field, $return);
         }
@@ -317,5 +314,23 @@ class SchemaService extends ViewableData
     public function setStore(bool $store): void
     {
         $this->store = $store;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getStoreFields(): array
+    {
+        $boostedFields = $this->index->getBoostedFields();
+        $storedFields = $this->index->getStoredFields();
+        $facetFields = $this->index->getFacetFields();
+        $facetArray = [];
+        foreach ($facetFields as $key => $facetField) {
+            $facetArray[] = $key . '.' . $facetField['Field'];
+        }
+        // Boosts, facets and obviously stored fields need to be stored
+        $storeFields = array_merge($storedFields, array_keys($boostedFields), $facetArray);
+
+        return $storeFields;
     }
 }
