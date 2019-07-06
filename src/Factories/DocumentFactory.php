@@ -26,26 +26,6 @@ class DocumentFactory
     use Configurable;
 
     /**
-     * @var SearchIntrospection
-     */
-    protected $introspection;
-
-    /**
-     * @var null|ArrayList|DataList
-     */
-    protected $items;
-
-    /**
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * @var bool
-     */
-    protected $debug = false;
-
-    /**
      * Numeral types in Solr
      * @var array
      */
@@ -54,6 +34,22 @@ class DocumentFactory
         'tfloat',
         'tdouble'
     ];
+    /**
+     * @var SearchIntrospection
+     */
+    protected $introspection;
+    /**
+     * @var null|ArrayList|DataList
+     */
+    protected $items;
+    /**
+     * @var string
+     */
+    protected $class;
+    /**
+     * @var bool
+     */
+    protected $debug = false;
 
     /**
      * DocumentFactory constructor, sets up introspection
@@ -104,6 +100,44 @@ class DocumentFactory
         unset($this->items);
 
         return $docs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param string $class
+     * @return DocumentFactory
+     */
+    public function setClass(string $class): DocumentFactory
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayList|DataList|null
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param ArrayList|DataList|null $items
+     * @return DocumentFactory
+     */
+    public function setItems($items): DocumentFactory
+    {
+        $this->items = $items;
+
+        return $this;
     }
 
     /**
@@ -272,17 +306,6 @@ class DocumentFactory
     }
 
     /**
-     * @param ArrayList|DataList|null $items
-     * @return DocumentFactory
-     */
-    public function setItems($items): DocumentFactory
-    {
-        $this->items = $items;
-
-        return $this;
-    }
-
-    /**
      * @param bool $debug
      * @return DocumentFactory
      */
@@ -291,32 +314,5 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
-    }
-
-    /**
-     * @param string $class
-     * @return DocumentFactory
-     */
-    public function setClass(string $class): DocumentFactory
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClass(): string
-    {
-        return $this->class;
-    }
-
-    /**
-     * @return ArrayList|DataList|null
-     */
-    public function getItems()
-    {
-        return $this->items;
     }
 }

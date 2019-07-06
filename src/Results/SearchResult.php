@@ -292,6 +292,22 @@ class SearchResult
     }
 
     /**
+     * @return BaseQuery
+     */
+    public function getQuery(): BaseQuery
+    {
+        return $this->query;
+    }
+
+    /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
+    }
+
+    /**
      * Build the given list of key-value pairs in to a SilverStripe useable array
      * @param FacetSet|null $facets
      * @return ArrayData
@@ -336,21 +352,5 @@ class SearchResult
         }
         // Sort the results by FacetCount
         $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
-    }
-    
-    /**
-     * @return BaseQuery
-     */
-    public function getQuery(): BaseQuery
-    {
-        return $this->query;
-    }
-
-    /**
-     * @return BaseIndex
-     */
-    public function getIndex(): BaseIndex
-    {
-        return $this->index;
     }
 }

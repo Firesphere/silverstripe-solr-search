@@ -7,7 +7,6 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Controller;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Security\Security;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -214,6 +213,25 @@ class QueryComponentFactory
     }
 
     /**
+     * @return array
+     */
+    public function getQueryArray(): array
+    {
+        return $this->queryArray;
+    }
+
+    /**
+     * @param array $queryArray
+     * @return QueryComponentFactory
+     */
+    public function setQueryArray(array $queryArray): QueryComponentFactory
+    {
+        $this->queryArray = $queryArray;
+
+        return $this;
+    }
+
+    /**
      * @return BaseQuery
      */
     public function getQuery(): BaseQuery
@@ -266,25 +284,6 @@ class QueryComponentFactory
     public function setHelper(Helper $helper): QueryComponentFactory
     {
         $this->helper = $helper;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getQueryArray(): array
-    {
-        return $this->queryArray;
-    }
-
-    /**
-     * @param array $queryArray
-     * @return QueryComponentFactory
-     */
-    public function setQueryArray(array $queryArray): QueryComponentFactory
-    {
-        $this->queryArray = $queryArray;
 
         return $this;
     }

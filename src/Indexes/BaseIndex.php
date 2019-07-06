@@ -199,9 +199,9 @@ abstract class BaseIndex
         $queryArray = $this->queryFactory->getQueryArray();
         $this->queryTerms = $queryArray;
 
-        $queryData= array_merge($this->queryTerms, $this->boostTerms);
+        $queryData = array_merge($this->queryTerms, $this->boostTerms);
 
-        $queryData= implode(' ', $queryData);
+        $queryData = implode(' ', $queryData);
         $clientQuery->setQuery($queryData);
 
         return $clientQuery;

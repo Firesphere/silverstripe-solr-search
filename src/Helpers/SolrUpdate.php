@@ -8,7 +8,6 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use LogicException;
-use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
