@@ -207,14 +207,14 @@ class DocumentFactory
     /**
      * Given an object and a field definition get the current value of that field on that object
      *
-     * @param DataObject|array|SS_List|DataObject $objects - The object to get the value from
+     * @param DataObject|array|SS_List $objects - The object to get the value from
      * @param array $field - The field definition to use
      * @return array|string|null - The value of the field, or null if we couldn't look it up for some reason
      * @todo reduced the array_merge need to something more effective
      */
     protected function getValueForField($objects, $field)
     {
-        $objects = ($objects instanceof DataObject) ? [$objects] : $objects;
+        $objects = is_iterable($objects) ? $objects : [$objects];
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
