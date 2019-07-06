@@ -6,6 +6,9 @@ build:
     analysis:
       tests:
         override: [php-scrutinizer-run]
+      cache:
+        directories:
+          - vendor/
 
 filter:
   paths: ["src/*", "tests/*"]
