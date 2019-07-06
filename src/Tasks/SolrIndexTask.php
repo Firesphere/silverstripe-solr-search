@@ -91,9 +91,9 @@ class SolrIndexTask extends BuildTask
         $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
         $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
-        $start = $vars['start'] ?? 0;
         $group = $vars['group'] ?? 0;
-        $isGroup = empty($vars['group']);
+        $start = $vars['start'] ?? 0;
+        $isGroup = !empty($vars['group']);
 
         $groups = 0;
         foreach ($indexes as $indexName) {
