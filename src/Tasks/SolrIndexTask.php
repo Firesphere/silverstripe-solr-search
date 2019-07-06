@@ -80,7 +80,6 @@ class SolrIndexTask extends BuildTask
      * @return int|bool
      * @throws Exception
      * @todo defer to background because it may run out of memory
-     * @todo give Solr more time to respond
      */
     public function run($request)
     {
@@ -105,7 +104,7 @@ class SolrIndexTask extends BuildTask
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
 
             // Set the start point to the requested value, if there is only one class to index
-            $group = ($start > $group && count($classes) === 1) ? $start : $group;
+            $group = ($start >= $group && count($classes) === 1) ? $start : $group;
 
             foreach ($classes as $class) {
                 $this->reindexClass($isGroup, $class, $index, $group);

@@ -51,7 +51,7 @@
 
     <fields>
         <%-- Default fields, needed for all items --%>
-        <field name='_documentid' type='string' indexed='true' stored='true' required='true'/>
+        <field name='$IDField' type='string' indexed='true' stored='true' required='true'/>
         <field name='ID' type='tint' indexed='true' stored='true' required='true'/>
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
@@ -74,7 +74,7 @@
         <copyField source='$Field' dest='$Destination'/>
     <% end_loop %>
 
-    <uniqueKey>_documentid</uniqueKey>
+    <uniqueKey>$IDField</uniqueKey>
 
     <df>$DefaultField</df>
 

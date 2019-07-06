@@ -87,6 +87,11 @@ class SchemaService extends ViewableData
         return $this->index->getDefaultField();
     }
 
+    public function getIDField()
+    {
+        return SolrCoreService::ID_FIELD;
+    }
+
     /**
      * @return ArrayList
      * @throws Exception
