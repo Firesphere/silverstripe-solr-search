@@ -26,16 +26,31 @@ class SolrCoreService
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $validIndexes = [];
+
+    /**
      * @var Query
      */
     protected $admin;
 
+    /**
+     * SolrCoreService constructor.
+     * @throws ReflectionException
+     */
     public function __construct()
     {
         $config = static::config()->get('config');
         $this->client = new Client($config);
         $this->client->setAdapter(new Guzzle());
         $this->admin = $this->client->createCoreAdmin();
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        foreach ($indexes as $subindex) {
+            $this->filterIndexes($subindex);
+        }
+
+
     }
 
     /**
@@ -120,28 +135,18 @@ class SolrCoreService
      * Get valid indexes for the project
      * @param null|string $index
      * @return array
-     * @throws ReflectionException
      */
     public function getValidIndexes($index = null): ?array
     {
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-        if ($index && !in_array($index, $indexes, true)) {
+        if ($index && !in_array($index, $this->validIndexes, true)) {
             throw new LogicException('Incorrect index ' . $index);
         }
 
         if ($index) {
             return [$index];
         }
-
-        foreach ($indexes as $key => $subindex) {
-            $ref = new ReflectionClass($subindex);
-            if (!$ref->isInstantiable()) {
-                unset($indexes[$key]);
-            }
-        }
-
         // return the array values, to reset the keys
-        return array_values($indexes);
+        return array_values($this->validIndexes);
     }
 
     /**
@@ -159,6 +164,32 @@ class SolrCoreService
     public function setClient($client): SolrCoreService
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @param $subindex
+     * @param array $indexes
+     * @param $key
+     * @return array
+     * @throws ReflectionException
+     */
+    protected function filterIndexes($subindex): array
+    {
+        $ref = new ReflectionClass($subindex);
+        if ($ref->isInstantiable()) {
+            $this->validIndexes = $subindex;
+        }
+    }
+
+    /**
+     * @param array $validIndexes
+     * @return SolrCoreService
+     */
+    public function setValidIndexes(array $validIndexes): SolrCoreService
+    {
+        $this->validIndexes = $validIndexes;
 
         return $this;
     }

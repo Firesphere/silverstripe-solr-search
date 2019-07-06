@@ -25,7 +25,7 @@ class SolrUpdate
     protected $debug = false;
 
     /**
-     * @param ArrayList|DataList|DataObject $items
+     * @param ArrayList|DataList|DataObject|array $items
      * @param string $type
      * @param null|string $index
      * @return bool|Result
@@ -34,16 +34,15 @@ class SolrUpdate
      */
     public function updateItems($items, $type, $index = null)
     {
-        $indexes = (new SolrCoreService())->getValidIndexes($index);
-
         if (!$items) {
             throw new LogicException('Missing items, can\'t index an empty set');
         }
 
+        $indexes = (new SolrCoreService())->getValidIndexes($index);
+
         $result = false;
-        if ($items instanceof DataObject) {
-            $items = ArrayList::create([$items]);
-        }
+        $items = is_iterable($items) ? $items : ArrayList::create([$items]);
+
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
         foreach ($indexes as $indexString) {
