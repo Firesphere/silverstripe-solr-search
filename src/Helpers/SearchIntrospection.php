@@ -143,6 +143,7 @@ class SearchIntrospection
         $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
 
+        // Caching for the win :)
         if (in_array($fullfield, $this->found, true)) {
             return $this->found[$fullfield];
         }

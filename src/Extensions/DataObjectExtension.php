@@ -148,17 +148,10 @@ class DataObjectExtension extends DataExtension
     {
         /** @var DataObject $owner */
         $owner = $this->owner;
-        if (array_key_exists($owner->ClassName, $this->canViewClasses) &&
-            !$owner instanceof SiteTree
-        ) {
-            return $this->canViewClasses[$owner->ClassName];
-        }
         $return = [];
         // Add null users if it's publicly viewable
         if ($owner->canView()) {
-            $return = ['1-null'];
-
-            return $return;
+            return ['1-null'];
         }
 
         if (!self::$members) {
@@ -167,11 +160,6 @@ class DataObjectExtension extends DataExtension
 
         foreach (self::$members as $member) {
             $return[] = $owner->canView($member) . '-' . $member->ID;
-        }
-
-        // Dont record sitetree activity, it'll take up much needed memory
-        if (!$owner instanceof SiteTree) {
-            $this->canViewClasses[$owner->ClassName] = $return;
         }
 
         return $return;

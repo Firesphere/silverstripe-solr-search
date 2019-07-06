@@ -171,8 +171,6 @@ class DocumentFactory
                     $doc->setFieldBoost($dataField, $boostFields[$field]);
                 }
             }
-            unset($field);
-            gc_collect_cycles();
         }
     }
 
