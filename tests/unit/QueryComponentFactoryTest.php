@@ -4,8 +4,10 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use SilverStripe\Dev\SapphireTest;
+use Solarium\Core\Query\Helper;
 
 class QueryComponentFactoryTest extends SapphireTest
 {
@@ -44,5 +46,8 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->assertEquals($expected, $this->factory->getQueryArray());
         $this->assertEquals(['SiteTree_Title'], $this->factory->getClientQuery()->getFields());
         $this->assertCount(3, $this->factory->getClientQuery()->getFilterQueries());
+        $this->assertInstanceOf(Helper::class, $this->factory->getHelper());
+        $this->assertInstanceOf(BaseIndex::class, $this->factory->getIndex());
+        $this->assertInstanceOf(BaseQuery::class, $this->factory->getQuery());
     }
 }
