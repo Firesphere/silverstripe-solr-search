@@ -20,6 +20,7 @@ use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\SS_List;
 use Solarium\QueryType\Update\Query\Document\Document;
 use Solarium\QueryType\Update\Query\Query;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class DocumentFactory
 {
@@ -213,7 +214,7 @@ class DocumentFactory
      */
     protected function getValueForField($objects, $field)
     {
-        $objects = (!is_array($objects)) ? $objects : [$objects];
+        $objects = ($objects instanceof DataObject) ? [$objects] : $objects;
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
