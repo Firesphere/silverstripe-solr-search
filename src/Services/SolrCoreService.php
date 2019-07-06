@@ -170,12 +170,9 @@ class SolrCoreService
 
     /**
      * @param $subindex
-     * @param array $indexes
-     * @param $key
-     * @return array
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
-    protected function filterIndexes($subindex): array
+    protected function filterIndexes($subindex): void
     {
         $ref = new ReflectionClass($subindex);
         if ($ref->isInstantiable()) {
