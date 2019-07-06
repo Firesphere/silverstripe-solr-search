@@ -29,6 +29,7 @@ jobs:
 
     steps:
       - run: cd /var/www/html
+      - run: touch /var/www/html/error.log
       - checkout
       - run: touch composer.lock # Create an empty lockfile
       - run: echo '{}' > composer.lock
