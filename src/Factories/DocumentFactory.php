@@ -20,7 +20,6 @@ use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\SS_List;
 use Solarium\QueryType\Update\Query\Document\Document;
 use Solarium\QueryType\Update\Query\Query;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 class DocumentFactory
 {

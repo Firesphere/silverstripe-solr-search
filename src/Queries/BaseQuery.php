@@ -118,6 +118,7 @@ class BaseQuery
     }
 
     /**
+     * Set fields to be returned
      * @param array $fields
      * @return $this
      */
@@ -129,13 +130,13 @@ class BaseQuery
     }
 
     /**
+     * Add a field to be returned
      * @param string $field fieldname
-     * @param string $query search filter on field name
      * @return $this
      */
-    public function addField($field, $query): self
+    public function addField($field): self
     {
-        $this->fields[$field] = $query;
+        $this->fields[] = $field;
 
         return $this;
     }

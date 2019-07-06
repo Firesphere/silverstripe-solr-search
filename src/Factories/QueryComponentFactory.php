@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Controller;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Security\Security;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
@@ -121,7 +122,7 @@ class QueryComponentFactory
         foreach ($filters as $field => $value) {
             $value = is_array($value) ? $value : [$value];
             $criteria = Criteria::where($field)
-                ->is($value)
+                ->in($value)
                 ->not();
             $this->clientQuery->createFilterQuery('exclude-' . $field)
                 ->setQuery($criteria->getQuery());
@@ -179,8 +180,9 @@ class QueryComponentFactory
     protected function buildBoosts(): void
     {
         $boosts = $this->query->getBoostedFields();
+        $queries = $this->getQueryArray();
         foreach ($boosts as $field => $boost) {
-            foreach ($this->query->getTerms() as $term) {
+            foreach ($queries as $term) {
                 $booster = Criteria::where($field)
                     ->is($term)
                     ->boost($boost);
