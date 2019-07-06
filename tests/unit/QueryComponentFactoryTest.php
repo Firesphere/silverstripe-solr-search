@@ -38,6 +38,7 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->factory->setQuery($query);
         $this->factory->setIndex($index);
         $this->factory->setClientQuery($clientQuery);
+        $this->factory->setHelper($clientQuery->getHelper());
         $this->factory->setQueryArray(['Home']);
 
         $this->factory->buildQuery();
