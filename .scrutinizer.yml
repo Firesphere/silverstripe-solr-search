@@ -9,6 +9,3 @@ build:
 
 filter:
   paths: ["src/*", "tests/*"]
-
-tools:
-  external_code_coverage: true
