@@ -12,6 +12,10 @@ use SilverStripe\Security\Security;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
 
+/**
+ * Class QueryComponentFactory
+ * @package Firesphere\SolrSearch\Factories
+ */
 class QueryComponentFactory
 {
     /**
@@ -76,6 +80,9 @@ class QueryComponentFactory
     }
 
 
+    /**
+     *
+     */
     protected function buildViewFilter(): void
     {
         // Filter by what the user is allowed to see
@@ -105,6 +112,9 @@ class QueryComponentFactory
         }
     }
 
+    /**
+     *
+     */
     protected function buildFilters(): void
     {
         $filters = $this->query->getFilter();
@@ -116,6 +126,9 @@ class QueryComponentFactory
         }
     }
 
+    /**
+     *
+     */
     protected function buildExcludes(): void
     {
         $filters = $this->query->getExclude();
@@ -129,6 +142,9 @@ class QueryComponentFactory
         }
     }
 
+    /**
+     *
+     */
     protected function buildFacets(): void
     {
         $facets = $this->clientQuery->getFacetSet();
@@ -140,6 +156,9 @@ class QueryComponentFactory
         $facets->setMinCount($this->query->getFacetsMinCount());
     }
 
+    /**
+     *
+     */
     protected function buildFacetQuery()
     {
         $filterFacets = [];
@@ -159,6 +178,9 @@ class QueryComponentFactory
         }
     }
 
+    /**
+     *
+     */
     protected function buildSpellcheck(): void
     {
         // Assuming the first term is the term entered
