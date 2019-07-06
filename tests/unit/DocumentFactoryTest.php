@@ -14,6 +14,11 @@ use Solarium\QueryType\Update\Query\Document\Document;
 
 class DocumentFactoryTest extends SapphireTest
 {
+    /**
+     * We can't use the constant here for unknown reasons
+     * If you change the constant, please replace _documentid here with the appropriate value
+     * @var array
+     */
     protected static $expected_docs = [
         [
             '_documentid'      => 'Page-1',

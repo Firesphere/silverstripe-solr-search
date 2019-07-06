@@ -87,6 +87,11 @@ class SchemaService extends ViewableData
         return $this->index->getDefaultField();
     }
 
+    /**
+     * Get the Identifier Field for Solr
+     *
+     * @return string
+     */
     public function getIDField()
     {
         return SolrCoreService::ID_FIELD;

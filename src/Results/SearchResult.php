@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Results;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBField;
@@ -115,12 +116,13 @@ class SearchResult
         foreach ($matches as $match) {
             $class = $match->ClassName;
             $item = $class::get()->byID($match->ID);
+            $idfield = SolrCoreService::ID_FIELD;
             $item->Excerpt = DBField::create_field(
                 'HTMLText',
                 str_replace(
                     '&#65533;',
                     '',
-                    $this->getHighlightByID($match->_documentid)
+                    $this->getHighlightByID($match->{$idfield})
                 )
             );
             $items[] = $item;
