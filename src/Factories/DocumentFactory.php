@@ -213,9 +213,7 @@ class DocumentFactory
      */
     protected function getValueForField($objects, $field)
     {
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
+        $objects = (!is_array($objects)) ? $objects : [$objects];
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
