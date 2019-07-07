@@ -77,6 +77,7 @@ class BaseIndexTest extends SapphireTest
             'path' => Director::baseFolder() . '/.solr'
         ];
 
+        /** @var FileConfigStore $configStore */
         $configStore = Injector::inst()->create(FileConfigStore::class, $config);
 
         $this->index->uploadConfig($configStore);
@@ -90,6 +91,9 @@ class BaseIndexTest extends SapphireTest
             '<field name=\'SiteTree_Title\' type=\'string\' indexed=\'true\' stored=\'true\' multiValued=\'false\'/>',
             $xml
         );
+
+        $configStore->setConfig([]);
+        $this->assertEquals([], $configStore->getConfig());
     }
 
     public function testEscapeTerms()
