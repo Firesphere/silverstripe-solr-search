@@ -248,12 +248,13 @@ class DocumentFactory
      *
      * @param DataObject|array|SS_List $objects - The object to get the value from
      * @param array $field - The field definition to use
-     * @return ArrayList|array|SS_List
-     * @todo reduced the array_merge need to something more effective
+     * @return array Technically, it's always an array
      */
     protected function getValueForField($objects, $field)
     {
+        // Make sure we always have an array to iterate
         $objects = is_iterable($objects) ? $objects : [$objects];
+        $objects = is_array($objects) ? $objects : $objects->toArray();
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
@@ -276,7 +277,7 @@ class DocumentFactory
             $objects = $next;
         }
 
-        return is_iterable($objects) ? $objects : [$objects];
+        return $objects;
     }
 
     /**
