@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Results;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use GraphQL\Error\Debug;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBField;
@@ -115,7 +116,8 @@ class SearchResult
         $items = [];
         foreach ($matches as $match) {
             $class = $match->ClassName;
-            $item = $class::get()->byID($match->ID);
+            $classIDField = SolrCoreService::CLASS_ID_FIELD;
+            $item = $class::get()->byID($match->{$classIDField});
             $idfield = SolrCoreService::ID_FIELD;
             $item->Excerpt = DBField::create_field(
                 'HTMLText',
