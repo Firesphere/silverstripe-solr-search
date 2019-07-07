@@ -98,6 +98,16 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the Identifier Field for Solr
+     *
+     * @return string
+     */
+    public function getClassID()
+    {
+        return SolrCoreService::CLASS_ID_FIELD;
+    }
+
+    /**
      * @return ArrayList
      * @throws Exception
      */

@@ -17,6 +17,7 @@ use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 class SolrCoreService
 {
     public const ID_FIELD = '_documentid';
+    public const CLASS_ID_FIELD = 'ObjectID';
 
     use Configurable;
 

@@ -22,7 +22,7 @@ class DocumentFactoryTest extends SapphireTest
     protected static $expected_docs = [
         [
             '_documentid'      => 'Page-1',
-            'ID'               => 1,
+            'ObjectID'         => 1,
             'ClassName'        => 'Page',
             'ClassHierarchy'   =>
                 [
@@ -40,7 +40,7 @@ class DocumentFactoryTest extends SapphireTest
         ],
         [
             '_documentid'      => 'Page-2',
-            'ID'               => 2,
+            'ObjectID'         => 2,
             'ClassName'        => 'Page',
             'ClassHierarchy'   =>
                 [
@@ -58,7 +58,7 @@ class DocumentFactoryTest extends SapphireTest
         ],
         [
             '_documentid'      => 'Page-3',
-            'ID'               => 3,
+            'ObjectID'         => 3,
             'ClassName'        => 'Page',
             'ClassHierarchy'   =>
                 [
@@ -76,7 +76,7 @@ class DocumentFactoryTest extends SapphireTest
         ],
         [
             '_documentid'      => 'SilverStripe\\ErrorPage\\ErrorPage-4',
-            'ID'               => 4,
+            'ObjectID'         => 4,
             'ClassName'        => 'SilverStripe\\ErrorPage\\ErrorPage',
             'ClassHierarchy'   =>
                 [
@@ -95,7 +95,7 @@ class DocumentFactoryTest extends SapphireTest
         ],
         [
             '_documentid'      => 'SilverStripe\\ErrorPage\\ErrorPage-5',
-            'ID'               => 5,
+            'ObjectID'         => 5,
             'ClassName'        => 'SilverStripe\\ErrorPage\\ErrorPage',
             'ClassHierarchy'   =>
                 [

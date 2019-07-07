@@ -147,7 +147,7 @@ class DocumentFactory
     protected function addDefaultFields(Document $doc, DataObject $item)
     {
         $doc->setKey(SolrCoreService::ID_FIELD, $item->ClassName . '-' . $item->ID);
-        $doc->addField('ID', $item->ID);
+        $doc->addField(SolrCoreService::CLASS_ID_FIELD, $item->ID);
         $doc->addField('ClassName', $item->ClassName);
         $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
         $doc->addField('ViewStatus', $item->getViewStatus());
