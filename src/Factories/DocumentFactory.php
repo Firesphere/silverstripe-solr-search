@@ -240,10 +240,10 @@ class DocumentFactory
      *
      * @param DataObject|array|SS_List $objects - The object to get the value from
      * @param array $field - The field definition to use
-     * @return array - The value of the field, or null if we couldn't look it up for some reason
+     * @return ArrayList|array|SS_List
      * @todo reduced the array_merge need to something more effective
      */
-    protected function getValueForField($objects, $field): array
+    protected function getValueForField($objects, $field)
     {
         $objects = is_iterable($objects) ? $objects : [$objects];
 
