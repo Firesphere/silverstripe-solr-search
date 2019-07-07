@@ -254,7 +254,7 @@ class DocumentFactory
     {
         // Make sure we always have an array to iterate
         $objects = is_iterable($objects) ? $objects : [$objects];
-        $objects = is_array($objects) ? $objects : $objects->toArray();
+        $objects = !is_array($objects) ? $objects : $objects->toArray();
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
