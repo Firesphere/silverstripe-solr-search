@@ -25,7 +25,7 @@ class SolrUpdate
     protected $debug = false;
 
     /**
-     * @param ArrayList|DataList|DataObject|array $items
+     * @param ArrayList|DataList|array $items
      * @param string $type
      * @param null|string $index
      * @return bool|Result
@@ -41,7 +41,7 @@ class SolrUpdate
         $indexes = (new SolrCoreService())->getValidIndexes($index);
 
         $result = false;
-        $items = is_array($items) ? $items : ArrayList::create([$items]);
+        $items = is_iterable($items) ? $items : ArrayList::create([$items]);
 
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
