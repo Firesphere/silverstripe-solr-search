@@ -45,12 +45,7 @@ class SolrCoreService
         $this->client = new Client($config);
         $this->client->setAdapter(new Guzzle());
         $this->admin = $this->client->createCoreAdmin();
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-        foreach ($indexes as $subindex) {
-            $this->filterIndexes($subindex);
-        }
-
-
+        $this->filterIndexes();
     }
 
     /**
@@ -172,22 +167,14 @@ class SolrCoreService
      * @param $subindex
      * @throws \ReflectionException
      */
-    protected function filterIndexes($subindex): void
+    protected function filterIndexes(): void
     {
-        $ref = new ReflectionClass($subindex);
-        if ($ref->isInstantiable()) {
-            $this->validIndexes = $subindex;
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        foreach ($indexes as $subindex) {
+            $ref = new ReflectionClass($subindex);
+            if ($ref->isInstantiable()) {
+                $this->validIndexes[] = $subindex;
+            }
         }
-    }
-
-    /**
-     * @param array $validIndexes
-     * @return SolrCoreService
-     */
-    public function setValidIndexes(array $validIndexes): SolrCoreService
-    {
-        $this->validIndexes = $validIndexes;
-
-        return $this;
     }
 }
