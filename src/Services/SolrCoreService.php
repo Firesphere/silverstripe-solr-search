@@ -16,7 +16,13 @@ use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 
 class SolrCoreService
 {
+    /**
+     * Unique ID in Solr
+     */
     public const ID_FIELD = '_documentid';
+    /**
+     * SilverStripe ID of the object
+     */
     public const CLASS_ID_FIELD = 'ObjectID';
 
     use Configurable;
