@@ -19,7 +19,7 @@ class SolrCoreService
     /**
      * Unique ID in Solr
      */
-    public const ID_FIELD = '_documentid';
+    public const ID_FIELD = 'id';
     /**
      * SilverStripe ID of the object
      */
