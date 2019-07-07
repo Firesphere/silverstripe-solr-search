@@ -188,7 +188,7 @@ class SolrCoreService
     /**
      * @return int
      */
-    public  function getSolrVersion(): int
+    public function getSolrVersion(): int
     {
         $config = self::config()->get('config');
         $firstEndpoint = array_shift($config['endpoint']);
