@@ -41,7 +41,7 @@ class SolrUpdate
         $indexes = (new SolrCoreService())->getValidIndexes($index);
 
         $result = false;
-        $items = is_iterable($items) ? $items : ArrayList::create([$items]);
+        $items = is_array($items) ? $items : ArrayList::create([$items]);
 
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 

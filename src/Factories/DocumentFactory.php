@@ -221,7 +221,7 @@ class DocumentFactory
      */
     protected function classIs($class, $base): bool
     {
-        $base = is_iterable($base) ? $base : [$base];
+        $base = is_array($base) ? $base : [$base];
 
         foreach ($base as $nextBase) {
             if ($this->classEquals($class, $nextBase)) {
@@ -253,7 +253,7 @@ class DocumentFactory
     protected function getValueForField($objects, $field)
     {
         // Make sure we always have an array to iterate
-        $objects = is_iterable($objects) ? $objects : [$objects];
+        $objects = is_array($objects) ? $objects : [$objects];
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
