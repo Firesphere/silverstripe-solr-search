@@ -29,7 +29,9 @@ class PostConfigStore implements ConfigStore
         }
         if (!isset($config['path'])) {
             $config['path'] = '/';
-        } elseif (substr($config['path'], -1) !== '/') {
+        }
+
+        if (substr($config['path'], -1) !== '/') {
             $config['path'] .= '/';
         }
 
