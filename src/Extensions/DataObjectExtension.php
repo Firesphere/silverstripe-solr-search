@@ -159,7 +159,7 @@ class DataObjectExtension extends DataExtension
         }
 
         foreach (self::$members as $member) {
-            $return[] = $owner->canView($member) . '-' . $member->ID;
+            $return[] = sprintf('%s-%s', $owner->canView($member), $member->ID);
         }
 
         return $return;

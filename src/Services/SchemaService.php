@@ -41,12 +41,18 @@ class SchemaService extends ViewableData
     protected $introspection;
 
     /**
+     * @var SolrCoreService
+     */
+    protected $coreService;
+
+    /**
      * SchemaService constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->introspection = Injector::inst()->get(SearchIntrospection::class);
+        $this->coreService = Injector::inst()->get(SolrCoreService::class);
     }
 
     /**
@@ -217,38 +223,13 @@ class SchemaService extends ViewableData
     public function getTypes()
     {
         if (!$this->typesTemplate) {
-            $solrVersion = $this->getSolrVersion();
+            $solrVersion = $this->coreService->getSolrVersion();
             $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
             $template = sprintf('%s/Solr/%s/templates/types.ss', $dir, $solrVersion);
             $this->setTypesTemplate($template);
         }
 
         return $this->renderWith($this->getTypesTemplate());
-    }
-
-    /**
-     * @return int
-     */
-    protected function getSolrVersion(): int
-    {
-        $config = SolrCoreService::config()->get('config');
-        $firstEndpoint = array_shift($config['endpoint']);
-        $clientConfig = [
-            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
-        ];
-
-        $client = new Client($clientConfig);
-
-        $result = $client->get('solr/admin/info/system');
-        $result = json_decode($result->getBody(), 1);
-
-        $solrVersion = 5;
-        $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
-        if ($version > 0) {
-            $solrVersion = 4;
-        }
-
-        return $solrVersion;
     }
 
     /**
@@ -276,7 +257,7 @@ class SchemaService extends ViewableData
     public function generateSchema()
     {
         if (!$this->template) {
-            $solrVersion = $this->getSolrVersion();
+            $solrVersion = $this->coreService->getSolrVersion();
             $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
             $template = sprintf('%s/Solr/%s/templates/schema.ss', $dir, $solrVersion);
             $this->setTemplate($template);
@@ -313,7 +294,7 @@ class SchemaService extends ViewableData
         $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
 
         $confDirs = SolrCoreService::config()->get('paths');
-        $solrVersion = $this->getSolrVersion();
+        $solrVersion = $this->coreService->getSolrVersion();
 
         return sprintf($confDirs[$solrVersion]['extras'], $dir);
     }

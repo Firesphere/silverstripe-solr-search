@@ -184,4 +184,29 @@ class SolrCoreService
             }
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getSolrVersion(): int
+    {
+        $config = self::config()->get('config');
+        $firstEndpoint = array_shift($config['endpoint']);
+        $clientConfig = [
+            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
+        ];
+
+        $client = new \GuzzleHttp\Client($clientConfig);
+
+        $result = $client->get('solr/admin/info/system');
+        $result = json_decode($result->getBody(), 1);
+
+        $solrVersion = 5;
+        $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
+        if ($version > 0) {
+            $solrVersion = 4;
+        }
+
+        return $solrVersion;
+    }
 }
