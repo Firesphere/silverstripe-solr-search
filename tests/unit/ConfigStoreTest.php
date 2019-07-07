@@ -24,7 +24,7 @@ class ConfigStoreTest extends SapphireTest
         $store = new FileConfigStore(['path' => 'test']);
         $this->assertEquals(Director::baseFolder() . '/test/lol', $store->instanceDir('lol'));
 
-        $this->assertEquals(['path' => 'test'], $store->getConfig());
+        $this->assertEquals(['path' => Director::baseFolder() . '/test'], $store->getConfig());
     }
 
     /**
