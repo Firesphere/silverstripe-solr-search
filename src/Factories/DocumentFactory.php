@@ -221,17 +221,25 @@ class DocumentFactory
      */
     protected function classIs($class, $base): bool
     {
-        if (is_array($base)) {
-            foreach ($base as $nextBase) {
-                if ($this->classIs($class, $nextBase)) {
-                    return true;
-                }
-            }
+        $base = is_iterable($base) ? $base : [$base];
 
-            return false;
+        foreach ($base as $nextBase) {
+            if ($this->classEquals($class, $nextBase)) {
+                return true;
+            }
         }
 
-        // Check single origin
+        return false;
+    }
+
+    /**
+     * Check if a base class is an instance of the expected base group
+     * @param $class
+     * @param $base
+     * @return bool
+     */
+    protected function classEquals($class, $base): bool
+    {
         return $class === $base || ($class instanceof $base);
     }
 

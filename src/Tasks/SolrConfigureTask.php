@@ -69,7 +69,10 @@ class SolrConfigureTask extends BuildTask
                 $this->logger->error(sprintf('Core loading failed for %s', $index));
                 throw new RuntimeException($e);
             }
+            $this->extend('onAfterConfigureIndex', $index);
         }
+
+        $this->extend('onAfterSolrConfigureTask');
 
         return true;
     }
@@ -127,19 +130,13 @@ class SolrConfigureTask extends BuildTask
         if ($storeConfig['mode'] === 'post') {
             $configStore = Injector::inst()->create(PostConfigStore::class, $storeConfig);
         } elseif ($storeConfig['mode'] === 'file') {
-            // A relative folder should be rewritten to a writeable folder for the system
-            if (Director::is_relative_url($storeConfig['path'])) {
-                $storeConfig['path'] = Director::baseFolder() . '/' . $storeConfig['path'];
-            }
             $configStore = Injector::inst()->create(FileConfigStore::class, $storeConfig);
-        }
+        }// elseif ($storeConfig['mode'] === 'webdav') {
+            // @todo Add webdav store
+        //}
 
         // Allow changing the configStore if it needs to change to a different store
         $this->extend('onBeforeConfig', $configStore, $storeConfig);
-
-        if (!$configStore) {
-            throw new LogicException('No functional config store found');
-        }
 
         return $configStore;
     }

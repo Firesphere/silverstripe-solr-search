@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Stores;
 
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use SilverStripe\Control\Director;
 use Solarium\Exception\RuntimeException;
 
 /**
@@ -24,9 +25,14 @@ class FileConfigStore implements ConfigStore
      */
     public function __construct($config)
     {
-        if (empty($config) || !isset($config['path'])) {
+        if (empty($config)) {
             throw new RuntimeException('No valid config defined', 1);
         }
+        // A relative folder should be rewritten to a writeable folder for the system
+        if (Director::is_relative_url($config['path'])) {
+            $config['path'] = Director::baseFolder() . '/' . $config['path'];
+        }
+
 
         $this->config = $config;
     }
