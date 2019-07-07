@@ -246,7 +246,7 @@ class DocumentFactory
     /**
      * Given an object and a field definition get the current value of that field on that object
      *
-     * @param DataObject|array|SS_List $objects - The object to get the value from
+     * @param DataObject|array $objects - The object to get the value from
      * @param array $field - The field definition to use
      * @return array Technically, it's always an array
      */
@@ -254,7 +254,6 @@ class DocumentFactory
     {
         // Make sure we always have an array to iterate
         $objects = is_iterable($objects) ? $objects : [$objects];
-        $objects = !is_array($objects) ? $objects : $objects->toArray();
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
@@ -285,7 +284,7 @@ class DocumentFactory
      * This can be a DataList or ArrayList, or a string
      * @param $step
      * @param $item
-     * @return array|string
+     * @return array
      */
     protected function getItemForStep($step, $item)
     {
@@ -301,7 +300,7 @@ class DocumentFactory
             $item = $item->toArray();
         }
 
-        return $item;
+        return is_array($item) ? $item : [$item];
     }
 
     /**
