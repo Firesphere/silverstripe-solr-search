@@ -92,8 +92,11 @@ class BaseIndexTest extends SapphireTest
             $xml
         );
 
+        $original = $configStore->getConfig();
         $configStore->setConfig([]);
         $this->assertEquals([], $configStore->getConfig());
+        // Unhappy path, the config is not updated
+        $this->assertNotEquals($original, $configStore->getConfig());
     }
 
     public function testEscapeTerms()
