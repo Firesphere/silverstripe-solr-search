@@ -173,8 +173,10 @@ class SolrIndexTask extends BuildTask
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
+        $filter = [];
         /** @var DataList|DataObject[] $items */
         $items = $baseClass::get()
+            ->filter($filter)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
         if ($items->count()) {
