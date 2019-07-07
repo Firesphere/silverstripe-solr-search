@@ -74,7 +74,7 @@ class BaseIndexTest extends SapphireTest
     {
         $config = [
             'mode' => 'file',
-            'path' => Director::baseFolder() . '/.solr'
+            'path' => '.solr'
         ];
 
         /** @var FileConfigStore $configStore */

@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
+use SilverStripe\Control\Director;
 use SilverStripe\Dev\SapphireTest;
 
 class ConfigStoreTest extends SapphireTest
@@ -21,7 +22,7 @@ class ConfigStoreTest extends SapphireTest
     public function testFileConstructGood()
     {
         $store = new FileConfigStore(['path' => 'test']);
-        $this->assertEquals('test/lol', $store->instanceDir('lol'));
+        $this->assertEquals(Director::baseFolder() . '/test/lol', $store->instanceDir('lol'));
 
         $this->assertEquals(['path' => 'test'], $store->getConfig());
     }
