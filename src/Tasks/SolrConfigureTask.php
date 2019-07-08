@@ -85,8 +85,6 @@ class SolrConfigureTask extends BuildTask
         /** @var BaseIndex $instance */
         $instance = Injector::inst()->get($index);
 
-        $storeConfig = SolrCoreService::config()->get('store');
-        $configStore = $this->getStore($storeConfig);
         $index = $instance->getIndexName();
 
         // Then tell Solr to use those config files
@@ -97,22 +95,20 @@ class SolrConfigureTask extends BuildTask
         // And it has a start time.
         // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
         $status = $service->coreStatus($index);
-        $instance->uploadConfig($configStore);
-        // I don't want to turn this in to an endless try-catch, so lets just break at level 2
+        $configStore = $this->createConfigForIndex($instance);
+        // Default to create
+        $method = 'coreCreate';
+        $message = 'created';
+        // Switch to reload if the core is loaded
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
-            try {
-                $service->coreReload($index);
-                $this->logger->info(sprintf('Core %s successfully reloaded', $index));
-            } catch (RequestException $e) {
-                throw new RuntimeException($e);
-            }
-        } else {
-            try {
-                $service->coreCreate($index, $configStore);
-                $this->logger->info(sprintf('Core %s successfully created', $index));
-            } catch (RequestException $e) {
-                throw new RuntimeException($e);
-            }
+            $method = 'coreReload';
+            $message = 'reloaded';
+        }
+        try {
+            $service->$method($index, $configStore);
+            $this->logger->info(sprintf('Core %s successfully %s', $index, $message));
+        } catch (RequestException $e) {
+            throw new RuntimeException($e);
         }
     }
 
@@ -157,5 +153,18 @@ class SolrConfigureTask extends BuildTask
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param BaseIndex $instance
+     * @return ConfigStore
+     */
+    protected function createConfigForIndex(BaseIndex $instance): ConfigStore
+    {
+        $storeConfig = SolrCoreService::config()->get('store');
+        $configStore = $this->getStore($storeConfig);
+        $instance->uploadConfig($configStore);
+
+        return $configStore;
     }
 }
