@@ -3,14 +3,12 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use CircleCITestIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrCoreServiceTest extends SapphireTest
 {
-
     public function testIndexes()
     {
         $service = new SolrCoreService();
