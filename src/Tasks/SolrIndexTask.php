@@ -58,6 +58,11 @@ class SolrIndexTask extends BuildTask
     protected $client;
 
     /**
+     * @var SolrUpdate
+     */
+    protected $solrUpdate;
+
+    /**
      * SolrIndexTask constructor. Sets up the document factory
      */
     public function __construct()
@@ -66,6 +71,7 @@ class SolrIndexTask extends BuildTask
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
+        $this->solrUpdate = Injector::inst()->get(SolrUpdate::class);
         $this->logger = Injector::inst()->get(LoggerInterface::class);
 
 
@@ -99,6 +105,10 @@ class SolrIndexTask extends BuildTask
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
             $this->client = $index->getClient();
+
+            if (!empty($vars['clear'])) {
+                $this->solrUpdate->updateItems([], SolrUpdate::DELETE_TYPE_ALL, $indexName);
+            }
 
             // Only index the classes given in the var if needed, should be a single class
             $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
@@ -181,10 +191,8 @@ class SolrIndexTask extends BuildTask
             ->limit($batchLength, ($group * $batchLength));
         if ($items->count()) {
             $update = $this->getClient()->createUpdate();
-            /** @var SolrUpdate $solrUpdate */
-            $solrUpdate = Injector::inst()->get(SolrUpdate::class);
-            $solrUpdate->setDebug($this->debug);
-            $solrUpdate->updateIndex($index, $items, $update);
+            $this->solrUpdate->setDebug($this->debug);
+            $this->solrUpdate->updateIndex($index, $items, $update);
             $update->addCommit();
             $this->client->update($update);
         }

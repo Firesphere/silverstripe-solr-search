@@ -56,6 +56,21 @@ class SolrCoreService
     }
 
     /**
+     * @param $subindex
+     * @throws ReflectionException
+     */
+    protected function filterIndexes(): void
+    {
+        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        foreach ($indexes as $subindex) {
+            $ref = new ReflectionClass($subindex);
+            if ($ref->isInstantiable()) {
+                $this->validIndexes[] = $subindex;
+            }
+        }
+    }
+
+    /**
      * Create a new core
      * @param $core string - The name of the core
      * @param ConfigStore $configStore
@@ -147,6 +162,7 @@ class SolrCoreService
         if ($index) {
             return [$index];
         }
+
         // return the array values, to reset the keys
         return array_values($this->validIndexes);
     }
@@ -168,21 +184,6 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @param $subindex
-     * @throws \ReflectionException
-     */
-    protected function filterIndexes(): void
-    {
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
-        foreach ($indexes as $subindex) {
-            $ref = new ReflectionClass($subindex);
-            if ($ref->isInstantiable()) {
-                $this->validIndexes[] = $subindex;
-            }
-        }
     }
 
     /**

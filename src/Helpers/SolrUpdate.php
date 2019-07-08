@@ -12,12 +12,12 @@ use ReflectionException;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\DataObject;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
 
 class SolrUpdate
 {
+    public const DELETE_TYPE_ALL = 'deleteall';
     public const DELETE_TYPE = 'delete';
     public const UPDATE_TYPE = 'update';
     public const CREATE_TYPE = 'create';
@@ -55,7 +55,7 @@ class SolrUpdate
                 continue;
             }
 
-            $result = $this->doUpdate($items, $type, $index);
+            $result = $this->doManipulate($items, $type, $index);
         }
         gc_collect_cycles();
 
@@ -69,7 +69,7 @@ class SolrUpdate
      * @return Result
      * @throws Exception
      */
-    protected function doUpdate($items, $type, BaseIndex $index): Result
+    public function doManipulate($items, $type, BaseIndex $index): Result
     {
         $client = $index->getClient();
 
@@ -81,6 +81,8 @@ class SolrUpdate
             foreach ($items as $item) {
                 $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
             }
+        } elseif ($type === static::DELETE_TYPE_ALL) {
+            $update->addDeleteQuery('*:*');
         } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
             $this->updateIndex($index, $items, $update);
         }

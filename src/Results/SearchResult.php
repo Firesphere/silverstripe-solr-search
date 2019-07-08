@@ -6,9 +6,9 @@ namespace Firesphere\SolrSearch\Results;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use GraphQL\Error\Debug;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
@@ -114,20 +114,16 @@ class SearchResult
     {
         $matches = $this->matches;
         $items = [];
+        $idField = SolrCoreService::ID_FIELD;
+        $classIDField = SolrCoreService::CLASS_ID_FIELD;
         foreach ($matches as $match) {
             $class = $match->ClassName;
-            $classIDField = SolrCoreService::CLASS_ID_FIELD;
+            /** @var DataObject $item */
             $item = $class::get()->byID($match->{$classIDField});
-            $idfield = SolrCoreService::ID_FIELD;
-            $item->Excerpt = DBField::create_field(
-                'HTMLText',
-                str_replace(
-                    '&#65533;',
-                    '',
-                    $this->getHighlightByID($match->{$idfield})
-                )
-            );
-            $items[] = $item;
+            if ($item && $item->exists()) {
+                $this->createExcerpt($idField, $match, $item);
+                $items[] = $item;
+            }
         }
 
         return ArrayList::create($items);
@@ -150,6 +146,23 @@ class SearchResult
         $this->matches = $docs;
 
         return $this;
+    }
+
+    /**
+     * @param string $idField
+     * @param $match
+     * @param DataObject $item
+     */
+    protected function createExcerpt(string $idField, $match, DataObject $item): void
+    {
+        $item->Excerpt = DBField::create_field(
+            'HTMLText',
+            str_replace(
+                '&#65533;',
+                '',
+                $this->getHighlightByID($match->{$idField})
+            )
+        );
     }
 
     /**

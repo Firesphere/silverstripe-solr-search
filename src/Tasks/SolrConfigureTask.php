@@ -132,7 +132,7 @@ class SolrConfigureTask extends BuildTask
         } elseif ($storeConfig['mode'] === 'file') {
             $configStore = Injector::inst()->create(FileConfigStore::class, $storeConfig);
         }// elseif ($storeConfig['mode'] === 'webdav') {
-            // @todo Add webdav store
+        // @todo Add webdav store
         //}
 
         // Allow changing the configStore if it needs to change to a different store
