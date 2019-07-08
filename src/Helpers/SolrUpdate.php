@@ -34,6 +34,9 @@ class SolrUpdate
      */
     public function updateItems($items, $type, $index = null)
     {
+        if ($type === static::DELETE_TYPE_ALL) {
+            throw new LogicException('To delete all items, call doManipulate directly');
+        }
         $indexes = (new SolrCoreService())->getValidIndexes($index);
 
         $result = false;
