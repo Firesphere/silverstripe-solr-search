@@ -34,10 +34,6 @@ class SolrUpdate
      */
     public function updateItems($items, $type, $index = null)
     {
-        if (!$items) {
-            throw new LogicException('Missing items, can\'t index an empty set');
-        }
-
         $indexes = (new SolrCoreService())->getValidIndexes($index);
 
         $result = false;
