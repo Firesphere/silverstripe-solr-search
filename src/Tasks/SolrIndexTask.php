@@ -73,6 +73,7 @@ class SolrIndexTask extends BuildTask
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
         $this->solrUpdate = Injector::inst()->get(SolrUpdate::class);
         $this->logger = Injector::inst()->get(LoggerInterface::class);
+        $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
 
         $this->introspection = new SearchIntrospection();
@@ -92,8 +93,6 @@ class SolrIndexTask extends BuildTask
         $startTime = time();
         $vars = $request->getVars();
         $indexes = (new SolrCoreService())->getValidIndexes($request->getVar('index'));
-
-        $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
 
         $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
         $group = $vars['group'] ?? 0;
@@ -146,9 +145,7 @@ class SolrIndexTask extends BuildTask
     private function reindexClass($isGroup, $class, BaseIndex $index, int $group): void
     {
         $group = $group ?: 0;
-        if ($this->debug) {
-            $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
-        }
+        $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
 
         $batchLength = DocumentFactory::config()->get('batchLength');
         $groups = (int)ceil($class::get()->count() / $batchLength);
