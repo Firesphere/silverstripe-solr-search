@@ -6,7 +6,9 @@ namespace Firesphere\SolrSearch\Tests;
 use CircleCITestIndex;
 use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrUpdateTest extends SapphireTest
@@ -34,11 +36,12 @@ class SolrUpdateTest extends SapphireTest
 
         $result = $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(200, $result->getResponse()->getStatusCode());
+        $this->assertEquals(5, $index->doSearch($query)->getTotalItems());
 
         $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
 
-        $this->solrUpdate->updateItems($items, SolrUpdate::UPDATE_TYPE, CircleCITestIndex::class);
+        (new SolrIndexTask())->run(new NullHTTPRequest());
         $this->assertEquals(5, $index->doSearch($query)->getTotalItems());
 
         $this->solrUpdate->updateItems([], SolrUpdate::DELETE_TYPE_ALL, CircleCITestIndex::class);
