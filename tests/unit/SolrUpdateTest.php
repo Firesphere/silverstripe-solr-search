@@ -40,9 +40,6 @@ class SolrUpdateTest extends SapphireTest
         $this->solrUpdate->updateItems($items, SolrUpdate::DELETE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
 
-        $indexJob = Injector::inst()->get(SolrIndexJob::class)->process();
-        $this->assertEquals(5, $index->doSearch($query)->getTotalItems());
-
         $this->solrUpdate->updateItems([], SolrUpdate::DELETE_TYPE_ALL, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
     }
