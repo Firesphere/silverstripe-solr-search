@@ -73,7 +73,7 @@ class SolrIndexTask extends BuildTask
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
         $this->solrUpdate = Injector::inst()->get(SolrUpdate::class);
         $this->logger = Injector::inst()->get(LoggerInterface::class);
-        $this->debug = isset($vars['debug']) || (Director::isDev() || Director::is_cli());
+        $this->debug = (Director::isDev() || Director::is_cli());
 
 
         $this->introspection = new SearchIntrospection();
@@ -91,13 +91,9 @@ class SolrIndexTask extends BuildTask
     public function run($request)
     {
         $startTime = time();
-        $vars = $request->getVars();
+        [$vars, $group, $start, $isGroup] = $this->taskSetup($request);
         $indexes = (new SolrCoreService())->getValidIndexes($request->getVar('index'));
-
         $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
-        $group = $vars['group'] ?? 0;
-        $start = $vars['start'] ?? 0;
-        $isGroup = !empty($vars['group']);
 
         $groups = 0;
         foreach ($indexes as $indexName) {
@@ -215,5 +211,20 @@ class SolrIndexTask extends BuildTask
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @return array
+     */
+    protected function taskSetup($request): array
+    {
+        $vars = $request->getVars();
+        $this->debug = $this->debug || isset($vars['debug']);
+        $group = $vars['group'] ?? 0;
+        $start = $vars['start'] ?? 0;
+        $isGroup = !empty($vars['group']);
+
+        return [$vars, $group, $start, $isGroup];
     }
 }
