@@ -25,6 +25,7 @@ class SolrUpdateTest extends SapphireTest
     public function testUpdateItemsFail()
     {
         $this->solrUpdate->updateItems(null, SolrUpdate::CREATE_TYPE);
+        $this->solrUpdate->updateItems(['test'], SolrUpdate::DELETE_TYPE_ALL);
     }
 
     public function testUpdateItems()
