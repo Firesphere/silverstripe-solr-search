@@ -172,7 +172,7 @@ class SolrCoreService
     }
 
     /**
-     * @param SS_List|DataObject $items
+     * @param SS_List|DataObject|array $items
      * @param string $type
      * @param null|string $index
      * @return bool|Result
