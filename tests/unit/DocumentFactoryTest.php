@@ -11,6 +11,9 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Update\Query\Document\Document;
+use SilverStripe\View\ViewableData;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ErrorPage\ErrorPage;
 
 class DocumentFactoryTest extends SapphireTest
 {
@@ -26,9 +29,9 @@ class DocumentFactoryTest extends SapphireTest
             'ClassName'        => 'Page',
             'ClassHierarchy'   =>
                 [
-                    'silverstripe\\view\\viewabledata'   => 'SilverStripe\\View\\ViewableData',
-                    'silverstripe\\orm\\dataobject'      => 'SilverStripe\\ORM\\DataObject',
-                    'silverstripe\\cms\\model\\sitetree' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
                     'page'                               => 'Page',
                 ],
             'ViewStatus'       =>
@@ -44,9 +47,9 @@ class DocumentFactoryTest extends SapphireTest
             'ClassName'        => 'Page',
             'ClassHierarchy'   =>
                 [
-                    'silverstripe\\view\\viewabledata'   => 'SilverStripe\\View\\ViewableData',
-                    'silverstripe\\orm\\dataobject'      => 'SilverStripe\\ORM\\DataObject',
-                    'silverstripe\\cms\\model\\sitetree' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
                     'page'                               => 'Page',
                 ],
             'ViewStatus'       =>
@@ -62,9 +65,9 @@ class DocumentFactoryTest extends SapphireTest
             'ClassName'        => 'Page',
             'ClassHierarchy'   =>
                 [
-                    'silverstripe\\view\\viewabledata'   => 'SilverStripe\\View\\ViewableData',
-                    'silverstripe\\orm\\dataobject'      => 'SilverStripe\\ORM\\DataObject',
-                    'silverstripe\\cms\\model\\sitetree' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
                     'page'                               => 'Page',
                 ],
             'ViewStatus'       =>
@@ -77,14 +80,14 @@ class DocumentFactoryTest extends SapphireTest
         [
             'id'               => 'SilverStripe\\ErrorPage\\ErrorPage-4',
             'ObjectID'         => 4,
-            'ClassName'        => 'SilverStripe\\ErrorPage\\ErrorPage',
+            'ClassName'        => ErrorPage::class,
             'ClassHierarchy'   =>
                 [
-                    'silverstripe\\view\\viewabledata'   => 'SilverStripe\\View\\ViewableData',
-                    'silverstripe\\orm\\dataobject'      => 'SilverStripe\\ORM\\DataObject',
-                    'silverstripe\\cms\\model\\sitetree' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
                     'page'                               => 'Page',
-                    'silverstripe\\errorpage\\errorpage' => 'SilverStripe\\ErrorPage\\ErrorPage',
+                    'silverstripe\\errorpage\\errorpage' => ErrorPage::class,
                 ],
             'ViewStatus'       =>
                 [
@@ -96,14 +99,14 @@ class DocumentFactoryTest extends SapphireTest
         [
             'id'               => 'SilverStripe\\ErrorPage\\ErrorPage-5',
             'ObjectID'         => 5,
-            'ClassName'        => 'SilverStripe\\ErrorPage\\ErrorPage',
+            'ClassName'        => ErrorPage::class,
             'ClassHierarchy'   =>
                 [
-                    'silverstripe\\view\\viewabledata'   => 'SilverStripe\\View\\ViewableData',
-                    'silverstripe\\orm\\dataobject'      => 'SilverStripe\\ORM\\DataObject',
-                    'silverstripe\\cms\\model\\sitetree' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
                     'page'                               => 'Page',
-                    'silverstripe\\errorpage\\errorpage' => 'SilverStripe\\ErrorPage\\ErrorPage',
+                    'silverstripe\\errorpage\\errorpage' => ErrorPage::class,
                 ],
             'ViewStatus'       =>
                 [

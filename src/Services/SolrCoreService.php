@@ -185,9 +185,6 @@ class SolrCoreService
         if ($items === null) {
             throw new LogicException('Can\'t manipulate an empty item set');
         }
-        if ($type === static::DELETE_TYPE_ALL) {
-            throw new LogicException('To delete all items, call doManipulate directly');
-        }
 
         $indexes = $this->getValidIndexes($index);
 
@@ -233,7 +230,7 @@ class SolrCoreService
     }
 
     /**
-     * @param $items
+     * @param DataList|ArrayList $items
      * @param $type
      * @param BaseIndex $index
      * @return Result
@@ -248,8 +245,11 @@ class SolrCoreService
 
         // add the delete query and a commit command to the update query
         if ($type === static::DELETE_TYPE) {
-            foreach ($items as $item) {
-                $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
+            // By pushing to a single array, we have less memory usage and no duplicates
+            // This is faster, and more efficient, because we only do one DB query
+            $delete = $items->map('ID', 'ClassName')->toArray();
+            foreach ($delete as $item) {
+                $update->addDeleteById(sprintf('%s-%s', $item['ClassName'], $item['ID']));
             }
         } elseif ($type === static::DELETE_TYPE_ALL) {
             $update->addDeleteQuery('*:*');
