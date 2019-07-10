@@ -305,10 +305,10 @@ abstract class BaseIndex
     public function getFieldsForIndexing(): array
     {
         // Return values to make the key reset
-        return array_values(
         // Only return unique values
+        // And make it all a single array
+        return array_values(
             array_unique(
-            // Make it all a single array
                 array_merge(
                     $this->getFulltextFields(),
                     $this->getSortFields(),
