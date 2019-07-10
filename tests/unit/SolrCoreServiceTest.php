@@ -37,6 +37,13 @@ class SolrCoreServiceTest extends SapphireTest
     public function testUpdateItemsFail()
     {
         $this->service->updateItems(null, SolrCoreService::CREATE_TYPE);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testUpdateItemsFailWrongCall()
+    {
         $this->service->updateItems(['test'], SolrCoreService::DELETE_TYPE_ALL);
     }
 

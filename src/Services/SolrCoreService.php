@@ -13,6 +13,7 @@ use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -172,7 +173,7 @@ class SolrCoreService
     }
 
     /**
-     * @param SS_List|array|DataObject $items
+     * @param SS_List|array $items
      * @param string $type
      * @param null|string $index
      * @return bool|Result
@@ -191,7 +192,6 @@ class SolrCoreService
         $indexes = $this->getValidIndexes($index);
 
         $result = false;
-        $items = is_array($items) ? $items : [$items];
         $items = ($items instanceof SS_List) ? $items : ArrayList::create($items);
 
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
