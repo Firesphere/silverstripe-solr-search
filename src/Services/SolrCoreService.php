@@ -2,6 +2,9 @@
 
 namespace Firesphere\SolrSearch\Services;
 
+use Exception;
+use Firesphere\SolrSearch\Factories\DocumentFactory;
+use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use LogicException;
@@ -9,10 +12,14 @@ use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
+use Solarium\QueryType\Update\Result;
 
 class SolrCoreService
 {
@@ -24,6 +31,14 @@ class SolrCoreService
      * SilverStripe ID of the object
      */
     public const CLASS_ID_FIELD = 'ObjectID';
+    /**
+     * Solr update types
+     */
+    public const DELETE_TYPE_ALL = 'deleteall';
+    public const DELETE_TYPE = 'delete';
+    public const UPDATE_TYPE = 'update';
+    public const CREATE_TYPE = 'create';
+
 
     use Configurable;
 
@@ -43,6 +58,13 @@ class SolrCoreService
     protected $admin;
 
     /**
+     * Add debugging information
+     * @var bool
+     */
+    protected $inDebugMode = false;
+
+
+    /**
      * SolrCoreService constructor.
      * @throws ReflectionException
      */
@@ -56,7 +78,6 @@ class SolrCoreService
     }
 
     /**
-     * @param $subindex
      * @throws ReflectionException
      */
     protected function filterIndexes(): void
@@ -168,22 +189,102 @@ class SolrCoreService
     }
 
     /**
-     * @return Client
+     * @param ArrayList|DataList|array $items
+     * @param string $type
+     * @param null|string $index
+     * @return bool|Result
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public function getClient(): Client
+    public function updateItems($items, $type, $index = null)
     {
-        return $this->client;
+        if ($items === null) {
+            throw new LogicException('Can\'t manipulate an empty item set');
+        }
+        if ($type === static::DELETE_TYPE_ALL) {
+            throw new LogicException('To delete all items, call doManipulate directly');
+        }
+        $indexes = $this->getValidIndexes($index);
+
+        $result = false;
+        $items = is_iterable($items) ? $items : ArrayList::create([$items]);
+
+        $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
+
+        foreach ($indexes as $indexString) {
+            /** @var BaseIndex $index */
+            $index = Injector::inst()->get($indexString);
+            $classes = $index->getClasses();
+            $inArray = array_intersect($classes, $hierarchy);
+            // No point in sending a delete|update|create for something that's not in the index
+            if (!count($inArray)) {
+                continue;
+            }
+
+            $result = $this->doManipulate($items, $type, $index);
+        }
+        gc_collect_cycles();
+
+        return $result;
     }
 
     /**
-     * @param Client $client
-     * @return SolrCoreService
+     * @param $items
+     * @param $type
+     * @param BaseIndex $index
+     * @return Result
+     * @throws Exception
      */
-    public function setClient($client): SolrCoreService
+    public function doManipulate($items, $type, BaseIndex $index): Result
     {
-        $this->client = $client;
+        $client = $index->getClient();
 
-        return $this;
+        // get an update query instance
+        $update = $client->createUpdate();
+
+        // add the delete query and a commit command to the update query
+        if ($type === static::DELETE_TYPE) {
+            foreach ($items as $item) {
+                $update->addDeleteById(sprintf('%s-%s', $item->ClassName, $item->ID));
+            }
+        } elseif ($type === static::DELETE_TYPE_ALL) {
+            $update->addDeleteQuery('*:*');
+        } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
+            $this->updateIndex($index, $items, $update);
+        }
+        $update->addCommit();
+
+        return $client->update($update);
+    }
+
+    /**
+     * @param BaseIndex $index
+     * @param ArrayList|DataList $items
+     * @param \Solarium\QueryType\Update\Query\Query $update
+     * @throws Exception
+     */
+    public function updateIndex($index, $items, $update): void
+    {
+        $fields = $index->getFieldsForIndexing();
+        $factory = $this->getFactory($items);
+        $docs = $factory->buildItems($fields, $index, $update);
+        if (count($docs)) {
+            $update->addDocuments($docs);
+        }
+    }
+
+    /**
+     * @param ArrayList|DataList $items
+     * @return DocumentFactory
+     */
+    protected function getFactory($items): DocumentFactory
+    {
+        $factory = Injector::inst()->get(DocumentFactory::class);
+        $factory->setItems($items);
+        $factory->setClass($items->first()->ClassName);
+        $factory->setDebug($this->isInDebugMode());
+
+        return $factory;
     }
 
     /**
@@ -209,5 +310,43 @@ class SolrCoreService
         }
 
         return $solrVersion;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param Client $client
+     * @return SolrCoreService
+     */
+    public function setClient($client): SolrCoreService
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $inDebugMode
+     * @return SolrCoreService
+     */
+    public function setInDebugMode(bool $inDebugMode): SolrCoreService
+    {
+        $this->inDebugMode = $inDebugMode;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInDebugMode(): bool
+    {
+        return $this->inDebugMode;
     }
 }

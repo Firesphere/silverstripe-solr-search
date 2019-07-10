@@ -4,8 +4,8 @@
 namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
@@ -60,9 +60,9 @@ class DataObjectExtension extends DataExtension
 
             $ids = json_decode($record->IDs, 1) ?: [];
             try {
-                $update = new SolrUpdate();
-                $update->setDebug(false);
-                $update->updateItems($owner, SolrUpdate::UPDATE_TYPE);
+                $update = new SolrCoreService();
+                $update->setInDebugMode(false);
+                $update->updateItems($owner, SolrCoreService::UPDATE_TYPE);
                 // If we don't get an exception, mark the item as clean
                 $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
                 $record->IDs = json_encode($ids);
@@ -131,7 +131,7 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs, 1) ?: [];
         parent::onAfterDelete();
         try {
-            (new SolrUpdate())->updateItems($owner, SolrUpdate::DELETE_TYPE);
+            (new SolrCoreService())->updateItems($owner, SolrCoreService::DELETE_TYPE);
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {

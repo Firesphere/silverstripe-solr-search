@@ -6,7 +6,6 @@ namespace Firesphere\SolrSearch\Tasks;
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
-use Firesphere\SolrSearch\Helpers\SolrUpdate;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\RequestException;
@@ -58,9 +57,9 @@ class SolrIndexTask extends BuildTask
     protected $client;
 
     /**
-     * @var SolrUpdate
+     * @var SolrCoreService
      */
-    protected $solrUpdate;
+    protected $service;
 
     /**
      * SolrIndexTask constructor. Sets up the document factory
@@ -71,7 +70,7 @@ class SolrIndexTask extends BuildTask
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
-        $this->solrUpdate = Injector::inst()->get(SolrUpdate::class);
+        $this->service = Injector::inst()->get(SolrCoreService::class);
         $this->logger = Injector::inst()->get(LoggerInterface::class);
         $this->debug = (Director::isDev() || Director::is_cli());
 
@@ -92,7 +91,7 @@ class SolrIndexTask extends BuildTask
     {
         $startTime = time();
         [$vars, $group, $start, $isGroup] = $this->taskSetup($request);
-        $indexes = (new SolrCoreService())->getValidIndexes($request->getVar('index'));
+        $indexes = $this->service->getValidIndexes($request->getVar('index'));
         $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
 
         $groups = 0;
@@ -102,7 +101,7 @@ class SolrIndexTask extends BuildTask
             $this->client = $index->getClient();
 
             if (!empty($vars['clear'])) {
-                $this->solrUpdate->updateItems([], SolrUpdate::DELETE_TYPE_ALL, $indexName);
+                $this->service->updateItems([], SolrCoreService::DELETE_TYPE_ALL, $indexName);
             }
 
             // Only index the classes given in the var if needed, should be a single class
@@ -184,8 +183,8 @@ class SolrIndexTask extends BuildTask
             ->limit($batchLength, ($group * $batchLength));
         if ($items->count()) {
             $update = $this->getClient()->createUpdate();
-            $this->solrUpdate->setDebug($this->debug);
-            $this->solrUpdate->updateIndex($index, $items, $update);
+            $this->service->setInDebugMode($this->debug);
+            $this->service->updateIndex($index, $items, $update);
             $update->addCommit();
             $this->client->update($update);
         }
