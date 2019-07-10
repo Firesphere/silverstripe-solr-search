@@ -172,7 +172,7 @@ class SolrCoreService
     }
 
     /**
-     * @param ArrayList|DataList|array $items
+     * @param SS_List|array|DataObject $items
      * @param string $type
      * @param null|string $index
      * @return bool|Result
@@ -191,7 +191,8 @@ class SolrCoreService
         $indexes = $this->getValidIndexes($index);
 
         $result = false;
-        $items = !($items instanceof SS_List) ? $items : ArrayList::create($items);
+        $items = is_array($items) ? $items : [$items];
+        $items = ($items instanceof SS_List) ? $items : ArrayList::create($items);
 
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
