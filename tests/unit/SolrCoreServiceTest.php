@@ -59,7 +59,12 @@ class SolrCoreServiceTest extends SapphireTest
 
         $this->service->updateItems($items, SolrCoreService::DELETE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
+    }
 
+    public function testUpdateItemsEmptyArray()
+    {
+        $index = new CircleCITestIndex();
+        $query = new BaseQuery();
         $this->service->doManipulate([], SolrCoreService::DELETE_TYPE_ALL, $index);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
     }

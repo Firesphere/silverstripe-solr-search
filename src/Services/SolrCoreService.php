@@ -173,7 +173,7 @@ class SolrCoreService
     }
 
     /**
-     * @param SS_List|array $items
+     * @param SS_List|DataObject $items
      * @param string $type
      * @param null|string $index
      * @return bool|Result
@@ -184,6 +184,9 @@ class SolrCoreService
     {
         if ($items === null) {
             throw new LogicException('Can\'t manipulate an empty item set');
+        }
+        if (!$items instanceof DataObject && !$items instanceof SS_List) {
+            throw new LogicException('I can only index DataObjects or SS_Lists');
         }
 
         $indexes = $this->getValidIndexes($index);
@@ -230,7 +233,7 @@ class SolrCoreService
     }
 
     /**
-     * @param DataList|ArrayList $items
+     * @param SS_List $items
      * @param $type
      * @param BaseIndex $index
      * @return Result
