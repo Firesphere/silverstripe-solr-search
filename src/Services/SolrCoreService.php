@@ -15,6 +15,8 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\SS_List;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
@@ -185,10 +187,11 @@ class SolrCoreService
         if ($type === static::DELETE_TYPE_ALL) {
             throw new LogicException('To delete all items, call doManipulate directly');
         }
+
         $indexes = $this->getValidIndexes($index);
 
         $result = false;
-        $items = is_iterable($items) ? $items : ArrayList::create([$items]);
+        $items = !($items instanceof SS_List) ? $items : ArrayList::create($items);
 
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
 
