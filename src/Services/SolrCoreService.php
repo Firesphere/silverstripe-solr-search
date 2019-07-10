@@ -251,6 +251,8 @@ class SolrCoreService
             foreach ($delete as $item) {
                 $update->addDeleteById(sprintf('%s-%s', $item['ClassName'], $item['ID']));
             }
+            // Remove the deletion array from memory
+            unset($delete);
         } elseif ($type === static::DELETE_TYPE_ALL) {
             $update->addDeleteQuery('*:*');
         } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
