@@ -61,7 +61,7 @@ class DataObjectExtension extends DataExtension
             try {
                 $service = new SolrCoreService();
                 $service->setInDebugMode(false);
-                $service->updateItems([$owner], SolrCoreService::UPDATE_TYPE);
+                $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
                 // If we don't get an exception, mark the item as clean
                 $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
                 $record->IDs = json_encode($ids);

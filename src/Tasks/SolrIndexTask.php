@@ -14,6 +14,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
@@ -101,7 +102,7 @@ class SolrIndexTask extends BuildTask
             $this->client = $index->getClient();
 
             if (!empty($vars['clear'])) {
-                $this->service->updateItems([], SolrCoreService::DELETE_TYPE_ALL, $indexName);
+                $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $indexName);
             }
 
             // Only index the classes given in the var if needed, should be a single class
