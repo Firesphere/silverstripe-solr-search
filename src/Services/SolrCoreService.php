@@ -170,25 +170,6 @@ class SolrCoreService
     }
 
     /**
-     * Get valid indexes for the project
-     * @param null|string $index
-     * @return array
-     */
-    public function getValidIndexes($index = null): ?array
-    {
-        if ($index && !in_array($index, $this->validIndexes, true)) {
-            throw new LogicException('Incorrect index ' . $index);
-        }
-
-        if ($index) {
-            return [$index];
-        }
-
-        // return the array values, to reset the keys
-        return array_values($this->validIndexes);
-    }
-
-    /**
      * @param ArrayList|DataList|array $items
      * @param string $type
      * @param null|string $index
@@ -226,6 +207,25 @@ class SolrCoreService
         gc_collect_cycles();
 
         return $result;
+    }
+
+    /**
+     * Get valid indexes for the project
+     * @param null|string $index
+     * @return array
+     */
+    public function getValidIndexes($index = null): ?array
+    {
+        if ($index && !in_array($index, $this->validIndexes, true)) {
+            throw new LogicException('Incorrect index ' . $index);
+        }
+
+        if ($index) {
+            return [$index];
+        }
+
+        // return the array values, to reset the keys
+        return array_values($this->validIndexes);
     }
 
     /**
@@ -288,6 +288,25 @@ class SolrCoreService
     }
 
     /**
+     * @return bool
+     */
+    public function isInDebugMode(): bool
+    {
+        return $this->inDebugMode;
+    }
+
+    /**
+     * @param bool $inDebugMode
+     * @return SolrCoreService
+     */
+    public function setInDebugMode(bool $inDebugMode): SolrCoreService
+    {
+        $this->inDebugMode = $inDebugMode;
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getSolrVersion(): int
@@ -329,24 +348,5 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @param bool $inDebugMode
-     * @return SolrCoreService
-     */
-    public function setInDebugMode(bool $inDebugMode): SolrCoreService
-    {
-        $this->inDebugMode = $inDebugMode;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInDebugMode(): bool
-    {
-        return $this->inDebugMode;
     }
 }

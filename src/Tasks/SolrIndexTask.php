@@ -123,6 +123,21 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * @param HTTPRequest $request
+     * @return array
+     */
+    protected function taskSetup($request): array
+    {
+        $vars = $request->getVars();
+        $this->debug = $this->debug || isset($vars['debug']);
+        $group = $vars['group'] ?? 0;
+        $start = $vars['start'] ?? 0;
+        $isGroup = !empty($vars['group']);
+
+        return [$vars, $group, $start, $isGroup];
+    }
+
+    /**
      * @return LoggerInterface|null
      */
     public function getLogger(): ?LoggerInterface
@@ -210,20 +225,5 @@ class SolrIndexTask extends BuildTask
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @param HTTPRequest $request
-     * @return array
-     */
-    protected function taskSetup($request): array
-    {
-        $vars = $request->getVars();
-        $this->debug = $this->debug || isset($vars['debug']);
-        $group = $vars['group'] ?? 0;
-        $start = $vars['start'] ?? 0;
-        $isGroup = !empty($vars['group']);
-
-        return [$vars, $group, $start, $isGroup];
     }
 }

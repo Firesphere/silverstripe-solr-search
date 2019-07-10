@@ -114,6 +114,19 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * @param BaseIndex $instance
+     * @return ConfigStore
+     */
+    protected function createConfigForIndex(BaseIndex $instance): ConfigStore
+    {
+        $storeConfig = SolrCoreService::config()->get('store');
+        $configStore = $this->getStore($storeConfig);
+        $instance->uploadConfig($configStore);
+
+        return $configStore;
+    }
+
+    /**
      * @param $storeConfig
      * @return ConfigStore
      */
@@ -154,18 +167,5 @@ class SolrConfigureTask extends BuildTask
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * @param BaseIndex $instance
-     * @return ConfigStore
-     */
-    protected function createConfigForIndex(BaseIndex $instance): ConfigStore
-    {
-        $storeConfig = SolrCoreService::config()->get('store');
-        $configStore = $this->getStore($storeConfig);
-        $instance->uploadConfig($configStore);
-
-        return $configStore;
     }
 }

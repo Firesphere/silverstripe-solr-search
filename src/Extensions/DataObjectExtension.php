@@ -37,8 +37,6 @@ class DataObjectExtension extends DataExtension
         DirtyClass::class,
         ChangeSet::class,
         ChangeSetItem::class,
-        SiteConfig::class,
-        SiteTree::class
     ];
     protected $canViewClasses = [];
 
@@ -60,9 +58,9 @@ class DataObjectExtension extends DataExtension
 
             $ids = json_decode($record->IDs, 1) ?: [];
             try {
-                $update = new SolrCoreService();
-                $update->setInDebugMode(false);
-                $update->updateItems($owner, SolrCoreService::UPDATE_TYPE);
+                $service = new SolrCoreService();
+                $service->setInDebugMode(false);
+                $service->updateItems([$owner], SolrCoreService::UPDATE_TYPE);
                 // If we don't get an exception, mark the item as clean
                 $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
                 $record->IDs = json_encode($ids);
@@ -131,7 +129,7 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs, 1) ?: [];
         parent::onAfterDelete();
         try {
-            (new SolrCoreService())->updateItems($owner, SolrCoreService::DELETE_TYPE);
+            (new SolrCoreService())->updateItems([$owner], SolrCoreService::DELETE_TYPE);
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {
