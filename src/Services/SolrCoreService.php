@@ -13,7 +13,6 @@ use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -268,7 +267,7 @@ class SolrCoreService
 
     /**
      * @param BaseIndex $index
-     * @param ArrayList|DataList $items
+     * @param SS_List $items
      * @param \Solarium\QueryType\Update\Query\Query $update
      * @throws Exception
      */
@@ -283,7 +282,7 @@ class SolrCoreService
     }
 
     /**
-     * @param ArrayList|DataList $items
+     * @param SS_List $items
      * @return DocumentFactory
      */
     protected function getFactory($items): DocumentFactory

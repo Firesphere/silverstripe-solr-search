@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\ArrayList;
 
 class SolrCoreServiceTest extends SapphireTest
 {
@@ -65,7 +66,7 @@ class SolrCoreServiceTest extends SapphireTest
     {
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $this->service->doManipulate([], SolrCoreService::DELETE_TYPE_ALL, $index);
+        $this->service->doManipulate(ArrayList::create(), SolrCoreService::DELETE_TYPE_ALL, $index);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
     }
 

@@ -11,6 +11,7 @@ use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -129,7 +130,7 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs, 1) ?: [];
         parent::onAfterDelete();
         try {
-            (new SolrCoreService())->updateItems([$owner], SolrCoreService::DELETE_TYPE);
+            (new SolrCoreService())->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
             $record->Clean = DBDatetime::now()->Format(DBDatetime::ISO_DATETIME);
             $record->IDs = json_encode($ids);
         } catch (Exception $e) {
