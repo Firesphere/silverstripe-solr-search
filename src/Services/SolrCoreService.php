@@ -131,7 +131,7 @@ class SolrCoreService
     }
 
     /**
-     * @param $core
+     * @param string $core
      * @return StatusResult|null
      * @deprecated backward compatibility stub
      */
@@ -141,7 +141,7 @@ class SolrCoreService
     }
 
     /**
-     * @param $core
+     * @param string $core
      * @return StatusResult|null
      */
     public function coreStatus($core): ?StatusResult
