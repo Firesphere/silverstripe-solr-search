@@ -61,7 +61,6 @@ class SolrConfigureTask extends BuildTask
         foreach ($indexes as $index) {
             try {
                 $this->configureIndex($index);
-                $this->extend('onAfterSolrConfigureTask', $request);
             } catch (RequestException $e) {
                 $this->logger->error($e->getResponse()->getBody()->getContents());
                 $this->logger->error(sprintf('Core loading failed for %s', $index));

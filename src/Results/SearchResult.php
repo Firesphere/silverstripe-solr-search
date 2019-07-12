@@ -117,17 +117,18 @@ class SearchResult
         $idField = SolrCoreService::ID_FIELD;
         $classIDField = SolrCoreService::CLASS_ID_FIELD;
         foreach ($matches as $match) {
+            $item = $match;
             if (!$match instanceof DataObject) {
                 $class = $match->ClassName;
                 /** @var DataObject $item */
                 $item = $class::get()->byID($match->{$classIDField});
-            } else {
-                $item = $match;
             }
             if ($item && $item->exists()) {
                 $this->createExcerpt($idField, $match, $item);
                 $items[] = $item;
             }
+            unset($match);
+            $item->destroy();
         }
 
         return ArrayList::create($items);
