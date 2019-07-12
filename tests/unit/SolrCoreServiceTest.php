@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
-use Director;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
@@ -15,7 +14,6 @@ use GuzzleHttp\Psr7\Response;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use Solarium\Core\Client\Client;
@@ -72,7 +70,7 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
 
         $result = $this->service->updateItems($items->first(), SolrCoreService::UPDATE_TYPE, CircleCITestIndex::class);
-        Debug::dump($result);
+        var_dump($result);
 //        $this->assertEquals(1, $index->doSearch($query)->getTotalItems());
     }
 
