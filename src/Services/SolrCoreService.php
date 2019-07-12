@@ -7,12 +7,14 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use GuzzleHttp\HandlerStack;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -315,15 +317,20 @@ class SolrCoreService
     }
 
     /**
+     * @param HandlerStack|null $handler Used for testing the solr version
      * @return int
      */
-    public function getSolrVersion(): int
+    public function getSolrVersion($handler = null): int
     {
         $config = self::config()->get('config');
         $firstEndpoint = array_shift($config['endpoint']);
         $clientConfig = [
             'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
         ];
+
+        if ($handler) {
+            $clientConfig['handler'] = $handler;
+        }
 
         $client = new \GuzzleHttp\Client($clientConfig);
 

@@ -4,10 +4,14 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
+use Director;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -112,6 +116,30 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertInstanceOf(Client::class, $client);
         $service = $this->service->setClient($client);
         $this->assertInstanceOf(SolrCoreService::class, $service);
+    }
+
+    public function testGetSolrVersion()
+    {
+        $this->assertEquals(5, $this->service->getSolrVersion());
+        $version4 = [
+            'responseHeader' =>
+                [
+                    'status' => 0,
+                    'QTime' => 10,
+                ],
+            'mode' => 'std',
+            'solr_home' => '/var/solr/data',
+            'lucene' =>
+                [
+                    'solr-spec-version' => '4.3.2',
+                ]
+        ];
+        $mock = new MockHandler([
+            new Response(200, ['X-Foo' => 'Bar'], json_encode($version4)),
+        ]);
+        $handler = HandlerStack::create($mock);
+
+        $this->assertEquals(4, $this->service->getSolrVersion($handler));
     }
 
     protected function setUp()
