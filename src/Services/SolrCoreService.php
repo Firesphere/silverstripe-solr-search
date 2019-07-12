@@ -193,6 +193,7 @@ class SolrCoreService
         $indexes = $this->getValidIndexes($index);
 
         $result = false;
+        $items = ($items instanceof DataObject) ? [$items] : $items;
         $items = ($items instanceof SS_List) ? $items : ArrayList::create($items);
 
         $hierarchy = SearchIntrospection::hierarchy($items->first()->ClassName);
