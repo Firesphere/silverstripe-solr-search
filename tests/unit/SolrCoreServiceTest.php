@@ -68,10 +68,6 @@ class SolrCoreServiceTest extends SapphireTest
 
         $this->service->updateItems($items, SolrCoreService::DELETE_TYPE, CircleCITestIndex::class);
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
-
-        $result = $this->service->updateItems($items->first(), SolrCoreService::UPDATE_TYPE, CircleCITestIndex::class);
-        var_dump($result);
-//        $this->assertEquals(1, $index->doSearch($query)->getTotalItems());
     }
 
     public function testUpdateItemsEmptyArray()
