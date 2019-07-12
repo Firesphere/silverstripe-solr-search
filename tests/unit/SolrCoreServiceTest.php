@@ -14,6 +14,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
+use Solarium\Core\Client\Client;
 
 class SolrCoreServiceTest extends SapphireTest
 {
@@ -103,6 +104,14 @@ class SolrCoreServiceTest extends SapphireTest
         $status2 = $this->service->coreStatus(CircleCITestIndex::class);
         $this->assertEquals(0, $status2->getUptime());
         $this->assertNotEquals($status1->getUptime(), $status2->getUptime());
+    }
+
+    public function testGetSetClient()
+    {
+        $client = $this->service->getClient();
+        $this->assertInstanceOf(Client::class, $client);
+        $service = $this->service->setClient($client);
+        $this->assertInstanceOf(SolrCoreService::class, $service);
     }
 
     protected function setUp()
