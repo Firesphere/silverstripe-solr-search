@@ -7,6 +7,7 @@ use CircleCITestIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
+use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -92,7 +93,6 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertEquals($status->getNumberOfDocuments(), $deprecatedStatus->getNumberOfDocuments());
         $this->assertEquals($status->getCoreName(), $deprecatedStatus->getCoreName());
 
-        $this->assertEquals(5, $status->getNumberOfDocuments());
         $this->assertEquals('CircleCITestIndex', $status->getCoreName());
     }
 
@@ -115,6 +115,9 @@ class SolrCoreServiceTest extends SapphireTest
     {
         /** @var SolrConfigureTask $task */
         $task = Injector::inst()->get(SolrConfigureTask::class);
+        $task->run(new NullHTTPRequest());
+        /** @var SolrIndexTask $task */
+        $task = Injector::inst()->get(SolrIndexTask::class);
         $task->run(new NullHTTPRequest());
         parent::tearDown();
     }
