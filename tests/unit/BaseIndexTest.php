@@ -199,6 +199,29 @@ class BaseIndexTest extends SapphireTest
         $this->assertContains('SubsiteID', $this->index->getFilterFields());
     }
 
+    public function testSetFacets()
+    {
+        $this->index->addFacetField(\Page::class, ['Title' => 'Title', 'Field' => 'Content']);
+
+        $expected = [
+            'Page' => [
+                'Title' => 'Title',
+                'Field' => 'Content'
+            ]
+        ];
+        $this->assertEquals($expected, $this->index->getFacetFields());
+    }
+
+    public function testAddCopyField()
+    {
+        $this->index->addCopyField('myfield', ['Conten']);
+        $expected = [
+            '_text' => ['*'],
+            'myfield' => ['Content']
+        ];
+        $this->assertEquals($expected, $this->index->getCopyFields());
+    }
+
     protected function setUp()
     {
         $this->index = Injector::inst()->get(TestIndex::class);
