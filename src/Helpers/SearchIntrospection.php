@@ -51,7 +51,7 @@ class SearchIntrospection
      * @return array - Integer keys, String values as classes sorted by depth (most super first)
      * @throws ReflectionException
      */
-    public static function hierarchy($class, $includeSubclasses = true, $dataOnly = false): array
+    public static function getHierarchy($class, $includeSubclasses = true, $dataOnly = false): array
     {
         // Generate the unique key for this class and it's call type
         // It's a short-lived cache key for the duration of the request
@@ -171,7 +171,7 @@ class SearchIntrospection
     {
         $source = $this->getSourceName($source);
 
-        foreach (self::hierarchy($source) as $dataClass) {
+        foreach (self::getHierarchy($source) as $dataClass) {
             $options = [];
             $singleton = singleton($dataClass);
             $schema = DataObject::getSchema();
@@ -305,7 +305,7 @@ class SearchIntrospection
                 $fieldOptions = [];
             }
             $class = $this->getSourceName($class);
-            $dataclasses = self::hierarchy($class);
+            $dataclasses = self::getHierarchy($class);
 
             while (count($dataclasses)) {
                 $dataclass = array_shift($dataclasses);

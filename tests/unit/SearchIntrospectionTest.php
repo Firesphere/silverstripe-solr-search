@@ -38,11 +38,11 @@ class SearchIntrospectionTest extends SapphireTest
             VirtualPage::class,
         ];
 
-        $test = SearchIntrospection::hierarchy(Page::class, true, false);
+        $test = SearchIntrospection::getHierarchy(Page::class, true, false);
         $this->assertEquals($expected, $test);
-        $test2 = SearchIntrospection::hierarchy(Page::class, false, true);
+        $test2 = SearchIntrospection::getHierarchy(Page::class, false, true);
         $this->assertEquals([SiteTree::class], $test2);
-        $test3 = SearchIntrospection::hierarchy(Page::class, false, false);
+        $test3 = SearchIntrospection::getHierarchy(Page::class, false, false);
         $this->assertEquals([SiteTree::class, Page::class], $test3);
     }
 
