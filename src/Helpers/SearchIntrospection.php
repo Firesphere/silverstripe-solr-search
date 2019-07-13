@@ -27,37 +27,18 @@ class SearchIntrospection
     protected $found = [];
 
     /**
-     * Check if class is subclass of (a) the class in $of, or (b) any of the classes in the array $of
+     * Check if class is subclass of (a) the class in $instanceOf, or (b) any of the classes in the array $instanceOf
      * @param string $class Name of the class to test
-     * @param array|string $of Class ancestry it should be in
+     * @param array|string $instanceOf Class ancestry it should be in
      * @return bool
      * @todo remove in favour of DataObjectSchema
      * @static
      */
-    public static function isSubclassOf($class, $of)
+    public static function isSubclassOf($class, $instanceOf)
     {
         $ancestry = self::$ancestry[$class] ?? self::$ancestry[$class] = ClassInfo::ancestry($class);
 
-        return is_array($of) ? (bool)array_intersect($of, $ancestry) : array_key_exists($of, $ancestry);
-    }
-
-    /**
-     * Does this class, it's parent (or optionally one of it's children) have the passed extension attached?
-     * @param $class
-     * @param $extension
-     * @param bool $includeSubclasses
-     * @return bool
-     * @throws ReflectionException
-     */
-    public static function hasExtension($class, $extension, $includeSubclasses = true)
-    {
-        foreach (self::hierarchy($class, $includeSubclasses) as $relatedclass) {
-            if ($relatedclass::has_extension($extension)) {
-                return true;
-            }
-        }
-
-        return false;
+        return is_array($instanceOf) ? (bool)array_intersect($instanceOf, $ancestry) : array_key_exists($instanceOf, $ancestry);
     }
 
     /**
