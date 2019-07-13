@@ -48,11 +48,6 @@ class SolrIndexTask extends BuildTask
     protected $logger;
 
     /**
-     * @var Client
-     */
-    protected $client;
-
-    /**
      * @var SolrCoreService
      */
     protected $service;
@@ -91,11 +86,10 @@ class SolrIndexTask extends BuildTask
         foreach ($indexes as $indexName) {
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
-            $this->client = $index->getClient();
 
             if (!empty($vars['clear'])) {
                 $this->logger->info(sprintf('Clearing index %s', $indexName));
-                $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $indexName);
+                $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
             }
 
             // Only index the classes given in the var if needed, should be a single class
@@ -126,7 +120,7 @@ class SolrIndexTask extends BuildTask
         $this->debug = $this->debug || isset($vars['debug']);
         $group = $vars['group'] ?? 0;
         $start = $vars['start'] ?? 0;
-        $isGroup = !empty($vars['group']);
+        $isGroup = isset($vars['group']);
 
         return [$vars, $group, $start, $isGroup];
     }
@@ -190,35 +184,16 @@ class SolrIndexTask extends BuildTask
             ->filter($filter)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
-        $update = $this->getClient()->createUpdate();
+        $update = $index->getClient()->createUpdate();
         if ($items->count()) {
             $this->service->setInDebugMode($this->debug);
             $this->service->updateIndex($index, $items, $update);
         }
         $update->addCommit();
-        $this->client->update($update);
+        $index->getClient()->update($update);
         $group++;
 
         return $group;
-    }
-
-    /**
-     * @return Client
-     */
-    public function getClient(): Client
-    {
-        return $this->client;
-    }
-
-    /**
-     * @param Client $client
-     * @return SolrIndexTask
-     */
-    public function setClient(Client $client): SolrIndexTask
-    {
-        $this->client = $client;
-
-        return $this;
     }
 
     /**
