@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -11,7 +10,6 @@ use SilverStripe\Dev\SapphireTest;
 
 class SolrIndexTaskTest extends SapphireTest
 {
-
     public function testRun()
     {
         $getVars = [

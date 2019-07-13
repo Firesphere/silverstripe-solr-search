@@ -148,9 +148,6 @@ class SearchIntrospection
                     $next = $this->getRelationIntrospection($source, $lookup, $next);
                 }
 
-                if (!$next) {
-                    return $next;
-                } // Early out to avoid excessive empty looping
                 $sources = $next;
             }
         }
