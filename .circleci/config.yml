@@ -100,7 +100,7 @@ jobs:
             set +e
             su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
       - run:
-          name: Code coverage reportes
+          name: Code coverage reports
           command: |
             wget https://scrutinizer-ci.com/ocular.phar
             php ocular.phar code-coverage:upload --format=php-clover clover.xml
