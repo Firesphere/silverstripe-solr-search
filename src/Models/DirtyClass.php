@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Models;
 
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBDatetime;
 
 /**
  * Class \Firesphere\SolrSearch\Models\DirtyClass
@@ -22,8 +21,7 @@ class DirtyClass extends DataObject
      * @var array
      */
     private static $db = [
-        'Dirty' => DBDatetime::class,
-        'Clean' => DBDatetime::class,
+        'Type'  => 'Varchar(6)',
         'Class' => 'Varchar(512)',
         'IDs'   => 'Varchar(255)',
     ];
