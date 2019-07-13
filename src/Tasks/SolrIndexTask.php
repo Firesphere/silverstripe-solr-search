@@ -112,7 +112,7 @@ class SolrIndexTask extends BuildTask
             $group = ($start >= $group && count($classes) === 1) ? $start : $group;
 
             foreach ($classes as $class) {
-                $this->reindexClass($isGroup, $class, $index, $group);
+                $this->indexClass($isGroup, $class, $index, $group);
             }
         }
         $this->getLogger()->info(
@@ -139,9 +139,9 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
-     * @return LoggerInterface|null
+     * @return LoggerInterface
      */
-    public function getLogger(): ?LoggerInterface
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -153,7 +153,7 @@ class SolrIndexTask extends BuildTask
      * @param int $group
      * @throws Exception
      */
-    private function reindexClass($isGroup, $class, BaseIndex $index, int $group): void
+    private function indexClass($isGroup, $class, BaseIndex $index, int $group): void
     {
         $group = $group ?: 0;
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
@@ -197,13 +197,13 @@ class SolrIndexTask extends BuildTask
             ->filter($filter)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
+        $update = $this->getClient()->createUpdate();
         if ($items->count()) {
-            $update = $this->getClient()->createUpdate();
             $this->service->setInDebugMode($this->debug);
             $this->service->updateIndex($index, $items, $update);
-            $update->addCommit();
-            $this->client->update($update);
         }
+        $update->addCommit();
+        $this->client->update($update);
         $group++;
 
         return $group;
