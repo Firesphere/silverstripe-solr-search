@@ -38,80 +38,10 @@ class SearchIntrospection
     {
         $ancestry = self::$ancestry[$class] ?? self::$ancestry[$class] = ClassInfo::ancestry($class);
 
-        return is_array($instanceOf) ? (bool)array_intersect($instanceOf, $ancestry) : array_key_exists($instanceOf, $ancestry);
+        return is_array($instanceOf) ?
+            (bool)array_intersect($instanceOf, $ancestry) :
+            array_key_exists($instanceOf, $ancestry);
     }
-
-    /**
-     * Get all the classes involved in a DataObject hierarchy - both super and optionally subclasses
-     *
-     * @static
-     * @param string $class - The class to query
-     * @param bool $includeSubclasses - True to return subclasses as well as super classes
-     * @param bool $dataOnly - True to only return classes that have tables
-     * @return array - Integer keys, String values as classes sorted by depth (most super first)
-     * @throws ReflectionException
-     */
-    public static function getHierarchy($class, $includeSubclasses = true, $dataOnly = false): array
-    {
-        // Generate the unique key for this class and it's call type
-        // It's a short-lived cache key for the duration of the request
-        $cacheKey = sprintf('%s-%s-%s', $class, $includeSubclasses ? 'sc' : 'an', $dataOnly ? 'do' : 'al');
-
-        if (!isset(self::$hierarchy[$cacheKey])) {
-            $classes = array_values(ClassInfo::ancestry($class));
-            $classes = self::getSubClasses($class, $includeSubclasses, $classes);
-
-            $classes = array_unique($classes);
-            $classes = self::excludeDataObjectIDx($classes);
-
-            if ($dataOnly) {
-                foreach ($classes as $i => $schemaClass) {
-                    if (!DataObject::getSchema()->classHasTable($schemaClass)) {
-                        unset($classes[$i]);
-                    }
-                }
-            }
-
-            self::$hierarchy[$cacheKey] = $classes;
-
-            return $classes;
-        }
-
-        return self::$hierarchy[$cacheKey];
-    }
-
-    /**
-     * @param $class
-     * @param $includeSubclasses
-     * @param array $classes
-     * @return array
-     * @throws ReflectionException
-     */
-    protected static function getSubClasses($class, $includeSubclasses, array $classes): array
-    {
-        if ($includeSubclasses) {
-            $subClasses = ClassInfo::subclassesFor($class);
-            $classes = array_merge($classes, array_values($subClasses));
-        }
-
-        return $classes;
-    }
-
-    /**
-     * @param array $classes
-     * @return array
-     */
-    protected static function excludeDataObjectIDx(array $classes): array
-    {
-        // Remove all classes below DataObject from the list
-        $idx = array_search(DataObject::class, $classes, true);
-        if ($idx !== false) {
-            array_splice($classes, 0, $idx + 1);
-        }
-
-        return $classes;
-    }
-
 
     /**
      * @param $field
@@ -216,6 +146,77 @@ class SearchIntrospection
         $explodedSource = explode('_|_', $source);
 
         return $explodedSource[0];
+    }
+
+    /**
+     * Get all the classes involved in a DataObject hierarchy - both super and optionally subclasses
+     *
+     * @static
+     * @param string $class - The class to query
+     * @param bool $includeSubclasses - True to return subclasses as well as super classes
+     * @param bool $dataOnly - True to only return classes that have tables
+     * @return array - Integer keys, String values as classes sorted by depth (most super first)
+     * @throws ReflectionException
+     */
+    public static function getHierarchy($class, $includeSubclasses = true, $dataOnly = false): array
+    {
+        // Generate the unique key for this class and it's call type
+        // It's a short-lived cache key for the duration of the request
+        $cacheKey = sprintf('%s-%s-%s', $class, $includeSubclasses ? 'sc' : 'an', $dataOnly ? 'do' : 'al');
+
+        if (!isset(self::$hierarchy[$cacheKey])) {
+            $classes = array_values(ClassInfo::ancestry($class));
+            $classes = self::getSubClasses($class, $includeSubclasses, $classes);
+
+            $classes = array_unique($classes);
+            $classes = self::excludeDataObjectIDx($classes);
+
+            if ($dataOnly) {
+                foreach ($classes as $i => $schemaClass) {
+                    if (!DataObject::getSchema()->classHasTable($schemaClass)) {
+                        unset($classes[$i]);
+                    }
+                }
+            }
+
+            self::$hierarchy[$cacheKey] = $classes;
+
+            return $classes;
+        }
+
+        return self::$hierarchy[$cacheKey];
+    }
+
+    /**
+     * @param $class
+     * @param $includeSubclasses
+     * @param array $classes
+     * @return array
+     * @throws ReflectionException
+     */
+    protected static function getSubClasses($class, $includeSubclasses, array $classes): array
+    {
+        if ($includeSubclasses) {
+            $subClasses = ClassInfo::subclassesFor($class);
+            $classes = array_merge($classes, array_values($subClasses));
+        }
+
+        return $classes;
+    }
+
+    /**
+     * @param array $classes
+     * @return array
+     */
+    protected static function excludeDataObjectIDx(array $classes): array
+    {
+        // Remove all classes below DataObject from the list
+        $idx = array_search(DataObject::class, $classes, true);
+        if ($idx !== false) {
+            array_splice($classes, 0, $idx + 1);
+        }
+
+        return $classes;
     }
 
     /**

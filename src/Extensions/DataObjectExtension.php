@@ -15,7 +15,6 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
@@ -78,32 +77,6 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
-     * @throws ValidationException
-     */
-    public function onAfterDelete(): void
-    {
-        /** @var DataObject $owner */
-        $owner = $this->owner;
-        /** @var DirtyClass $record */
-        $record = $this->getDirtyClass($owner, self::DELETE);
-
-        $ids = json_decode($record->IDs, 1) ?: [];
-        parent::onAfterDelete();
-        try {
-            (new SolrCoreService())->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
-            // If successful, remove it from the array
-            // Added bonus, array_flip removes duplicates
-            $values = array_flip($ids);
-            unset($values[$owner->ID]);
-
-            $record->IDs = json_encode(array_keys($values));
-            $record->write();
-        } catch (Exception $error) {
-            $this->registerException($ids, $record, $error);
-        }
-    }
-
-    /**
      * @param DataObject $owner
      * @param string $type
      * @return DirtyClass
@@ -117,7 +90,7 @@ class DataObjectExtension extends DataExtension
         if (!$record || !$record->exists()) {
             $record = DirtyClass::create([
                 'Class' => $owner->ClassName,
-                'Type' => $type
+                'Type'  => $type
             ]);
             $record->write();
         }
@@ -147,6 +120,32 @@ class DataObjectExtension extends DataExtension
             )
         );
         $logger->error($error->getMessage());
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function onAfterDelete(): void
+    {
+        /** @var DataObject $owner */
+        $owner = $this->owner;
+        /** @var DirtyClass $record */
+        $record = $this->getDirtyClass($owner, self::DELETE);
+
+        $ids = json_decode($record->IDs, 1) ?: [];
+        parent::onAfterDelete();
+        try {
+            (new SolrCoreService())->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
+            // If successful, remove it from the array
+            // Added bonus, array_flip removes duplicates
+            $values = array_flip($ids);
+            unset($values[$owner->ID]);
+
+            $record->IDs = json_encode(array_keys($values));
+            $record->write();
+        } catch (Exception $error) {
+            $this->registerException($ids, $record, $error);
+        }
     }
 
     /**

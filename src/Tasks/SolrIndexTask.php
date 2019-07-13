@@ -5,7 +5,6 @@ namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\RequestException;
@@ -18,7 +17,6 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
-use Solarium\Core\Client\Client;
 
 class SolrIndexTask extends BuildTask
 {
@@ -64,6 +62,28 @@ class SolrIndexTask extends BuildTask
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
         $this->setDebug(Director::isDev() || Director::is_cli());
+    }
+
+    /**
+     * @param SolrCoreService $service
+     * @return SolrIndexTask
+     */
+    public function setService(SolrCoreService $service): SolrIndexTask
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $debug
+     * @return SolrIndexTask
+     */
+    public function setDebug(bool $debug): SolrIndexTask
+    {
+        $this->debug = $debug;
+
+        return $this;
     }
 
     /**
@@ -134,6 +154,17 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * @param LoggerInterface|null $logger
+     * @return SolrIndexTask
+     */
+    public function setLogger(?LoggerInterface $logger): SolrIndexTask
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
      * @param $isGroup
      * @param $class
      * @param BaseIndex $index
@@ -194,38 +225,5 @@ class SolrIndexTask extends BuildTask
         $group++;
 
         return $group;
-    }
-
-    /**
-     * @param LoggerInterface|null $logger
-     * @return SolrIndexTask
-     */
-    public function setLogger(?LoggerInterface $logger): SolrIndexTask
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * @param bool $debug
-     * @return SolrIndexTask
-     */
-    public function setDebug(bool $debug): SolrIndexTask
-    {
-        $this->debug = $debug;
-
-        return $this;
-    }
-
-    /**
-     * @param SolrCoreService $service
-     * @return SolrIndexTask
-     */
-    public function setService(SolrCoreService $service): SolrIndexTask
-    {
-        $this->service = $service;
-
-        return $this;
     }
 }
