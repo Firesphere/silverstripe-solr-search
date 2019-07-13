@@ -38,11 +38,6 @@ class SolrIndexTask extends BuildTask
     protected $description = 'Add or update documents to an existing Solr core.';
 
     /**
-     * @var SearchIntrospection
-     */
-    protected $introspection;
-
-    /**
      * @var bool
      */
     protected $debug = false;
