@@ -71,8 +71,8 @@ class DataObjectExtension extends DataExtension
 
                 $record->IDs = json_encode(array_keys($values));
                 $record->write();
-            } catch (Exception $e) {
-                $this->registerException($ids, $record, $e);
+            } catch (Exception $error) {
+                $this->registerException($ids, $record, $error);
             }
         }
     }
@@ -98,8 +98,8 @@ class DataObjectExtension extends DataExtension
 
             $record->IDs = json_encode(array_keys($values));
             $record->write();
-        } catch (Exception $e) {
-            $this->registerException($ids, $record, $e);
+        } catch (Exception $error) {
+            $this->registerException($ids, $record, $error);
         }
     }
 
@@ -130,7 +130,7 @@ class DataObjectExtension extends DataExtension
      * @param $record
      * @param Exception $e
      */
-    protected function registerException(array $ids, $record, Exception $e): void
+    protected function registerException(array $ids, $record, Exception $error): void
     {
         /** @var DataObject $owner */
         $owner = $this->owner;
@@ -146,7 +146,7 @@ class DataObjectExtension extends DataExtension
                 $owner->ID
             )
         );
-        $logger->error($e->getMessage());
+        $logger->error($error->getMessage());
     }
 
     /**

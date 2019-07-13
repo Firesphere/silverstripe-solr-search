@@ -61,8 +61,8 @@ class SolrConfigureTask extends BuildTask
         foreach ($indexes as $index) {
             try {
                 $this->configureIndex($index);
-            } catch (RequestException $e) {
-                $this->logger->error($e->getResponse()->getBody()->getContents());
+            } catch (RequestException $error) {
+                $this->logger->error($error->getResponse()->getBody()->getContents());
                 $this->logger->error(sprintf('Core loading failed for %s', $index));
                 // Continue to the next index
                 continue;
@@ -107,8 +107,8 @@ class SolrConfigureTask extends BuildTask
         try {
             $service->$method($index, $configStore);
             $this->logger->info(sprintf('Core %s successfully %s', $index, $message));
-        } catch (RequestException $e) {
-            throw new RuntimeException($e);
+        } catch (RequestException $error) {
+            throw new RuntimeException($error);
         }
     }
 
