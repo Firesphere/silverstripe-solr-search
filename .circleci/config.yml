@@ -45,6 +45,8 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - vendor
             - app
+            - resources
+            - _resources
       - run: composer update -n --prefer-dist --ignore-platform-reqs
       - run: composer vendor-expose
       - run:
