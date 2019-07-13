@@ -39,6 +39,8 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - silverstripe-search-cache-
       - run: composer require silverstripe/recipe-cms
+      - run: composer update -n --prefer-dist --ignore-platform-reqs
+      - run: composer vendor-expose
       - save_cache:
           key: silverstripe-search-cache-{{ checksum "composer.lock" }}
           paths:
@@ -47,8 +49,6 @@ jobs:
             - app
             - resources
             - _resources
-      - run: composer update -n --prefer-dist --ignore-platform-reqs
-      - run: composer vendor-expose
       - run:
           name: Setup Integration Pre-requisites
           command: |
