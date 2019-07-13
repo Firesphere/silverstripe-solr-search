@@ -88,7 +88,7 @@ class SolrIndexTask extends BuildTask
             $index = Injector::inst()->get($indexName);
 
             if (!empty($vars['clear'])) {
-                $this->logger->info(sprintf('Clearing index %s', $indexName));
+                $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
                 $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
             }
 
