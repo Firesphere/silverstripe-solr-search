@@ -32,7 +32,7 @@ jobs:
       - checkout
       - run: touch /var/www/html/error.log
       - run: touch composer.lock # Create an empty lockfile
-      - run: echo '[ $CIRCLE_BUILD_NUM ]' > composer.lock
+      - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
             - silverstripe-search-cache-{{ checksum "composer.lock" }}
