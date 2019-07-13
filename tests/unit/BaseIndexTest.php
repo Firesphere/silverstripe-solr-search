@@ -214,7 +214,7 @@ class BaseIndexTest extends SapphireTest
 
     public function testAddCopyField()
     {
-        $this->index->addCopyField('myfield', ['Conten']);
+        $this->index->addCopyField('myfield', ['Content']);
         $expected = [
             '_text' => ['*'],
             'myfield' => ['Content']
