@@ -69,9 +69,6 @@ class SolrIndexTask extends BuildTask
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
         $this->setDebug(Director::isDev() || Director::is_cli());
-
-
-        $this->introspection = new SearchIntrospection();
     }
 
     /**
@@ -97,6 +94,7 @@ class SolrIndexTask extends BuildTask
             $this->client = $index->getClient();
 
             if (!empty($vars['clear'])) {
+                $this->logger->info(sprintf('Clearing index %s', $indexName));
                 $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $indexName);
             }
 
