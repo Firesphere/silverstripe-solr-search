@@ -71,9 +71,9 @@ class SolrIndexTask extends BuildTask
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
-        $this->service = Injector::inst()->get(SolrCoreService::class);
-        $this->logger = Injector::inst()->get(LoggerInterface::class);
-        $this->debug = (Director::isDev() || Director::is_cli());
+        $this->setService(Injector::inst()->get(SolrCoreService::class));
+        $this->setLogger(Injector::inst()->get(LoggerInterface::class));
+        $this->setDebug(Director::isDev() || Director::is_cli());
 
 
         $this->introspection = new SearchIntrospection();
@@ -224,6 +224,39 @@ class SolrIndexTask extends BuildTask
     public function setClient(Client $client): SolrIndexTask
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return SolrIndexTask
+     */
+    public function setLogger(?LoggerInterface $logger): SolrIndexTask
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $debug
+     * @return SolrIndexTask
+     */
+    public function setDebug(bool $debug): SolrIndexTask
+    {
+        $this->debug = $debug;
+
+        return $this;
+    }
+
+    /**
+     * @param SolrCoreService $service
+     * @return SolrIndexTask
+     */
+    public function setService(SolrCoreService $service): SolrIndexTask
+    {
+        $this->service = $service;
 
         return $this;
     }
