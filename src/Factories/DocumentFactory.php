@@ -196,7 +196,7 @@ class DocumentFactory
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         while ($value = array_shift($valuesForField)) {
-            if ($this->isValidValue($value, $type)) {
+            if (!$this->isValidValue($value, $type)) {
                 continue;
             }
 
@@ -217,13 +217,13 @@ class DocumentFactory
 
     protected function isValidValue($value, $type)
     {
-        // Value must be set and a string
-        if (!$value || !is_string($value)) {
+        // Value must be set and a string type value
+        if (!$value || !is_string((string)$value)) {
             return false;
         }
 
         // And be a number if numeric type
-        return (!is_numeric($value) && in_array($type, static::$numerals, true));
+        return !(!is_numeric($value) && in_array($type, static::$numerals, true));
     }
 
     /**
