@@ -150,6 +150,10 @@ class SolrIndexTask extends BuildTask
      */
     public function getLogger(): LoggerInterface
     {
+        // Constructor should take care of this, but it's a good safeguard
+        if (!$this->logger) {
+            $this->setLogger(Injector::inst()->get(LoggerInterface::class));
+        }
         return $this->logger;
     }
 
