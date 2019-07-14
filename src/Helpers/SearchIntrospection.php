@@ -290,7 +290,7 @@ class SearchIntrospection
      * @return array
      * @throws ReflectionException
      */
-    protected function getFieldOptions($field, array $sources, $fullfield, array $found)
+    protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
             if (is_int($class)) {
@@ -303,7 +303,36 @@ class SearchIntrospection
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
 
-            $found = $this->buildFieldForClass($field, $fullfield, $dataclasses, $class, $fieldOptions);
+            while (count($dataclasses)) {
+                $dataclass = array_shift($dataclasses);
+
+                $fields = DataObject::getSchema()->databaseFields($class);
+
+                [$type, $fieldOptions] = $this->getCallType($field, $fields, $fieldOptions, $dataclass);
+
+                if ($type) {
+                    // Don't search through child classes of a class we matched on. TODO: Should we?
+                    $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
+                    // Trim arguments off the type string
+                    if (preg_match('/^(\w+)\(/', $type, $match)) {
+                        $type = $match[1];
+                    }
+                    // Get the origin
+                    $origin = $fieldOptions['origin'] ?? $dataclass;
+
+                    $found["{$origin}_{$fullfield}"] = array(
+                        'name'         => "{$origin}_{$fullfield}",
+                        'field'        => $field,
+                        'fullfield'    => $fullfield,
+                        'origin'       => $origin,
+                        'class'        => $dataclass,
+                        'lookup_chain' => $fieldOptions['lookup_chain'],
+                        'type'         => $type,
+                        'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
+                    );
+                }
+            }
+            $this->found[$class . '_' . $fullfield] = $found;
         }
 
 
