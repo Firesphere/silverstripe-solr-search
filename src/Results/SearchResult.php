@@ -300,11 +300,8 @@ class SearchResult
     {
         /** @var array|Collation[] $collated */
         if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
-            // Because we don't know the key value, we need to loop and just grab the first one
-            foreach ($collated[0]->getCorrections() as $original => $correction) {
-                $this->collatedSpellcheck = $correction;
-                break;
-            }
+            $key = array_keys($collated);
+            $this->collatedSpellcheck = $collated[$key[0]];
         }
 
         return $this;
