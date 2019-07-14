@@ -89,11 +89,12 @@ jobs:
             chown -R solr:www-data /var/www/html
             chmod -R u+rwxs,g+rwxs /var/www/html
       - run:
-          name: Setup Code Climate test-reporter
+          name: Setup Code Climate and Scrutinizer test-reporter
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
-      - run: ./cc-test-reporter before-build
+            ./cc-test-reporter before-build
+            wget https://scrutinizer-ci.com/ocular.phar
       - run:
           name: Run tests
           command: |
@@ -102,7 +103,6 @@ jobs:
       - run:
           name: Code coverage reports
           command: |
-            wget https://scrutinizer-ci.com/ocular.phar
             php ocular.phar code-coverage:upload --format=php-clover clover.xml
             bash <(curl -s https://codecov.io/bash) -f clover.xml
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?

@@ -196,21 +196,19 @@ class DocumentFactory
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         while ($value = array_shift($valuesForField)) {
-            if (!$value) {
+            if (
+                !$value ||
+                !is_string($value) ||
+                (!is_numeric($value) && in_array($type, static::$numerals, true))
+            ) {
                 continue;
             }
+
             /* Solr requires dates in the form 1995-12-31T23:59:59Z */
             if ($type === 'tdate' || $value instanceof DBDate) {
                 $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
             }
 
-            /* Solr requires numbers to be valid if presented, not just empty */
-            if (!is_numeric($value) && in_array($type, static::$numerals, true)) {
-                continue;
-            }
-            if (!is_string($value) && !is_array($value)) {
-                continue;
-            }
 
             $name = explode('\\', $field['name']);
             $name = end($name);
