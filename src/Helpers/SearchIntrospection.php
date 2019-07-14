@@ -297,8 +297,8 @@ class SearchIntrospection
                 $class = $fieldOptions;
                 $fieldOptions = [];
             }
-            if (isset($this->found[$class . '_' . $field])) {
-                return $this->found[$class . $field];
+            if (!empty($this->found[$class . '_' . $field])) {
+                return $this->found[$class . '_' . $field];
             }
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
@@ -332,7 +332,7 @@ class SearchIntrospection
                     );
                 }
             }
-            $this->found[$class . '_' .  $fullfield] = $found;
+            $this->found[$class . '_' . $fullfield] = $found;
         }
 
 
