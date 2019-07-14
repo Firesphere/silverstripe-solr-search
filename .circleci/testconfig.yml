@@ -1,3 +1,0 @@
-SilverStripe\Control\Director:
-  rules:
-    'solrconfig//$Action//$ID//$OtherID': 'Firesphere\SolrSearch\Tests\TestPostController'

@@ -54,7 +54,6 @@ jobs:
           command: |
             cp .circleci/.env.test ./.env
             cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
-            cp .circleci/testconfig.yml app/_config/testconfig.yml
             cp .circleci/Subsite.phpsrc app/src/Subsite.php
             cp .circleci/TestIndexTwo.yml app/_config/search.yml
       - run: vendor/bin/sake dev/build flush=all skipannotation=true

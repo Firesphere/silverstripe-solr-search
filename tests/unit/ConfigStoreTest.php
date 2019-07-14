@@ -7,8 +7,9 @@ use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Psr\Http\Message\ResponseInterface;
 use SilverStripe\Control\Director;
-use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
+use TestPostController;
 
 class ConfigStoreTest extends SapphireTest
 {
@@ -55,9 +56,23 @@ class ConfigStoreTest extends SapphireTest
 
     public function testPostUploadString()
     {
-        $store = new PostConfigStore(['uri' => 'http://192.168.33.5', 'path' => 'solrconfig/configure']);
+        // Just post to whereever is convenient, in this case, home.
+        $store = new PostConfigStore(['uri' => 'http://192.168.33.5', 'path' => '']);
 
-        $response = $store->uploadString('testing', 'test.txt', 'this, is, a, test');
+        // We only care that it _executes_ the post, not what's returned
+        $response = $store->uploadString('home', 'test.txt', 'this, is, a, test');
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testPostUploadFile()
+    {
+        // Just post to whereever is convenient, in this case, home.
+        $store = new PostConfigStore(['uri' => 'http://192.168.33.5', 'path' => '']);
+
+        // We only care that it _executes_ the post, not what's returned
+        $response = $store->uploadFile('home', Director::baseFolder() . 'app/_config/search.yml');
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
