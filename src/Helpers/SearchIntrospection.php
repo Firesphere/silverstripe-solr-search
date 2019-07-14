@@ -303,10 +303,8 @@ class SearchIntrospection
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
 
-            while (count($dataclasses)) {
-                $dataclass = array_shift($dataclasses);
-
-                $fields = DataObject::getSchema()->databaseFields($class);
+            $fields = DataObject::getSchema()->databaseFields($class);
+            while ($dataclass = array_shift($dataclasses)) {
 
                 [$type, $fieldOptions] = $this->getCallType($field, $fields, $fieldOptions, $dataclass);
 
