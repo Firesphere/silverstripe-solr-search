@@ -332,51 +332,6 @@ class SearchIntrospection
 
     /**
      * @param $field
-     * @param $fullfield
-     * @param array $dataclasses
-     * @param string $class
-     * @param array $fieldOptions
-     * @return array|null
-     * @throws ReflectionException
-     */
-    protected function buildFieldForClass($field, $fullfield, $dataclasses, $class, $fieldOptions): ?array
-    {
-        $found = null;
-        while (count($dataclasses)) {
-            $dataclass = array_shift($dataclasses);
-
-            $fields = DataObject::getSchema()->databaseFields($class);
-
-            [$type, $fieldOptions] = $this->getCallType($field, $fields, $fieldOptions, $dataclass);
-
-            if ($type) {
-                // Don't search through child classes of a class we matched on. TODO: Should we?
-                $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
-                // Trim arguments off the type string
-                if (preg_match('/^(\w+)\(/', $type, $match)) {
-                    $type = $match[1];
-                }
-                // Get the origin
-                $origin = $fieldOptions['origin'] ?? $dataclass;
-
-                $found = $this->getFoundOriginData(
-                    $field,
-                    $fullfield,
-                    $fieldOptions,
-                    $origin,
-                    $dataclass,
-                    $type,
-                    $found
-                );
-            }
-        }
-        $this->found[$class . '_' . $fullfield] = $found;
-
-        return $found;
-    }
-
-    /**
-     * @param $field
      * @param array $fields
      * @param array $fieldoptions
      * @param $dataclass
