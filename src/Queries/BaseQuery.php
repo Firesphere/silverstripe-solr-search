@@ -215,7 +215,7 @@ class BaseQuery
      * @param bool|float $fuzzy True or a value to the maximum amount of iterations
      * @return $this
      */
-    public function addTerm($term, $fields = [], $boost = 0, $fuzzy = false): self
+    public function addTerm($term, $fields = [], $boost = 0, $fuzzy = null): self
     {
         $this->terms[] = [
             'text'   => $term,

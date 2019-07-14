@@ -62,7 +62,7 @@ class FulltextSearchExtension extends Extension
      * @return SearchResult|ArrayData|mixed
      * @deprecated This is used as an Fulltext Search compatibility method. Call doSearch instead with the correct Query
      */
-    public function search($query, $start = 0, $limit = 10, $params = [], $spellcheck = true)
+    public function search($query, $start = 0, $limit = 10, $params = [], $spellcheck = null)
     {
         $query->getStart() === $start ?: $query->setStart($start);
         $query->getRows() === $limit ?: $query->setRows($limit);
