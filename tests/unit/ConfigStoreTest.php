@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
+use Psr\Http\Message\ResponseInterface;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Dev\SapphireTest;
@@ -54,10 +55,11 @@ class ConfigStoreTest extends SapphireTest
 
     public function testPostUploadString()
     {
-        $store = new PostConfigStore(['uri' => 'http://localhost', 'path' => 'solrconfig/configure']);
+        $store = new PostConfigStore(['uri' => 'http://192.168.33.5', 'path' => 'solrconfig/configure']);
 
         $response = $store->uploadString('testing', 'test.txt', 'this, is, a, test');
 
-        $this->assertInstanceOf(HTTPResponse::class, $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }
