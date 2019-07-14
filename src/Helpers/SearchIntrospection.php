@@ -320,7 +320,7 @@ class SearchIntrospection
                     // Get the origin
                     $origin = $fieldOptions['origin'] ?? $dataclass;
 
-                    [$fieldOptions, $found] = $this->getFoundOriginData(
+                    $found = $this->getFoundOriginData(
                         $field,
                         $fullfield,
                         $fieldOptions,
@@ -367,7 +367,7 @@ class SearchIntrospection
                 // Get the origin
                 $origin = $fieldOptions['origin'] ?? $dataclass;
 
-                [$fieldOptions, $found] = $this->getFoundOriginData(
+                $found = $this->getFoundOriginData(
                     $field,
                     $fullfield,
                     $fieldOptions,
@@ -469,6 +469,6 @@ class SearchIntrospection
             'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
         ];
 
-        return [$fieldOptions, $found];
+        return $found;
     }
 }
