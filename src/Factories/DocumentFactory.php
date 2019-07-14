@@ -208,6 +208,9 @@ class DocumentFactory
             if (!is_numeric($value) && in_array($type, static::$numerals, true)) {
                 continue;
             }
+            if (!is_string($value) && !is_array($value)) {
+                continue;
+            }
 
             $name = explode('\\', $field['name']);
             $name = end($name);

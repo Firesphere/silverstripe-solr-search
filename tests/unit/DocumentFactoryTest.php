@@ -131,12 +131,11 @@ class DocumentFactoryTest extends SapphireTest
         $fields = $index->getFieldsForIndexing();
         $client = new Client([]);
         $update = $client->createUpdate();
-        $count = 5;
         $factory->setClass(SiteTree::class);
         $factory->setItems(Page::get());
         $docs = $factory->buildItems($fields, $index, $update);
 
-        $this->assertCount($count, $docs);
+        $this->assertCount(SiteTree::get()->count(), $docs);
         $this->assertInternalType('array', $docs);
         $this->assertInstanceOf(BaseIndex::class, $factory->getIntrospection()->getIndex());
         /** @var Document $doc */
