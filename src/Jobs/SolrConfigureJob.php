@@ -35,7 +35,7 @@ class SolrConfigureJob extends AbstractQueuedJob
         try {
             $task->run(new NullHTTPRequest());
         } catch (RequestException $error) {
-            $this->addMessage($error->getResponse()->getBody()->getContents());
+            $this->addMessage($error->getResponse()->getBody()->__toString());
         }
 
         // Mark as complete if everything is fine

@@ -189,9 +189,7 @@ class SolrIndexTask extends BuildTask
                 $this->getLogger()->info(sprintf('Indexing group %s', $group));
                 $group = $this->doReindex($group, $class, $batchLength, $index);
             } catch (RequestException $error) {
-                $this->getLogger()->error($error->getResponse()->getBody()->getContents());
-                $this->getLogger()->error(date('Y-m-d H:i:s') . PHP_EOL, []);
-                $this->getLogger()->info(sprintf('Failure indexing at group %s', $group));
+                $this->getLogger()->error($error->getResponse()->getBody()->__toString());
                 $group++;
                 continue;
             }
