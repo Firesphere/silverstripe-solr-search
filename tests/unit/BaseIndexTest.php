@@ -161,6 +161,10 @@ class BaseIndexTest extends SapphireTest
         $this->assertInstanceOf(ArrayList::class, $result3->getSpellcheck());
         $this->assertInstanceOf(Highlighting::class, $result3->getHighlight());
 
+        $result3->setCustomisedMatches([]);
+        $this->assertInstanceOf(ArrayList::class, $result3->getMatches());
+        $this->assertCount(0, $result3->getMatches());
+
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('Home', ['SiteTree_Title'], 5);
