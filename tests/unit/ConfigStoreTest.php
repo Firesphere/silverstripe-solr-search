@@ -57,7 +57,7 @@ class ConfigStoreTest extends SapphireTest
     public function testPostUploadString()
     {
         // Just post to whereever is convenient, in this case, home.
-        $store = new PostConfigStore(['uri' => 'http://192.168.33.5', 'path' => '']);
+        $store = new PostConfigStore(['uri' => 'http://localhost', 'path' => '']);
 
         // We only care that it _executes_ the post, not what's returned
         $response = $store->uploadString('home', 'test.txt', 'this, is, a, test');
@@ -69,7 +69,7 @@ class ConfigStoreTest extends SapphireTest
     public function testPostUploadFile()
     {
         // Just post to whereever is convenient, in this case, home.
-        $store = new PostConfigStore(['uri' => 'http://192.168.33.5', 'path' => '']);
+        $store = new PostConfigStore(['uri' => 'http://localhost', 'path' => '']);
 
         // We only care that it _executes_ the post, not what's returned
         $response = $store->uploadFile('home', Director::baseFolder() . 'app/_config/search.yml');
