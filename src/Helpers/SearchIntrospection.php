@@ -320,15 +320,7 @@ class SearchIntrospection
                     // Get the origin
                     $origin = $fieldOptions['origin'] ?? $dataclass;
 
-                    $found = $this->getFoundOriginData(
-                        $field,
-                        $fullfield,
-                        $fieldOptions,
-                        $origin,
-                        $dataclass,
-                        $type,
-                        $found
-                    );
+                    $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found);
                 }
             }
             $this->found[$class . '_' . $fullfield] = $found;
@@ -447,13 +439,13 @@ class SearchIntrospection
     }
 
     /**
-     * @param $field
-     * @param $fullfield
-     * @param $fieldOptions
-     * @param $origin
-     * @param $dataclass
-     * @param $type
-     * @param $found
+     * @param string $field
+     * @param string $fullfield
+     * @param array $fieldOptions
+     * @param string $origin
+     * @param string $dataclass
+     * @param string $type
+     * @param array $found
      * @return array
      */
     protected function getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found): array
