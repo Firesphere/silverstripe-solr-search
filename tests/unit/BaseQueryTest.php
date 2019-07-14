@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Queries\BaseQuery;
-use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 

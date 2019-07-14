@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use CircleCITestIndex;
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
@@ -17,16 +18,9 @@ class QueryComponentFactoryTest extends SapphireTest
      */
     protected $factory;
 
-    protected function setUp()
-    {
-        $this->factory = new QueryComponentFactory();
-
-        return parent::setUp();
-    }
-
     public function testBuildQuery()
     {
-        $index = new \CircleCITestIndex();
+        $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $clientQuery = $index->getClient()->createSelect();
         $query->addTerm('Home');
@@ -50,5 +44,12 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->assertInstanceOf(Helper::class, $this->factory->getHelper());
         $this->assertInstanceOf(BaseIndex::class, $this->factory->getIndex());
         $this->assertInstanceOf(BaseQuery::class, $this->factory->getQuery());
+    }
+
+    protected function setUp()
+    {
+        $this->factory = new QueryComponentFactory();
+
+        return parent::setUp();
     }
 }

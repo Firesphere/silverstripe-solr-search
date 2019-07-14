@@ -6,7 +6,6 @@ namespace Firesphere\SolrSearch\Stores;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
-use SilverStripe\Control\HTTPResponse;
 use Solarium\Exception\RuntimeException;
 
 class PostConfigStore implements ConfigStore

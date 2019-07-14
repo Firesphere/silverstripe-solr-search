@@ -56,20 +56,20 @@ class SearchIntrospectionTest extends SapphireTest
         $expected = [
             SiteTree::class . '_Content' =>
                 [
-                    'name' => SiteTree::class . '_Content',
-                    'field' => 'Content',
-                    'fullfield' => 'Content',
-                    'origin' => SiteTree::class,
-                    'class' => SiteTree::class,
+                    'name'         => SiteTree::class . '_Content',
+                    'field'        => 'Content',
+                    'fullfield'    => 'Content',
+                    'origin'       => SiteTree::class,
+                    'class'        => SiteTree::class,
                     'lookup_chain' =>
                         [
                             0 =>
                                 [
-                                    'call' => 'property',
+                                    'call'     => 'property',
                                     'property' => 'Content',
                                 ],
                         ],
-                    'type' => 'HTMLText',
+                    'type'         => 'HTMLText',
                     'multi_valued' => false,
                 ],
         ];

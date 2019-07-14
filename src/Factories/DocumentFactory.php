@@ -64,15 +64,6 @@ class DocumentFactory
         $this->introspection = Injector::inst()->get(SearchIntrospection::class);
     }
 
-    public function getLogger()
-    {
-        if (!$this->logger) {
-            $this->logger = Injector::inst()->get(LoggerInterface::class);
-        }
-
-        return $this->logger;
-    }
-
     /**
      * Note, it can only take one type of class at a time!
      * So make sure you properly loop and set $class
@@ -316,6 +307,15 @@ class DocumentFactory
         }
 
         return is_array($item) ? $item : [$item];
+    }
+
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            $this->logger = Injector::inst()->get(LoggerInterface::class);
+        }
+
+        return $this->logger;
     }
 
     /**

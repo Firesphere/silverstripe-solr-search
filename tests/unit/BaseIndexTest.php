@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
+use Page;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\NullHTTPRequest;
@@ -205,7 +206,7 @@ class BaseIndexTest extends SapphireTest
 
     public function testSetFacets()
     {
-        $this->index->addFacetField(\Page::class, ['Title' => 'Title', 'Field' => 'Content']);
+        $this->index->addFacetField(Page::class, ['Title' => 'Title', 'Field' => 'Content']);
 
         $expected = [
             'Page' => [
@@ -220,7 +221,7 @@ class BaseIndexTest extends SapphireTest
     {
         $this->index->addCopyField('myfield', ['Content']);
         $expected = [
-            '_text' => ['*'],
+            '_text'   => ['*'],
             'myfield' => ['Content']
         ];
         $this->assertEquals($expected, $this->index->getCopyFields());

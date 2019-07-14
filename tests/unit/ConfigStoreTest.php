@@ -5,11 +5,8 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
-use Psr\Http\Message\ResponseInterface;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
-use TestPostController;
 
 class ConfigStoreTest extends SapphireTest
 {

@@ -36,7 +36,7 @@ class SolrCoreServiceTest extends SapphireTest
         ];
 
         $this->assertEquals($expected, $service->getValidIndexes());
-        $this->assertEquals([\CircleCITestIndex::class], $service->getValidIndexes(\CircleCITestIndex::class));
+        $this->assertEquals([CircleCITestIndex::class], $service->getValidIndexes(CircleCITestIndex::class));
     }
 
 
@@ -123,11 +123,11 @@ class SolrCoreServiceTest extends SapphireTest
             'responseHeader' =>
                 [
                     'status' => 0,
-                    'QTime' => 10,
+                    'QTime'  => 10,
                 ],
-            'mode' => 'std',
-            'solr_home' => '/var/solr/data',
-            'lucene' =>
+            'mode'           => 'std',
+            'solr_home'      => '/var/solr/data',
+            'lucene'         =>
                 [
                     'solr-spec-version' => '4.3.2',
                 ]
@@ -143,6 +143,7 @@ class SolrCoreServiceTest extends SapphireTest
     protected function setUp()
     {
         $this->service = new SolrCoreService();
+
         return parent::setUp();
     }
 
