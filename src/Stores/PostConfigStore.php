@@ -75,7 +75,7 @@ class PostConfigStore implements ConfigStore
 
         $client = new Client($clientConfig);
 
-        $path = sprintf('%s/%s', $this->getPath(), $index);
+        $path = sprintf('%s%s', $this->getPath(), $index);
 
         return $client->post($path, ['body' => $string]);
     }
