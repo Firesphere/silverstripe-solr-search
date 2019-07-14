@@ -78,9 +78,8 @@ class SearchIntrospectionTest extends SapphireTest
         $result = $factory->getFieldIntrospection('Content');
         $this->assertEquals($expected, $result);
         $found = $factory->getFound();
-        Debug::dump($found);
 
-        $this->assertEquals($expected, $found);
+        $this->assertEquals($expected, $found['SilverStripe\\CMS\\Model\\SiteTree_Content']);
     }
 
     protected function setUp()
