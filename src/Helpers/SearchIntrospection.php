@@ -295,7 +295,7 @@ class SearchIntrospection
         foreach ($sources as $class => $fieldOptions) {
             if (is_int($class)) {
                 $class = $fieldOptions;
-                $fieldOptions = [];
+                $fieldOptions = ['lookup_chain' => []];
             }
             if (!empty($this->found[$class . '_' . $field])) {
                 return $this->found[$class . '_' . $field];
