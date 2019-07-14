@@ -176,16 +176,15 @@ class SearchResult
      */
     public function getHighlightByID($docID): ?string
     {
+        $highlights = [];
         if ($this->highlight && $docID) {
             $highlights = [];
             foreach ($this->highlight->getResult($docID) as $field => $highlight) {
                 $highlights[] = implode(' (...) ', $highlight);
             }
-
-            return implode(' (...) ', $highlights);
         }
 
-        return null;
+        return implode(' (...) ', $highlights);
     }
 
     /**
