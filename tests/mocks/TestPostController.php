@@ -9,10 +9,10 @@ use SilverStripe\Dev\TestOnly;
 class TestPostController extends Controller implements TestOnly
 {
     private static $allowed_actions = [
-        'config'
+        'configure'
     ];
 
-    public function config()
+    public function configure()
     {
         return true;
     }
