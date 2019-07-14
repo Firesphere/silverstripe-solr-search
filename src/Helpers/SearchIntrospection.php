@@ -305,8 +305,8 @@ class SearchIntrospection
 
             $fields = DataObject::getSchema()->databaseFields($class);
             while ($dataclass = array_shift($dataclasses)) {
-
-                [$type, $fieldOptions] = $this->getCallType($field, $fields, $fieldOptions, $dataclass);
+                $fieldOptions = $this->getOptions($field, $fields, $fieldOptions, $dataclass);
+                $type = $this->getType($fields, $field, $dataclass);
 
                 if ($type) {
                     // Don't search through child classes of a class we matched on. TODO: Should we?
@@ -335,12 +335,9 @@ class SearchIntrospection
      * @param $dataclass
      * @return array
      */
-    protected function getCallType($field, array $fields, array $fieldoptions, $dataclass): array
+    protected function getOptions($field, array $fields, array $fieldoptions, $dataclass): array
     {
-        $type = null;
-
         if (isset($fields[$field])) {
-            $type = $fields[$field];
             $fieldoptions['lookup_chain'][] = [
                 'call'     => 'property',
                 'property' => $field
@@ -349,11 +346,6 @@ class SearchIntrospection
             $singleton = singleton($dataclass);
 
             if ($singleton->hasMethod("get$field")) {
-                $type = $singleton->castingClass($field);
-                if (!$type) {
-                    $type = 'String';
-                }
-
                 $fieldoptions['lookup_chain'][] = [
                     'call'   => 'method',
                     'method' => "get$field"
@@ -361,7 +353,28 @@ class SearchIntrospection
             }
         }
 
-        return [$type, $fieldoptions];
+        return $fieldoptions;
+    }
+
+    /**
+     * @param array $fields
+     * @param string $field
+     * @param string $dataclass
+     * @return string
+     */
+    public function getType($fields, $field, $dataclass)
+    {
+        if (!empty($fields[$field])) {
+            return $fields[$field];
+        }
+
+        $singleton = singleton($dataclass);
+        $type = $singleton->castingClass($field);
+        if (!$type) {
+            $type = 'String';
+        }
+
+        return $type;
     }
 
     /**
