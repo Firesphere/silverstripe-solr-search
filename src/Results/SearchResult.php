@@ -212,7 +212,7 @@ class SearchResult
      * @param $matches
      * @return mixed
      */
-    public function overrideMatches($matches)
+    public function setCustomisedMatches($matches)
     {
         $this->matches = $matches;
 
