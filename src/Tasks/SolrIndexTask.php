@@ -159,10 +159,10 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
-     * @param LoggerInterface $logger
+     * @param LoggerInterface|null $logger
      * @return SolrIndexTask
      */
-    public function setLogger(LoggerInterface $logger): SolrIndexTask
+    public function setLogger($logger = null): SolrIndexTask
     {
         $this->logger = $logger;
 
