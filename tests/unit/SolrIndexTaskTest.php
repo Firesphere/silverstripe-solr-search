@@ -58,5 +58,7 @@ class SolrIndexTaskTest extends SapphireTest
         $task = new SolrIndexTask();
 
         $this->assertInstanceOf(LoggerInterface::class, $task->getLogger());
+        $task->setLogger(null);
+        $this->assertInstanceOf(LoggerInterface::class, $task->getLogger());
     }
 }
