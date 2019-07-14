@@ -218,7 +218,7 @@ class DocumentFactory
     protected function isValidValue($value, $type)
     {
         // Value must be set and a string type value
-        if (!$value || !is_string((string)$value)) {
+        if (!$value || !is_string($value)) {
             return false;
         }
 
