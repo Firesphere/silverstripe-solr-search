@@ -9,10 +9,10 @@ use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Psr\Log\LoggerInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -59,6 +59,11 @@ class DocumentFactory
         $this->introspection = Injector::inst()->get(SearchIntrospection::class);
     }
 
+    public function getLogger()
+    {
+        return Injector::inst()->get(LoggerInterface::class);
+    }
+
     /**
      * Note, it can only take one type of class at a time!
      * So make sure you properly loop and set $class
@@ -94,7 +99,7 @@ class DocumentFactory
         }
 
         if ($this->debug) {
-            Debug::message(rtrim($debugString, ', ') . ']' . PHP_EOL, false);
+            $this->getLogger()->info(rtrim($debugString, ', ') . ']' . PHP_EOL);
         }
 
         unset($this->items);
@@ -181,13 +186,13 @@ class DocumentFactory
      */
     protected function addField($doc, $object, $field): void
     {
-        $typeMap = Statics::getTypeMap();
         if (!$this->classIs($object, $field['origin'])) {
             return;
         }
 
         $valuesForField = $this->getValueForField($object, $field);
 
+        $typeMap = Statics::getTypeMap();
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         while ($value = array_shift($valuesForField)) {
@@ -274,6 +279,7 @@ class DocumentFactory
             // When all objects have been processed, put them in to objects
             // This ensures the next step is an array of the correct objects to index
             $objects = $next;
+            unset($next);
         }
 
         return $objects;
