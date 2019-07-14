@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Page;
+use Psr\Log\LoggerInterface;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use Solarium\Core\Client\Client;
@@ -146,5 +147,10 @@ class DocumentFactoryTest extends SapphireTest
             unset($fields['SiteTree_Created']); // Unset the Created, it changes per run
             $this->assertEquals(static::$expected_docs[$i], $fields);
         }
+    }
+
+    public function testGetLogger()
+    {
+        $this->assertInstanceOf(LoggerInterface::class, (new DocumentFactory())->getLogger());
     }
 }

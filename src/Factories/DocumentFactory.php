@@ -52,6 +52,11 @@ class DocumentFactory
     protected $debug = false;
 
     /**
+     * @var null|LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * DocumentFactory constructor, sets up introspection
      */
     public function __construct()
@@ -61,7 +66,11 @@ class DocumentFactory
 
     public function getLogger()
     {
-        return Injector::inst()->get(LoggerInterface::class);
+        if (!$this->logger) {
+            $this->logger = Injector::inst()->get(LoggerInterface::class);
+        }
+
+        return $this->logger;
     }
 
     /**
