@@ -100,20 +100,13 @@ class SearchIntrospection
             $className = $singleton->getClassName();
             $options['multi_valued'] = false;
 
-            [$class, $key, $relationType, $options] = $this->getRelationData($lookup, $schema, $className, $options);
+            [$class, $key, $relationType] = $this->getRelationData($lookup, $schema, $className, $options);
 
             if ($relationType !== false) {
                 if ($this->checkRelationList($dataClass, $lookup, $relationType)) {
                     continue;
                 }
-                $options = $this->getLookupChain(
-                    $options,
-                    $lookup,
-                    $relationType,
-                    $dataClass,
-                    $class,
-                    $key
-                );
+                $options = $this->getLookupChain($options, $lookup, $relationType, $dataClass, $class, $key);
             }
 
             if (is_string($class) && $class) {
@@ -222,7 +215,7 @@ class SearchIntrospection
      * @return array
      * @throws Exception
      */
-    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array $options): array
+    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options): array
     {
         $class = null;
         $relationType = false;
@@ -241,7 +234,7 @@ class SearchIntrospection
             $relationType = 'many_many';
         }
 
-        return [$class, $key, $relationType, $options];
+        return [$class, $key, $relationType];
     }
 
     /**
