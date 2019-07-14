@@ -196,10 +196,9 @@ class DocumentFactory
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         while ($value = array_shift($valuesForField)) {
-            if (
-                !$value ||
-                !is_string($value) ||
-                (!is_numeric($value) && in_array($type, static::$numerals, true))
+            if (!$value || // Value must be set
+                !is_string($value) || // And be a string
+                (!is_numeric($value) && in_array($type, static::$numerals, true)) // And be a number if numeric type
             ) {
                 continue;
             }
