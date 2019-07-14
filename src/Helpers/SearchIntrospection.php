@@ -54,11 +54,6 @@ class SearchIntrospection
         $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
 
-        // Caching for the win :)
-        if (in_array($fullfield, $this->found, true)) {
-            return $this->found[$fullfield];
-        }
-
         foreach ($sources as $source) {
             $sources[$source]['base'] = DataObject::getSchema()->baseDataClass($source);
             $sources[$source]['lookup_chain'] = [];
@@ -302,6 +297,9 @@ class SearchIntrospection
                 $class = $fieldOptions;
                 $fieldOptions = [];
             }
+            if (isset($this->found[$class . '_' . $field])) {
+                return $this->found[$class . $field];
+            }
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
 
@@ -334,9 +332,9 @@ class SearchIntrospection
                     );
                 }
             }
+            $this->found[$class . '_' .  $fullfield] = $found;
         }
 
-        $this->found[$fullfield] = $found;
 
         return $found;
     }

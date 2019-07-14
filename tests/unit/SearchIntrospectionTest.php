@@ -10,6 +10,7 @@ use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\VirtualPage;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ErrorPage\ErrorPage;
 
@@ -44,6 +45,42 @@ class SearchIntrospectionTest extends SapphireTest
         $this->assertEquals([SiteTree::class], $test2);
         $test3 = SearchIntrospection::getHierarchy(Page::class, false, false);
         $this->assertEquals([SiteTree::class, Page::class], $test3);
+    }
+
+    public function testGetFieldIntrospection()
+    {
+        $index = new CircleCITestIndex();
+        Debug::dump($index->getFieldsForIndexing());
+
+        $factory = new SearchIntrospection();
+        $factory->setIndex($index);
+        $expected = [
+            'SilverStripe\\CMS\\Model\\SiteTree_Content' =>
+                [
+                    'name' => 'SilverStripe\\CMS\\Model\\SiteTree_Content',
+                    'field' => 'Content',
+                    'fullfield' => 'Content',
+                    'origin' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'class' => 'SilverStripe\\CMS\\Model\\SiteTree',
+                    'lookup_chain' =>
+                        [
+                            0 =>
+                                [
+                                    'call' => 'property',
+                                    'property' => 'Content',
+                                ],
+                        ],
+                    'type' => 'HTMLText',
+                    'multi_valued' => false,
+                ],
+        ];
+
+        $result = $factory->getFieldIntrospection('Content');
+        $this->assertEquals($expected, $result);
+        $found = $factory->getFound();
+        Debug::dump($found);
+
+        $this->assertEquals($expected, $found);
     }
 
     protected function setUp()
