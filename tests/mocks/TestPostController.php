@@ -14,6 +14,9 @@ class TestPostController extends Controller implements TestOnly
 
     public function configure()
     {
-        return true;
+        $response = $this->getResponse();
+        $response->setBody('true');
+
+        return $response;
     }
 }
