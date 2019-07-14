@@ -206,8 +206,7 @@ class DocumentFactory
             }
 
 
-            $name = explode('\\', $field['name']);
-            $name = end($name);
+            $name = $this->sanitiseName($field);
 
             $doc->addField($name, $value);
         }
@@ -343,5 +342,17 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
+    }
+
+    /**
+     * @param $field
+     * @return array|mixed
+     */
+    public function sanitiseName($field)
+    {
+        $name = explode('\\', $field['name']);
+        $name = end($name);
+
+        return $name;
     }
 }

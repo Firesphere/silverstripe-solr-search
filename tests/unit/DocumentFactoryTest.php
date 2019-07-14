@@ -148,6 +148,13 @@ class DocumentFactoryTest extends SapphireTest
         }
     }
 
+    public function testSanitiseField()
+    {
+        $factory = new DocumentFactory();
+
+        $this->assertEquals('hello', $factory->sanitiseName('Test\\Name\\hello'));
+    }
+
     public function testGetLogger()
     {
         $this->assertInstanceOf(LoggerInterface::class, (new DocumentFactory())->getLogger());
