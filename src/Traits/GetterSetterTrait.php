@@ -45,13 +45,13 @@ trait GetterSetterTrait
     /**
      * $options is not used anymore, added for backward compatibility
      * @param $class
-     * @param array $options
+     * @param array $options unused
      * @return $this
      */
     public function addClass($class, $options = array()): self
     {
         if (count($options)) {
-            Deprecation::notice('5.0', 'Options are not used anymore');
+            Deprecation::notice('4.0', 'Options are not used anymore');
         }
         $this->class[] = $class;
 

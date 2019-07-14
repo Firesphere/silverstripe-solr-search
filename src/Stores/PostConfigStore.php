@@ -46,7 +46,7 @@ class PostConfigStore implements ConfigStore
      */
     public function uploadFile($index, $file)
     {
-        $this->uploadString($index, $file, file_get_contents($file));
+        return $this->uploadString($index, $file, file_get_contents($file));
     }
 
     /**
@@ -77,7 +77,7 @@ class PostConfigStore implements ConfigStore
 
         $path = sprintf('%sconfig/%s/%s', $this->getPath(), $index, $filename);
 
-        $client->post($path, ['body' => $string]);
+        return $client->post($path, ['body' => $string]);
     }
 
     /**
