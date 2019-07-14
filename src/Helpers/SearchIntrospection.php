@@ -311,7 +311,8 @@ class SearchIntrospection
                     // Get the origin
                     $origin = $fieldOptions['origin'] ?? $dataclass;
 
-                    $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found);
+                    $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type,
+                        $found);
                 }
             }
             $this->found[$class . '_' . $fullfield] = $found;
@@ -371,6 +372,32 @@ class SearchIntrospection
     }
 
     /**
+     * @param string $field
+     * @param string $fullfield
+     * @param array $fieldOptions
+     * @param string $origin
+     * @param string $dataclass
+     * @param string $type
+     * @param array $found
+     * @return array
+     */
+    protected function getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found): array
+    {
+        $found["{$origin}_{$fullfield}"] = [
+            'name'         => "{$origin}_{$fullfield}",
+            'field'        => $field,
+            'fullfield'    => $fullfield,
+            'origin'       => $origin,
+            'class'        => $dataclass,
+            'lookup_chain' => $fieldOptions['lookup_chain'],
+            'type'         => $type,
+            'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
+        ];
+
+        return $found;
+    }
+
+    /**
      * @return BaseIndex
      */
     public function getIndex(): BaseIndex
@@ -395,31 +422,5 @@ class SearchIntrospection
     public function getFound(): array
     {
         return $this->found;
-    }
-
-    /**
-     * @param string $field
-     * @param string $fullfield
-     * @param array $fieldOptions
-     * @param string $origin
-     * @param string $dataclass
-     * @param string $type
-     * @param array $found
-     * @return array
-     */
-    protected function getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found): array
-    {
-        $found["{$origin}_{$fullfield}"] = [
-            'name'         => "{$origin}_{$fullfield}",
-            'field'        => $field,
-            'fullfield'    => $fullfield,
-            'origin'       => $origin,
-            'class'        => $dataclass,
-            'lookup_chain' => $fieldOptions['lookup_chain'],
-            'type'         => $type,
-            'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
-        ];
-
-        return $found;
     }
 }

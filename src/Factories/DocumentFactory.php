@@ -76,7 +76,7 @@ class DocumentFactory
     public function buildItems($fields, $index, $update): array
     {
         $class = $this->getClass();
-        $this->introspection->setIndex($index);
+        $this->getIntrospection()->setIndex($index);
         $docs = [];
 
         $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
@@ -168,7 +168,7 @@ class DocumentFactory
     protected function buildField($fields, Document $doc, DataObject $item, array $boostFields): void
     {
         foreach ($fields as $field) {
-            $fieldData = $this->introspection->getFieldIntrospection($field);
+            $fieldData = $this->getIntrospection()->getFieldIntrospection($field);
             foreach ($fieldData as $dataField => $options) {
                 // Only one field per class, so let's take the fieldData. This will override previous additions
                 $this->addField($doc, $item, $fieldData[$dataField]);
@@ -212,17 +212,6 @@ class DocumentFactory
         }
         unset($value, $valuesForField, $type);
         gc_collect_cycles();
-    }
-
-    protected function isValidValue($value, $type)
-    {
-        // Value must be set and a string type value
-        if (!$value || !is_string($value)) {
-            return false;
-        }
-
-        // And be a number if numeric type
-        return !(!is_numeric($value) && in_array($type, static::$numerals, true));
     }
 
     /**
@@ -316,6 +305,28 @@ class DocumentFactory
         return is_array($item) ? $item : [$item];
     }
 
+    protected function isValidValue($value, $type)
+    {
+        // Value must be set and a string type value
+        if (!$value || !is_string($value)) {
+            return false;
+        }
+
+        // And be a number if numeric type
+        return !(!is_numeric($value) && in_array($type, static::$numerals, true));
+    }
+
+    /**
+     * @param string $field
+     * @return string
+     */
+    public function sanitiseName($field)
+    {
+        $name = explode('\\', $field);
+
+        return end($name);
+    }
+
     public function getLogger()
     {
         if (!$this->logger) {
@@ -342,15 +353,5 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
-    }
-
-    /**
-     * @param string $field
-     * @return string
-     */
-    public function sanitiseName($field)
-    {
-        $name = explode('\\', $field);
-        return end($name);
     }
 }
