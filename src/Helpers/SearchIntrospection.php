@@ -320,16 +320,8 @@ class SearchIntrospection
                     // Get the origin
                     $origin = $fieldOptions['origin'] ?? $dataclass;
 
-                    $found["{$origin}_{$fullfield}"] = array(
-                        'name'         => "{$origin}_{$fullfield}",
-                        'field'        => $field,
-                        'fullfield'    => $fullfield,
-                        'origin'       => $origin,
-                        'class'        => $dataclass,
-                        'lookup_chain' => $fieldOptions['lookup_chain'],
-                        'type'         => $type,
-                        'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
-                    );
+                    [$fieldOptions, $found] = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $origin,
+                        $dataclass, $type, $found);
                 }
             }
             $this->found[$class . '_' . $fullfield] = $found;
@@ -368,16 +360,8 @@ class SearchIntrospection
                 // Get the origin
                 $origin = $fieldOptions['origin'] ?? $dataclass;
 
-                $found["{$origin}_{$fullfield}"] = array(
-                    'name'         => "{$origin}_{$fullfield}",
-                    'field'        => $field,
-                    'fullfield'    => $fullfield,
-                    'origin'       => $origin,
-                    'class'        => $dataclass,
-                    'lookup_chain' => $fieldOptions['lookup_chain'],
-                    'type'         => $type,
-                    'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
-                );
+                [$fieldOptions, $found] = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $origin,
+                    $dataclass, $type, $found);
             }
         }
         $this->found[$class . '_' . $fullfield] = $found;
@@ -446,5 +430,31 @@ class SearchIntrospection
     public function getFound(): array
     {
         return $this->found;
+    }
+
+    /**
+     * @param $field
+     * @param $fullfield
+     * @param $fieldOptions
+     * @param $origin
+     * @param $dataclass
+     * @param $type
+     * @param $found
+     * @return array
+     */
+    protected function getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found): array
+    {
+        $found["{$origin}_{$fullfield}"] = [
+            'name'         => "{$origin}_{$fullfield}",
+            'field'        => $field,
+            'fullfield'    => $fullfield,
+            'origin'       => $origin,
+            'class'        => $dataclass,
+            'lookup_chain' => $fieldOptions['lookup_chain'],
+            'type'         => $type,
+            'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
+        ];
+
+        return [$fieldOptions, $found];
     }
 }
