@@ -7,6 +7,9 @@ Firesphere\SolrSearch\Helpers\Statics:
     Varchar: string
     "SilverStripe\\ORM\\FieldType\\DBVarchar": string
     "DBVarchar": string
+    Enum: string
+    "SilverStripe\\ORM\\FieldType\\DBEnum": string
+    "DBEnum": string
     Text: string
     "SilverStripe\\ORM\\FieldType\\DBText": string
     "DBText": string
@@ -28,14 +31,24 @@ Firesphere\SolrSearch\Helpers\Statics:
     Int: tint
     "SilverStripe\\ORM\\FieldType\\DBInt": tint
     "DBInt": tint
+    BigInt: tint
+    "SilverStripe\\ORM\\FieldType\\DBBigInt": tint
+    "DBBigInt": tint
     Float: tfloat
     "SilverStripe\\ORM\\FieldType\\DBFloat": tfloat
     "DBFloat": tfloat
+    Decimal: tfloat
+    "SilverStripe\\ORM\\FieldType\\DBDecimal": tfloat
+    "DBDecimal": tfloat
     Double: tdouble
     "SilverStripe\\ORM\\FieldType\\DBDouble": tdouble
     "DBDouble": tdouble
     Money: tfloat
     "SilverStripe\\ORM\\FieldType\\DBMoney": tfloat
     "DBMoney": tfloat
+    Currency: tfloat
+    "SilverStripe\\ORM\\FieldType\\DBCurrency": tfloat
+    "DBCurrency": tfloat
+    ClassName: string
     "SilverStripe\\ORM\\FieldType\\DBClassName": string
     DBClassName: string
