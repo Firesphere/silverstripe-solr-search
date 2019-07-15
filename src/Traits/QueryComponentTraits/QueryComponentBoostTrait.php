@@ -17,6 +17,10 @@ trait QueryComponentBoostTrait
      * @var array
      */
     protected $boostTerms = [];
+    /**
+     * @var array
+     */
+    protected $queryArray = [];
 
     /**
      * Add the index-time boosting to the query

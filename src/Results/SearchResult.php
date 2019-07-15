@@ -99,8 +99,8 @@ class SearchResult
         $paginated->setLimitItems(false);
         // Override the count that's set from the item count
         $paginated->setTotalItems($this->getTotalItems());
-        // Set the start to the current page from start. It needs to be divided by the rows
-        $paginated->setCurrentPage($this->query->getStart() / $this->query->getRows());
+        // Set the start to the current page from start.
+        $paginated->setPageStart($this->query->getStart());
         // The amount of items per page to display
         $paginated->setPageLength($this->query->getRows());
 
