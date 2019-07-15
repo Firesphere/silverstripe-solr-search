@@ -144,10 +144,7 @@ class QueryComponentFactory
     {
         $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
         if ($search['fuzzy']) {
-            $postfix = '~';
-            if (is_numeric($search['fuzzy'])) {
-                $postfix .= $search['fuzzy'];
-            }
+            $postfix = '~' . (is_numeric($search['fuzzy']) ? $search['fuzzy'] : '');
         }
 
         return $postfix;
