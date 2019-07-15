@@ -111,7 +111,7 @@ class QueryComponentFactory
             }
         }
         // Clean up the boost terms, remove doubles
-        $this->boostTerms = array_values(array_unique($boostTerms));
+        $this->setBoostTerms(array_values(array_unique($boostTerms)));
     }
 
     /**
