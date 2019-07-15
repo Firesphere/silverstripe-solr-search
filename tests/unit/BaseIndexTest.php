@@ -157,7 +157,7 @@ class BaseIndexTest extends SapphireTest
         $query->addTerm('Home', ['SiteTree_Title'], 5);
         $result4 = $index->doSearch($query);
 
-        $this->assertEquals(['SiteTree_Title:Home^5.0'], $index->getQueryFactory()->getBoostTerms());
+        $this->assertContains('SiteTree_Title:Home^5.0', $index->getQueryFactory()->getBoostTerms());
         $this->assertContains('Home', $index->getQueryTerms());
         $this->assertEquals(1, $result4->getTotalItems());
 
@@ -166,7 +166,7 @@ class BaseIndexTest extends SapphireTest
         $query->addTerm('Home', ['SiteTree.Title'], 3);
         $result4 = $index->doSearch($query);
 
-        $this->assertEquals(['SiteTree_Title:Home^3.0'], $index->getQueryFactory()->getBoostTerms());
+        $this->assertContains('SiteTree_Title:Home^3.0', $index->getQueryFactory()->getBoostTerms());
         $this->assertContains('Home', $index->getQueryTerms());
         $this->assertEquals(1, $result4->getTotalItems());
 

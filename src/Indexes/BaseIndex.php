@@ -79,7 +79,7 @@ abstract class BaseIndex
         $schemaService->setIndex($this);
         $schemaService->setStore(Director::isDev());
         $this->schemaService = $schemaService;
-        $this->queryFactory = Injector::inst()->get(QueryComponentFactory::class);
+        $this->queryFactory = Injector::inst()->get(QueryComponentFactory::class, false);
 
         $this->extend('onBeforeInit');
         $this->init();
