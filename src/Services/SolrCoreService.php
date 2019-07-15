@@ -250,7 +250,7 @@ class SolrCoreService
                 // By pushing to a single array, we have less memory usage and no duplicates
                 // This is faster, and more efficient, because we only do one DB query
                 $delete = $items->map('ID', 'ClassName')->toArray();
-                array_walk($delete, static function(&$item, $key) {
+                array_walk($delete, static function (&$item, $key) {
                     $item = sprintf('%s-%s', $item, $key);
                 });
                 $update->addDeleteByIds(array_values($delete));
