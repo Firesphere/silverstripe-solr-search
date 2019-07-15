@@ -161,9 +161,8 @@ class QueryComponentFactory
     protected function buildFacetQuery()
     {
         $filterFacets = [];
-        if (Controller::curr()) {
-            $filterFacets = Controller::curr()->getRequest()->getVars();
-            $filterFacets = array_merge($filterFacets, Controller::curr()->getRequest()->postVars());
+        if (Controller::has_curr()) {
+            $filterFacets = Controller::curr()->getRequest()->requestVars();
         }
         foreach ($this->index->getFacetFields() as $class => $config) {
             if (array_key_exists($config['Title'], $filterFacets)) {

@@ -98,7 +98,7 @@ class SolrIndexTask extends BuildTask
     public function run($request)
     {
         $startTime = time();
-        [$vars, $group, $start, $isGroup] = $this->taskSetup($request);
+        [$vars, $group, $isGroup] = $this->taskSetup($request);
         $indexes = $this->service->getValidIndexes($request->getVar('index'));
 
         $groups = 0;
@@ -106,16 +106,19 @@ class SolrIndexTask extends BuildTask
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
 
+            $classes = $index->getClasses();
+            if (isset($vars['class'])) {
+                if (in_array($vars['class'], $classes, true)) {
+                    $classes = [$vars['class']];
+                } else {
+                    continue;
+                }
+            }
+
             if (!empty($vars['clear'])) {
                 $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
                 $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
             }
-
-            // Only index the classes given in the var if needed, should be a single class
-            $classes = isset($vars['class']) ? [$vars['class']] : $index->getClasses();
-
-            // Set the start point to the requested value, if there is only one class to index
-            $group = ($start >= $group && count($classes) === 1) ? $start : $group;
 
             foreach ($classes as $class) {
                 $this->indexClass($isGroup, $class, $index, $group);
@@ -138,9 +141,10 @@ class SolrIndexTask extends BuildTask
         $this->debug = $this->debug || isset($vars['debug']);
         $group = $vars['group'] ?? 0;
         $start = $vars['start'] ?? 0;
+        $group = ($start > $group) ? $start : $group;
         $isGroup = isset($vars['group']);
 
-        return [$vars, $group, $start, $isGroup];
+        return [$vars, $group, $isGroup];
     }
 
     /**
@@ -203,22 +207,23 @@ class SolrIndexTask extends BuildTask
      * @param BaseIndex $index
      * @throws Exception
      */
-    private function doReindex($group, $class, $batchLength, BaseIndex $index)
+    private function doReindex($group, $class, $batchLength, BaseIndex $index): void
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         $filter = [];
+        $client = $index->getClient();
         /** @var DataList|DataObject[] $items */
         $items = $baseClass::get()
             ->filter($filter)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
-        $update = $index->getClient()->createUpdate();
+        $update = $client->createUpdate();
         if ($items->count()) {
             $this->service->setInDebugMode($this->debug);
             $this->service->updateIndex($index, $items, $update);
+            $update->addCommit();
+            $client->update($update);
         }
-        $update->addCommit();
-        $index->getClient()->update($update);
     }
 }
