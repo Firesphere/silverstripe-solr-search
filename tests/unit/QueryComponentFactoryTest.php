@@ -7,6 +7,7 @@ use CircleCITestIndex;
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use Solarium\Core\Query\Helper;
 
@@ -65,6 +66,7 @@ class QueryComponentFactoryTest extends SapphireTest
     protected function setUp()
     {
         $this->factory = new QueryComponentFactory();
+        $this->factory->setIndex(Injector::inst()->get(CircleCITestIndex::class));
 
         return parent::setUp();
     }
