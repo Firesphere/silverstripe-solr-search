@@ -23,6 +23,25 @@ trait QueryComponentBoostTrait
     protected $queryArray = [];
 
     /**
+     * @return array
+     */
+    public function getBoostTerms(): array
+    {
+        return $this->boostTerms;
+    }
+
+    /**
+     * @param array $boostTerms
+     * @return QueryComponentFactory
+     */
+    public function setBoostTerms(array $boostTerms): self
+    {
+        $this->boostTerms = $boostTerms;
+
+        return $this;
+    }
+
+    /**
      * Add the index-time boosting to the query
      */
     protected function buildBoosts(): void
@@ -58,24 +77,5 @@ trait QueryComponentBoostTrait
         }
 
         return $boostTerms;
-    }
-
-    /**
-     * @param array $boostTerms
-     * @return QueryComponentFactory
-     */
-    public function setBoostTerms(array $boostTerms): self
-    {
-        $this->boostTerms = $boostTerms;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBoostTerms(): array
-    {
-        return $this->boostTerms;
     }
 }
