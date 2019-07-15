@@ -64,12 +64,6 @@ abstract class BaseIndex
     protected $queryTerms = [];
 
     /**
-     * The boosting as an array
-     * @var array
-     */
-    protected $boostTerms = [];
-
-    /**
      * BaseIndex constructor.
      */
     public function __construct()
@@ -187,116 +181,18 @@ abstract class BaseIndex
 
         $helper = $clientQuery->getHelper();
 
-        $queryArray = $this->buildTerms($query, $helper);
-
-        $this->queryFactory->setQueryArray($queryArray);
         $this->queryFactory->setQuery($query);
         $this->queryFactory->setClientQuery($clientQuery);
         $this->queryFactory->setHelper($helper);
         $this->queryFactory->setIndex($this);
 
         $clientQuery = $this->queryFactory->buildQuery();
-        $queryArray = $this->queryFactory->getQueryArray();
-        $this->queryTerms = $queryArray;
+        $this->queryTerms = $this->queryFactory->getQueryArray();
 
-        $queryData = array_merge($this->queryTerms, $this->boostTerms);
-
-        $queryData = implode(' ', $queryData);
+        $queryData = implode(' ', $this->queryTerms);
         $clientQuery->setQuery($queryData);
 
         return $clientQuery;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Helper $helper
-     * @return array
-     */
-    protected function buildTerms($query, Helper $helper): array
-    {
-        $terms = $query->getTerms();
-
-        $termsArray = [];
-
-        $boostTerms = $this->boostTerms;
-
-        foreach ($terms as $search) {
-            $term = $search['text'];
-            $term = $this->escapeSearch($term, $helper);
-            $postfix = $this->isFuzzy($search);
-            // We can add the same term multiple times with different boosts
-            // Not ideal, but it might happen, so let's add the term itself only once
-            if (!in_array($term, $termsArray, true)) {
-                $termsArray[] = $term . $postfix;
-            }
-            // If boosting is set, add the fields to boost
-            if ($search['boost'] > 1) {
-                $boost = $this->buildQueryBoost($search, $term, $boostTerms);
-                $this->boostTerms = array_merge($boostTerms, $boost);
-            }
-        }
-
-        return array_unique($termsArray);
-    }
-
-    /**
-     * @param string $searchTerm
-     * @param Helper $helper
-     * @return string
-     */
-    public function escapeSearch($searchTerm, Helper $helper): string
-    {
-        $term = [];
-        // Escape special characters where needed. Except for quoted parts, those should be phrased
-        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
-        foreach ($parts[0] as $part) {
-            // As we split the parts, everything with two quotes is a phrase
-            if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
-            } else {
-                $term[] = $helper->escapeTerm($part);
-            }
-        }
-
-        return implode(' ', $term);
-    }
-
-    /**
-     * @param $search
-     * @return string
-     */
-    protected function isFuzzy($search): string
-    {
-        $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
-        if ($search['fuzzy']) {
-            $postfix = '~';
-            if (is_numeric($search['fuzzy'])) {
-                $postfix .= $search['fuzzy'];
-            }
-        }
-
-        return $postfix;
-    }
-
-    /**
-     * Set boosting at Query time
-     *
-     * @param array $search
-     * @param string $term
-     * @param array $searchQuery
-     * @return array
-     */
-    protected function buildQueryBoost($search, string $term, array $searchQuery): array
-    {
-        foreach ($search['fields'] as $boostField) {
-            $boostField = str_replace('.', '_', $boostField);
-            $criteria = Criteria::where($boostField)
-                ->is($term)
-                ->boost($search['boost']);
-            $searchQuery[] = $criteria->getQuery();
-        }
-
-        return $searchQuery;
     }
 
     /**
@@ -377,10 +273,10 @@ abstract class BaseIndex
     }
 
     /**
-     * @return array
+     * @return QueryComponentFactory
      */
-    public function getBoostTerms(): array
+    public function getQueryFactory(): QueryComponentFactory
     {
-        return $this->boostTerms;
+        return $this->queryFactory;
     }
 }

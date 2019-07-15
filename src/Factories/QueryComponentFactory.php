@@ -35,6 +35,11 @@ class QueryComponentFactory
     /**
      * @var array
      */
+    protected $boostTerms;
+
+    /**
+     * @var array
+     */
     protected $queryArray;
 
     /**
@@ -48,6 +53,7 @@ class QueryComponentFactory
      */
     public function buildQuery()
     {
+        $this->buildTerms();
         $this->buildViewFilter();
         // Build class filtering
         $this->buildClassFilter();
@@ -78,6 +84,92 @@ class QueryComponentFactory
         return $this->clientQuery;
     }
 
+
+    /**
+     * @return array
+     */
+    protected function buildTerms(): array
+    {
+        $terms = $this->query->getTerms();
+
+        $boostTerms = $this->index->getBoostTerms();
+
+        foreach ($terms as $search) {
+            $term = $search['text'];
+            $term = $this->escapeSearch($term, $this->helper);
+            $postfix = $this->isFuzzy($search);
+            // We can add the same term multiple times with different boosts
+            // Not ideal, but it might happen, so let's add the term itself only once
+            if (!in_array($term, $this->queryArray, true)) {
+                $this->queryArray[] = $term . $postfix;
+            }
+            // If boosting is set, add the fields to boost
+            if ($search['boost'] > 1) {
+                $boost = $this->buildQueryBoost($search, $term, $boostTerms);
+                $this->boostTerms = array_merge($boostTerms, $boost);
+            }
+        }
+    }
+
+    /**
+     * @param string $searchTerm
+     * @param Helper $helper
+     * @return string
+     */
+    public function escapeSearch($searchTerm, Helper $helper): string
+    {
+        $term = [];
+        // Escape special characters where needed. Except for quoted parts, those should be phrased
+        preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
+        foreach ($parts[0] as $part) {
+            // As we split the parts, everything with two quotes is a phrase
+            if (substr_count($part, '"') === 2) {
+                $term[] = $helper->escapePhrase($part);
+            } else {
+                $term[] = $helper->escapeTerm($part);
+            }
+        }
+
+        return implode(' ', $term);
+    }
+
+    /**
+     * @param $search
+     * @return string
+     */
+    protected function isFuzzy($search): string
+    {
+        $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
+        if ($search['fuzzy']) {
+            $postfix = '~';
+            if (is_numeric($search['fuzzy'])) {
+                $postfix .= $search['fuzzy'];
+            }
+        }
+
+        return $postfix;
+    }
+
+    /**
+     * Set boosting at Query time
+     *
+     * @param array $search
+     * @param string $term
+     * @param array $searchQuery
+     * @return array
+     */
+    protected function buildQueryBoost($search, string $term, array $searchQuery): array
+    {
+        foreach ($search['fields'] as $boostField) {
+            $boostField = str_replace('.', '_', $boostField);
+            $criteria = Criteria::where($boostField)
+                ->is($term)
+                ->boost($search['boost']);
+            $searchQuery[] = $criteria->getQuery();
+        }
+
+        return $searchQuery;
+    }
 
     /**
      *
@@ -217,7 +309,7 @@ class QueryComponentFactory
      */
     public function getQueryArray(): array
     {
-        return $this->queryArray;
+        return array_merge($this->queryArray, $this->boostTerms);
     }
 
     /**
