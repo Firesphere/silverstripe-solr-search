@@ -148,8 +148,8 @@ class QueryComponentFactory
     {
         $facets = $this->clientQuery->getFacetSet();
         // Facets should be set from the index configuration
-        foreach ($this->index->getFacetFields() as $field => $config) {
-            $facets->createFacetField($config['Title'])->setField($config['Field']);
+        foreach ($this->index->getFacetFields() as $class => $config) {
+            $facets->createFacetField('facet-' . $config['Title'])->setField($config['Field']);
         }
         // Count however, comes from the query
         $facets->setMinCount($this->query->getFacetsMinCount());
@@ -170,7 +170,8 @@ class QueryComponentFactory
                 $filter = array_filter($filterFacets[$config['Title']], 'strlen');
                 if (count($filter)) {
                     $criteria = Criteria::where($config['Field'])->in($filter);
-                    $this->clientQuery->createFilterQuery('facet-' . $config['Title'])
+                    $this->clientQuery
+                        ->createFilterQuery('facet-' . $config['Title'])
                         ->setQuery($criteria->getQuery());
                 }
             }

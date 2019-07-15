@@ -77,17 +77,12 @@ class DocumentFactory
     {
         $class = $this->getClass();
         $this->getIntrospection()->setIndex($index);
-        $docs = [];
-
-        $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
-        if ($this->debug) {
-            $debugString .= '[';
-        }
         $boostFields = $index->getBoostedFields();
+        $docs = [];
+        $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
+        $debugString .= '[';
         foreach ($this->getItems() as $item) {
-            if ($this->debug) {
-                $debugString .= "$item->ID, ";
-            }
+            $debugString .= "$item->ID, ";
             /** @var Document $doc */
             $doc = $update->createDocument();
             $this->addDefaultFields($doc, $item);
@@ -210,8 +205,6 @@ class DocumentFactory
 
             $doc->addField($name, $value);
         }
-        unset($value, $valuesForField, $type);
-        gc_collect_cycles();
     }
 
     /**
@@ -305,6 +298,12 @@ class DocumentFactory
         return is_array($item) ? $item : [$item];
     }
 
+    /**
+     * Check if a given value is valid for the type
+     * @param string $value
+     * @param string $type
+     * @return bool
+     */
     protected function isValidValue($value, $type)
     {
         // Value must be set and a string type value

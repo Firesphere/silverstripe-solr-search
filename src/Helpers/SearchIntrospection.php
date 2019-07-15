@@ -298,24 +298,21 @@ class SearchIntrospection
 
             $fields = DataObject::getSchema()->databaseFields($class);
             while ($dataclass = array_shift($dataclasses)) {
-                $fieldOptions = $this->getOptions($field, $fields, $fieldOptions, $dataclass);
                 $type = $this->getType($fields, $field, $dataclass);
 
                 if ($type) {
+                    $fieldOptions = $this->getOptions($field, $fields, $fieldOptions, $dataclass);
                     // Don't search through child classes of a class we matched on. TODO: Should we?
                     $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
                     // Trim arguments off the type string
                     if (preg_match('/^(\w+)\(/', $type, $match)) {
                         $type = $match[1];
                     }
-                    // Get the origin
-                    $origin = $fieldOptions['origin'] ?? $dataclass;
 
                     $found = $this->getFoundOriginData(
                         $field,
                         $fullfield,
                         $fieldOptions,
-                        $origin,
                         $dataclass,
                         $type,
                         $found
@@ -343,15 +340,17 @@ class SearchIntrospection
                 'call'     => 'property',
                 'property' => $field
             ];
-        } else {
-            $singleton = singleton($dataclass);
 
-            if ($singleton->hasMethod("get$field")) {
-                $fieldoptions['lookup_chain'][] = [
-                    'call'   => 'method',
-                    'method' => "get$field"
-                ];
-            }
+            return $fieldoptions;
+        }
+
+        $singleton = singleton($dataclass);
+
+        if ($singleton->hasMethod("get$field")) {
+            $fieldoptions['lookup_chain'][] = [
+                'call'   => 'method',
+                'method' => "get$field"
+            ];
         }
 
         return $fieldoptions;
@@ -382,14 +381,16 @@ class SearchIntrospection
      * @param string $field
      * @param string $fullfield
      * @param array $fieldOptions
-     * @param string $origin
      * @param string $dataclass
      * @param string $type
      * @param array $found
      * @return array
      */
-    protected function getFoundOriginData($field, $fullfield, $fieldOptions, $origin, $dataclass, $type, $found): array
+    protected function getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found): array
     {
+        // Get the origin
+        $origin = $fieldOptions['origin'] ?? $dataclass;
+
         $found["{$origin}_{$fullfield}"] = [
             'name'         => "{$origin}_{$fullfield}",
             'field'        => $field,

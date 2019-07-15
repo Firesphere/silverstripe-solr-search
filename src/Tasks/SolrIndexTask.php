@@ -100,7 +100,6 @@ class SolrIndexTask extends BuildTask
         $startTime = time();
         [$vars, $group, $start, $isGroup] = $this->taskSetup($request);
         $indexes = $this->service->getValidIndexes($request->getVar('index'));
-        $this->getLogger()->info(date('Y-m-d H:i:s') . PHP_EOL);
 
         $groups = 0;
         foreach ($indexes as $indexName) {
@@ -125,7 +124,6 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
         );
-        gc_collect_cycles(); // Garbage collection to prevent php from running out of memory
 
         return $groups;
     }
@@ -178,25 +176,23 @@ class SolrIndexTask extends BuildTask
      */
     private function indexClass($isGroup, $class, BaseIndex $index, int $group): void
     {
-        $group = $group ?: 0;
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
 
         $batchLength = DocumentFactory::config()->get('batchLength');
         $groups = (int)ceil($class::get()->count() / $batchLength);
-        // Otherwise, run them all
         while ($group <= $groups) { // Run from oldest to newest
             try {
                 $this->getLogger()->info(sprintf('Indexing group %s', $group));
-                $group = $this->doReindex($group, $class, $batchLength, $index);
+                $this->doReindex($group, $class, $batchLength, $index);
             } catch (RequestException $error) {
                 $this->getLogger()->error($error->getResponse()->getBody()->__toString());
-                $group++;
                 continue;
             }
             // If it's a specific group to index, break after the first run
             if ($isGroup) {
                 break;
             }
+            $group++;
         }
     }
 
@@ -205,10 +201,9 @@ class SolrIndexTask extends BuildTask
      * @param string $class
      * @param int $batchLength
      * @param BaseIndex $index
-     * @return int
      * @throws Exception
      */
-    private function doReindex($group, $class, $batchLength, BaseIndex $index): int
+    private function doReindex($group, $class, $batchLength, BaseIndex $index)
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
@@ -225,8 +220,5 @@ class SolrIndexTask extends BuildTask
         }
         $update->addCommit();
         $index->getClient()->update($update);
-        $group++;
-
-        return $group;
     }
 }

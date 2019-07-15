@@ -208,7 +208,6 @@ class SolrCoreService
 
             $result = $this->doManipulate($items, $type, $index);
         }
-        gc_collect_cycles();
 
         return $result;
     }
@@ -246,20 +245,23 @@ class SolrCoreService
         // get an update query instance
         $update = $client->createUpdate();
 
-        // add the delete query and a commit command to the update query
-        if ($type === static::DELETE_TYPE) {
-            // By pushing to a single array, we have less memory usage and no duplicates
-            // This is faster, and more efficient, because we only do one DB query
-            $delete = $items->map('ID', 'ClassName')->toArray();
-            foreach ($delete as $id => $class) {
-                $update->addDeleteById(sprintf('%s-%s', $class, $id));
-            }
-            // Remove the deletion array from memory
-            unset($delete);
-        } elseif ($type === static::DELETE_TYPE_ALL) {
-            $update->addDeleteQuery('*:*');
-        } elseif ($type === static::UPDATE_TYPE || $type === static::CREATE_TYPE) {
-            $this->updateIndex($index, $items, $update);
+        switch ($type) {
+            case static::DELETE_TYPE:
+                // By pushing to a single array, we have less memory usage and no duplicates
+                // This is faster, and more efficient, because we only do one DB query
+                $delete = $items->map('ID', 'ClassName')->toArray();
+                array_walk($delete, static function(&$item, $key) {
+                    $item = sprintf('%s-%s', $item, $key);
+                });
+                $update->addDeleteByIds(array_values($delete));
+                // Remove the deletion array from memory
+                break;
+            case static::DELETE_TYPE_ALL:
+                $update->addDeleteQuery('*:*');
+                break;
+            case static::UPDATE_TYPE:
+            case static::CREATE_TYPE:
+                $this->updateIndex($index, $items, $update);
         }
         $update->addCommit();
 
