@@ -81,7 +81,7 @@ class StaticsTest extends SapphireTest
         'SilverStripe\\ORM\\FieldType\\HTMLFragment' => 'htmltext',
         'HTMLFragment'                               => 'htmltext'
     ];
-    
+
     public function testGetTypesMap()
     {
         $this->assertEquals(static::$expected, Statics::getTypeMap());

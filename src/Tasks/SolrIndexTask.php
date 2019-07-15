@@ -145,6 +145,20 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * @param $vars
+     * @param array $classes
+     * @return bool|array
+     */
+    protected function getClasses($vars, array $classes): array
+    {
+        if (isset($vars['class'])) {
+            return array_intersect($classes, [$vars['class']]);
+        }
+
+        return $classes;
+    }
+
+    /**
      * @return LoggerInterface
      */
     public function getLogger(): LoggerInterface
@@ -225,19 +239,5 @@ class SolrIndexTask extends BuildTask
             $update->addCommit();
             $client->update($update);
         }
-    }
-
-    /**
-     * @param $vars
-     * @param array $classes
-     * @return bool|array
-     */
-    protected function getClasses($vars, array $classes): array
-    {
-        if (isset($vars['class'])) {
-            return array_intersect($classes, [$vars['class']]);
-        }
-
-        return $classes;
     }
 }

@@ -13,7 +13,6 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use LogicException;
-use Minimalcode\Search\Criteria;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
@@ -24,7 +23,6 @@ use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
-use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
 
 /**

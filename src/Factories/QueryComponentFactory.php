@@ -17,36 +17,6 @@ use Solarium\QueryType\Select\Query\Query;
  */
 class QueryComponentFactory
 {
-    /**
-     * @var BaseQuery
-     */
-    protected $query;
-
-    /**
-     * @var Query
-     */
-    protected $clientQuery;
-
-    /**
-     * @var Helper
-     */
-    protected $helper;
-
-    /**
-     * @var array
-     */
-    protected $boostTerms = [];
-
-    /**
-     * @var array
-     */
-    protected $queryArray = [];
-
-    /**
-     * @var BaseIndex
-     */
-    protected $index;
-
     protected static $builds = [
         'Terms',
         'ViewFilter',
@@ -57,6 +27,30 @@ class QueryComponentFactory
         'FacetQuery',
         'Spellcheck'
     ];
+    /**
+     * @var BaseQuery
+     */
+    protected $query;
+    /**
+     * @var Query
+     */
+    protected $clientQuery;
+    /**
+     * @var Helper
+     */
+    protected $helper;
+    /**
+     * @var array
+     */
+    protected $boostTerms = [];
+    /**
+     * @var array
+     */
+    protected $queryArray = [];
+    /**
+     * @var BaseIndex
+     */
+    protected $index;
 
     /**
      * Build the full query
@@ -85,6 +79,117 @@ class QueryComponentFactory
         return $this->clientQuery;
     }
 
+    /**
+     * Add the index-time boosting to the query
+     */
+    protected function buildBoosts(): void
+    {
+        $boosts = $this->query->getBoostedFields();
+        $queries = $this->getQueryArray();
+        foreach ($boosts as $field => $boost) {
+            foreach ($queries as $term) {
+                $booster = Criteria::where($field)
+                    ->is($term)
+                    ->boost($boost);
+                $this->queryArray[] = $booster->getQuery();
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryArray(): array
+    {
+        return array_merge($this->queryArray, $this->boostTerms);
+    }
+
+    /**
+     * @param array $queryArray
+     * @return QueryComponentFactory
+     */
+    public function setQueryArray(array $queryArray): QueryComponentFactory
+    {
+        $this->queryArray = $queryArray;
+
+        return $this;
+    }
+
+    /**
+     * @return BaseQuery
+     */
+    public function getQuery(): BaseQuery
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @return QueryComponentFactory
+     */
+    public function setQuery(BaseQuery $query): QueryComponentFactory
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getClientQuery(): Query
+    {
+        return $this->clientQuery;
+    }
+
+    /**
+     * @param Query $clientQuery
+     * @return QueryComponentFactory
+     */
+    public function setClientQuery(Query $clientQuery): QueryComponentFactory
+    {
+        $this->clientQuery = $clientQuery;
+
+        return $this;
+    }
+
+    /**
+     * @return Helper
+     */
+    public function getHelper(): Helper
+    {
+        return $this->helper;
+    }
+
+    /**
+     * @param Helper $helper
+     * @return QueryComponentFactory
+     */
+    public function setHelper(Helper $helper): QueryComponentFactory
+    {
+        $this->helper = $helper;
+
+        return $this;
+    }
+
+    /**
+     * @return BaseIndex
+     */
+    public function getIndex(): BaseIndex
+    {
+        return $this->index;
+    }
+
+    /**
+     * @param BaseIndex $index
+     * @return QueryComponentFactory
+     */
+    public function setIndex(BaseIndex $index): QueryComponentFactory
+    {
+        $this->index = $index;
+
+        return $this;
+    }
 
     /**
      * @return void
@@ -111,6 +216,25 @@ class QueryComponentFactory
         }
         // Clean up the boost terms, remove doubles
         $this->setBoostTerms(array_values(array_unique($boostTerms)));
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostTerms(): array
+    {
+        return $this->boostTerms;
+    }
+
+    /**
+     * @param array $boostTerms
+     * @return QueryComponentFactory
+     */
+    public function setBoostTerms(array $boostTerms): self
+    {
+        $this->boostTerms = $boostTerms;
+
+        return $this;
     }
 
     /**
@@ -284,136 +408,5 @@ class QueryComponentFactory
         $spellcheck->setCollate(true);
         $spellcheck->setExtendedResults(true);
         $spellcheck->setCollateExtendedResults('true');
-    }
-
-    /**
-     * Add the index-time boosting to the query
-     */
-    protected function buildBoosts(): void
-    {
-        $boosts = $this->query->getBoostedFields();
-        $queries = $this->getQueryArray();
-        foreach ($boosts as $field => $boost) {
-            foreach ($queries as $term) {
-                $booster = Criteria::where($field)
-                    ->is($term)
-                    ->boost($boost);
-                $this->queryArray[] = $booster->getQuery();
-            }
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getQueryArray(): array
-    {
-        return array_merge($this->queryArray, $this->boostTerms);
-    }
-
-    /**
-     * @param array $queryArray
-     * @return QueryComponentFactory
-     */
-    public function setQueryArray(array $queryArray): QueryComponentFactory
-    {
-        $this->queryArray = $queryArray;
-
-        return $this;
-    }
-
-    /**
-     * @return BaseQuery
-     */
-    public function getQuery(): BaseQuery
-    {
-        return $this->query;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @return QueryComponentFactory
-     */
-    public function setQuery(BaseQuery $query): QueryComponentFactory
-    {
-        $this->query = $query;
-
-        return $this;
-    }
-
-    /**
-     * @return Query
-     */
-    public function getClientQuery(): Query
-    {
-        return $this->clientQuery;
-    }
-
-    /**
-     * @param Query $clientQuery
-     * @return QueryComponentFactory
-     */
-    public function setClientQuery(Query $clientQuery): QueryComponentFactory
-    {
-        $this->clientQuery = $clientQuery;
-
-        return $this;
-    }
-
-    /**
-     * @return Helper
-     */
-    public function getHelper(): Helper
-    {
-        return $this->helper;
-    }
-
-    /**
-     * @param Helper $helper
-     * @return QueryComponentFactory
-     */
-    public function setHelper(Helper $helper): QueryComponentFactory
-    {
-        $this->helper = $helper;
-
-        return $this;
-    }
-
-    /**
-     * @return BaseIndex
-     */
-    public function getIndex(): BaseIndex
-    {
-        return $this->index;
-    }
-
-    /**
-     * @param BaseIndex $index
-     * @return QueryComponentFactory
-     */
-    public function setIndex(BaseIndex $index): QueryComponentFactory
-    {
-        $this->index = $index;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBoostTerms(): array
-    {
-        return $this->boostTerms;
-    }
-
-    /**
-     * @param array $boostTerms
-     * @return QueryComponentFactory
-     */
-    public function setBoostTerms(array $boostTerms): self
-    {
-        $this->boostTerms = $boostTerms;
-
-        return $this;
     }
 }

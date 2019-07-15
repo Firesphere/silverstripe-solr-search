@@ -321,7 +321,7 @@ class SearchResult
             foreach ($facetTypes as $class => $options) {
                 // Get the facets by its title
                 /** @var Field $typeFacets */
-                $typeFacets = $facets->getFacet('facet-' .$options['Title']);
+                $typeFacets = $facets->getFacet('facet-' . $options['Title']);
                 $values = $typeFacets->getValues();
                 $results = ArrayList::create();
                 // If there are values, get the items one by one and push them in to the list

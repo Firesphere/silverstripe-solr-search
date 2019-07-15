@@ -122,6 +122,14 @@ class DocumentFactory
     }
 
     /**
+     * @return SearchIntrospection
+     */
+    public function getIntrospection(): SearchIntrospection
+    {
+        return $this->introspection;
+    }
+
+    /**
      * @return ArrayList|DataList|null
      */
     public function getItems()
@@ -333,14 +341,6 @@ class DocumentFactory
         }
 
         return $this->logger;
-    }
-
-    /**
-     * @return SearchIntrospection
-     */
-    public function getIntrospection(): SearchIntrospection
-    {
-        return $this->introspection;
     }
 
     /**

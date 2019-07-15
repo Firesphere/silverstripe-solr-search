@@ -327,6 +327,27 @@ class SearchIntrospection
     }
 
     /**
+     * @param array $fields
+     * @param string $field
+     * @param string $dataclass
+     * @return string
+     */
+    public function getType($fields, $field, $dataclass)
+    {
+        if (!empty($fields[$field])) {
+            return $fields[$field];
+        }
+
+        $singleton = singleton($dataclass);
+        $type = $singleton->castingClass($field);
+        if (!$type) {
+            $type = 'String';
+        }
+
+        return $type;
+    }
+
+    /**
      * @param $field
      * @param array $fields
      * @param array $fieldoptions
@@ -354,27 +375,6 @@ class SearchIntrospection
         }
 
         return $fieldoptions;
-    }
-
-    /**
-     * @param array $fields
-     * @param string $field
-     * @param string $dataclass
-     * @return string
-     */
-    public function getType($fields, $field, $dataclass)
-    {
-        if (!empty($fields[$field])) {
-            return $fields[$field];
-        }
-
-        $singleton = singleton($dataclass);
-        $type = $singleton->castingClass($field);
-        if (!$type) {
-            $type = 'String';
-        }
-
-        return $type;
     }
 
     /**
