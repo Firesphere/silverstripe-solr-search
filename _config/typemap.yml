@@ -52,3 +52,5 @@ Firesphere\SolrSearch\Helpers\Statics:
     ClassName: string
     "SilverStripe\\ORM\\FieldType\\DBClassName": string
     DBClassName: string
+    "SilverStripe\\ORM\\FieldType\\HTMLFragment": htmltext
+    HTMLFragment: htmltext
