@@ -24,7 +24,7 @@ class SolrIndexTaskTest extends SapphireTest
 
         $result = $task->run($request);
 
-        $this->assertEquals(0, $result);
+        $this->assertEquals(1, $result);
 
         $getVars = [
             'group' => 0,
