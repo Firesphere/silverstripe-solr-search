@@ -13,7 +13,7 @@ use Solarium\QueryType\Select\Result\Result;
 /**
  * Class \Firesphere\SolrSearch\Extensions\BaseIndexExtension
  *
- * @property BaseIndexExtension $owner
+ * @property BaseIndex|BaseIndexExtension $owner
  */
 class BaseIndexExtension extends Extension
 {

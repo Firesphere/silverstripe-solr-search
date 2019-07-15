@@ -5,9 +5,9 @@ namespace Firesphere\SolrSearch\Factories;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
-use Minimalcode\Search\Criteria;
-use SilverStripe\Control\Controller;
-use SilverStripe\Security\Security;
+use Firesphere\SolrSearch\Traits\QueryComponentBoostTrait;
+use Firesphere\SolrSearch\Traits\QueryComponentFacetTrait;
+use Firesphere\SolrSearch\Traits\QueryComponentFilterTrait;
 use Solarium\Core\Query\Helper;
 use Solarium\QueryType\Select\Query\Query;
 
@@ -17,6 +17,10 @@ use Solarium\QueryType\Select\Query\Query;
  */
 class QueryComponentFactory
 {
+    use QueryComponentFilterTrait;
+    use QueryComponentBoostTrait;
+    use QueryComponentFacetTrait;
+
     protected static $builds = [
         'Terms',
         'ViewFilter',
@@ -32,17 +36,9 @@ class QueryComponentFactory
      */
     protected $query;
     /**
-     * @var Query
-     */
-    protected $clientQuery;
-    /**
      * @var Helper
      */
     protected $helper;
-    /**
-     * @var array
-     */
-    protected $boostTerms = [];
     /**
      * @var array
      */
@@ -80,20 +76,22 @@ class QueryComponentFactory
     }
 
     /**
-     * Add the index-time boosting to the query
+     * @return BaseQuery
      */
-    protected function buildBoosts(): void
+    public function getQuery(): BaseQuery
     {
-        $boosts = $this->query->getBoostedFields();
-        $queries = $this->getQueryArray();
-        foreach ($boosts as $field => $boost) {
-            foreach ($queries as $term) {
-                $booster = Criteria::where($field)
-                    ->is($term)
-                    ->boost($boost);
-                $this->queryArray[] = $booster->getQuery();
-            }
-        }
+        return $this->query;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @return QueryComponentFactory
+     */
+    public function setQuery(BaseQuery $query): self
+    {
+        $this->query = $query;
+
+        return $this;
     }
 
     /**
@@ -111,25 +109,6 @@ class QueryComponentFactory
     public function setQueryArray(array $queryArray): QueryComponentFactory
     {
         $this->queryArray = $queryArray;
-
-        return $this;
-    }
-
-    /**
-     * @return BaseQuery
-     */
-    public function getQuery(): BaseQuery
-    {
-        return $this->query;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @return QueryComponentFactory
-     */
-    public function setQuery(BaseQuery $query): QueryComponentFactory
-    {
-        $this->query = $query;
 
         return $this;
     }
@@ -219,25 +198,6 @@ class QueryComponentFactory
     }
 
     /**
-     * @return array
-     */
-    public function getBoostTerms(): array
-    {
-        return $this->boostTerms;
-    }
-
-    /**
-     * @param array $boostTerms
-     * @return QueryComponentFactory
-     */
-    public function setBoostTerms(array $boostTerms): self
-    {
-        $this->boostTerms = $boostTerms;
-
-        return $this;
-    }
-
-    /**
      * @param string $searchTerm
      * @param Helper $helper
      * @return string
@@ -260,140 +220,23 @@ class QueryComponentFactory
     }
 
     /**
+     * If the search is fuzzy, add fuzzyness
+     *
      * @param $search
      * @return string
      */
     protected function isFuzzy($search): string
     {
-        $postfix = ''; // When doing fuzzy search, postfix, otherwise, don't
+        // When doing fuzzy search, postfix, otherwise, don't
         if ($search['fuzzy']) {
-            $postfix = '~' . (is_numeric($search['fuzzy']) ? $search['fuzzy'] : '');
+            return '~' . (is_numeric($search['fuzzy']) ? $search['fuzzy'] : '');
         }
 
-        return $postfix;
+        return '';
     }
 
     /**
-     * Set boosting at Query time
-     *
-     * @param array $search
-     * @param string $term
-     * @param array $boostTerms
-     * @return array
-     */
-    protected function buildQueryBoost($search, string $term, array &$boostTerms): array
-    {
-        foreach ($search['fields'] as $boostField) {
-            $boostField = str_replace('.', '_', $boostField);
-            $criteria = Criteria::where($boostField)
-                ->is($term)
-                ->boost($search['boost']);
-            $boostTerms[] = $criteria->getQuery();
-        }
-
-        return $boostTerms;
-    }
-
-    /**
-     *
-     */
-    protected function buildViewFilter(): void
-    {
-        // Filter by what the user is allowed to see
-        $viewIDs = ['1-null']; // null is always an option as that means publicly visible
-        $currentUser = Security::getCurrentUser();
-        if ($currentUser && $currentUser->exists()) {
-            $viewIDs[] = '1-' . $currentUser->ID;
-        }
-        /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
-        $query = Criteria::where('ViewStatus')->in($viewIDs);
-
-        $this->clientQuery->createFilterQuery('ViewStatus')
-            ->setQuery($query->getQuery());
-    }
-
-    /**
-     * Add filtered queries based on class hierarchy
-     * We only need the class itself, since the hierarchy will take care of the rest
-     */
-    protected function buildClassFilter(): void
-    {
-        if (count($this->query->getClasses())) {
-            $classes = $this->query->getClasses();
-            $criteria = Criteria::where('ClassHierarchy')->in($classes);
-            $this->clientQuery->createFilterQuery('classes')
-                ->setQuery($criteria->getQuery());
-        }
-    }
-
-    /**
-     *
-     */
-    protected function buildFilters(): void
-    {
-        $filters = $this->query->getFilter();
-        foreach ($filters as $field => $value) {
-            $value = is_array($value) ? $value : [$value];
-            $criteria = Criteria::where($field)->in($value);
-            $this->clientQuery->createFilterQuery('filter-' . $field)
-                ->setQuery($criteria->getQuery());
-        }
-    }
-
-    /**
-     *
-     */
-    protected function buildExcludes(): void
-    {
-        $filters = $this->query->getExclude();
-        foreach ($filters as $field => $value) {
-            $value = is_array($value) ? $value : [$value];
-            $criteria = Criteria::where($field)
-                ->in($value)
-                ->not();
-            $this->clientQuery->createFilterQuery('exclude-' . $field)
-                ->setQuery($criteria->getQuery());
-        }
-    }
-
-    /**
-     *
-     */
-    protected function buildFacets(): void
-    {
-        $facets = $this->clientQuery->getFacetSet();
-        // Facets should be set from the index configuration
-        foreach ($this->index->getFacetFields() as $class => $config) {
-            $facets->createFacetField('facet-' . $config['Title'])->setField($config['Field']);
-        }
-        // Count however, comes from the query
-        $facets->setMinCount($this->query->getFacetsMinCount());
-    }
-
-    /**
-     *
-     */
-    protected function buildFacetQuery()
-    {
-        $filterFacets = [];
-        if (Controller::has_curr()) {
-            $filterFacets = Controller::curr()->getRequest()->requestVars();
-        }
-        foreach ($this->index->getFacetFields() as $class => $config) {
-            if (array_key_exists($config['Title'], $filterFacets)) {
-                $filter = array_filter($filterFacets[$config['Title']], 'strlen');
-                if (count($filter)) {
-                    $criteria = Criteria::where($config['Field'])->in($filter);
-                    $this->clientQuery
-                        ->createFilterQuery('facet-' . $config['Title'])
-                        ->setQuery($criteria->getQuery());
-                }
-            }
-        }
-    }
-
-    /**
-     *
+     * Add spellcheck elements
      */
     protected function buildSpellcheck(): void
     {
