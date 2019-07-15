@@ -5,10 +5,15 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Helpers\Statics;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\FieldType\DBBigInt;
 use SilverStripe\ORM\FieldType\DBBoolean;
+use SilverStripe\ORM\FieldType\DBClassName;
+use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\ORM\FieldType\DBDouble;
+use SilverStripe\ORM\FieldType\DBEnum;
 use SilverStripe\ORM\FieldType\DBFloat;
 use SilverStripe\ORM\FieldType\DBForeignKey;
 use SilverStripe\ORM\FieldType\DBHTMLText;
@@ -23,43 +28,58 @@ class StaticsTest extends SapphireTest
     public function testGetTypesMap()
     {
         $expected = [
-            '*'                  => 'text',
-            'HTMLVarchar'        => 'htmltext',
-            DBHTMLVarchar::class => 'htmltext',
-            'DBHTMLVarchar'      => 'htmltext',
-            'Varchar'            => 'string',
-            DBVarchar::class     => 'string',
-            'DBVarchar'          => 'string',
-            'Text'               => 'string',
-            DBText::class        => 'string',
-            'DBText'             => 'string',
-            'HTMLText'           => 'htmltext',
+            'Enum'               => 'string',
             DBHTMLText::class    => 'htmltext',
             'DBHTMLText'         => 'htmltext',
-            'Boolean'            => 'boolean',
-            DBBoolean::class     => 'boolean',
-            'DBBoolean'          => 'boolean',
-            'Date'               => 'tdate',
-            DBDate::class        => 'tdate',
-            'DBDate'             => 'tdate',
-            'Datetime'           => 'tdate',
-            DBDatetime::class    => 'tdate',
-            'DBDatetime'         => 'tdate',
-            'ForeignKey'         => 'tint',
-            DBForeignKey::class  => 'tint',
-            'DBForeignKey'       => 'tint',
-            'Int'                => 'tint',
-            DBInt::class         => 'tint',
-            'DBInt'              => 'tint',
-            'Float'              => 'tfloat',
-            DBFloat::class       => 'tfloat',
-            'DBFloat'            => 'tfloat',
-            'Double'             => 'tdouble',
-            DBDouble::class      => 'tdouble',
+            'ClassName'          => 'string',
+            'BigInt'             => 'tint',
             'DBDouble'           => 'tdouble',
-            'Money'              => 'tfloat',
-            DBMoney::class       => 'tfloat',
+            DBText::class        => 'string',
+            'DBBigInt'           => 'tint',
+            DBForeignKey::class  => 'tint',
+            'DBText'             => 'string',
+            DBDouble::class      => 'tdouble',
+            DBBoolean::class     => 'boolean',
+            DBBigInt::class      => 'tint',
+            'ForeignKey'         => 'tint',
+            'DBDatetime'         => 'tdate',
+            'DBVarchar'          => 'string',
+            '*'                  => 'text',
+            'Varchar'            => 'string',
             'DBMoney'            => 'tfloat',
+            'Boolean'            => 'boolean',
+            'Date'               => 'tdate',
+            'DBDate'             => 'tdate',
+            'HTMLVarchar'        => 'htmltext',
+            'DBEnum'             => 'string',
+            DBHTMLVarchar::class => 'htmltext',
+            'Int'                => 'tint',
+            'DBHTMLVarchar'      => 'htmltext',
+            DBInt::class         => 'tint',
+            'Double'             => 'tdouble',
+            'Decimal'            => 'tfloat',
+            DBVarchar::class     => 'string',
+            DBCurrency::class    => 'tfloat',
+            'DBForeignKey'       => 'tint',
+            'DBCurrency'         => 'tfloat',
+            DBFloat::class       => 'tfloat',
+            'DBInt'              => 'tint',
+            DBClassName::class   => 'string',
+            'DBFloat'            => 'tfloat',
+            'DBClassName'        => 'string',
+            'DBDecimal'          => 'tfloat',
+            DBDecimal::class     => 'tfloat',
+            DBDatetime::class    => 'tdate',
+            'Text'               => 'string',
+            'Float'              => 'tfloat',
+            'Datetime'           => 'tdate',
+            'Currency'           => 'tfloat',
+            'HTMLText'           => 'htmltext',
+            'DBBoolean'          => 'boolean',
+            DBMoney::class       => 'tfloat',
+            'Money'              => 'tfloat',
+            DBEnum::class        => 'string',
+            DBDate::class        => 'tdate'
         ];
 
         $this->assertEquals($expected, Statics::getTypeMap());
