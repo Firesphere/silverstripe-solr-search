@@ -47,7 +47,7 @@ class SolrIndexTaskTest extends SapphireTest
 
         $result = $task->run($request);
 
-        $this->assertEquals(2, $result);
+        $this->assertEquals(1, $result);
     }
 
     public function testGetLogger()

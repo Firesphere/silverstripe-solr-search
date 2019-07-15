@@ -35,12 +35,12 @@ class QueryComponentFactory
     /**
      * @var array
      */
-    protected $boostTerms;
+    protected $boostTerms = [];
 
     /**
      * @var array
      */
-    protected $queryArray;
+    protected $queryArray = [];
 
     /**
      * @var BaseIndex
@@ -86,13 +86,13 @@ class QueryComponentFactory
 
 
     /**
-     * @return array
+     * @return void
      */
-    protected function buildTerms(): array
+    protected function buildTerms(): void
     {
         $terms = $this->query->getTerms();
 
-        $boostTerms = $this->index->getBoostTerms();
+        $boostTerms = $this->getBoostTerms();
 
         foreach ($terms as $search) {
             $term = $search['text'];
@@ -395,6 +395,25 @@ class QueryComponentFactory
     public function setIndex(BaseIndex $index): QueryComponentFactory
     {
         $this->index = $index;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBoostTerms(): array
+    {
+        return $this->boostTerms;
+    }
+
+    /**
+     * @param array $boostTerms
+     * @return QueryComponentFactory
+     */
+    public function setBoostTerms(array $boostTerms): self
+    {
+        $this->boostTerms = $boostTerms;
 
         return $this;
     }

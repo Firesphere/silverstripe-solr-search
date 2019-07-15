@@ -46,6 +46,22 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->assertInstanceOf(BaseQuery::class, $this->factory->getQuery());
     }
 
+
+    public function testEscapeTerms()
+    {
+        $term = '"test me" help';
+
+        $helper = $this->factory->getIndex()->getClient()->createSelect()->getHelper();
+
+        $escaped = $this->factory->escapeSearch($term, $helper);
+        $this->assertEquals('"\"test me\"" help', $escaped);
+
+        $term = 'help me';
+
+        $this->assertEquals('help me', $this->factory->escapeSearch($term, $helper));
+    }
+
+
     protected function setUp()
     {
         $this->factory = new QueryComponentFactory();

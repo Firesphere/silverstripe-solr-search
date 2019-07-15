@@ -100,20 +100,6 @@ class BaseIndexTest extends SapphireTest
         $this->assertNotEquals($original, $configStore->getConfig());
     }
 
-    public function testEscapeTerms()
-    {
-        $term = '"test me" help';
-
-        $helper = $this->index->getClient()->createSelect()->getHelper();
-
-        $escaped = $this->index->escapeSearch($term, $helper);
-        $this->assertEquals('"\"test me\"" help', $escaped);
-
-        $term = 'help me';
-
-        $this->assertEquals('help me', $this->index->escapeSearch($term, $helper));
-    }
-
     public function testGetFieldsForIndexing()
     {
         $expected = [
