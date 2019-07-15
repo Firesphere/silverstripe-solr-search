@@ -47,28 +47,27 @@ class QueryComponentFactory
      */
     protected $index;
 
+    protected static $builds = [
+        'Terms',
+        'ViewFilter',
+        'ClassFilter',
+        'Filters',
+        'Excludes',
+        'Facets',
+        'FacetQuery',
+        'Spellcheck'
+    ];
+
     /**
      * Build the full query
      * @return Query
      */
     public function buildQuery()
     {
-        // Base searchterms
-        $this->buildTerms();
-        // canView filters
-        $this->buildViewFilter();
-        // Build class filtering
-        $this->buildClassFilter();
-        // Add filters
-        $this->buildFilters();
-        // And excludes
-        $this->buildExcludes();
-        // Setup the facets
-        $this->buildFacets();
-        // Build the facet filters
-        $this->buildFacetQuery();
-        // Add spellchecking
-        $this->buildSpellcheck();
+        foreach (static::$builds as $build) {
+            $method = sprintf('build%s', $build);
+            $this->$method();
+        }
         // Set the start
         $this->clientQuery->setStart($this->query->getStart());
         // Double the rows in case something has been deleted, but not from Solr

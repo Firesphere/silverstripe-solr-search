@@ -37,3 +37,5 @@ Firesphere\SolrSearch\Helpers\Statics:
     Money: tfloat
     "SilverStripe\\ORM\\FieldType\\DBMoney": tfloat
     "DBMoney": tfloat
+    "SilverStripe\\ORM\\FieldType\\DBClassName": string
+    DBClassName: string
