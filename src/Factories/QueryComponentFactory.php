@@ -53,7 +53,9 @@ class QueryComponentFactory
      */
     public function buildQuery()
     {
+        // Base searchterms
         $this->buildTerms();
+        // canView filters
         $this->buildViewFilter();
         // Build class filtering
         $this->buildClassFilter();
@@ -105,10 +107,11 @@ class QueryComponentFactory
             }
             // If boosting is set, add the fields to boost
             if ($search['boost'] > 1) {
-                $boost = $this->buildQueryBoost($search, $term, $boostTerms);
-                $this->boostTerms = array_merge($boostTerms, $boost);
+                $boostTerms = $this->buildQueryBoost($search, $term, $boostTerms);
             }
         }
+        // Clean up the boost terms, remove doubles
+        $this->boostTerms = array_values(array_unique($boostTerms));
     }
 
     /**
@@ -155,20 +158,20 @@ class QueryComponentFactory
      *
      * @param array $search
      * @param string $term
-     * @param array $searchQuery
+     * @param array $boostTerms
      * @return array
      */
-    protected function buildQueryBoost($search, string $term, array $searchQuery): array
+    protected function buildQueryBoost($search, string $term, array &$boostTerms): array
     {
         foreach ($search['fields'] as $boostField) {
             $boostField = str_replace('.', '_', $boostField);
             $criteria = Criteria::where($boostField)
                 ->is($term)
                 ->boost($search['boost']);
-            $searchQuery[] = $criteria->getQuery();
+            $boostTerms[] = $criteria->getQuery();
         }
 
-        return $searchQuery;
+        return $boostTerms;
     }
 
     /**
