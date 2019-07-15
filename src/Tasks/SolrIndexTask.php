@@ -99,20 +99,17 @@ class SolrIndexTask extends BuildTask
     {
         $startTime = time();
         [$vars, $group, $isGroup] = $this->taskSetup($request);
+        $groups = 0;
         $indexes = $this->service->getValidIndexes($request->getVar('index'));
 
-        $groups = 0;
         foreach ($indexes as $indexName) {
             /** @var BaseIndex $index */
             $index = Injector::inst()->get($indexName);
 
-            $classes = $index->getClasses();
-            if (isset($vars['class'])) {
-                if (in_array($vars['class'], $classes, true)) {
-                    $classes = [$vars['class']];
-                } else {
-                    continue;
-                }
+            $indexClasses = $index->getClasses();
+            $classes = $this->getClasses($vars, $indexClasses);
+            if (!count($classes)) {
+                continue;
             }
 
             if (!empty($vars['clear'])) {
@@ -121,7 +118,7 @@ class SolrIndexTask extends BuildTask
             }
 
             foreach ($classes as $class) {
-                $this->indexClass($isGroup, $class, $index, $group);
+                $groups = $this->indexClass($isGroup, $class, $index, $group);
             }
         }
         $this->getLogger()->info(
@@ -176,9 +173,10 @@ class SolrIndexTask extends BuildTask
      * @param $class
      * @param BaseIndex $index
      * @param int $group
+     * @return int
      * @throws Exception
      */
-    private function indexClass($isGroup, $class, BaseIndex $index, int $group): void
+    private function indexClass($isGroup, $class, BaseIndex $index, int $group): int
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
 
@@ -198,6 +196,8 @@ class SolrIndexTask extends BuildTask
             }
             $group++;
         }
+
+        return $groups;
     }
 
     /**
@@ -225,5 +225,19 @@ class SolrIndexTask extends BuildTask
             $update->addCommit();
             $client->update($update);
         }
+    }
+
+    /**
+     * @param $vars
+     * @param array $classes
+     * @return bool|array
+     */
+    protected function getClasses($vars, array $classes): array
+    {
+        if (isset($vars['class'])) {
+            return array_intersect($classes, [$vars['class']]);
+        }
+
+        return $classes;
     }
 }
