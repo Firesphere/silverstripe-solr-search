@@ -154,14 +154,20 @@ class DataObjectExtension extends DataExtension
      */
     public function getViewStatus(): array
     {
+        // Return empty if it's not allowed to show in search
+        // The setting needs to be explicitly false, to avoid any possible collision
+        // with objects not having the setting
+        if ($this->owner->ShowInSearch === false) {
+            return null;
+        }
         /** @var DataObject $owner */
         $owner = $this->owner;
-        $return = [];
         // Add null users if it's publicly viewable
         if ($owner->canView()) {
             return ['1-null'];
         }
 
+        $return = [];
         if (!self::$members) {
             self::$members = Member::get();
         }
