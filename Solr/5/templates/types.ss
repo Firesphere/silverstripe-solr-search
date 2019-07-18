@@ -159,6 +159,7 @@
 <fieldType name="htmltext" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
     <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <charFilter class="solr.HTMLStripCharFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
         <filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="1" catenateWords="1"
                 catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
