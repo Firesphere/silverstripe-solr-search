@@ -82,7 +82,7 @@ class DocumentFactory
         $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
         $debugString .= '[';
         foreach ($this->getItems() as $item) {
-            if ($item->ShowInSearch === false) {
+            if ($item->ShowInSearch !== 1) {
                 continue;
             }
             $debugString .= "$item->ID, ";
