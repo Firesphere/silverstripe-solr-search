@@ -76,7 +76,7 @@ jobs:
           name: Check Solr has successfully indexed the default 5 pages
           command: |
             wget http://localhost:8983/solr/CircleCITestIndex/update?commit=true
-            RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":5')
+            RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":3')
             if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
             echo "Solr has successfully indexed documents"
       - run:
