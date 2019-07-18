@@ -77,45 +77,7 @@ class DocumentFactoryTest extends SapphireTest
                 ],
             'SiteTree_Title'   => 'Contact Us',
             'SiteTree_Content' => "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>",
-        ],
-        [
-            'id'               => 'SilverStripe\\ErrorPage\\ErrorPage-4',
-            'ObjectID'         => 4,
-            'ClassName'        => ErrorPage::class,
-            'ClassHierarchy'   =>
-                [
-                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
-                    'silverstripe\\orm\\dataobject'      => DataObject::class,
-                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
-                    'page'                               => 'Page',
-                    'silverstripe\\errorpage\\errorpage' => ErrorPage::class,
-                ],
-            'ViewStatus'       =>
-                [
-                    0 => '1-null',
-                ],
-            'SiteTree_Title'   => 'Page not found',
-            'SiteTree_Content' => '<p>Sorry, it seems you were trying to access a page that doesn\'t exist.</p><p>Please check the spelling of the URL you were trying to access and try again.</p>',
-        ],
-        [
-            'id'               => 'SilverStripe\\ErrorPage\\ErrorPage-5',
-            'ObjectID'         => 5,
-            'ClassName'        => ErrorPage::class,
-            'ClassHierarchy'   =>
-                [
-                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
-                    'silverstripe\\orm\\dataobject'      => DataObject::class,
-                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
-                    'page'                               => 'Page',
-                    'silverstripe\\errorpage\\errorpage' => ErrorPage::class,
-                ],
-            'ViewStatus'       =>
-                [
-                    0 => '1-null',
-                ],
-            'SiteTree_Title'   => 'Server error',
-            'SiteTree_Content' => '<p>Sorry, there was a problem with handling your request.</p>',
-        ],
+        ]
     ];
 
     public function testConstruct()

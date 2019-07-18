@@ -82,6 +82,9 @@ class DocumentFactory
         $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
         $debugString .= '[';
         foreach ($this->getItems() as $item) {
+            if ($item->ShowInSearch === false) {
+                continue;
+            }
             $debugString .= "$item->ID, ";
             /** @var Document $doc */
             $doc = $update->createDocument();

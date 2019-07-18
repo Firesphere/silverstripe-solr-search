@@ -9,6 +9,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
+use SilverStripe\ORM\DB;
 
 /**
  * Some additional introspection tools that are used often by the fulltext search code
@@ -54,8 +55,9 @@ class SearchIntrospection
         $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
 
+        $schemaHelper = DataObject::getSchema();
         foreach ($sources as $source) {
-            $sources[$source]['base'] = DataObject::getSchema()->baseDataClass($source);
+            $sources[$source]['base'] = $schemaHelper->baseDataClass($source);
             $sources[$source]['lookup_chain'] = [];
         }
 
