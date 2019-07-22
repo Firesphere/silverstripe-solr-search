@@ -40,6 +40,9 @@ class DataObjectExtension extends DataExtension
         ChangeSet::class,
         ChangeSetItem::class,
     ];
+    /**
+     * @var array
+     */
     protected $canViewClasses = [];
 
     /**
@@ -162,12 +165,27 @@ class DataObjectExtension extends DataExtension
         if ($owner->ShowInSearch === false || $owner->ShowInSearch === 0) {
             return [];
         }
+
+        if (isset($this->canViewClasses[$owner->ClassName]) && !$owner->hasField('ShowInSearch')) {
+            return $this->canViewClasses[$owner->ClassName];
+        }
+
+        return $this->getMemberPermissions($owner);
+    }
+
+    /**
+     * @param DataObject|SiteTree $owner
+     * @return array
+     */
+    protected function getMemberPermissions($owner): array
+    {
+        $return = [];
+
         // Add null users if it's publicly viewable
         if ($owner->canView()) {
             return ['1-null'];
         }
 
-        $return = [];
         if (!self::$members) {
             self::$members = Member::get();
         }
@@ -176,6 +194,10 @@ class DataObjectExtension extends DataExtension
             if ($owner->canView($member)) {
                 $return[] = sprintf('1-%s', $member->ID);
             }
+        }
+
+        if (!$owner->hasField('ShowInSearch')) {
+            $this->canViewClasses[$owner->ClassName] = $return;
         }
 
         return $return;
