@@ -43,7 +43,7 @@ class DataObjectExtension extends DataExtension
     /**
      * @var array
      */
-    protected $canViewClasses = [];
+    protected static $canViewClasses = [];
 
     /**
      * @throws ValidationException
@@ -162,12 +162,13 @@ class DataObjectExtension extends DataExtension
         // with objects not having the setting
         /** @var DataObject|SiteTree $owner */
         $owner = $this->owner;
+        // Return immediately if the owner has ShowInSearch not being `null`
         if ($owner->ShowInSearch === false || $owner->ShowInSearch === 0) {
             return [];
         }
 
-        if (isset($this->canViewClasses[$owner->ClassName]) && !$owner->hasField('ShowInSearch')) {
-            return $this->canViewClasses[$owner->ClassName];
+        if (isset(self::$canViewClasses[$owner->ClassName]) && !$owner->hasField('ShowInSearch')) {
+            return self::$canViewClasses[$owner->ClassName];
         }
 
         return $this->getMemberPermissions($owner);
@@ -197,7 +198,7 @@ class DataObjectExtension extends DataExtension
         }
 
         if (!$owner->hasField('ShowInSearch')) {
-            $this->canViewClasses[$owner->ClassName] = $return;
+            self::$canViewClasses[$owner->ClassName] = $return;
         }
 
         return $return;
