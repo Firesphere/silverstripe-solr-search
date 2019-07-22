@@ -157,9 +157,9 @@ class DataObjectExtension extends DataExtension
         // Return empty if it's not allowed to show in search
         // The setting needs to be explicitly false, to avoid any possible collision
         // with objects not having the setting
-        /** @var DataObject $owner */
+        /** @var DataObject|SiteTree $owner */
         $owner = $this->owner;
-        if ($owner->hasField('ShowInSearch') && (bool)$owner->ShowInSearch === false) {
+        if ($owner->ShowInSearch === false || $owner->ShowInSearch === 0) {
             return [];
         }
         // Add null users if it's publicly viewable
