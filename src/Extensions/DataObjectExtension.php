@@ -157,11 +157,11 @@ class DataObjectExtension extends DataExtension
         // Return empty if it's not allowed to show in search
         // The setting needs to be explicitly false, to avoid any possible collision
         // with objects not having the setting
-        if ($this->owner->ShowInSearch === false) {
-            return null;
-        }
         /** @var DataObject $owner */
         $owner = $this->owner;
+        if ($owner->hasField('ShowInSearch') && (bool)$owner->ShowInSearch === false) {
+            return [];
+        }
         // Add null users if it's publicly viewable
         if ($owner->canView()) {
             return ['1-null'];
@@ -173,7 +173,9 @@ class DataObjectExtension extends DataExtension
         }
 
         foreach (self::$members as $member) {
-            $return[] = sprintf('%s-%s', $owner->canView($member), $member->ID);
+            if ($owner->canView($member)) {
+                $return[] = sprintf('1-%s', $member->ID);
+            }
         }
 
         return $return;
