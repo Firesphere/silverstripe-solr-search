@@ -28,25 +28,28 @@ jobs:
     working_directory: /var/www/html
 
     steps:
+      # redundant, just to be sure
       - run: cd /var/www/html
       - checkout
       - run: touch /var/www/html/error.log
-      - run: touch composer.lock # Create an empty lockfile
       - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
             - silverstripe-search-cache-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found
             - silverstripe-search-cache-
-      - run: composer require silverstripe/recipe-cms
-      - run: composer update -n --prefer-dist --ignore-platform-reqs
-      - run: composer vendor-expose
+      - run:
+          name: Composer requirements
+          command: |
+            composer require silverstripe/recipe-cms
+            composer update -n --prefer-dist --ignore-platform-reqs
+            composer vendor-expose
       - save_cache:
           key: silverstripe-search-cache-{{ checksum "composer.lock" }}
           paths:
-            # fallback to using the latest cache if no exact match is found
             - vendor
             - app
+            - public
             - resources
             - _resources
       - run:
@@ -103,10 +106,15 @@ jobs:
       - run:
           name: Code coverage reports
           command: |
+            echo "Scrutinizer"
             php ocular.phar code-coverage:upload --format=php-clover clover.xml
+            echo "CodeCov"
             bash <(curl -s https://codecov.io/bash) -f clover.xml
+            echo "CodeClimate"
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
-      - run: vendor/bin/phpcs --standard=phpcs.xml.dist src
+      - run:
+          name: Code Sniffer
+          command: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
           path: /var/www/html/coverage
       - store_artifacts:
