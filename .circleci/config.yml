@@ -106,11 +106,17 @@ jobs:
       - run:
           name: Code coverage reports
           command: |
-            echo "Scrutinizer"
+            echo "---"
+            echo "Scrutinizer:"
+            echo "---"
             php ocular.phar code-coverage:upload --format=php-clover clover.xml
-            echo "CodeCov"
+            echo "---"
+            echo "CodeCov:"
+            echo "---"
             bash <(curl -s https://codecov.io/bash) -f clover.xml
-            echo "CodeClimate"
+            echo "---"
+            echo "CodeClimate:"
+            echo "---"
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
       - run:
           name: Code Sniffer
