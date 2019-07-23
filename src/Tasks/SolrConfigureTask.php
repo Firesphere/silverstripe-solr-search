@@ -31,6 +31,12 @@ class SolrConfigureTask extends BuildTask
      */
     protected $logger;
 
+    protected static $storeModes = [
+        'file' => FileConfigStore::class,
+        'post' => PostConfigStore::class,
+//        'webdav' => WebdavConfigStore::class,
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -131,16 +137,7 @@ class SolrConfigureTask extends BuildTask
      */
     protected function getStore($storeConfig): ConfigStore
     {
-        $configStore = null;
-
-        /** @var ConfigStore $configStore */
-        if ($storeConfig['mode'] === 'post') {
-            $configStore = Injector::inst()->create(PostConfigStore::class, $storeConfig);
-        } elseif ($storeConfig['mode'] === 'file') {
-            $configStore = Injector::inst()->create(FileConfigStore::class, $storeConfig);
-        }// elseif ($storeConfig['mode'] === 'webdav') {
-        // @todo Add webdav store
-        //}
+        $configStore = Injector::inst()->create($storeConfig['mode'], $storeConfig);
 
         // Allow changing the configStore if it needs to change to a different store
         $this->extend('onBeforeConfig', $configStore, $storeConfig);
