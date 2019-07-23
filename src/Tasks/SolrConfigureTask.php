@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -62,7 +63,8 @@ class SolrConfigureTask extends BuildTask
             try {
                 $this->configureIndex($index);
             } catch (RequestException $error) {
-                $this->logger->error($error->getResponse()->getBody()->__toString());
+                $exception = json_decode($error->getResponse()->getBody()->read(999999));
+                $this->logger->error($exception);
                 $this->logger->error(sprintf('Core loading failed for %s', $index));
                 // Continue to the next index
                 continue;
@@ -98,15 +100,13 @@ class SolrConfigureTask extends BuildTask
         $configStore = $this->createConfigForIndex($instance);
         // Default to create
         $method = 'coreCreate';
-        $message = 'created';
         // Switch to reload if the core is loaded
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             $method = 'coreReload';
-            $message = 'reloaded';
         }
         try {
             $service->$method($index, $configStore);
-            $this->logger->info(sprintf('Core %s successfully %s', $index, $message));
+            $this->logger->info(sprintf('Core %s successfully loaded', $index));
         } catch (RequestException $error) {
             throw new RuntimeException($error);
         }
