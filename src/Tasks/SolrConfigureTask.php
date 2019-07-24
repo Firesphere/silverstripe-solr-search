@@ -69,7 +69,7 @@ class SolrConfigureTask extends BuildTask
             try {
                 $this->configureIndex($index);
             } catch (RequestException $error) {
-                $exception = json_decode($error->getResponse()->getBody()->read(999999));
+                $exception = $error->getResponse()->getBody()->getContents();
                 $this->logger->error($exception);
                 $this->logger->error(sprintf('Core loading failed for %s', $index));
                 // Continue to the next index
