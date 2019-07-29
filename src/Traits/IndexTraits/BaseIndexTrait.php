@@ -101,14 +101,20 @@ trait BaseIndexTrait
 
     /**
      * @param string $fulltextField
+     * @param null $forceType
+     * @param array $options
      * @return $this
      */
-    public function addFulltextField($fulltextField): self
+    public function addFulltextField($fulltextField, $forceType = null, $options = []): self
     {
         $key = array_search($fulltextField, $this->getFilterFields(), true);
 
         if (!$key) {
             $this->fulltextFields[] = $fulltextField;
+        }
+
+        if ($options['boost']) {
+            $this->addBoostedField($fulltextField, [], $options['boost']);
         }
 
         return $this;

@@ -104,11 +104,8 @@ class SolrCoreService
         $action = $this->admin->createCreate();
 
         $action->setCore($core);
-
         $action->setInstanceDir($configStore->instanceDir($core));
-
         $this->admin->setAction($action);
-
         $response = $this->client->coreAdmin($this->admin);
 
         return $response->getWasSuccessful();
