@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
+use SilverStripe\Dev\Deprecation;
 use Solarium\Core\Client\Client;
 
 /**
@@ -101,24 +102,38 @@ trait BaseIndexTrait
 
     /**
      * @param string $fulltextField
-     * @param null $forceType
+     * @param null|string $forceType
      * @param array $options
      * @return $this
      */
     public function addFulltextField($fulltextField, $forceType = null, $options = []): self
     {
+        if ($forceType) {
+            Deprecation::notice('5.0', 'ForceType should be handled through casting');
+        }
+        
         $key = array_search($fulltextField, $this->getFilterFields(), true);
 
         if (!$key) {
             $this->fulltextFields[] = $fulltextField;
         }
 
-        if ($options['boost']) {
+        if (isset($options['boost'])) {
             $this->addBoostedField($fulltextField, [], $options['boost']);
         }
 
         return $this;
     }
+
+    /**
+     * Abstract required to include this trait
+     *
+     * @param string $field
+     * @param array $options
+     * @param null|int|bool $boost
+     * @return mixed
+     */
+    abstract public function addBoostedField($field, $options = [], $boost = null);
 
     /**
      * @return array
