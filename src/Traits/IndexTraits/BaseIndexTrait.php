@@ -126,16 +126,6 @@ trait BaseIndexTrait
     }
 
     /**
-     * Abstract required to include this trait
-     *
-     * @param string $field
-     * @param array $options
-     * @param null|int|bool $boost
-     * @return mixed
-     */
-    abstract public function addBoostedField($field, $options = [], $boost = null);
-
-    /**
      * @return array
      */
     public function getFilterFields(): array

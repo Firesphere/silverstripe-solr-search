@@ -6,6 +6,13 @@ namespace Firesphere\SolrSearch\Models;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 
+/**
+ * Class \Firesphere\SolrSearch\Models\QueryRecording
+ *
+ * @property string $Query
+ * @property int $Results
+ * @property int $PagesVisited
+ */
 class QueryRecording extends DataObject
 {
     private static $db = [
