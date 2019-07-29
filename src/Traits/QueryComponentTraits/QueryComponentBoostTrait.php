@@ -49,9 +49,13 @@ trait QueryComponentBoostTrait
         $boosts = $this->query->getBoostedFields();
         $queries = $this->getQueryArray();
         foreach ($boosts as $field => $boost) {
+            $terms = [];
             foreach ($queries as $term) {
+                $terms[] = $term;
+            }
+            if (count($terms)) {
                 $booster = Criteria::where($field)
-                    ->is($term)
+                    ->in($terms)
                     ->boost($boost);
                 $this->queryArray[] = $booster->getQuery();
             }
