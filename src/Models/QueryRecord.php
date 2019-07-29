@@ -13,8 +13,10 @@ use SilverStripe\ORM\ValidationException;
  * @property int $Results
  * @property int $PagesVisited
  */
-class QueryRecording extends DataObject
+class QueryRecord extends DataObject
 {
+    private static $table_name = 'QueryRecording';
+
     private static $db = [
         'Query' => 'Varchar(255)',
         'Results' => 'Int',
@@ -24,10 +26,10 @@ class QueryRecording extends DataObject
     /**
      * @param $query
      * @param $count
-     * @return QueryRecording
+     * @return QueryRecord
      * @throws ValidationException
      */
-    public static function getOrCreate($query, $count): QueryRecording
+    public static function findOrCreate($query, $count): QueryRecord
     {
         $item = static::get()->filter(['Query' => trim($query)])->first();
         if (!$item || !$item->exists()) {
