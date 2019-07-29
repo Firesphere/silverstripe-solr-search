@@ -111,7 +111,7 @@ trait BaseIndexTrait
         if ($forceType) {
             Deprecation::notice('5.0', 'ForceType should be handled through casting');
         }
-        
+
         $key = array_search($fulltextField, $this->getFilterFields(), true);
 
         if (!$key) {

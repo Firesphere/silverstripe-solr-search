@@ -70,14 +70,14 @@ trait GetterSetterTrait
      * Add a boosted field to be boosted at query time
      *
      * @param string $field
-     * @param array|int $extraOptions
+     * @param array|int $options
      * @param int|null $boost
      * @return $this
      */
-    public function addBoostedField($field, $extraOptions = [], $boost = null): self
+    public function addBoostedField($field, $options = [], $boost = null): self
     {
-        if ($boost === null && is_int($extraOptions)) {
-            $boost = $extraOptions;
+        if ($boost === null && is_int($options)) {
+            $boost = $options;
         }
 
         $this->boostedFields[$field] = $boost;
