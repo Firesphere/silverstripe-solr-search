@@ -176,16 +176,17 @@ abstract class BaseIndex
     protected function buildSolrQuery(BaseQuery $query): Query
     {
         $clientQuery = $this->client->createSelect();
+        $factory = $this->queryFactory;
 
         $helper = $clientQuery->getHelper();
 
-        $this->queryFactory->setQuery($query);
-        $this->queryFactory->setClientQuery($clientQuery);
-        $this->queryFactory->setHelper($helper);
-        $this->queryFactory->setIndex($this);
+        $factory->setQuery($query);
+        $factory->setClientQuery($clientQuery);
+        $factory->setHelper($helper);
+        $factory->setIndex($this);
 
-        $clientQuery = $this->queryFactory->buildQuery();
-        $this->queryTerms = $this->queryFactory->getQueryArray();
+        $clientQuery = $factory->buildQuery();
+        $this->queryTerms = $factory->getQueryArray();
 
         $queryData = implode(' ', $this->queryTerms);
         $clientQuery->setQuery($queryData);
@@ -249,17 +250,14 @@ abstract class BaseIndex
 
     /**
      * Add synonyms. Public to be extendable
-     * @param bool $eng Include UK to US synonyms
+     * @param bool $defaults Include UK to US synonyms
      * @return string
      */
-    public function getSynonyms($eng = true): string
+    public function getSynonyms($defaults = true): string
     {
-        $engSynonyms = '';
-        if ($eng) {
-            $engSynonyms = Synonyms::getSynonymsAsString();
-        }
+        $synonyms = Synonyms::getSynonymsAsString($defaults);
 
-        return $engSynonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
+        return $synonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
     }
 
     /**
