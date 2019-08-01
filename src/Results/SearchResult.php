@@ -285,7 +285,7 @@ class SearchResult
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCollatedSpellcheck()
     {
@@ -298,10 +298,9 @@ class SearchResult
      */
     public function setCollatedSpellcheck($collatedSpellcheck): self
     {
-        /** @var array|Collation[] $collated */
+        /** @var Collation $collated */
         if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
-            $key = array_keys($collated);
-            $this->collatedSpellcheck = $collated[$key[0]];
+            $this->collatedSpellcheck = $collated[0]->getQuery();
         }
 
         return $this;

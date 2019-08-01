@@ -57,6 +57,12 @@ class BaseQuery
     protected $spellcheck = true;
 
     /**
+     * Follow spellchecking if there are no results
+     * @var bool
+     */
+    protected $followSpellcheck = false;
+
+    /**
      * @var int
      */
     protected $facetsMinCount = 0;
@@ -336,5 +342,24 @@ class BaseQuery
         $this->spellcheck = $spellcheck;
 
         return $this;
+    }
+
+    /**
+     * @param bool $followSpellcheck
+     * @return BaseQuery
+     */
+    public function setFollowSpellcheck(bool $followSpellcheck): BaseQuery
+    {
+        $this->followSpellcheck = $followSpellcheck;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldFollowSpellcheck(): bool
+    {
+        return $this->followSpellcheck;
     }
 }

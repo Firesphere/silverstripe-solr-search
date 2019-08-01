@@ -45,6 +45,11 @@ abstract class BaseIndex
         'DefaultField',
         'FacetFields',
     ];
+
+    /**
+     * @var bool
+     */
+    private $retry = false;
     /**
      * @var SchemaService
      */
@@ -162,6 +167,13 @@ abstract class BaseIndex
         // Handle the after search first. This gets a raw search result
         $this->extend('onAfterSearch', $result);
         $searchResult = new SearchResult($result, $query, $this);
+        if (!$this->retry &&
+            $query->shouldFollowSpellcheck() &&
+            $result->getNumFound() === 0 &&
+            $searchResult->getCollatedSpellcheck()
+        ) {
+            return $this->spellcheckRetry($query, $searchResult);
+        }
 
         // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);
@@ -256,8 +268,9 @@ abstract class BaseIndex
     public function getSynonyms($defaults = true): string
     {
         $synonyms = Synonyms::getSynonymsAsString($defaults);
+        $siteConfigSynonyms = SiteConfig::current_site_config()->getField('SearchSynonyms');
 
-        return $synonyms . SiteConfig::current_site_config()->getField('SearchSynonyms');
+        return sprintf('%s%s', $synonyms, $siteConfigSynonyms);
     }
 
     /**
@@ -274,5 +287,20 @@ abstract class BaseIndex
     public function getQueryFactory(): QueryComponentFactory
     {
         return $this->queryFactory;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param SearchResult $searchResult
+     * @return SearchResult|mixed|ArrayData
+     */
+    protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
+    {
+        $terms = $query->getTerms();
+        $terms[0]['text'] = $searchResult->getCollatedSpellcheck();
+        $query->setTerms($terms);
+        $this->retry = true;
+
+        return $this->doSearch($query);
     }
 }

@@ -61,6 +61,9 @@ class BaseQueryTest extends SapphireTest
         $this->assertEquals(['test'], $this->query->getHighlight());
         $this->query->addHighlight('test');
         $this->assertEquals(['test', 'test'], $this->query->getHighlight());
+        $this->assertFalse($this->query->shouldFollowSpellcheck());
+        $this->query->setFollowSpellcheck(true);
+        $this->assertTrue($this->query->shouldFollowSpellcheck());
     }
 
     /**
