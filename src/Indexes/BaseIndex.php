@@ -24,6 +24,7 @@ use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Select\Query\Query;
+use Solarium\QueryType\Select\Result\Result;
 
 /**
  * Class BaseIndex
@@ -152,11 +153,7 @@ abstract class BaseIndex
         // Handle the after search first. This gets a raw search result
         $this->extend('onAfterSearch', $result);
         $searchResult = new SearchResult($result, $query, $this);
-        if (!$this->retry &&
-            $query->shouldFollowSpellcheck() &&
-            $result->getNumFound() === 0 &&
-            $searchResult->getCollatedSpellcheck()
-        ) {
+        if ($this->doRetry($query, $result, $searchResult)) {
             return $this->spellcheckRetry($query, $searchResult);
         }
 
@@ -310,5 +307,19 @@ abstract class BaseIndex
                 $this->$method($config[$type]);
             }
         }
+    }
+
+    /**
+     * Check if the query should be retried with spellchecking
+     * @param BaseQuery $query
+     * @param Result $result
+     * @param SearchResult $searchResult
+     * @return bool
+     */
+    protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool {
+        return !$this->retry &&
+            $query->shouldFollowSpellcheck() &&
+            $result->getNumFound() === 0 &&
+            $searchResult->getCollatedSpellcheck();
     }
 }
