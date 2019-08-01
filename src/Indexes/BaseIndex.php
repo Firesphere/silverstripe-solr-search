@@ -132,22 +132,7 @@ abstract class BaseIndex
         }
 
 
-        $config = self::config()->get($this->getIndexName());
-
-        if (!array_key_exists('Classes', $config)) {
-            throw new LogicException('No classes to index found!');
-        }
-
-        $this->setClasses($config['Classes']);
-
-        // For backward compatibility, copy the config to the protected values
-        // Saves doubling up further down the line
-        foreach (self::$fieldTypes as $type) {
-            if (array_key_exists($type, $config)) {
-                $method = 'set' . $type;
-                $this->$method($config[$type]);
-            }
-        }
+        $this->initFromConfig();
     }
 
     /**
@@ -302,5 +287,28 @@ abstract class BaseIndex
         $this->retry = true;
 
         return $this->doSearch($query);
+    }
+
+    /**
+     * Generate the config from yml if possible
+     */
+    protected function initFromConfig(): void
+    {
+        $config = self::config()->get($this->getIndexName());
+
+        if (!array_key_exists('Classes', $config)) {
+            throw new LogicException('No classes to index found!');
+        }
+
+        $this->setClasses($config['Classes']);
+
+        // For backward compatibility, copy the config to the protected values
+        // Saves doubling up further down the line
+        foreach (self::$fieldTypes as $type) {
+            if (array_key_exists($type, $config)) {
+                $method = 'set' . $type;
+                $this->$method($config[$type]);
+            }
+        }
     }
 }
