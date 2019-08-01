@@ -4,21 +4,27 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Page;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\TestOnly;
 
 class TestIndex extends BaseIndex implements TestOnly
 {
+    protected $facetFields = [
+        Page::class => [
+            'Title' => 'Parent',
+            'Field' => 'SiteTree_ParentID'
+        ]
+    ];
+
     public function init(): void
     {
         $this->addClass(SiteTree::class);
         $this->addFulltextField('Title');
         $this->addFulltextField('Content');
-//        $this->addFulltextField('TestObject.Title');
-//        $this->addFulltextField('TestObject.TestRelation.Title');
         $this->addFilterField('Title');
         $this->addFilterField('Created');
-//        $this->addFacetField(TestObject::class, ['Field' => 'SiteTree_TestObjectID', 'Title' => 'TestObject']);
+        $this->addFilterField('ParentID');
         $this->addSortField('Created');
         parent::init();
     }

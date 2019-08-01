@@ -75,13 +75,13 @@ class SearchResult
     {
         $this->index = $index;
         $this->query = $query;
-        $this->setMatches($result->getDocuments());
-        $this->setFacets($result->getFacetSet());
-        $this->setHighlight($result->getHighlighting());
-        $this->setTotalItems($result->getNumFound());
+        $this->setMatches($result->getDocuments())
+            ->setFacets($result->getFacetSet())
+            ->setHighlight($result->getHighlighting())
+            ->setTotalItems($result->getNumFound());
         if ($query->hasSpellcheck()) {
-            $this->setSpellcheck($result->getSpellcheck());
-            $this->setCollatedSpellcheck($result->getSpellcheck());
+            $this->setSpellcheck($result->getSpellcheck())
+                ->setCollatedSpellcheck($result->getSpellcheck());
         }
     }
 
