@@ -114,7 +114,7 @@ class SolrIndexTask extends BuildTask
 
             $vars = $this->clearIndex($vars, $indexName, $index);
 
-            $groups = $this->indexClassForIndex($classes, $isGroup, $index, $group)
+            $groups = $this->indexClassForIndex($classes, $isGroup, $index, $group);
         }
         $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
