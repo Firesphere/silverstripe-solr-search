@@ -246,6 +246,7 @@ class SolrIndexTask extends BuildTask
      */
     protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
     {
+        $groups = 0;
         foreach ($classes as $class) {
             $groups = $this->indexClass($isGroup, $class, $index, $group);
         }
