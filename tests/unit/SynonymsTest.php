@@ -10,7 +10,7 @@ class SynonymsTest extends SapphireTest
 {
     public function testGetSynonyms()
     {
-        $synonyms = Synonyms::config()->get('ukus');
+        $synonyms = Synonyms::config()->get('usuk');
 
         $this->assertEquals($synonyms['synonyms'], Synonyms::getSynonyms());
         $this->assertEmpty(Synonyms::getSynonyms(false));
