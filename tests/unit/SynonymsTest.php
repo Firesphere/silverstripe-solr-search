@@ -18,8 +18,8 @@ class SynonymsTest extends SapphireTest
 
     public function testGetSynonymsAsString()
     {
-        $synonyms = Synonyms::config()->get('synonyms');
-
+        $synonyms = Synonyms::config()->get('usuk');
+        $synonyms = $synonyms['synonyms'];
         $rendered = Synonyms::getSynonymsAsString();
 
         $this->assertStringEndsWith("\n", $rendered);
