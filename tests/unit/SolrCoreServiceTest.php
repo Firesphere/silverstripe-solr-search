@@ -39,23 +39,6 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertEquals([CircleCITestIndex::class], $service->getValidIndexes(CircleCITestIndex::class));
     }
 
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function testUpdateItemsFail()
-    {
-        $this->service->updateItems(null, SolrCoreService::CREATE_TYPE);
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function testUpdateItemsFailWrongCall()
-    {
-        $this->service->updateItems(['test'], SolrCoreService::DELETE_TYPE_ALL);
-    }
-
     public function testUpdateItems()
     {
         $index = new CircleCITestIndex();

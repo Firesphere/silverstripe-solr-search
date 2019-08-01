@@ -178,13 +178,6 @@ class SolrCoreService
      */
     public function updateItems($items, $type, $index = null)
     {
-        if ($items === null) {
-            throw new LogicException('Can\'t manipulate an empty item set');
-        }
-        if (!$items instanceof DataObject && !$items instanceof SS_List) {
-            throw new LogicException('I can only index DataObjects or SS_Lists');
-        }
-
         $indexes = $this->getValidIndexes($index);
 
         $result = false;
