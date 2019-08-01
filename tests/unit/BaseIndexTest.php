@@ -63,7 +63,7 @@ class BaseIndexTest extends SapphireTest
     {
         $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms());
 
-        $this->assertEmpty($this->index->getSynonyms(false));
+        $this->assertEmpty(trim($this->index->getSynonyms(false)));
     }
 
     public function testIndexName()

@@ -32,7 +32,7 @@ class Synonyms
         return implode("\n", $result) . "\n";
     }
 
-    public static function getSynonyms($defaults)
+    public static function getSynonyms($defaults = true)
     {
         // If we want the defaults, load it in to the array, otherwise return an empty array
         $usuk = static::config()->get('usuk');
