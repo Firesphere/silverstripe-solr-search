@@ -316,7 +316,8 @@ abstract class BaseIndex
      * @param SearchResult $searchResult
      * @return bool
      */
-    protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool {
+    protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool
+    {
         return !$this->retry &&
             $query->shouldFollowSpellcheck() &&
             $result->getNumFound() === 0 &&
