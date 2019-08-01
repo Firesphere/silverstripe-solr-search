@@ -112,14 +112,9 @@ class SolrIndexTask extends BuildTask
                 continue;
             }
 
-            if (!empty($vars['clear'])) {
-                $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
-                $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
-            }
+            $vars = $this->clearIndex($vars, $indexName, $index);
 
-            foreach ($classes as $class) {
-                $groups = $this->indexClass($isGroup, $class, $index, $group);
-            }
+            $groups = $this->indexClassForIndex($classes, $isGroup, $index, $group)
         }
         $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
@@ -239,5 +234,39 @@ class SolrIndexTask extends BuildTask
             $update->addCommit();
             $client->update($update);
         }
+    }
+
+    /**
+     * @param $classes
+     * @param $isGroup
+     * @param BaseIndex $index
+     * @param $group
+     * @return int
+     * @throws Exception
+     */
+    protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
+    {
+        foreach ($classes as $class) {
+            $groups = $this->indexClass($isGroup, $class, $index, $group);
+        }
+
+        return $groups;
+    }
+
+    /**
+     * @param $vars
+     * @param $indexName
+     * @param BaseIndex $index
+     * @return mixed
+     * @throws Exception
+     */
+    protected function clearIndex($vars, $indexName, BaseIndex $index)
+    {
+        if (!empty($vars['clear'])) {
+            $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
+            $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
+        }
+
+        return $vars;
     }
 }
