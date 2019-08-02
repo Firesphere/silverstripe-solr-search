@@ -32,7 +32,8 @@ trait QueryComponentFacetTrait
         $facets = $this->clientQuery->getFacetSet();
         // Facets should be set from the index configuration
         foreach ($this->index->getFacetFields() as $class => $config) {
-            $facets->createFacetField('facet-' . $config['Title'])->setField($config['Field']);
+            $field = str_replace('.', '_', $config['Field']);
+            $facets->createFacetField('facet-' . $config['Title'])->setField($field);
         }
         // Count however, comes from the query
         $facets->setMinCount($this->query->getFacetsMinCount());

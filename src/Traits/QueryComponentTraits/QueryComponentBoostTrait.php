@@ -46,15 +46,15 @@ trait QueryComponentBoostTrait
      */
     protected function buildBoosts(): void
     {
-        $boosts = $this->query->getBoostedFields();
+        $boostedFields = $this->query->getBoostedFields();
         $queries = $this->getQueryArray();
-        foreach ($boosts as $field => $boost) {
+        foreach ($boostedFields as $field => $boost) {
             $terms = [];
             foreach ($queries as $term) {
                 $terms[] = $term;
             }
             if (count($terms)) {
-                $booster = Criteria::where($field)
+                $booster = Criteria::where(str_replace('.', '_', $field))
                     ->in($terms)
                     ->boost($boost);
                 $this->queryArray[] = $booster->getQuery();

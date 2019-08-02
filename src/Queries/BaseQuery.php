@@ -142,6 +142,7 @@ class BaseQuery
      */
     public function addField($field): self
     {
+        $field = str_replace('.', '_', $field);
         $this->fields[] = $field;
 
         return $this;
@@ -240,6 +241,7 @@ class BaseQuery
      */
     public function addFilter($field, $value): self
     {
+        $field = str_replace('.', '_', $field);
         $this->filter[$field] = $value;
 
         return $this;
@@ -271,6 +273,7 @@ class BaseQuery
      */
     public function addExclude($field, $value): self
     {
+        $field = str_replace('.', '_', $field);
         $this->exclude[$field] = $value;
 
         return $this;
