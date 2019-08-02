@@ -69,9 +69,12 @@ class BaseQueryTest extends SapphireTest
     public function testQueryFacets()
     {
         $index = new \CircleCITestIndex();
-        $this->query->addTerm('Test');
-        $result = $index->doSearch($this->query);
+        $query = new BaseQuery();
+        $query->addTerm('test');
+        $result = $index->doSearch($query);
         var_dump($result);
+        var_dump($index);
+        var_dump($query);
     }
 
     /**
