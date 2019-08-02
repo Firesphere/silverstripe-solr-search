@@ -25,7 +25,7 @@ class DataObjectExtensionTest extends SapphireTest
         $page->CanViewType = 'OnlyTheseUsers';
         $page->write();
         (new DefaultAdminService())->findOrCreateDefaultAdmin();
-        $group = Group::get()->filter(['Code' => 'ADMIN'])->first();
+        $group = Group::get()->filter(['Code' => ['ADMIN', 'administrators']])->first();
         $page->ViewerGroups()->add($group);
         $page->write();
         $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
