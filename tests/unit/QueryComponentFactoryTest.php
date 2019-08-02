@@ -28,7 +28,7 @@ class QueryComponentFactoryTest extends SapphireTest
         $query->addField('SiteTree_Title');
         $query->addFilter('SiteTree_Title', 'Home');
         $query->addExclude('SiteTree_Title', 'Contact');
-        $query->addBoostedField('SiteTree_Content', [], 2);
+        $query->addBoostedField('SiteTree.Content', [], 2);
 
         $this->factory->setQuery($query);
         $this->factory->setIndex($index);
