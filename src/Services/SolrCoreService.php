@@ -85,9 +85,15 @@ class SolrCoreService
     protected function filterIndexes(): void
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
+        $enabledIndexes = static::config()->get('indexes');
         foreach ($indexes as $subindex) {
+            // If the config of indexes is set, and the requested index isn't in it, skip addition
+            if ($enabledIndexes && !in_array($subindex, $enabledIndexes, true)) {
+                continue;
+            }
             $ref = new ReflectionClass($subindex);
             if ($ref->isInstantiable()) {
+
                 $this->validIndexes[] = $subindex;
             }
         }
