@@ -66,17 +66,6 @@ class BaseQueryTest extends SapphireTest
         $this->assertTrue($this->query->shouldFollowSpellcheck());
     }
 
-    public function testQueryFacets()
-    {
-        $index = new \CircleCITestIndex();
-        $query = new BaseQuery();
-        $query->addTerm('test');
-        $result = $index->doSearch($query);
-        var_dump($result);
-        var_dump($index);
-        var_dump($query);
-    }
-
     /**
      * @expectedException \PHPUnit_Framework_Error
      */
