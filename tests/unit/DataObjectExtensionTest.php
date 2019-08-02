@@ -23,9 +23,11 @@ class DataObjectExtensionTest extends SapphireTest
         $this->assertEmpty($extension->getViewStatus());
         $page->write();
         $page->ShowInSearch = true;
+        $page->CanViewType = 'OnlyTheseUsers';
         $page->ViewerGroups()->add(Group::get()->filter(['Code' => 'administrators'])->first());
         $page->write();
         $extension->setOwner($page);
+        $page->canView();
         $this->assertEquals(['1-1'], $extension->getViewStatus());
         $page->delete();
     }
