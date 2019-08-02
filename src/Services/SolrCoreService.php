@@ -11,6 +11,7 @@ use GuzzleHttp\HandlerStack;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
@@ -87,15 +88,18 @@ class SolrCoreService
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $enabledIndexes = static::config()->get('indexes');
         foreach ($indexes as $subindex) {
+            $ref = new ReflectionClass($subindex);
             // If the config of indexes is set, and the requested index isn't in it, skip addition
-            if ($enabledIndexes && !in_array($subindex, $enabledIndexes, true)) {
+            if (
+                (
+                    $enabledIndexes &&
+                    !in_array($subindex, $enabledIndexes, true)
+                ) ||
+                !$ref->isInstantiable()
+            ) {
                 continue;
             }
-            $ref = new ReflectionClass($subindex);
-            if ($ref->isInstantiable()) {
-
-                $this->validIndexes[] = $subindex;
-            }
+            $this->validIndexes[] = $subindex;
         }
     }
 
@@ -259,7 +263,10 @@ class SolrCoreService
             case static::CREATE_TYPE:
                 $this->updateIndex($index, $items, $update);
         }
-        $update->addCommit();
+        // commit immediately when in dev mode
+        if (Director::isDev()) {
+            $update->addCommit();
+        }
 
         return $client->update($update);
     }
