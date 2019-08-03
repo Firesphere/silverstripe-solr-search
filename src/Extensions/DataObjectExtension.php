@@ -35,6 +35,9 @@ class DataObjectExtension extends DataExtension
      * @var DataList
      */
     protected static $members;
+    /**
+     * @var array
+     */
     protected static $excludedClasses = [
         DirtyClass::class,
         ChangeSet::class,
@@ -50,32 +53,32 @@ class DataObjectExtension extends DataExtension
      */
     public function onAfterWrite()
     {
+        /** @var DataObject $owner */
+        $owner = $this->owner;
         parent::onAfterWrite();
-        if (Controller::curr()->getRequest()->getURL() &&
-            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false
+        if (in_array($owner->ClassName, static::$excludedClasses, true) ||
+            (Controller::curr()->getRequest()->getURL() &&
+                strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false)
         ) {
             return;
         }
         /** @var DataObject $owner */
-        $owner = $this->owner;
-        if (!in_array($owner->ClassName, static::$excludedClasses, true)) {
-            $record = $this->getDirtyClass($owner, self::WRITE);
+        $record = $this->getDirtyClass($owner, self::WRITE);
 
-            $ids = json_decode($record->IDs, 1) ?: [];
-            try {
-                $service = new SolrCoreService();
-                $service->setInDebugMode(false);
-                $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
-                // If we don't get an exception, mark the item as clean
-                // Added bonus, array_flip removes duplicates
-                $values = array_flip($ids);
-                unset($values[$owner->ID]);
+        $ids = json_decode($record->IDs, 1) ?: [];
+        try {
+            $service = new SolrCoreService();
+            $service->setInDebugMode(false);
+            $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
+            // If we don't get an exception, mark the item as clean
+            // Added bonus, array_flip removes duplicates
+            $values = array_flip($ids);
+            unset($values[$owner->ID]);
 
-                $record->IDs = json_encode(array_keys($values));
-                $record->write();
-            } catch (Exception $error) {
-                $this->registerException($ids, $record, $error);
-            }
+            $record->IDs = json_encode(array_keys($values));
+            $record->write();
+        } catch (Exception $error) {
+            $this->registerException($ids, $record, $error);
         }
     }
 
@@ -159,7 +162,7 @@ class DataObjectExtension extends DataExtension
     {
         // Return empty if it's not allowed to show in search
         // The setting needs to be explicitly false, to avoid any possible collision
-        // with objects not having the setting
+        // with objects not having the setting, thus being `null`
         /** @var DataObject|SiteTree $owner */
         $owner = $this->owner;
         // Return immediately if the owner has ShowInSearch not being `null`
