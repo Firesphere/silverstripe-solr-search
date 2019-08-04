@@ -42,6 +42,7 @@ class DataObjectExtensionTest extends SapphireTest
         $page->delete();
 
         $item = new TestObject();
+        $extension = new DataObjectExtension();
         $extension->setOwner($item);
 
         $this->assertEquals(['1-null'], $extension->getViewStatus());

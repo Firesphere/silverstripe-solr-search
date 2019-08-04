@@ -180,7 +180,6 @@ class DataObjectExtension extends DataExtension
      */
     protected function getMemberPermissions($owner): array
     {
-        $return = [];
         // Log out the current user to avoid collisions in permissions
         $currMember = Security::getCurrentUser();
         Security::setCurrentUser(null);
@@ -188,15 +187,15 @@ class DataObjectExtension extends DataExtension
         // Add null users if it's publicly viewable
         if ($owner->canView(null)) {
             Security::setCurrentUser($currMember);
-            $return = ['1-null'];
-            self::$canViewClasses[$owner->ClassName] = $return;
+            self::$canViewClasses[$owner->ClassName] = ['1-null'];
 
-            return $return;
+            return ['1-null'];
         }
 
         if (!self::$members) {
             self::$members = Member::get();
         }
+        $return = [];
 
         foreach (self::$members as $member) {
             $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
