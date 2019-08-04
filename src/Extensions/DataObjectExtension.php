@@ -47,7 +47,7 @@ class DataObjectExtension extends DataExtension
     /**
      * @var array
      */
-    protected static $canViewClasses = [];
+    public static $canViewClasses = [];
 
     /**
      * @throws ValidationException
@@ -171,11 +171,7 @@ class DataObjectExtension extends DataExtension
             return [];
         }
 
-        if (isset(self::$canViewClasses[$owner->ClassName]) && !$owner->hasField('ShowInSearch')) {
-            return self::$canViewClasses[$owner->ClassName];
-        }
-
-        return $this->getMemberPermissions($owner);
+        return self::$canViewClasses[$owner->ClassName] ?? $this->getMemberPermissions($owner);
     }
 
     /**
@@ -192,8 +188,10 @@ class DataObjectExtension extends DataExtension
         // Add null users if it's publicly viewable
         if ($owner->canView(null)) {
             Security::setCurrentUser($currMember);
+            $return = ['1-null'];
+            self::$canViewClasses[$owner->ClassName] = $return;
 
-            return ['1-null'];
+            return $return;
         }
 
         if (!self::$members) {
