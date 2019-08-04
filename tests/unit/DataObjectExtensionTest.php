@@ -18,8 +18,6 @@ use SilverStripe\Security\Group;
  */
 class DataObjectExtensionTest extends SapphireTest
 {
-    protected $usesDatabase = true;
-
     public function testGetViewStatus()
     {
         $page = new \Page();
@@ -40,7 +38,7 @@ class DataObjectExtensionTest extends SapphireTest
         $page->write();
         $extension->setOwner($page);
         DataObjectExtension::$canViewClasses = [];
-        $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
+        $this->assertContains('1-' . $group->Members()->first()->ID, $extension->getViewStatus());
         $page->delete();
 
         $item = new TestObject();
