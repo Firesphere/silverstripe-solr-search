@@ -27,16 +27,17 @@ class DataObjectExtensionTest extends SapphireTest
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         $page->ShowInSearch = false;
         $this->assertEmpty($extension->getViewStatus());
-        $page->ShowInSearch = true;
         // @todo fix this assertion. It's breaking for unknown reasons
         $member = (new DefaultAdminService())->findOrCreateDefaultAdmin();
         $groups = $member->Groups();
         $page->CanViewType = 'OnlyTheseUsers';
+        $page->ShowInSearch = true;
         foreach ($groups as $group) {
             $page->ViewerGroups()->add($group);
         }
         $page->write();
         $extension->setOwner($page);
+        $this->logOut();
         $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
         $page->delete();
     }
