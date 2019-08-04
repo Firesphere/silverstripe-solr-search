@@ -16,6 +16,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 use Solarium\Client;
@@ -237,7 +238,7 @@ class SolrCoreService
     {
         $client = $index->getClient();
 
-        $update = $this->getType($items, $type, $index, $client);
+        $update = $this->getUpdate($items, $type, $index, $client);
         // commit immediately when in dev mode
         if (Director::isDev()) {
             $update->addCommit();
@@ -345,14 +346,14 @@ class SolrCoreService
     }
 
     /**
-     * @param $items
-     * @param $type
+     * @param array|DataList|ArrayList $items
+     * @param string $type
      * @param BaseIndex $index
-     * @param Client $client
+     * @param \Solarium\Core\Client\Client $client
      * @return mixed
      * @throws Exception
      */
-    protected function getType($items, $type, BaseIndex $index, $client)
+    protected function getUpdate($items, $type, BaseIndex $index, \Solarium\Core\Client\Client $client)
     {
         // get an update query instance
         $update = $client->createUpdate();
