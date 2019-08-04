@@ -237,27 +237,7 @@ class SolrCoreService
     {
         $client = $index->getClient();
 
-        // get an update query instance
-        $update = $client->createUpdate();
-
-        switch ($type) {
-            case static::DELETE_TYPE:
-                // By pushing to a single array, we have less memory usage and no duplicates
-                // This is faster, and more efficient, because we only do one DB query
-                $delete = $items->map('ID', 'ClassName')->toArray();
-                array_walk($delete, static function (&$item, $key) {
-                    $item = sprintf('%s-%s', $item, $key);
-                });
-                $update->addDeleteByIds(array_values($delete));
-                // Remove the deletion array from memory
-                break;
-            case static::DELETE_TYPE_ALL:
-                $update->addDeleteQuery('*:*');
-                break;
-            case static::UPDATE_TYPE:
-            case static::CREATE_TYPE:
-                $this->updateIndex($index, $items, $update);
-        }
+        $update = $this->getType($items, $type, $index, $client);
         // commit immediately when in dev mode
         if (Director::isDev()) {
             $update->addCommit();
@@ -362,5 +342,40 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * @param $items
+     * @param $type
+     * @param BaseIndex $index
+     * @param Client $client
+     * @return mixed
+     * @throws Exception
+     */
+    protected function getType($items, $type, BaseIndex $index, $client)
+    {
+        // get an update query instance
+        $update = $client->createUpdate();
+
+        switch ($type) {
+            case static::DELETE_TYPE:
+                // By pushing to a single array, we have less memory usage and no duplicates
+                // This is faster, and more efficient, because we only do one DB query
+                $delete = $items->map('ID', 'ClassName')->toArray();
+                array_walk($delete, static function (&$item, $key) {
+                    $item = sprintf('%s-%s', $item, $key);
+                });
+                $update->addDeleteByIds(array_values($delete));
+                // Remove the deletion array from memory
+                break;
+            case static::DELETE_TYPE_ALL:
+                $update->addDeleteQuery('*:*');
+                break;
+            case static::UPDATE_TYPE:
+            case static::CREATE_TYPE:
+                $this->updateIndex($index, $items, $update);
+        }
+
+        return $update;
     }
 }
