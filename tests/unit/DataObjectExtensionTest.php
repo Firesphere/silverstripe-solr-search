@@ -18,6 +18,8 @@ use SilverStripe\Security\Group;
  */
 class DataObjectExtensionTest extends SapphireTest
 {
+    protected $usesDatabase = true;
+
     public function testGetViewStatus()
     {
         $page = new \Page();
@@ -27,7 +29,7 @@ class DataObjectExtensionTest extends SapphireTest
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         $page->ShowInSearch = false;
         $this->assertEmpty($extension->getViewStatus());
-        // @todo fix this assertion. It's breaking for unknown reasons
+
         $member = (new DefaultAdminService())->findOrCreateDefaultAdmin();
         $groups = $member->Groups();
         $page->CanViewType = 'OnlyTheseUsers';

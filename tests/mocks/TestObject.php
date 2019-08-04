@@ -8,6 +8,8 @@ use SilverStripe\ORM\DataObject;
 
 class TestObject extends DataObject implements TestOnly
 {
+    private static $table_name = 'TestObject';
+
     private static $db = [
         'Title' => 'Varchar(255)'
     ];
@@ -16,4 +18,9 @@ class TestObject extends DataObject implements TestOnly
         'TestPages'    => TestPage::class,
         'TestRelation' => TestRelationObject::class
     ];
+
+    public function canView($member = null)
+    {
+        return true;
+    }
 }
