@@ -346,7 +346,7 @@ class SolrCoreService
     }
 
     /**
-     * @param array|DataList|ArrayList $items
+     * @param SS_List $items
      * @param string $type
      * @param BaseIndex $index
      * @param \Solarium\Core\Client\Client $client
