@@ -18,6 +18,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
@@ -184,6 +185,9 @@ class DataObjectExtension extends DataExtension
     protected function getMemberPermissions($owner): array
     {
         $return = [];
+        // Log out the current user to avoid collisions in permissions
+        $currMember = Security::getCurrentUser();
+        Security::setCurrentUser(null);
 
         // Add null users if it's publicly viewable
         if ($owner->canView()) {
@@ -200,6 +204,9 @@ class DataObjectExtension extends DataExtension
             }
         }
 
+        if ($currMember) {
+            Security::setCurrentUser($currMember);
+        }
         if (!$owner->hasField('ShowInSearch')) {
             self::$canViewClasses[$owner->ClassName] = $return;
         }
