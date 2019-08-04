@@ -27,15 +27,17 @@ class DataObjectExtensionTest extends SapphireTest
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         $page->ShowInSearch = false;
         $this->assertEmpty($extension->getViewStatus());
-        (new DefaultAdminService())->findOrCreateDefaultAdmin();
-        $page->CanViewType = 'OnlyTheseUsers';
+        $page->ShowInSearch = true;
         // @todo fix this assertion. It's breaking for unknown reasons
-//        $id = $page->write();
-//        $group = Group::get()->filter(['Code' => ['ADMIN', 'administrators']])->first();
-//        $page->ViewerGroups()->add($group);
-//        $page->write();
-//        $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
-//        Page::get()->byID($id)->delete();
+        $member = (new DefaultAdminService())->findOrCreateDefaultAdmin();
+        $groups = $member->Groups();
+        $page->CanViewType = 'OnlyTheseUsers';
+        foreach ($groups as $group) {
+            $page->ViewerGroups()->add($group);
+        }
+        $page->write();
+        $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
+        $page->delete();
     }
 
     public function testOnAfterDelete()
@@ -46,7 +48,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension->setOwner($page);
         $service = new SolrCoreService();
         $service->setInDebugMode(false);
-        $service->updateItems(ArrayList::create([$page]), SolrCoreService::UPDATE_TYPE);
+        $service->updateItems(ArrayList::create([$page]), SolrCoreService::CREATE_TYPE);
 
         $extension->onAfterDelete();
         $dirty = DirtyClass::get()->filter(['Class' => \Page::class, 'Type' => DataObjectExtension::DELETE])->first();
