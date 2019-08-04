@@ -7,20 +7,18 @@ use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Page;
+use Psr\Log\NullLogger;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\DefaultAdminService;
 use SilverStripe\Security\Group;
 
-/**
- * For unclear reasons, this is currently broken
- */
 class DataObjectExtensionTest extends SapphireTest
 {
     public function testGetViewStatus()
     {
-        $page = new \Page();
+        $page = new Page();
         $extension = new DataObjectExtension();
         $extension->setOwner($page);
 
@@ -30,6 +28,7 @@ class DataObjectExtensionTest extends SapphireTest
 
         $member = (new DefaultAdminService())->findOrCreateDefaultAdmin();
         $groups = $member->Groups();
+        $group = $groups->first();
         $page->CanViewType = 'OnlyTheseUsers';
         $page->ShowInSearch = true;
         foreach ($groups as $group) {
@@ -51,7 +50,7 @@ class DataObjectExtensionTest extends SapphireTest
 
     public function testOnAfterDelete()
     {
-        $page = new \Page(['Title' => 'Test']);
+        $page = new Page(['Title' => 'Test']);
         $id = $page->write();
         $extension = new DataObjectExtension();
         $extension->setOwner($page);
@@ -60,8 +59,9 @@ class DataObjectExtensionTest extends SapphireTest
         $service->updateItems(ArrayList::create([$page]), SolrCoreService::CREATE_TYPE);
 
         $extension->onAfterDelete();
-        $dirty = DirtyClass::get()->filter(['Class' => \Page::class, 'Type' => DataObjectExtension::DELETE])->first();
-        $ids = json_decode($dirty->IDs);
+        /** @var DirtyClass $dirty */
+        $dirty = DirtyClass::get()->filter(['Class' => Page::class, 'Type' => DataObjectExtension::DELETE])->first();
+        $ids = json_decode($dirty->IDs, 1);
         $this->assertArrayNotHasKey($id, array_flip($ids));
         $page->delete();
     }
@@ -69,6 +69,7 @@ class DataObjectExtensionTest extends SapphireTest
     protected function setUp()
     {
         $task = new SolrConfigureTask();
+        $task->setLogger(new NullLogger());
         $task->run(new NullHTTPRequest());
 
         return parent::setUp();
