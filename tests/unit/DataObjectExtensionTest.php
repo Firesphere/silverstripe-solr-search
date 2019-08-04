@@ -37,7 +37,6 @@ class DataObjectExtensionTest extends SapphireTest
         }
         $page->write();
         $extension->setOwner($page);
-        $this->logOut();
         $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
         $page->delete();
     }

@@ -191,6 +191,7 @@ class DataObjectExtension extends DataExtension
 
         // Add null users if it's publicly viewable
         if ($owner->canView()) {
+            Security::setCurrentUser($currMember);
             return ['1-null'];
         }
 
@@ -199,18 +200,15 @@ class DataObjectExtension extends DataExtension
         }
 
         foreach (self::$members as $member) {
-            if ($owner->canView($member)) {
-                $return[] = sprintf('1-%s', $member->ID);
-            }
+            $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
         }
 
-        if ($currMember) {
-            Security::setCurrentUser($currMember);
-        }
+
         if (!$owner->hasField('ShowInSearch')) {
             self::$canViewClasses[$owner->ClassName] = $return;
         }
 
+        Security::setCurrentUser($currMember);
         return $return;
     }
 }
