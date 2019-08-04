@@ -36,6 +36,7 @@ class DataObjectExtensionTest extends SapphireTest
             $page->ViewerGroups()->add($group);
         }
         $page->write();
+        $extension->setOwner($page);
         $this->assertEquals(['1-' . $group->Members()->first()->ID], $extension->getViewStatus());
         $page->delete();
     }
