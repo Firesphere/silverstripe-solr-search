@@ -9,7 +9,6 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -20,22 +19,18 @@ use SilverStripe\Dev\BuildTask;
 
 class SolrConfigureTask extends BuildTask
 {
-    private static $segment = 'SolrConfigureTask';
-
-    protected $title = 'Configure Solr cores';
-
-    protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
     protected static $storeModes = [
         'file' => FileConfigStore::class,
         'post' => PostConfigStore::class,
 //        'webdav' => WebdavConfigStore::class, // @todo
     ];
+    private static $segment = 'SolrConfigureTask';
+    protected $title = 'Configure Solr cores';
+    protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     public function __construct()
     {

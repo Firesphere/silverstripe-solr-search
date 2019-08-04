@@ -154,6 +154,23 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * @param $vars
+     * @param $indexName
+     * @param BaseIndex $index
+     * @return mixed
+     * @throws Exception
+     */
+    protected function clearIndex($vars, $indexName, BaseIndex $index)
+    {
+        if (!empty($vars['clear'])) {
+            $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
+            $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
+        }
+
+        return $vars;
+    }
+
+    /**
      * @return LoggerInterface
      */
     public function getLogger(): LoggerInterface
@@ -175,6 +192,24 @@ class SolrIndexTask extends BuildTask
         $this->logger = $logger;
 
         return $this;
+    }
+
+    /**
+     * @param $classes
+     * @param $isGroup
+     * @param BaseIndex $index
+     * @param $group
+     * @return int
+     * @throws Exception
+     */
+    protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
+    {
+        $groups = 0;
+        foreach ($classes as $class) {
+            $groups = $this->indexClass($isGroup, $class, $index, $group);
+        }
+
+        return $groups;
     }
 
     /**
@@ -234,40 +269,5 @@ class SolrIndexTask extends BuildTask
             $update->addCommit();
             $client->update($update);
         }
-    }
-
-    /**
-     * @param $classes
-     * @param $isGroup
-     * @param BaseIndex $index
-     * @param $group
-     * @return int
-     * @throws Exception
-     */
-    protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
-    {
-        $groups = 0;
-        foreach ($classes as $class) {
-            $groups = $this->indexClass($isGroup, $class, $index, $group);
-        }
-
-        return $groups;
-    }
-
-    /**
-     * @param $vars
-     * @param $indexName
-     * @param BaseIndex $index
-     * @return mixed
-     * @throws Exception
-     */
-    protected function clearIndex($vars, $indexName, BaseIndex $index)
-    {
-        if (!empty($vars['clear'])) {
-            $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
-            $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
-        }
-
-        return $vars;
     }
 }

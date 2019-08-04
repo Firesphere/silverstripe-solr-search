@@ -139,6 +139,31 @@ class SolrIndexJob extends AbstractQueuedJob
     /**
      * @return array
      */
+    protected function getNextSteps(): array
+    {
+        $currentStep = $this->currentStep + 1;
+        $totalSteps = $this->totalSteps;
+        // No more steps to execute on this class, let's go to the next class
+        if ($this->currentStep >= $this->totalSteps) {
+            array_shift($this->classToIndex);
+            // Reset the current step, a complete new set of data is coming
+            $currentStep = 0;
+            $totalSteps = 1;
+        }
+        // If there are no classes left in this index, go to the next index
+        if (!count($this->classToIndex)) {
+            array_shift($this->indexes);
+            // Reset the current step, a complete new set of data is coming
+            $currentStep = 0;
+            $totalSteps = 1;
+        }
+
+        return [$currentStep, $totalSteps];
+    }
+
+    /**
+     * @return array
+     */
     public function getClassToIndex(): array
     {
         return $this->classToIndex;
@@ -172,30 +197,5 @@ class SolrIndexJob extends AbstractQueuedJob
         $this->indexes = $indexes;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getNextSteps(): array
-    {
-        $currentStep = $this->currentStep + 1;
-        $totalSteps = $this->totalSteps;
-        // No more steps to execute on this class, let's go to the next class
-        if ($this->currentStep >= $this->totalSteps) {
-            array_shift($this->classToIndex);
-            // Reset the current step, a complete new set of data is coming
-            $currentStep = 0;
-            $totalSteps = 1;
-        }
-        // If there are no classes left in this index, go to the next index
-        if (!count($this->classToIndex)) {
-            array_shift($this->indexes);
-            // Reset the current step, a complete new set of data is coming
-            $currentStep = 0;
-            $totalSteps = 1;
-        }
-
-        return [$currentStep, $totalSteps];
     }
 }

@@ -46,26 +46,23 @@ abstract class BaseIndex
         'DefaultField',
         'FacetFields',
     ];
-
-    /**
-     * @var bool
-     */
-    private $retry = false;
     /**
      * @var SchemaService
      */
     protected $schemaService;
-
     /**
      * @var QueryComponentFactory
      */
     protected $queryFactory;
-
     /**
      * The query terms as an array
      * @var array
      */
     protected $queryTerms = [];
+    /**
+     * @var bool
+     */
+    private $retry = false;
 
     /**
      * BaseIndex constructor.
@@ -137,6 +134,29 @@ abstract class BaseIndex
     }
 
     /**
+     * Generate the config from yml if possible
+     */
+    protected function initFromConfig(): void
+    {
+        $config = self::config()->get($this->getIndexName());
+
+        if (!array_key_exists('Classes', $config)) {
+            throw new LogicException('No classes to index found!');
+        }
+
+        $this->setClasses($config['Classes']);
+
+        // For backward compatibility, copy the config to the protected values
+        // Saves doubling up further down the line
+        foreach (self::$fieldTypes as $type) {
+            if (array_key_exists($type, $config)) {
+                $method = 'set' . $type;
+                $this->$method($config[$type]);
+            }
+        }
+    }
+
+    /**
      * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
      *
      * @param BaseQuery $query
@@ -186,6 +206,36 @@ abstract class BaseIndex
         $clientQuery->setQuery($queryData);
 
         return $clientQuery;
+    }
+
+    /**
+     * Check if the query should be retried with spellchecking
+     * @param BaseQuery $query
+     * @param Result $result
+     * @param SearchResult $searchResult
+     * @return bool
+     */
+    protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool
+    {
+        return !$this->retry &&
+            $query->shouldFollowSpellcheck() &&
+            $result->getNumFound() === 0 &&
+            $searchResult->getCollatedSpellcheck();
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param SearchResult $searchResult
+     * @return SearchResult|mixed|ArrayData
+     */
+    protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
+    {
+        $terms = $query->getTerms();
+        $terms[0]['text'] = $searchResult->getCollatedSpellcheck();
+        $query->setTerms($terms);
+        $this->retry = true;
+
+        return $this->doSearch($query);
     }
 
     /**
@@ -269,58 +319,5 @@ abstract class BaseIndex
     public function getQueryFactory(): QueryComponentFactory
     {
         return $this->queryFactory;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param SearchResult $searchResult
-     * @return SearchResult|mixed|ArrayData
-     */
-    protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
-    {
-        $terms = $query->getTerms();
-        $terms[0]['text'] = $searchResult->getCollatedSpellcheck();
-        $query->setTerms($terms);
-        $this->retry = true;
-
-        return $this->doSearch($query);
-    }
-
-    /**
-     * Generate the config from yml if possible
-     */
-    protected function initFromConfig(): void
-    {
-        $config = self::config()->get($this->getIndexName());
-
-        if (!array_key_exists('Classes', $config)) {
-            throw new LogicException('No classes to index found!');
-        }
-
-        $this->setClasses($config['Classes']);
-
-        // For backward compatibility, copy the config to the protected values
-        // Saves doubling up further down the line
-        foreach (self::$fieldTypes as $type) {
-            if (array_key_exists($type, $config)) {
-                $method = 'set' . $type;
-                $this->$method($config[$type]);
-            }
-        }
-    }
-
-    /**
-     * Check if the query should be retried with spellchecking
-     * @param BaseQuery $query
-     * @param Result $result
-     * @param SearchResult $searchResult
-     * @return bool
-     */
-    protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool
-    {
-        return !$this->retry &&
-            $query->shouldFollowSpellcheck() &&
-            $result->getNumFound() === 0 &&
-            $searchResult->getCollatedSpellcheck();
     }
 }

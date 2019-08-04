@@ -9,7 +9,6 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
-use SilverStripe\ORM\DB;
 
 /**
  * Some additional introspection tools that are used often by the fulltext search code

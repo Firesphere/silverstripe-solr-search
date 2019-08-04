@@ -190,8 +190,9 @@ class DataObjectExtension extends DataExtension
         Security::setCurrentUser(null);
 
         // Add null users if it's publicly viewable
-        if ($owner->canView()) {
+        if ($owner->canView(null)) {
             Security::setCurrentUser($currMember);
+
             return ['1-null'];
         }
 
@@ -209,6 +210,7 @@ class DataObjectExtension extends DataExtension
         }
 
         Security::setCurrentUser($currMember);
+
         return $return;
     }
 }

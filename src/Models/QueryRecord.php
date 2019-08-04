@@ -18,8 +18,8 @@ class QueryRecord extends DataObject
     private static $table_name = 'QueryRecording';
 
     private static $db = [
-        'Query' => 'Varchar(255)',
-        'Results' => 'Int',
+        'Query'        => 'Varchar(255)',
+        'Results'      => 'Int',
         'PagesVisited' => 'Int',
     ];
 
