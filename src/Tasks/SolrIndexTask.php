@@ -228,10 +228,12 @@ class SolrIndexTask extends BuildTask
         $groups = (int)ceil($class::get()->count() / $batchLength);
         while ($group <= $groups) { // Run from oldest to newest
             try {
-                $this->getLogger()->info(sprintf('Indexing group %s', $group));
                 $this->doReindex($group, $class, $batchLength, $index);
             } catch (RequestException $error) {
-                $this->getLogger()->error($error->getResponse()->getBody()->__toString());
+                $this->getLogger()->error($error->getResponse()->getBody()->getContents());
+                continue;
+            } catch (Exception $e) {
+                $this->getLogger()->error($e);
                 continue;
             }
             // If it's a specific group to index, break after the first run
@@ -239,6 +241,7 @@ class SolrIndexTask extends BuildTask
                 break;
             }
             $group++;
+            $this->getLogger()->info(sprintf('Indexed group %s', $group));
         }
 
         return $groups;
@@ -258,7 +261,7 @@ class SolrIndexTask extends BuildTask
         $filter = [];
         $client = $index->getClient();
         /** @var DataList|DataObject[] $items */
-        $items = $baseClass::get()
+        $items = DataObject::get($baseClass)
             ->filter($filter)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));

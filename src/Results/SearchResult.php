@@ -318,17 +318,7 @@ class SearchResult
             $facetTypes = $this->index->getFacetFields();
             // Loop all available facet fields by type
             foreach ($facetTypes as $class => $options) {
-                // Get the facets by its title
-                /** @var Field $typeFacets */
-                $typeFacets = $facets->getFacet('facet-' . $options['Title']);
-                $values = $typeFacets->getValues();
-                $results = ArrayList::create();
-                // If there are values, get the items one by one and push them in to the list
-                if (count($values)) {
-                    $this->getClassFacets($class, $values, $results);
-                }
-                // Put the results in to the array
-                $facetArray[$options['Title']] = $results;
+                $facetArray = $this->createFacet($facets, $options, $class, $facetArray);
             }
         }
 
@@ -351,5 +341,29 @@ class SearchResult
         }
         // Sort the results by FacetCount
         $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
+    }
+
+    /**
+     * @param FacetSet $facets
+     * @param array $options
+     * @param string $class
+     * @param array $facetArray
+     * @return array
+     */
+    protected function createFacet($facets, $options, $class, array $facetArray): array
+    {
+        // Get the facets by its title
+        /** @var Field $typeFacets */
+        $typeFacets = $facets->getFacet('facet-' . $options['Title']);
+        $values = $typeFacets->getValues();
+        $results = ArrayList::create();
+        // If there are values, get the items one by one and push them in to the list
+        if (count($values)) {
+            $this->getClassFacets($class, $values, $results);
+        }
+        // Put the results in to the array
+        $facetArray[$options['Title']] = $results;
+
+        return $facetArray;
     }
 }
