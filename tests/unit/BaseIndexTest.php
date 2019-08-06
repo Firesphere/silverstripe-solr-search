@@ -9,7 +9,9 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
+use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Page;
+use Psr\Log\NullLogger;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\NullHTTPRequest;
@@ -222,6 +224,10 @@ class BaseIndexTest extends SapphireTest
 
     protected function setUp()
     {
+        $task = new SolrConfigureTask();
+        $task->setLogger(new NullLogger());
+        $task->run(new NullHTTPRequest());
+
         $this->index = Injector::inst()->get(TestIndex::class);
 
         return parent::setUp();
