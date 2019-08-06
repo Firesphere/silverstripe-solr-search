@@ -187,7 +187,7 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @return Query
      */
-    protected function buildSolrQuery(BaseQuery $query): Query
+    public function buildSolrQuery(BaseQuery $query): Query
     {
         $clientQuery = $this->client->createSelect();
         $factory = $this->queryFactory;

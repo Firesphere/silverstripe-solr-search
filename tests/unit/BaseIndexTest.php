@@ -16,7 +16,6 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -59,12 +58,16 @@ class BaseIndexTest extends SapphireTest
 
         $this->assertCount(3, $index->getFulltextFields());
         $this->assertCount(1, $index->getFacetFields());
+        $index = new TestIndex();
         $facets = $index->getFacetFields();
-        $this->assertEquals(['Field' => 'SiteTree_TestObjectID', 'Title' => 'TestObject'], $facets[TestObject::class]);
+        $this->assertEquals([
+            'Title' => 'Parent',
+            'Field' => 'SiteTree_ParentID'
+        ], $facets[Page::class]);
         $query = new BaseQuery();
         $query->addTerm('Test');
-        $result = $index->doSearch($query);
-        Debug::dump($result->getFacets());
+        $clientQuery = $index->buildSolrQuery($query);
+        $this->arrayHasKey('facet-Parent', $clientQuery->getFacetSet()->getFacets());
     }
 
     public function testGetSynonyms()
