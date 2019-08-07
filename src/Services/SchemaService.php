@@ -210,7 +210,11 @@ class SchemaService extends ViewableData
         $originalStore = $this->store;
         $this->store = Director::isDev() ?: false;
         $fields = $this->index->getFilterFields();
-        $fields = array_merge($fields, array_keys($this->index->getFacetFields()));
+        $fields = array_unique(
+            array_merge(
+                $fields, array_keys($this->index->getFacetFields())
+            )
+        );
         foreach ($fields as $field) {
             $this->getFieldDefinition($field, $return);
         }
