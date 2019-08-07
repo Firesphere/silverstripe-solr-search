@@ -10,7 +10,6 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
     FilterFields:
       - Title
       - Created
-      - Firesphere\SolrSearch\Tests\TestObject
     BoostedFields: []
     CopyFields:
       _text:
