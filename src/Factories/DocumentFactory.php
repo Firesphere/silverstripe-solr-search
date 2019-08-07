@@ -201,8 +201,8 @@ class DocumentFactory
         $typeMap = Statics::getTypeMap();
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
-        while ($value = array_shift($valuesForField)) {
-            if (!$this->isValidValue($value, $type)) {
+        foreach ($valuesForField as $value) {
+            if (!$this->isValidValue($value)) {
                 continue;
             }
 
@@ -315,15 +315,9 @@ class DocumentFactory
      * @param string $type
      * @return bool
      */
-    protected function isValidValue($value, $type)
+    protected function isValidValue($value)
     {
-        // Value must be set and a string type value
-        if (!$value || !is_string($value)) {
-            return false;
-        }
-
-        // And be a number if numeric type
-        return !(!is_numeric($value) && in_array($type, static::$numerals, true));
+        return $value !== null;
     }
 
     /**

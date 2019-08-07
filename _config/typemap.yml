@@ -1,6 +1,7 @@
 Firesphere\SolrSearch\Helpers\Statics:
   typemap:
     "*": text
+    PrimaryKey: tint
     HTMLVarchar: htmltext
     "SilverStripe\\ORM\\FieldType\\DBHTMLVarchar": htmltext
     "DBHTMLVarchar": htmltext

@@ -10,12 +10,15 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
+use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use Page;
 use Psr\Log\NullLogger;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -58,16 +61,25 @@ class BaseIndexTest extends SapphireTest
 
         $this->assertCount(3, $index->getFulltextFields());
         $this->assertCount(1, $index->getFacetFields());
+    }
+
+    public function testFacetFields()
+    {
+        $task = new SolrIndexTask();
         $index = new TestIndex();
+        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]);
+        $task->run($request);
         $facets = $index->getFacetFields();
         $this->assertEquals([
             'Title' => 'Parent',
-            'Field' => 'SiteTree_ParentID'
-        ], $facets[Page::class]);
+            'Field' => 'SiteTree.ParentID'
+        ], $facets[SiteTree::class]);
         $query = new BaseQuery();
-        $query->addTerm('Test');
+        $query->addTerm('Home');
         $clientQuery = $index->buildSolrQuery($query);
         $this->arrayHasKey('facet-Parent', $clientQuery->getFacetSet()->getFacets());
+        $result = $index->doSearch($query);
+        $this->assertInstanceOf(ArrayData::class, $result->getFacets());
     }
 
     public function testGetSynonyms()

@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;

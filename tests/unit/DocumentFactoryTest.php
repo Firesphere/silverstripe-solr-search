@@ -103,7 +103,6 @@ class DocumentFactoryTest extends SapphireTest
         $this->assertInstanceOf(BaseIndex::class, $factory->getIntrospection()->getIndex());
         /** @var Document $doc */
         foreach ($docs as $i => $doc) {
-            // Debug::dump($doc->get
             $this->assertInstanceOf(Document::class, $doc);
             $fields = $doc->getFields();
             unset($fields['SiteTree_Created']); // Unset the Created, it changes per run

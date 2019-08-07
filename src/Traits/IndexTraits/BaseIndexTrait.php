@@ -91,9 +91,12 @@ trait BaseIndexTrait
      */
     public function addSortField($sortField): self
     {
-        $this->addFulltextField($sortField);
-
-        $this->sortFields[] = $sortField;
+        if (!in_array($sortField, $this->getFulltextFields(), true) &&
+            !in_array($sortField, $this->getFilterFields(), true)
+        ) {
+            $this->addFulltextField($sortField);
+            $this->sortFields[] = $sortField;
+        }
 
         $this->setSortFields(array_unique($this->getSortFields()));
 
@@ -186,11 +189,9 @@ trait BaseIndexTrait
     public function addFilterField($filterField): self
     {
         $key = array_search($filterField, $this->getFulltextFields(), true);
-        if ($key !== false) {
-            // prevent duplicates
-            unset($this->fulltextFields[$key]);
+        if ($key === false) {
+            $this->filterFields[] = $filterField;
         }
-        $this->filterFields[] = $filterField;
 
         return $this;
     }

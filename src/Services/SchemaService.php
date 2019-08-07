@@ -7,8 +7,10 @@ use Exception;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\ViewableData;
@@ -206,8 +208,10 @@ class SchemaService extends ViewableData
     {
         $return = ArrayList::create();
         $originalStore = $this->store;
-        $this->store = true;
-        foreach ($this->index->getFilterFields() as $field) {
+        $this->store = Director::isDev() ?: false;
+        $fields = $this->index->getFilterFields();
+        $fields = array_merge($fields, array_keys($this->index->getFacetFields()));
+        foreach ($fields as $field) {
             $this->getFieldDefinition($field, $return);
         }
 

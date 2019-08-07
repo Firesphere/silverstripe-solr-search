@@ -11,9 +11,9 @@ use SilverStripe\Dev\TestOnly;
 class TestIndex extends BaseIndex implements TestOnly
 {
     protected $facetFields = [
-        Page::class => [
+        SiteTree::class => [
             'Title' => 'Parent',
-            'Field' => 'SiteTree_ParentID'
+            'Field' => 'SiteTree.ParentID'
         ]
     ];
 
