@@ -18,5 +18,5 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
     DefaultField: _text
     FacetFields:
       Firesphere\SolrSearch\Tests\TestObject:
-        Field: SiteTree_TestObjectID
+        Field: SiteTree_TestObject_ID
         Title: TestObject
