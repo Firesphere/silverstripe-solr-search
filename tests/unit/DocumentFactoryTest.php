@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Page;
 use Psr\Log\LoggerInterface;
 use SilverStripe\CMS\Model\SiteTree;

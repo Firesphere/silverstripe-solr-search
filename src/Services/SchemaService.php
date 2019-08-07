@@ -212,7 +212,8 @@ class SchemaService extends ViewableData
         $fields = $this->index->getFilterFields();
         $fields = array_unique(
             array_merge(
-                $fields, array_keys($this->index->getFacetFields())
+                $fields,
+                array_keys($this->index->getFacetFields())
             )
         );
         foreach ($fields as $field) {
