@@ -18,7 +18,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -220,9 +219,14 @@ class BaseIndexTest extends SapphireTest
 
         $expected = [
             SiteTree::class => [
-                'Title' => 'Title',
-                'Field' => 'Content'
-            ]
+                'Title' => 'Parent',
+                'Field' => 'SiteTree.ParentID'
+            ],
+            Page::class     =>
+                [
+                    'Title' => 'Title',
+                    'Field' => 'Content'
+                ]
         ];
         $this->assertEquals($expected, $this->index->getFacetFields());
     }

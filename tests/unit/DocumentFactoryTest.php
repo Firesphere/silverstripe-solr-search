@@ -99,14 +99,14 @@ class DocumentFactoryTest extends SapphireTest
         $docs = $factory->buildItems($fields, $index, $update);
 
         // Minus 2, the default error pages that should not be indexed
-//        $this->assertCount(SiteTree::get()->count() - 2, $docs);
-//        $this->assertInternalType('array', $docs);
-//        $this->assertInstanceOf(BaseIndex::class, $factory->getIntrospection()->getIndex());
+        $this->assertCount(SiteTree::get()->count() - 2, $docs);
+        $this->assertInternalType('array', $docs);
+        $this->assertInstanceOf(BaseIndex::class, $factory->getIntrospection()->getIndex());
         /** @var Document $doc */
         foreach ($docs as $i => $doc) {
             $this->assertInstanceOf(Document::class, $doc);
             $fields = $doc->getFields();
-            unset($fields['SiteTree_Created']); // Unset the Created, it changes per run
+            unset($fields['SiteTree_Created'], $fields['SiteTree_SubsiteID']); // Unset the Created, it changes per run
             $this->assertEquals(static::$expected_docs[$i], $fields);
         }
     }
