@@ -79,7 +79,8 @@ class StaticsTest extends SapphireTest
         DBEnum::class                                => 'string',
         DBDate::class                                => 'tdate',
         'SilverStripe\\ORM\\FieldType\\HTMLFragment' => 'htmltext',
-        'HTMLFragment'                               => 'htmltext'
+        'HTMLFragment'                               => 'htmltext',
+        'PrimaryKey'                                 => 'tint'
     ];
 
     public function testGetTypesMap()

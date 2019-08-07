@@ -38,7 +38,7 @@ class BaseIndexTest extends SapphireTest
     {
         $this->assertInstanceOf(Client::class, $this->index->getClient());
         $this->assertCount(1, $this->index->getClasses());
-        $this->assertCount(1, $this->index->getFulltextFields());
+        $this->assertCount(2, $this->index->getFulltextFields());
         $this->assertContains(SiteTree::class, $this->index->getClasses());
     }
 
@@ -219,7 +219,7 @@ class BaseIndexTest extends SapphireTest
         $this->index->addFacetField(Page::class, ['Title' => 'Title', 'Field' => 'Content']);
 
         $expected = [
-            'Page' => [
+            SiteTree::class => [
                 'Title' => 'Title',
                 'Field' => 'Content'
             ]
