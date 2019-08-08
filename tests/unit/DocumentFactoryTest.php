@@ -107,7 +107,7 @@ class DocumentFactoryTest extends SapphireTest
             $this->assertInstanceOf(Document::class, $doc);
             $fields = $doc->getFields();
             unset($fields['SiteTree_Created'], $fields['SiteTree_SubsiteID']); // Unset the Created, it changes per run
-            $this->assertContains(static::$expected_docs[$i], $fields);
+            $this->assertEquals(static::$expected_docs[$i], $fields);
         }
     }
 
