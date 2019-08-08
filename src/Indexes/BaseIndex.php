@@ -115,9 +115,10 @@ abstract class BaseIndex
      */
     public function init()
     {
-        if (!self::config()->get($this->getIndexName())) {
+        if (!$this->getIndexName()) {
             throw new LogicException('Please set an index name as per BaseIndex::getIndexName() abstract');
         }
+
 
         $this->initFromConfig();
     }
@@ -129,7 +130,7 @@ abstract class BaseIndex
     {
         $config = self::config()->get($this->getIndexName());
 
-        if (!array_key_exists('Classes', $config) && !count($this->getClasses())) {
+        if (!array_key_exists('Classes', $config)) {
             throw new LogicException('No classes to index found!');
         }
 
