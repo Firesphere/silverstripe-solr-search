@@ -202,7 +202,7 @@ class DocumentFactory
         $type = $typeMap[$field['type']] ?? $typeMap['*'];
 
         foreach ($valuesForField as $value) {
-            if (!$this->isValidValue($value)) {
+            if ($value === null) {
                 continue;
             }
 
@@ -298,16 +298,6 @@ class DocumentFactory
         }
 
         return is_array($item) ? $item : [$item];
-    }
-
-    /**
-     * Check if a given value is valid for the type
-     * @param string $value
-     * @return bool
-     */
-    protected function isValidValue($value)
-    {
-        return $value !== null;
     }
 
     /**
