@@ -31,7 +31,7 @@ jobs:
       # redundant, just to be sure
       - run: cd /var/www/html
       - checkout
-      - run: touch /var/www/html/error.log
+      - run: echo ' ' > error.log
       - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
