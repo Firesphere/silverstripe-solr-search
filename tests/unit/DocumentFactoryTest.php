@@ -61,6 +61,25 @@ class DocumentFactoryTest extends SapphireTest
             'SiteTree_ParentID' => 1,
         ],
         [
+            'id'                => 'Page-2',
+            'ObjectID'          => 2,
+            'ClassName'         => 'Page',
+            'ClassHierarchy'    =>
+                [
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
+                    'page'                               => 'Page',
+                ],
+            'ViewStatus'        =>
+                [
+                    0 => '1-null',
+                ],
+            'SiteTree_Title'    => 'About us',
+            'SiteTree_Content'  => "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>",
+            'SiteTree_ParentID' => 0
+        ],
+        [
             'id'                => 'Page-3',
             'ObjectID'          => 3,
             'ClassName'         => 'Page',
