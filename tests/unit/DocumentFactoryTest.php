@@ -80,6 +80,24 @@ class DocumentFactoryTest extends SapphireTest
             'SiteTree_ParentID' => 0
         ],
         [
+            'id'                => 'Page-7',
+            'ObjectID'          => 7,
+            'ClassName'         => 'Page',
+            'ClassHierarchy'    =>
+                [
+                    'silverstripe\\view\\viewabledata'   => ViewableData::class,
+                    'silverstripe\\orm\\dataobject'      => DataObject::class,
+                    'silverstripe\\cms\\model\\sitetree' => SiteTree::class,
+                    'page'                               => 'Page',
+                ],
+            'ViewStatus'        =>
+                [
+                    0 => '1-null',
+                ],
+            'SiteTree_Title'    => 'Test 2',
+            'SiteTree_ParentID' => 1,
+        ],
+        [
             'id'                => 'Page-3',
             'ObjectID'          => 3,
             'ClassName'         => 'Page',
