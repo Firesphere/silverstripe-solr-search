@@ -67,10 +67,10 @@ class BaseIndexTest extends SapphireTest
         /** @var Page $parent */
         $parent = Page::get()->filter(['Title' => 'Home'])->first();
         $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
-        $id1 = $page1->write();
+        $page1->write();
         $page1->publishRecursive();
         $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
-        $id2 = $page2->write();
+        $page2->write();
         $page2->publishRecursive();
         $task = new SolrIndexTask();
         $index = new TestIndex();

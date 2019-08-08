@@ -75,7 +75,7 @@ class DocumentFactoryTest extends SapphireTest
                 [
                     0 => '1-null',
                 ],
-            'SiteTree_Title'    => 'About us',
+            'SiteTree_Title'    => 'About Us',
             'SiteTree_Content'  => "<p>You can fill this page out with your own content, or delete it and create your own pages.</p>",
             'SiteTree_ParentID' => 0
         ],
