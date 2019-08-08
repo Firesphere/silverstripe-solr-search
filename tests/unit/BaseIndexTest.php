@@ -66,11 +66,11 @@ class BaseIndexTest extends SapphireTest
     public function testFacetFields()
     {
         /** @var Page $parent */
-        $parent = Page::get()->filter(['Title' => 'Home']);
-        $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $parent->ID]);
+        $parent = Page::get()->filter(['Title' => 'Home'])->first();
+        $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
         $page1->write();
         $page1->publishRecursive();
-        $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $parent->ID]);
+        $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
         $page2->write();
         $page2->publishRecursive();
         $task = new SolrIndexTask();
@@ -88,7 +88,8 @@ class BaseIndexTest extends SapphireTest
         $this->arrayHasKey('facet-Parent', $clientQuery->getFacetSet()->getFacets());
         $result = $index->doSearch($query);
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
-        Debug::dump($result->getFacets());
+        $parents = $result->getFacets();
+        $this->assertCount(1, $parents['Parent']);
         $page1->doUnpublish();
         $page1->delete();
         $page2->doUnpublish();

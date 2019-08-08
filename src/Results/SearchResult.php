@@ -127,9 +127,9 @@ class SearchResult
             if ($item && $item->exists()) {
                 $this->createExcerpt($idField, $match, $item);
                 $items[] = $item;
+                $item->destroy();
             }
             unset($match);
-            $item->destroy();
         }
 
         return ArrayList::create($items);
