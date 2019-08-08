@@ -89,7 +89,7 @@ class BaseIndexTest extends SapphireTest
         $result = $index->doSearch($query);
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
         $parents = $result->getFacets();
-        $this->assertCount(1, $parents['Parent']);
+        $this->assertCount(1, $parents->Parent);
         $page1->doUnpublish();
         $page1->delete();
         $page2->doUnpublish();
