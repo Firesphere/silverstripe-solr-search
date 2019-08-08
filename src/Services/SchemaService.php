@@ -121,9 +121,13 @@ class SchemaService extends ViewableData
     public function getFulltextFieldDefinitions()
     {
         $return = ArrayList::create();
+        $store = $this->store;
+        $this->store = true;
         foreach ($this->index->getFulltextFields() as $field) {
             $this->getFieldDefinition($field, $return);
         }
+
+        $this->store = $store;
 
         return $return;
     }
@@ -208,7 +212,7 @@ class SchemaService extends ViewableData
     {
         $return = ArrayList::create();
         $originalStore = $this->store;
-        $this->store = Director::isDev() ?: false;
+        $this->store = false;
         $fields = $this->index->getFilterFields();
         $fields = array_unique(
             array_merge(

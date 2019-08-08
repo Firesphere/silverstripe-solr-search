@@ -18,6 +18,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\PaginatedList;
@@ -64,6 +65,14 @@ class BaseIndexTest extends SapphireTest
 
     public function testFacetFields()
     {
+        /** @var Page $parent */
+        $parent = Page::get()->filter(['Title' => 'Home']);
+        $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $parent->ID]);
+        $page1->write();
+        $page1->publishRecursive();
+        $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $parent->ID]);
+        $page2->write();
+        $page2->publishRecursive();
         $task = new SolrIndexTask();
         $index = new TestIndex();
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]);
@@ -74,11 +83,16 @@ class BaseIndexTest extends SapphireTest
             'Field' => 'SiteTree.ParentID'
         ], $facets[SiteTree::class]);
         $query = new BaseQuery();
-        $query->addTerm('Home');
+        $query->addTerm('Test');
         $clientQuery = $index->buildSolrQuery($query);
         $this->arrayHasKey('facet-Parent', $clientQuery->getFacetSet()->getFacets());
         $result = $index->doSearch($query);
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
+        Debug::dump($result->getFacets());
+        $page1->doUnpublish();
+        $page1->delete();
+        $page2->doUnpublish();
+        $page2->delete();
     }
 
     public function testGetSynonyms()
@@ -222,11 +236,10 @@ class BaseIndexTest extends SapphireTest
                 'Title' => 'Parent',
                 'Field' => 'SiteTree.ParentID'
             ],
-            Page::class     =>
-                [
-                    'Title' => 'Title',
-                    'Field' => 'Content'
-                ]
+            Page::class     => [
+                'Title' => 'Title',
+                'Field' => 'Content'
+            ]
         ];
         $this->assertEquals($expected, $this->index->getFacetFields());
     }

@@ -13,7 +13,7 @@ use SilverStripe\ORM\DataExtension;
  */
 class SubsitesExtension extends DataExtension
 {
-    public function onAfterInit()
+    public function onBeforeInit()
     {
         // Add default support for Subsites.
         if (class_exists('SilverStripe\\Subsites\\Model\\Subsite')) {
