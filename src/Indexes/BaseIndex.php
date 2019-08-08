@@ -116,19 +116,8 @@ abstract class BaseIndex
     public function init()
     {
         if (!self::config()->get($this->getIndexName())) {
-            Deprecation::notice('5', 'Please set an index name');
-
-            // If the old init method is found, skip the config based init
-            if (count($this->getClasses())) {
-                Deprecation::notice(
-                    '5',
-                    'You are running init at the top of your method. The new API requires it to be at the bottom'
-                );
-            }
-
-            return;
+            throw new LogicException('Please set an index name as per BaseIndex::getIndexName() abstract');
         }
-
 
         $this->initFromConfig();
     }
@@ -140,7 +129,7 @@ abstract class BaseIndex
     {
         $config = self::config()->get($this->getIndexName());
 
-        if (!array_key_exists('Classes', $config)) {
+        if (!array_key_exists('Classes', $config) && !count($this->getClasses())) {
             throw new LogicException('No classes to index found!');
         }
 
