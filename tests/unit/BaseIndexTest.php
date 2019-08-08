@@ -50,9 +50,9 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             'Title',
             'Content',
+            'SubsiteID',
             'Created',
             'ParentID',
-            'SubsiteID'
         ];
 
         $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
@@ -141,9 +141,9 @@ class BaseIndexTest extends SapphireTest
         $expected = [
             'Title',
             'Content',
+            'SubsiteID',
             'Created',
             'ParentID',
-            'SubsiteID'
         ];
         $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
     }
