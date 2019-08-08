@@ -89,6 +89,8 @@ class BaseIndexTest extends SapphireTest
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
         $parents = $result->getFacets();
         $this->assertCount(1, $parents->Parent);
+        $this->assertEquals('Home', $parents->Parent->first()->Title);
+        $this->assertEquals(2, $parents->Parent->first()->FacetCount);
     }
 
     public function testGetSynonyms()
