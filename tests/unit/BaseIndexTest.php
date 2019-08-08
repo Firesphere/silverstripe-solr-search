@@ -87,10 +87,12 @@ class BaseIndexTest extends SapphireTest
         $this->arrayHasKey('facet-Parent', $clientQuery->getFacetSet()->getFacets());
         $result = $index->doSearch($query);
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
-        $parents = $result->getFacets();
-        $this->assertCount(1, $parents->Parent);
-        $this->assertEquals('Home', $parents->Parent->first()->Title);
-        $this->assertEquals(2, $parents->Parent->first()->FacetCount);
+        $facets = $result->getFacets();
+        /** @var ArrayList $parents */
+        $parents = $facets->Parent;
+        $this->assertCount(1, $parents);
+        $this->assertEquals('Home', $parents->first()->Title);
+        $this->assertEquals(2, $parents->first()->FacetCount);
     }
 
     public function testGetSynonyms()

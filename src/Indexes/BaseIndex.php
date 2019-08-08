@@ -116,7 +116,7 @@ abstract class BaseIndex
     public function init()
     {
         if (!self::config()->get($this->getIndexName())) {
-            Deprecation::notice('5', 'Please set an index name');
+            Deprecation::notice('5', 'Please set an index name and use a config yml');
 
             // If the old init method is found, skip the config based init
             if (!count($this->getClasses())) {
@@ -190,14 +190,7 @@ abstract class BaseIndex
     public function buildSolrQuery(BaseQuery $query): Query
     {
         $clientQuery = $this->client->createSelect();
-        $factory = $this->queryFactory;
-
-        $helper = $clientQuery->getHelper();
-
-        $factory->setQuery($query);
-        $factory->setClientQuery($clientQuery);
-        $factory->setHelper($helper);
-        $factory->setIndex($this);
+        $factory = $this->buildFactory($query, $clientQuery);
 
         $clientQuery = $factory->buildQuery();
         $this->queryTerms = $factory->getQueryArray();
@@ -319,5 +312,24 @@ abstract class BaseIndex
     public function getQueryFactory(): QueryComponentFactory
     {
         return $this->queryFactory;
+    }
+
+    /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return QueryComponentFactory|mixed
+     */
+    protected function buildFactory(BaseQuery $query, Query $clientQuery)
+    {
+        $factory = $this->queryFactory;
+
+        $helper = $clientQuery->getHelper();
+
+        $factory->setQuery($query);
+        $factory->setClientQuery($clientQuery);
+        $factory->setHelper($helper);
+        $factory->setIndex($this);
+
+        return $factory;
     }
 }
