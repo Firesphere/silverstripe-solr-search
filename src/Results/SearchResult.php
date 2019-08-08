@@ -118,13 +118,8 @@ class SearchResult
         $idField = SolrCoreService::ID_FIELD;
         $classIDField = SolrCoreService::CLASS_ID_FIELD;
         foreach ($matches as $match) {
-            $item = $match;
-            if (!$match instanceof DataObject) {
-                $class = $match->ClassName;
-                /** @var DataObject $item */
-                $item = $class::get()->byID($match->{$classIDField});
-            }
-            if ($item && $item->exists()) {
+            $item = $this->isDataObject($match, $classIDField);
+            if ($item !== false) {
                 $this->createExcerpt($idField, $match, $item);
                 $items[] = $item;
                 $item->destroy();
@@ -366,5 +361,21 @@ class SearchResult
         $facetArray[$options['Title']] = $results;
 
         return $facetArray;
+    }
+
+    /**
+     * @param $match
+     * @param string $classIDField
+     * @return DataObject|boolean
+     */
+    protected function isDataObject($match, string $classIDField): DataObject
+    {
+        if (!$match instanceof DataObject) {
+            $class = $match->ClassName;
+            /** @var DataObject $match */
+            $match = $class::get()->byID($match->{$classIDField});
+        }
+
+        return ($match->exists()) ? $match : false;
     }
 }
