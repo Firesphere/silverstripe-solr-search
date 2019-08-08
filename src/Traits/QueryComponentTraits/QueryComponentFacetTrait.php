@@ -49,14 +49,13 @@ trait QueryComponentFacetTrait
             $filterFacets = Controller::curr()->getRequest()->requestVars();
         }
         foreach ($this->index->getFacetFields() as $class => $config) {
-            if (array_key_exists($config['Title'], $filterFacets)) {
-                $filter = array_filter($filterFacets[$config['Title']], 'strlen');
-                if (count($filter)) {
-                    $criteria = Criteria::where($config['Field'])->in($filter);
-                    $this->clientQuery
-                        ->createFilterQuery('facet-' . $config['Title'])
-                        ->setQuery($criteria->getQuery());
-                }
+            if (array_key_exists($config['Title'], $filterFacets) &&
+                $filter = array_filter($filterFacets[$config['Title']], 'strlen')
+            ) {
+                $criteria = Criteria::where($config['Field'])->in($filter);
+                $this->clientQuery
+                    ->createFilterQuery('facet-' . $config['Title'])
+                    ->setQuery($criteria->getQuery());
             }
         }
     }
