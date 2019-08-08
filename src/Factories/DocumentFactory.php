@@ -266,7 +266,7 @@ class DocumentFactory
 
             foreach ($objects as $item) {
                 $item = $this->getItemForStep($step, $item);
-                $next = is_array($item) ? array_merge($next, $item) : $item;
+                $next = is_array($item) ? array_merge($next, $item) : [$item];
             }
 
             // When all objects have been processed, put them in to objects
