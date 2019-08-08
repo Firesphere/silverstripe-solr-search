@@ -68,10 +68,10 @@ class BaseIndexTest extends SapphireTest
         /** @var Page $parent */
         $parent = Page::get()->filter(['Title' => 'Home'])->first();
         $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
-        $page1->write();
+        $id1 = $page1->write();
         $page1->publishRecursive();
         $page2 = Page::create(['Title' => 'Test 2', 'ParentID' => $parent->ID, 'ShowInSearch' => true]);
-        $page2->write();
+        $id2 = $page2->write();
         $page2->publishRecursive();
         $task = new SolrIndexTask();
         $index = new TestIndex();
@@ -90,10 +90,8 @@ class BaseIndexTest extends SapphireTest
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
         $parents = $result->getFacets();
         $this->assertCount(1, $parents->Parent);
-        $page1->doUnpublish();
-        $page1->delete();
-        $page2->doUnpublish();
-        $page2->delete();
+        Page::get()->byID($id1)->delete();
+        Page::get()->byID($id2)->delete();
     }
 
     public function testGetSynonyms()
