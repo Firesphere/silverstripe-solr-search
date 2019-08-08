@@ -255,7 +255,7 @@ class DocumentFactory
      * @param array $field - The field definition to use
      * @return array Technically, it's always an array
      */
-    protected function getValueForField($objects, $field)
+    protected function getValueForField($objects, $field): array
     {
         // Make sure we always have an array to iterate
         $objects = is_array($objects) ? $objects : [$objects];
@@ -269,7 +269,7 @@ class DocumentFactory
                 $next = is_array($item) ? array_merge($next, $item) : [$item];
             }
 
-            // When all objects have been processed, put them in to objects
+            // When all items have been processed, put them in to objects
             // This ensures the next step is an array of the correct objects to index
             $objects = $next;
             unset($next);
@@ -288,11 +288,9 @@ class DocumentFactory
     protected function getItemForStep($step, $item)
     {
         if ($step['call'] === 'method') {
-            $method = $step['method'];
-            $item = $item->$method();
+            $item = $this->getItemMethod($step, $item);
         } else {
-            $property = $step['property'];
-            $item = $item->$property;
+            $item = $this->getItemProperty($step, $item);
         }
 
         if ($item instanceof SS_List) {
@@ -305,7 +303,6 @@ class DocumentFactory
     /**
      * Check if a given value is valid for the type
      * @param string $value
-     * @param string $type
      * @return bool
      */
     protected function isValidValue($value)
@@ -342,5 +339,31 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
+    }
+
+    /**
+     * @param $step
+     * @param $item
+     * @return mixed
+     */
+    protected function getItemMethod($step, $item)
+    {
+        $method = $step['method'];
+        $item = $item->$method();
+
+        return $item;
+    }
+
+    /**
+     * @param $step
+     * @param $item
+     * @return mixed
+     */
+    protected function getItemProperty($step, $item)
+    {
+        $property = $step['property'];
+        $item = $item->$property;
+
+        return $item;
     }
 }
