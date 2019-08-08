@@ -88,12 +88,13 @@ class SolrCoreService
     {
         $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $enabledIndexes = static::config()->get('indexes');
+        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : [$enabledIndexes];
         foreach ($indexes as $subindex) {
             $ref = new ReflectionClass($subindex);
             $notEnabled = !in_array($subindex, $enabledIndexes, true);
             // If the config of indexes is set, and the requested index isn't in it, skip addition
             // Or, the index simply doesn't exist, also a valid option
-            if (($enabledIndexes && $notEnabled) && $ref->isInstantiable()) {
+            if ((count($enabledIndexes) && $notEnabled) && $ref->isInstantiable()) {
                 $this->validIndexes[] = $subindex;
             }
         }
