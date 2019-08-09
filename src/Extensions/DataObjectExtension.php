@@ -33,6 +33,10 @@ class DataObjectExtension extends DataExtension
     public const WRITE = 'write';
     public const DELETE = 'delete';
     /**
+     * @var array
+     */
+    public static $canViewClasses = [];
+    /**
      * @var DataList
      */
     protected static $members;
@@ -44,10 +48,6 @@ class DataObjectExtension extends DataExtension
         ChangeSet::class,
         ChangeSetItem::class,
     ];
-    /**
-     * @var array
-     */
-    public static $canViewClasses = [];
 
     /**
      * @throws ValidationException

@@ -16,7 +16,6 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 use Solarium\Client;
@@ -249,6 +248,41 @@ class SolrCoreService
     }
 
     /**
+     * @param SS_List $items
+     * @param string $type
+     * @param BaseIndex $index
+     * @param \Solarium\Core\Client\Client $client
+     * @return mixed
+     * @throws Exception
+     */
+    protected function getUpdate($items, $type, BaseIndex $index, \Solarium\Core\Client\Client $client)
+    {
+        // get an update query instance
+        $update = $client->createUpdate();
+
+        switch ($type) {
+            case static::DELETE_TYPE:
+                // By pushing to a single array, we have less memory usage and no duplicates
+                // This is faster, and more efficient, because we only do one DB query
+                $delete = $items->map('ID', 'ClassName')->toArray();
+                array_walk($delete, static function (&$item, $key) {
+                    $item = sprintf('%s-%s', $item, $key);
+                });
+                $update->addDeleteByIds(array_values($delete));
+                // Remove the deletion array from memory
+                break;
+            case static::DELETE_TYPE_ALL:
+                $update->addDeleteQuery('*:*');
+                break;
+            case static::UPDATE_TYPE:
+            case static::CREATE_TYPE:
+                $this->updateIndex($index, $items, $update);
+        }
+
+        return $update;
+    }
+
+    /**
      * @param BaseIndex $index
      * @param SS_List $items
      * @param \Solarium\QueryType\Update\Query\Query $update
@@ -344,40 +378,5 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * @param SS_List $items
-     * @param string $type
-     * @param BaseIndex $index
-     * @param \Solarium\Core\Client\Client $client
-     * @return mixed
-     * @throws Exception
-     */
-    protected function getUpdate($items, $type, BaseIndex $index, \Solarium\Core\Client\Client $client)
-    {
-        // get an update query instance
-        $update = $client->createUpdate();
-
-        switch ($type) {
-            case static::DELETE_TYPE:
-                // By pushing to a single array, we have less memory usage and no duplicates
-                // This is faster, and more efficient, because we only do one DB query
-                $delete = $items->map('ID', 'ClassName')->toArray();
-                array_walk($delete, static function (&$item, $key) {
-                    $item = sprintf('%s-%s', $item, $key);
-                });
-                $update->addDeleteByIds(array_values($delete));
-                // Remove the deletion array from memory
-                break;
-            case static::DELETE_TYPE_ALL:
-                $update->addDeleteQuery('*:*');
-                break;
-            case static::UPDATE_TYPE:
-            case static::CREATE_TYPE:
-                $this->updateIndex($index, $items, $update);
-        }
-
-        return $update;
     }
 }

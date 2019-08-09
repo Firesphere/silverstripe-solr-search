@@ -6,7 +6,6 @@ namespace Firesphere\SolrSearch\Traits;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
-use SilverStripe\Control\Controller;
 use Solarium\QueryType\Select\Query\Query;
 
 trait QueryComponentFacetTrait

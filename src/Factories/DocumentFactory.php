@@ -301,6 +301,32 @@ class DocumentFactory
     }
 
     /**
+     * @param $step
+     * @param $item
+     * @return mixed
+     */
+    protected function getItemMethod($step, $item)
+    {
+        $method = $step['method'];
+        $item = $item->$method();
+
+        return $item;
+    }
+
+    /**
+     * @param $step
+     * @param $item
+     * @return mixed
+     */
+    protected function getItemProperty($step, $item)
+    {
+        $property = $step['property'];
+        $item = $item->$property;
+
+        return $item;
+    }
+
+    /**
      * @param string $field
      * @return string
      */
@@ -329,31 +355,5 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
-    }
-
-    /**
-     * @param $step
-     * @param $item
-     * @return mixed
-     */
-    protected function getItemMethod($step, $item)
-    {
-        $method = $step['method'];
-        $item = $item->$method();
-
-        return $item;
-    }
-
-    /**
-     * @param $step
-     * @param $item
-     * @return mixed
-     */
-    protected function getItemProperty($step, $item)
-    {
-        $property = $step['property'];
-        $item = $item->$property;
-
-        return $item;
     }
 }

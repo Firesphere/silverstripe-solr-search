@@ -104,6 +104,48 @@ trait BaseIndexTrait
     }
 
     /**
+     * @return array
+     */
+    public function getFulltextFields(): array
+    {
+        return array_values(
+            array_unique(
+                $this->fulltextFields
+            )
+        );
+    }
+
+    /**
+     * @param array $fulltextFields
+     * @return $this
+     */
+    public function setFulltextFields($fulltextFields): self
+    {
+        $this->fulltextFields = $fulltextFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterFields(): array
+    {
+        return $this->filterFields;
+    }
+
+    /**
+     * @param array $filterFields
+     * @return $this
+     */
+    public function setFilterFields($filterFields): self
+    {
+        $this->filterFields = $filterFields;
+
+        return $this;
+    }
+
+    /**
      * @param string $fulltextField
      * @param null|string $forceType
      * @param array $options
@@ -124,25 +166,6 @@ trait BaseIndexTrait
         if (isset($options['boost'])) {
             $this->addBoostedField($fulltextField, [], $options['boost']);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFilterFields(): array
-    {
-        return $this->filterFields;
-    }
-
-    /**
-     * @param array $filterFields
-     * @return $this
-     */
-    public function setFilterFields($filterFields): self
-    {
-        $this->filterFields = $filterFields;
 
         return $this;
     }
@@ -192,29 +215,6 @@ trait BaseIndexTrait
         if ($key === false) {
             $this->filterFields[] = $filterField;
         }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFulltextFields(): array
-    {
-        return array_values(
-            array_unique(
-                $this->fulltextFields
-            )
-        );
-    }
-
-    /**
-     * @param array $fulltextFields
-     * @return $this
-     */
-    public function setFulltextFields($fulltextFields): self
-    {
-        $this->fulltextFields = $fulltextFields;
 
         return $this;
     }

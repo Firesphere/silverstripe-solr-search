@@ -7,7 +7,6 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
@@ -147,6 +146,22 @@ class SearchResult
         $this->matches = $docs;
 
         return $this;
+    }
+
+    /**
+     * @param $match
+     * @param string $classIDField
+     * @return DataObject|boolean
+     */
+    protected function isDataObject($match, string $classIDField): DataObject
+    {
+        if (!$match instanceof DataObject) {
+            $class = $match->ClassName;
+            /** @var DataObject $match */
+            $match = $class::get()->byID($match->{$classIDField});
+        }
+
+        return ($match->exists()) ? $match : false;
     }
 
     /**
@@ -361,21 +376,5 @@ class SearchResult
         $facetArray[$options['Title']] = $results;
 
         return $facetArray;
-    }
-
-    /**
-     * @param $match
-     * @param string $classIDField
-     * @return DataObject|boolean
-     */
-    protected function isDataObject($match, string $classIDField): DataObject
-    {
-        if (!$match instanceof DataObject) {
-            $class = $match->ClassName;
-            /** @var DataObject $match */
-            $match = $class::get()->byID($match->{$classIDField});
-        }
-
-        return ($match->exists()) ? $match : false;
     }
 }

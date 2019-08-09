@@ -202,6 +202,25 @@ abstract class BaseIndex
     }
 
     /**
+     * @param BaseQuery $query
+     * @param Query $clientQuery
+     * @return QueryComponentFactory|mixed
+     */
+    protected function buildFactory(BaseQuery $query, Query $clientQuery)
+    {
+        $factory = $this->queryFactory;
+
+        $helper = $clientQuery->getHelper();
+
+        $factory->setQuery($query);
+        $factory->setClientQuery($clientQuery);
+        $factory->setHelper($helper);
+        $factory->setIndex($this);
+
+        return $factory;
+    }
+
+    /**
      * Check if the query should be retried with spellchecking
      * @param BaseQuery $query
      * @param Result $result
@@ -312,24 +331,5 @@ abstract class BaseIndex
     public function getQueryFactory(): QueryComponentFactory
     {
         return $this->queryFactory;
-    }
-
-    /**
-     * @param BaseQuery $query
-     * @param Query $clientQuery
-     * @return QueryComponentFactory|mixed
-     */
-    protected function buildFactory(BaseQuery $query, Query $clientQuery)
-    {
-        $factory = $this->queryFactory;
-
-        $helper = $clientQuery->getHelper();
-
-        $factory->setQuery($query);
-        $factory->setClientQuery($clientQuery);
-        $factory->setHelper($helper);
-        $factory->setIndex($this);
-
-        return $factory;
     }
 }
