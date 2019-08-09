@@ -17,6 +17,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\SS_List;
 use Solarium\QueryType\Update\Query\Document\Document;
 use Solarium\QueryType\Update\Query\Query;
@@ -205,16 +206,7 @@ class DocumentFactory
             if ($value === null) {
                 continue;
             }
-
-            /* Solr requires dates in the form 1995-12-31T23:59:59Z */
-            if ($type === 'tdate' || $value instanceof DBDate) {
-                $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
-            }
-
-
-            $name = $this->sanitiseName($field['name']);
-
-            $doc->addField($name, $value);
+            $this->addToDoc($doc, $field, $type, $value);
         }
     }
 
@@ -355,5 +347,23 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
+    }
+
+    /**
+     * @param Document $doc
+     * @param array $field
+     * @param string $type
+     * @param DBField|string $value
+     */
+    protected function addToDoc($doc, $field, $type, $value): void
+    {
+        /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
+        if ($type === 'tdate' || $value instanceof DBDate) {
+            $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
+        }
+
+        $name = $this->sanitiseName($field['name']);
+
+        $doc->addField($name, $value);
     }
 }
