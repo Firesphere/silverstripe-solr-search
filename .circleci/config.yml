@@ -45,6 +45,7 @@ jobs:
       - run:
           name: Composer requirements
           command: |
+            composer require myclabs/deep-copy:1.9.1
             composer require silverstripe/recipe-cms
             composer update -n --prefer-dist --ignore-platform-reqs
             composer vendor-expose
