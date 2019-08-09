@@ -160,7 +160,7 @@ class SearchResult
             $match = $class::get()->byID($match->{$classIDField});
         }
 
-        return ($match->exists()) ? $match : false;
+        return ($match && $match->exists()) ? $match : false;
     }
 
     /**

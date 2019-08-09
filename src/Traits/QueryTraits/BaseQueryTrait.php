@@ -8,27 +8,27 @@ trait BaseQueryTrait
     /**
      * @var array
      */
-    protected $terms;
+    protected $terms = [];
 
     /**
      * @var array
      */
-    protected $filter;
+    protected $filter = [];
 
     /**
      * @var array
      */
-    protected $fields;
+    protected $fields = [];
 
     /**
      * @var array
      */
-    protected $facetFilter;
+    protected $facetFilter = [];
 
     /**
      * @var array
      */
-    protected $exclude;
+    protected $exclude = [];
 
     /**
      * Each boosted query needs a separate addition!

@@ -18,7 +18,6 @@ class BaseQuery
      * @var array
      */
     protected $history = [];
-
     /**
      * Key-value pairs of fields and what to filter against
      *

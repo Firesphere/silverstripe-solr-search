@@ -40,7 +40,7 @@ class QueryComponentFactoryTest extends SapphireTest
 
         $expected = ['Home', 'SiteTree_Content:Home^2.0'];
         $this->assertEquals($expected, $this->factory->getQueryArray());
-        $this->assertEquals(['SiteTree_Title'], $this->factory->getClientQuery()->getFields());
+        $this->assertEquals(['ClassName', 'SiteTree_Title'], $this->factory->getClientQuery()->getFields());
         $this->assertCount(3, $this->factory->getClientQuery()->getFilterQueries());
         $this->assertInstanceOf(Helper::class, $this->factory->getHelper());
         $this->assertInstanceOf(BaseIndex::class, $this->factory->getIndex());
