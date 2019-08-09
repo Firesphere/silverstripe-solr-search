@@ -79,7 +79,7 @@ trait BaseQueryTrait
      * @param string $value
      * @return $this
      */
-    public function addFacetFilter($field, $value)
+    public function addFacetFilter($field, $value): self
     {
         $this->facetFilter[$field][] = $value;
 

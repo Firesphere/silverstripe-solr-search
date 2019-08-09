@@ -65,9 +65,9 @@ class BaseQueryTest extends SapphireTest
         $this->query->setFollowSpellcheck(true);
         $this->assertTrue($this->query->shouldFollowSpellcheck());
         $this->query->addFacetFilter('Test', 'test');
-        $this->assertEquals(['Test' => ['test']], $this->query->getFacetFields());
-        $this->query->setFacetFields(['Testing' => [1, 2]]);
-        $this->assertEquals(['Testing' => [1, 2]], $this->query->getFacetFields());
+        $this->assertEquals(['Test' => ['test']], $this->query->getFacetFilter());
+        $this->query->setFacetFilter(['Testing' => [1, 2]]);
+        $this->assertEquals(['Testing' => [1, 2]], $this->query->getFacetFilter());
     }
 
     /**
