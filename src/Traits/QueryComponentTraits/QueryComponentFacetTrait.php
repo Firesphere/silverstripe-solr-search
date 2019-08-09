@@ -48,7 +48,9 @@ trait QueryComponentFacetTrait
             if (array_key_exists($config['Title'], $filterFacets) &&
                 $filter = array_filter($filterFacets[$config['Title']], 'strlen')
             ) {
-                $criteria = Criteria::where($config['Field'])->in($filter);
+                $filter = is_array($filter) ? $filter : [$filter];
+                $field = str_replace('.', '_', $config['Field']);
+                $criteria = Criteria::where($field)->in($filter);
                 $this->clientQuery
                     ->createFilterQuery('facet-' . $config['Title'])
                     ->setQuery($criteria->getQuery());

@@ -150,7 +150,7 @@ class SearchResult
     /**
      * @param $match
      * @param string $classIDField
-     * @return DataObject|boolean
+     * @return DataObject|bool
      */
     protected function isDataObject($match, string $classIDField): DataObject
     {
