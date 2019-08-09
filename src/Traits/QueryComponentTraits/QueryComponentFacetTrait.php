@@ -44,10 +44,7 @@ trait QueryComponentFacetTrait
      */
     protected function buildFacetQuery()
     {
-        $filterFacets = [];
-        if (Controller::has_curr()) {
-            $filterFacets = Controller::curr()->getRequest()->requestVars();
-        }
+        $filterFacets = $this->query->getFacetFilter();
         foreach ($this->index->getFacetFields() as $class => $config) {
             if (array_key_exists($config['Title'], $filterFacets) &&
                 $filter = array_filter($filterFacets[$config['Title']], 'strlen')
