@@ -5,6 +5,30 @@ namespace Firesphere\SolrSearch\Traits;
 
 trait BaseQueryTrait
 {
+    /**
+     * @var array
+     */
+    protected $terms;
+
+    /**
+     * @var array
+     */
+    protected $filter;
+
+    /**
+     * @var array
+     */
+    protected $fields;
+
+    /**
+     * @var array
+     */
+    protected $facetFilter;
+
+    /**
+     * @var array
+     */
+    protected $exclude;
 
     /**
      * Each boosted query needs a separate addition!
