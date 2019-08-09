@@ -132,7 +132,6 @@ class SearchResult
     /**
      * @param array $result
      * @return $this
-     * @todo support multiple classes
      */
     protected function setMatches($result): self
     {

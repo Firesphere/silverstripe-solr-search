@@ -68,8 +68,11 @@ class QueryComponentFactory
         $this->buildBoosts();
 
         // Filter out the fields we want to see if they're set
-        if (count($this->query->getFields())) {
-            $this->clientQuery->setFields($this->query->getFields());
+        $fields = $this->query->getFacetFields();
+        if (count($fields)) {
+            // We _ALWAYS_ need the ClassName for getting the DataObjects back
+            $fields = array_unique(['ClassName'], $fields);
+            $this->clientQuery->setFields($fields);
         }
 
         return $this->clientQuery;

@@ -31,8 +31,11 @@ jobs:
       # redundant, just to be sure
       - run: cd /var/www/html
       - checkout
-      - run: echo ' ' > error.log
-      - run: chmod 777 error.log
+      - run:
+          name: Error log setup
+          command: |
+            echo ' ' > error.log
+            chmod 777 error.log
       - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
