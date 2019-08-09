@@ -12,7 +12,6 @@ use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\DefaultAdminService;
-use SilverStripe\Security\Group;
 
 class DataObjectExtensionTest extends SapphireTest
 {

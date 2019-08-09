@@ -366,4 +366,12 @@ class DocumentFactory
 
         $doc->addField($name, $value);
     }
+
+    /**
+     * @return bool
+     */
+    public function isDebug(): bool
+    {
+        return $this->debug;
+    }
 }

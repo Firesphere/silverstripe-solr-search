@@ -160,4 +160,11 @@ class DocumentFactoryTest extends SapphireTest
     {
         $this->assertInstanceOf(LoggerInterface::class, (new DocumentFactory())->getLogger());
     }
+
+    public function testDebug()
+    {
+        $factory = new DocumentFactory();
+        $this->assertFalse($factory->isDebug());
+        $this->assertTrue($factory->setDebug(true)->isDebug());
+    }
 }
