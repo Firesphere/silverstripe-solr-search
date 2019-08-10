@@ -151,7 +151,7 @@ class SchemaService extends ViewableData
                 'Field'       => $name,
                 'Type'        => $typeMap[$options['type']],
                 'Indexed'     => 'true',
-                'Stored'      => $store,
+                'Stored'      => $options['store'] ?? $store,
                 'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
                 'Destination' => $copyField
             ];

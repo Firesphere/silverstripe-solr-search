@@ -51,7 +51,7 @@ trait GetterSetterTrait
     public function addClass($class, $options = array()): self
     {
         if (count($options)) {
-            Deprecation::notice('4.0', 'Options are not used anymore');
+            Deprecation::notice('5.0', 'Options are not used anymore');
         }
         $this->class[] = $class;
 

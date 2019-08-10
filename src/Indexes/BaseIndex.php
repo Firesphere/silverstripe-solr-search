@@ -251,6 +251,21 @@ abstract class BaseIndex
     }
 
     /**
+     * @param string $field
+     * @param null|string $forceType
+     * @param array $extraOptions
+     * @return BaseIndex
+     */
+    public function addStoredField($field, $forceType = null, $extraOptions = array())
+    {
+        $options = array_merge($extraOptions, ['stored' => 'true']);
+        $this->addFulltextField($field, $forceType, $options);
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      */
     public function getFieldsForIndexing(): array
