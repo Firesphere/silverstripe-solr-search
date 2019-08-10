@@ -1,8 +1,6 @@
 # Enable the following for extensive debug output
 Firesphere\SolrSearch\Indexes\BaseIndex:
   extensions:
-    - Firesphere\SolrSearch\Extensions\BaseIndexExtension # dev help
-#    - Firesphere\SolrSearch\Compat\FulltextSearchExtension # Return a FTS compatible result
     - Firesphere\SolrSearch\Compat\SubsitesExtension # Subsites compatibility
 SilverStripe\ORM\DataObject:
   extensions:
