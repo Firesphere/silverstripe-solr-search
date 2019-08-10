@@ -53,11 +53,12 @@ class SearchIntrospection
     {
         $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
+        $buildSources = [];
 
         $schemaHelper = DataObject::getSchema();
         foreach ($sources as $source) {
-            $sources[$source]['base'] = $schemaHelper->baseDataClass($source);
-            $sources[$source]['lookup_chain'] = [];
+            $buildSources[$source]['base'] = $schemaHelper->baseDataClass($source);
+            $buildSources[$source]['lookup_chain'] = [];
         }
 
         $found = [];
@@ -70,15 +71,15 @@ class SearchIntrospection
                 $next = [];
 
                 // @todo remove repetition
-                foreach ($sources as $source => $baseOptions) {
+                foreach ($buildSources as $source => $baseOptions) {
                     $next = $this->getRelationIntrospection($source, $lookup, $next);
                 }
 
-                $sources = $next;
+                $buildSources = $next;
             }
         }
 
-        $found = $this->getFieldOptions($field, $sources, $fullfield, $found);
+        $found = $this->getFieldOptions($field, $buildSources, $fullfield, $found);
 
         return $found;
     }
