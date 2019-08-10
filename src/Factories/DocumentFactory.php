@@ -9,12 +9,12 @@ use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Traits\DocumentFactoryTrait;
+use Firesphere\SolrSearch\Traits\LoggerTrait;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBField;
@@ -25,6 +25,8 @@ use Solarium\QueryType\Update\Query\Query;
 class DocumentFactory
 {
     use Configurable;
+    use DocumentFactoryTrait;
+    use LoggerTrait;
 
     /**
      * Numeral types in Solr
@@ -35,18 +37,6 @@ class DocumentFactory
         'tfloat',
         'tdouble'
     ];
-    /**
-     * @var SearchIntrospection
-     */
-    protected $introspection;
-    /**
-     * @var null|ArrayList|DataList
-     */
-    protected $items;
-    /**
-     * @var string
-     */
-    protected $class;
     /**
      * @var bool
      */
@@ -102,52 +92,6 @@ class DocumentFactory
         }
 
         return $docs;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClass(): string
-    {
-        return $this->class;
-    }
-
-    /**
-     * @param string $class
-     * @return DocumentFactory
-     */
-    public function setClass(string $class): DocumentFactory
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * @return SearchIntrospection
-     */
-    public function getIntrospection(): SearchIntrospection
-    {
-        return $this->introspection;
-    }
-
-    /**
-     * @return ArrayList|DataList|null
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
-     * @param ArrayList|DataList|null $items
-     * @return DocumentFactory
-     */
-    public function setItems($items): DocumentFactory
-    {
-        $this->items = $items;
-
-        return $this;
     }
 
     /**
@@ -315,18 +259,6 @@ class DocumentFactory
         $name = explode('\\', $field);
 
         return end($name);
-    }
-
-    /**
-     * @return mixed|LoggerInterface|null
-     */
-    public function getLogger()
-    {
-        if (!$this->logger) {
-            $this->logger = Injector::inst()->get(LoggerInterface::class);
-        }
-
-        return $this->logger;
     }
 
     /**

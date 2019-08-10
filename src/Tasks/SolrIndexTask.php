@@ -7,6 +7,7 @@ use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\Director;
@@ -20,6 +21,7 @@ use SilverStripe\Versioned\Versioned;
 
 class SolrIndexTask extends BuildTask
 {
+    use LoggerTrait;
     /**
      * @var string
      */
@@ -168,30 +170,6 @@ class SolrIndexTask extends BuildTask
         }
 
         return $vars;
-    }
-
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger(): LoggerInterface
-    {
-        // Constructor should take care of this, but it's a good safeguard
-        if (!$this->logger) {
-            $this->setLogger(Injector::inst()->get(LoggerInterface::class));
-        }
-
-        return $this->logger;
-    }
-
-    /**
-     * @param LoggerInterface|null $logger
-     * @return SolrIndexTask
-     */
-    public function setLogger($logger = null): SolrIndexTask
-    {
-        $this->logger = $logger;
-
-        return $this;
     }
 
     /**

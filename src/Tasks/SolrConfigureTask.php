@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
+use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -19,6 +20,8 @@ use SilverStripe\Dev\BuildTask;
 
 class SolrConfigureTask extends BuildTask
 {
+    use LoggerTrait;
+
     protected static $storeModes = [
         'file' => FileConfigStore::class,
         'post' => PostConfigStore::class,
@@ -27,23 +30,10 @@ class SolrConfigureTask extends BuildTask
     private static $segment = 'SolrConfigureTask';
     protected $title = 'Configure Solr cores';
     protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     public function __construct()
     {
         parent::__construct();
-        $this->setLogger($this->getLoggerFactory());
-    }
-
-    /**
-     * @return LoggerInterface log channel
-     */
-    protected function getLoggerFactory(): LoggerInterface
-    {
-        return Injector::inst()->get(LoggerInterface::class);
     }
 
     /**
@@ -65,8 +55,8 @@ class SolrConfigureTask extends BuildTask
                 $this->configureIndex($index);
             } catch (RequestException $error) {
                 $exception = $error->getResponse()->getBody()->getContents();
-                $this->logger->error($exception);
-                $this->logger->error(sprintf('Core loading failed for %s', $index));
+                $this->getLogger()->error($exception);
+                $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
                 // Continue to the next index
                 continue;
             }
@@ -107,7 +97,7 @@ class SolrConfigureTask extends BuildTask
         }
         try {
             $service->$method($index, $configStore);
-            $this->logger->info(sprintf('Core %s successfully loaded', $index));
+            $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
         } catch (RequestException $error) {
             throw new RuntimeException($error);
         }
@@ -139,25 +129,5 @@ class SolrConfigureTask extends BuildTask
         $this->extend('onBeforeConfig', $configStore, $storeConfig);
 
         return $configStore;
-    }
-
-    /**
-     * Get the monolog logger
-     *
-     * @return LoggerInterface
-     */
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    /**
-     * Assign a new logger
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
     }
 }
