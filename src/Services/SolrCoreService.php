@@ -35,6 +35,10 @@ class SolrCoreService
      */
     public const CLASS_ID_FIELD = 'ObjectID';
     /**
+     * Name of the field that can be used for queries
+     */
+    public const CLASSNAME = 'ClassName';
+    /**
      * Solr update types
      */
     public const DELETE_TYPE_ALL = 'deleteall';

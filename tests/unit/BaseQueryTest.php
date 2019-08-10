@@ -70,14 +70,6 @@ class BaseQueryTest extends SapphireTest
         $this->assertEquals(['Testing' => [1, 2]], $this->query->getFacetFilter());
     }
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error
-     */
-    public function testAddClassError()
-    {
-        $this->query->addClass('test', ['test']);
-    }
-
     protected function setUp()
     {
         $this->query = Injector::inst()->get(BaseQuery::class);

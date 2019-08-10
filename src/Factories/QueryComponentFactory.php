@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Factories;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\QueryComponentBoostTrait;
 use Firesphere\SolrSearch\Traits\QueryComponentFacetTrait;
 use Firesphere\SolrSearch\Traits\QueryComponentFilterTrait;
@@ -20,6 +21,12 @@ class QueryComponentFactory
     use QueryComponentFilterTrait;
     use QueryComponentBoostTrait;
     use QueryComponentFacetTrait;
+
+    public const DEFAULT_FIELDS = [
+        SolrCoreService::ID_FIELD,
+        SolrCoreService::CLASS_ID_FIELD,
+        SolrCoreService::CLASSNAME
+    ];
 
     protected static $builds = [
         'Terms',
@@ -71,7 +78,7 @@ class QueryComponentFactory
         $fields = $this->query->getFields();
         if (count($fields)) {
             // We _ALWAYS_ need the ClassName for getting the DataObjects back
-            $fields = array_merge(['ClassName'], $fields);
+            $fields = array_merge(static::DEFAULT_FIELDS, $fields);
             $this->clientQuery->setFields($fields);
         }
 
