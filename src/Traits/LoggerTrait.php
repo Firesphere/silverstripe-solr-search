@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
 
@@ -33,5 +32,4 @@ trait LoggerTrait
     {
         $this->logger = $logger;
     }
-
 }

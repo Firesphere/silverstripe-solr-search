@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use SilverStripe\ORM\ArrayList;
@@ -69,5 +68,4 @@ trait DocumentFactoryTrait
 
         return $this;
     }
-
 }
