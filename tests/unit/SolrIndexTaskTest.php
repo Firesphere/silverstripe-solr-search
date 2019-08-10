@@ -35,7 +35,7 @@ class SolrIndexTaskTest extends SapphireTest
 
         $result = $task->run($request);
 
-        $this->assertEquals(1, $result);
+        $this->assertEquals(0, $result);
         $getVars = [
             'start' => 0,
             'index' => 'CircleCITestIndex',
