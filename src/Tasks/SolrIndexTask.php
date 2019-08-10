@@ -199,16 +199,13 @@ class SolrIndexTask extends BuildTask
 
         $batchLength = DocumentFactory::config()->get('batchLength');
         $groups = (int)ceil($class::get()->count() / $batchLength);
+        $groups = $isGroup ? $group : $groups;
         while ($group <= $groups) { // Run from oldest to newest
             try {
                 $this->doReindex($group, $class, $batchLength, $index);
             } catch (Exception $e) {
-                $this->getLogger()->error($e);
+                $this->getLogger()->error($e->getMessage());
                 continue;
-            }
-            // If it's a specific group to index, break after the first run
-            if ($isGroup) {
-                break;
             }
             $group++;
             $this->getLogger()->info(sprintf('Indexed group %s', $group));
