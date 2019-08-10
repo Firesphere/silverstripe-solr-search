@@ -33,9 +33,6 @@ class SolrIndexTaskTest extends SapphireTest
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 
-        /** @var SolrIndexTask $task */
-        $task = Injector::inst()->get(SolrIndexTask::class);
-
         $result = $task->run($request);
 
         $this->assertEquals(1, $result);
