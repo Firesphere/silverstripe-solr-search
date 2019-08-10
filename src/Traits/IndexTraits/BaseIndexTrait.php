@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
+use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\Dev\Deprecation;
 use Solarium\Core\Client\Client;
 
@@ -38,6 +39,10 @@ trait BaseIndexTrait
      * @var string
      */
     protected $defaultField = '_text';
+    /**
+     * @var array
+     */
+    protected $storedFields = [];
     /**
      * @var array
      */
@@ -167,6 +172,10 @@ trait BaseIndexTrait
             $this->addBoostedField($fulltextField, [], $options['boost']);
         }
 
+        if (isset($options['stored'])) {
+            $this->storedFields[] = $fulltextField;
+        }
+
         return $this;
     }
 
@@ -250,6 +259,25 @@ trait BaseIndexTrait
     public function setClient($client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStoredFields(): array
+    {
+        return $this->storedFields;
+    }
+
+    /**
+     * @param array $storedFields
+     * @return BaseIndex
+     */
+    public function setStoredFields(array $storedFields): self
+    {
+        $this->storedFields = $storedFields;
 
         return $this;
     }

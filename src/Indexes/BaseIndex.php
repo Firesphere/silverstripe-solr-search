@@ -256,7 +256,7 @@ abstract class BaseIndex
      * @param array $extraOptions
      * @return BaseIndex
      */
-    public function addStoredField($field, $forceType = null, $extraOptions = array())
+    public function addStoredField($field, $forceType = null, $extraOptions = []): BaseIndex
     {
         $options = array_merge($extraOptions, ['stored' => 'true']);
         $this->addFulltextField($field, $forceType, $options);

@@ -141,12 +141,14 @@ class SchemaService extends ViewableData
         $field = $this->introspection->getFieldIntrospection($fieldName);
         $typeMap = Statics::getTypeMap();
         $boostedFields = $this->index->getBoostedFields();
+        $storedFields = $this->index->getStoredFields();
+        $storeFields = array_merge($storedFields, array_keys($boostedFields));
         foreach ($field as $name => $options) {
             // Temporary short-name solution until the Introspection is properly solved
             $name = explode('\\', $name);
             $name = end($name);
             // Boosted fields are always stored
-            $store = ($this->store || array_key_exists($fieldName, $boostedFields)) ? 'true' : 'false';
+            $store = ($this->store || array_key_exists($fieldName, $storeFields)) ? 'true' : 'false';
             $item = [
                 'Field'       => $name,
                 'Type'        => $typeMap[$options['type']],
