@@ -245,6 +245,20 @@ trait BaseIndexTrait
     }
 
     /**
+     * @param string $field
+     * @param null|string $forceType
+     * @param array $extraOptions
+     * @return BaseIndex
+     */
+    public function addStoredField($field, $forceType = null, $extraOptions = []): self
+    {
+        $options = array_merge($extraOptions, ['stored' => 'true']);
+        $this->addFulltextField($field, $forceType, $options);
+
+        return $this;
+    }
+
+    /**
      * @return Client
      */
     public function getClient()
