@@ -186,8 +186,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
-     * @param $isGroup
-     * @param $class
+     * @param bool $isGroup
+     * @param string $class
      * @param BaseIndex $index
      * @param int $group
      * @return int

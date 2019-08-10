@@ -24,7 +24,7 @@ class SolrIndexTaskTest extends SapphireTest
 
         $result = $task->run($request);
 
-        $this->assertEquals(1, $result);
+        $this->assertEquals(0, $result);
 
         $getVars = [
             'group' => 0,
@@ -40,14 +40,14 @@ class SolrIndexTaskTest extends SapphireTest
 
         $this->assertEquals(1, $result);
         $getVars = [
-            'start' => 1,
+            'start' => 0,
             'index' => 'CircleCITestIndex',
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 
         $result = $task->run($request);
 
-        $this->assertEquals(1, $result);
+        $this->assertEquals(0, $result);
     }
 
     public function testGetLogger()
