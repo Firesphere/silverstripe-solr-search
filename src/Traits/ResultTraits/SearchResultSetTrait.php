@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Traits;
 
 
+use Firesphere\SolrSearch\Results\SearchResult;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;
@@ -30,26 +31,34 @@ trait SearchResultSetTrait
     protected $spellcheck;
 
     /**
-     * @return Highlighting|null
+     * @param $highlight
+     * @return SearchResult
      */
-    public function setHighlight(): ?Highlighting
+    public function setHighlight($highlight): self
     {
-        return $this->highlight;
+        $this->highlight = $highlight;
+
+        return $this;
     }
 
     /**
-     * @return ArrayList
+     * @param $check
+     * @return SearchResult
      */
-    public function setSpellcheck(): ArrayList
+    public function setSpellcheck($check): self
     {
-        return $this->spellcheck;
+        $this->spellcheck = $check;
+
+        return $this;
     }
 
     /**
-     * @return int
+     * @param $count
+     * @return self
      */
-    public function setTotalItems(): int
+    public function setTotalItems($count): self
     {
-        return $this->totalItems;
+        $this->totalItems = $count;
+        return $this;
     }
 }
