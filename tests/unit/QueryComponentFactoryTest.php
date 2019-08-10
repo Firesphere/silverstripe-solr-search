@@ -45,6 +45,8 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->assertInstanceOf(Helper::class, $this->factory->getHelper());
         $this->assertInstanceOf(BaseIndex::class, $this->factory->getIndex());
         $this->assertInstanceOf(BaseQuery::class, $this->factory->getQuery());
+        $this->assertInternalType('array', $this->factory->getQueryArray());
+        $this->assertInternalType('array', $this->factory->getBoostTerms());
     }
 
 
