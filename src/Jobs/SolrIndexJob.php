@@ -40,16 +40,6 @@ class SolrIndexJob extends AbstractQueuedJob
     protected $indexes;
 
     /**
-     * SolrIndexJob constructor.
-     * @param array $params
-     */
-    public function __construct($params = [])
-    {
-        parent::__construct($params);
-        // Make sure indexes are set on first run, but not again after that :)
-    }
-
-    /**
      * @return string
      */
     public function getTitle()
@@ -76,7 +66,6 @@ class SolrIndexJob extends AbstractQueuedJob
             'index' => $this->indexes[0],
             'class' => $this->classToIndex[0]
         ];
-        /** @var BaseIndex $index */
         /** @var SolrIndexTask $task */
         $task = Injector::inst()->get(SolrIndexTask::class);
         $request = new HTTPRequest(
