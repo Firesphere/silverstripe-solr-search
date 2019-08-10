@@ -117,7 +117,7 @@ class SearchIntrospection
 
                 // we add suffix here to prevent the relation to be overwritten by other instances
                 // all sources lookups must clean the source name before reading it via getSourceName()
-                $next[$class . '_|_' . $dataClass] = $options;
+                $next[$class . '|xkcd|' . $dataClass] = $options;
             }
         }
 
@@ -132,7 +132,7 @@ class SearchIntrospection
      */
     protected function getSourceName($source)
     {
-        $explodedSource = explode('_|_', $source);
+        $explodedSource = explode('|xkcd|', $source);
 
         return $explodedSource[0];
     }
