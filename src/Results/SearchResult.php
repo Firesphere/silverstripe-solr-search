@@ -6,6 +6,8 @@ namespace Firesphere\SolrSearch\Results;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Traits\SearchResultGetTrait;
+use Firesphere\SolrSearch\Traits\SearchResultSetTrait;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -22,6 +24,8 @@ use Solarium\QueryType\Select\Result\Result;
 
 class SearchResult
 {
+    use SearchResultGetTrait;
+    use SearchResultSetTrait;
     /**
      * @var BaseQuery
      */
@@ -36,32 +40,6 @@ class SearchResult
      * @var ArrayList
      */
     protected $matches;
-
-    /**
-     * @var int
-     */
-    protected $totalItems;
-
-    /**
-     * @var ArrayData
-     */
-    protected $facets;
-
-    /**
-     * @var Highlighting
-     */
-    protected $highlight;
-
-    /**
-     * @var ArrayList
-     */
-    protected $spellcheck;
-
-    /**
-     * @var string
-     */
-    protected $collatedSpellcheck;
-
     /**
      * SearchResult constructor.
      * Funnily enough, the $result contains the actual results, and has methods for the other things.
@@ -198,25 +176,6 @@ class SearchResult
     }
 
     /**
-     * @return int
-     */
-    public function getTotalItems(): int
-    {
-        return $this->totalItems;
-    }
-
-    /**
-     * @param int $totalItems
-     * @return $this
-     */
-    public function setTotalItems($totalItems): self
-    {
-        $this->totalItems = $totalItems;
-
-        return $this;
-    }
-
-    /**
      * Allow overriding of matches with a custom result
      *
      * @param $matches
@@ -230,33 +189,6 @@ class SearchResult
     }
 
     /**
-     * @return Highlighting|null
-     */
-    public function getHighlight(): ?Highlighting
-    {
-        return $this->highlight;
-    }
-
-    /**
-     * @param Highlighting|null $result
-     * @return $this
-     */
-    protected function setHighlight($result): self
-    {
-        $this->highlight = $result;
-
-        return $this;
-    }
-
-    /**
-     * @return ArrayData
-     */
-    public function getFacets(): ArrayData
-    {
-        return $this->facets;
-    }
-
-    /**
      * @param FacetSet|null $facets
      * @return $this
      */
@@ -265,14 +197,6 @@ class SearchResult
         $this->facets = $this->buildFacets($facets);
 
         return $this;
-    }
-
-    /**
-     * @return ArrayList
-     */
-    public function getSpellcheck(): ArrayList
-    {
-        return $this->spellcheck;
     }
 
     /**
@@ -292,14 +216,6 @@ class SearchResult
         $this->spellcheck = ArrayList::create($spellcheckList);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCollatedSpellcheck()
-    {
-        return $this->collatedSpellcheck;
     }
 
     /**
