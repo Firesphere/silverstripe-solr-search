@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;

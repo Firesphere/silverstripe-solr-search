@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use Firesphere\SolrSearch\Results\SearchResult;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
