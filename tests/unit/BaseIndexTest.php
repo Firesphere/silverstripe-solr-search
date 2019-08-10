@@ -95,13 +95,17 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(2, $parents->first()->FacetCount);
     }
 
-    public function testAddStoredField()
+    public function testStoredFields()
     {
         $ftsFields = $this->index->getFulltextFields();
         $this->index->addStoredField('Test');
         $fields = $this->index->getStoredFields();
 
         $this->assertContains('Test', $fields);
+
+        $this->index->setStoredFields(['Test', 'Test1']);
+
+        $this->assertEquals(['Test', 'Test1'], $this->index->getStoredFields());
 
         $this->index->setFulltextFields($ftsFields);
     }
