@@ -101,8 +101,6 @@ class DocumentFactory
             $this->getLogger()->info(rtrim($debugString, ', ') . ']' . PHP_EOL);
         }
 
-        unset($this->items);
-
         return $docs;
     }
 
@@ -254,17 +252,7 @@ class DocumentFactory
 
         while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
-            $next = [];
-
-            foreach ($objects as $item) {
-                $item = $this->getItemForStep($step, $item);
-                $next = is_array($item) ? array_merge($next, $item) : [$item];
-            }
-
-            // When all items have been processed, put them in to objects
-            // This ensures the next step is an array of the correct objects to index
-            $objects = $next;
-            unset($next);
+            $objects = $this->getNext($objects, $step);
         }
 
         return $objects;
@@ -329,6 +317,9 @@ class DocumentFactory
         return end($name);
     }
 
+    /**
+     * @return mixed|LoggerInterface|null
+     */
     public function getLogger()
     {
         if (!$this->logger) {
@@ -373,5 +364,27 @@ class DocumentFactory
     public function isDebug(): bool
     {
         return $this->debug;
+    }
+
+    /**
+     * @param $objects
+     * @param $step
+     * @return array
+     */
+    protected function getNext($objects, $step): array
+    {
+        $next = [];
+
+        foreach ($objects as $item) {
+            $item = $this->getItemForStep($step, $item);
+            $next = is_array($item) ? array_merge($next, $item) : [$item];
+        }
+
+        // When all items have been processed, put them in to objects
+        // This ensures the next step is an array of the correct objects to index
+        $objects = $next;
+        unset($next);
+
+        return $objects;
     }
 }
