@@ -58,6 +58,7 @@ trait SearchResultSetTrait
     public function setTotalItems($count): self
     {
         $this->totalItems = $count;
+
         return $this;
     }
 }

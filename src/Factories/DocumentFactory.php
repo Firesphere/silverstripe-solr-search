@@ -203,6 +203,28 @@ class DocumentFactory
     }
 
     /**
+     * @param $objects
+     * @param $step
+     * @return array
+     */
+    protected function getNext($objects, $step): array
+    {
+        $next = [];
+
+        foreach ($objects as $item) {
+            $item = $this->getItemForStep($step, $item);
+            $next = is_array($item) ? array_merge($next, $item) : [$item];
+        }
+
+        // When all items have been processed, put them in to objects
+        // This ensures the next step is an array of the correct objects to index
+        $objects = $next;
+        unset($next);
+
+        return $objects;
+    }
+
+    /**
      * Find the item for the current ste
      * This can be a DataList or ArrayList, or a string
      * @param $step
@@ -251,28 +273,6 @@ class DocumentFactory
     }
 
     /**
-     * @param string $field
-     * @return string
-     */
-    public function sanitiseName($field)
-    {
-        $name = explode('\\', $field);
-
-        return end($name);
-    }
-
-    /**
-     * @param bool $debug
-     * @return DocumentFactory
-     */
-    public function setDebug(bool $debug): DocumentFactory
-    {
-        $this->debug = $debug;
-
-        return $this;
-    }
-
-    /**
      * @param Document $doc
      * @param array $field
      * @param string $type
@@ -291,6 +291,17 @@ class DocumentFactory
     }
 
     /**
+     * @param string $field
+     * @return string
+     */
+    public function sanitiseName($field)
+    {
+        $name = explode('\\', $field);
+
+        return end($name);
+    }
+
+    /**
      * @return bool
      */
     public function isDebug(): bool
@@ -299,24 +310,13 @@ class DocumentFactory
     }
 
     /**
-     * @param $objects
-     * @param $step
-     * @return array
+     * @param bool $debug
+     * @return DocumentFactory
      */
-    protected function getNext($objects, $step): array
+    public function setDebug(bool $debug): DocumentFactory
     {
-        $next = [];
+        $this->debug = $debug;
 
-        foreach ($objects as $item) {
-            $item = $this->getItemForStep($step, $item);
-            $next = is_array($item) ? array_merge($next, $item) : [$item];
-        }
-
-        // When all items have been processed, put them in to objects
-        // This ensures the next step is an array of the correct objects to index
-        $objects = $next;
-        unset($next);
-
-        return $objects;
+        return $this;
     }
 }

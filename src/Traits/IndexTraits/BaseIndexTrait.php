@@ -6,7 +6,6 @@ namespace Firesphere\SolrSearch\Traits;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\Dev\Deprecation;
 use Solarium\Core\Client\Client;
-use Solarium\Core\Query\Result\Result;
 
 /**
  * This is slightly cheating, but it works and also makes things more readable.

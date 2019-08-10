@@ -16,7 +16,6 @@ use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Facet\Field;
 use Solarium\Component\Result\FacetSet;
-use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\Component\Result\Spellcheck\Collation;
 use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
 use Solarium\QueryType\Select\Result\Document;
@@ -40,6 +39,7 @@ class SearchResult
      * @var ArrayList
      */
     protected $matches;
+
     /**
      * SearchResult constructor.
      * Funnily enough, the $result contains the actual results, and has methods for the other things.
@@ -61,6 +61,111 @@ class SearchResult
             $this->setSpellcheck($result->getSpellcheck())
                 ->setCollatedSpellcheck($result->getSpellcheck());
         }
+    }
+
+    /**
+     * @param FacetSet|null $facets
+     * @return $this
+     */
+    protected function setFacets($facets): self
+    {
+        $this->facets = $this->buildFacets($facets);
+
+        return $this;
+    }
+
+    /**
+     * Build the given list of key-value pairs in to a SilverStripe useable array
+     * @param FacetSet|null $facets
+     * @return ArrayData
+     */
+    protected function buildFacets($facets): ArrayData
+    {
+        $facetArray = [];
+        if ($facets) {
+            $facetTypes = $this->index->getFacetFields();
+            // Loop all available facet fields by type
+            foreach ($facetTypes as $class => $options) {
+                $facetArray = $this->createFacet($facets, $options, $class, $facetArray);
+            }
+        }
+
+        // Return an ArrayList of the results
+        return ArrayData::create($facetArray);
+    }
+
+    /**
+     * @param FacetSet $facets
+     * @param array $options
+     * @param string $class
+     * @param array $facetArray
+     * @return array
+     */
+    protected function createFacet($facets, $options, $class, array $facetArray): array
+    {
+        // Get the facets by its title
+        /** @var Field $typeFacets */
+        $typeFacets = $facets->getFacet('facet-' . $options['Title']);
+        $values = $typeFacets->getValues();
+        $results = ArrayList::create();
+        // If there are values, get the items one by one and push them in to the list
+        if (count($values)) {
+            $this->getClassFacets($class, $values, $results);
+        }
+        // Put the results in to the array
+        $facetArray[$options['Title']] = $results;
+
+        return $facetArray;
+    }
+
+    /**
+     * @param $class
+     * @param array $values
+     * @param ArrayList $results
+     */
+    protected function getClassFacets($class, array $values, &$results): void
+    {
+        $items = $class::get()->byIds(array_keys($values));
+        foreach ($items as $item) {
+            // Set the FacetCount value to be sorted on later
+            $item->FacetCount = $values[$item->ID];
+            $results->push($item);
+        }
+        // Sort the results by FacetCount
+        $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
+    }
+
+    /**
+     * @param mixed $collatedSpellcheck
+     * @return $this
+     */
+    public function setCollatedSpellcheck($collatedSpellcheck): self
+    {
+        /** @var Collation $collated */
+        if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
+            $this->collatedSpellcheck = $collated[0]->getQuery();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param SpellcheckResult|null $spellcheck
+     * @return SearchResult
+     */
+    public function setSpellcheck($spellcheck): self
+    {
+        $spellcheckList = [];
+
+        if ($spellcheck && ($suggestions = $spellcheck->getSuggestion(0))) {
+            foreach ($suggestions->getWords() as $suggestion) {
+                $spellcheckList[] = ArrayData::create($suggestion);
+            }
+        }
+
+        $this->spellcheck = ArrayList::create($spellcheckList);
+
+        return $this;
     }
 
     /**
@@ -186,110 +291,5 @@ class SearchResult
         $this->matches = $matches;
 
         return $matches;
-    }
-
-    /**
-     * @param FacetSet|null $facets
-     * @return $this
-     */
-    protected function setFacets($facets): self
-    {
-        $this->facets = $this->buildFacets($facets);
-
-        return $this;
-    }
-
-    /**
-     * @param SpellcheckResult|null $spellcheck
-     * @return SearchResult
-     */
-    public function setSpellcheck($spellcheck): self
-    {
-        $spellcheckList = [];
-
-        if ($spellcheck && ($suggestions = $spellcheck->getSuggestion(0))) {
-            foreach ($suggestions->getWords() as $suggestion) {
-                $spellcheckList[] = ArrayData::create($suggestion);
-            }
-        }
-
-        $this->spellcheck = ArrayList::create($spellcheckList);
-
-        return $this;
-    }
-
-    /**
-     * @param mixed $collatedSpellcheck
-     * @return $this
-     */
-    public function setCollatedSpellcheck($collatedSpellcheck): self
-    {
-        /** @var Collation $collated */
-        if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
-            $this->collatedSpellcheck = $collated[0]->getQuery();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Build the given list of key-value pairs in to a SilverStripe useable array
-     * @param FacetSet|null $facets
-     * @return ArrayData
-     */
-    protected function buildFacets($facets): ArrayData
-    {
-        $facetArray = [];
-        if ($facets) {
-            $facetTypes = $this->index->getFacetFields();
-            // Loop all available facet fields by type
-            foreach ($facetTypes as $class => $options) {
-                $facetArray = $this->createFacet($facets, $options, $class, $facetArray);
-            }
-        }
-
-        // Return an ArrayList of the results
-        return ArrayData::create($facetArray);
-    }
-
-    /**
-     * @param $class
-     * @param array $values
-     * @param ArrayList $results
-     */
-    protected function getClassFacets($class, array $values, &$results): void
-    {
-        $items = $class::get()->byIds(array_keys($values));
-        foreach ($items as $item) {
-            // Set the FacetCount value to be sorted on later
-            $item->FacetCount = $values[$item->ID];
-            $results->push($item);
-        }
-        // Sort the results by FacetCount
-        $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
-    }
-
-    /**
-     * @param FacetSet $facets
-     * @param array $options
-     * @param string $class
-     * @param array $facetArray
-     * @return array
-     */
-    protected function createFacet($facets, $options, $class, array $facetArray): array
-    {
-        // Get the facets by its title
-        /** @var Field $typeFacets */
-        $typeFacets = $facets->getFacet('facet-' . $options['Title']);
-        $values = $typeFacets->getValues();
-        $results = ArrayList::create();
-        // If there are values, get the items one by one and push them in to the list
-        if (count($values)) {
-            $this->getClassFacets($class, $values, $results);
-        }
-        // Put the results in to the array
-        $facetArray[$options['Title']] = $results;
-
-        return $facetArray;
     }
 }

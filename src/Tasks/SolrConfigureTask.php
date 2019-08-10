@@ -11,7 +11,6 @@ use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Log\LoggerInterface;
 use ReflectionException;
 use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
