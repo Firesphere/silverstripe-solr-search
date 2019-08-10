@@ -45,9 +45,7 @@ jobs:
       - run:
           name: Composer requirements
           command: |
-            composer require myclabs/deep-copy:1.9.1
-            composer require silverstripe/recipe-cms
-            composer update -n --prefer-dist --ignore-platform-reqs
+            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
             composer vendor-expose
       - save_cache:
           key: silverstripe-search-cache-{{ checksum "composer.lock" }}
