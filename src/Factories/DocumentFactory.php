@@ -250,31 +250,9 @@ class DocumentFactory
         // Make sure we always have an array to iterate
         $objects = is_array($objects) ? $objects : [$objects];
 
-        $objects = $this->getNext($objects, $field);
-
-        return $objects;
-    }
-
-    /**
-     * @param $objects
-     * @param $field
-     * @return array
-     */
-    protected function getNext($objects, $field): array
-    {
-        foreach (array_shift($field['lookup_chain']) as $step) {
+        while ($step = array_shift($field['lookup_chain'])) {
             // If we're looking up this step on an array or SS_List, do the step on every item, merge result
-            $next = [];
-
-            foreach ($objects as $item) {
-                $item = $this->getItemForStep($step, $item);
-                $next = is_array($item) ? array_merge($next, $item) : [$item];
-            }
-
-            // When all items have been processed, put them in to objects
-            // This ensures the next step is an array of the correct objects to index
-            $objects = $next;
-            unset($next);
+            $objects = $this->getNext($objects, $step);
         }
 
         return $objects;
@@ -329,24 +307,6 @@ class DocumentFactory
     }
 
     /**
-     * @param Document $doc
-     * @param array $field
-     * @param string $type
-     * @param DBField|string $value
-     */
-    protected function addToDoc($doc, $field, $type, $value): void
-    {
-        /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
-        if ($type === 'tdate' || $value instanceof DBDate) {
-            $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
-        }
-
-        $name = $this->sanitiseName($field['name']);
-
-        $doc->addField($name, $value);
-    }
-
-    /**
      * @param string $field
      * @return string
      */
@@ -370,14 +330,6 @@ class DocumentFactory
     }
 
     /**
-     * @return bool
-     */
-    public function isDebug(): bool
-    {
-        return $this->debug;
-    }
-
-    /**
      * @param bool $debug
      * @return DocumentFactory
      */
@@ -386,5 +338,53 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
+    }
+
+    /**
+     * @param Document $doc
+     * @param array $field
+     * @param string $type
+     * @param DBField|string $value
+     */
+    protected function addToDoc($doc, $field, $type, $value): void
+    {
+        /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
+        if ($type === 'tdate' || $value instanceof DBDate) {
+            $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
+        }
+
+        $name = $this->sanitiseName($field['name']);
+
+        $doc->addField($name, $value);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebug(): bool
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @param $objects
+     * @param $step
+     * @return array
+     */
+    protected function getNext($objects, $step): array
+    {
+        $next = [];
+
+        foreach ($objects as $item) {
+            $item = $this->getItemForStep($step, $item);
+            $next = is_array($item) ? array_merge($next, $item) : [$item];
+        }
+
+        // When all items have been processed, put them in to objects
+        // This ensures the next step is an array of the correct objects to index
+        $objects = $next;
+        unset($next);
+
+        return $objects;
     }
 }
