@@ -45,7 +45,12 @@ abstract class BaseIndex
         'CopyFields',
         'DefaultField',
         'FacetFields',
+        'StoredFields'
     ];
+    /**
+     * @var \Solarium\Core\Query\Result\Result
+     */
+    protected $rawQuery;
     /**
      * @var SchemaService
      */
@@ -169,6 +174,8 @@ abstract class BaseIndex
         $clientQuery = $this->buildSolrQuery($query);
 
         $result = $this->client->select($clientQuery);
+
+        $this->rawQuery = $result;
 
         // Handle the after search first. This gets a raw search result
         $this->extend('onAfterSearch', $result);
