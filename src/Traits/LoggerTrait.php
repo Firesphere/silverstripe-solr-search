@@ -14,7 +14,7 @@ trait LoggerTrait
     protected $logger;
 
     /**
-     * @return mixed|LoggerInterface|null
+     * @return LoggerInterface
      */
     public function getLogger()
     {

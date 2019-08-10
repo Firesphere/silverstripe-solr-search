@@ -48,6 +48,7 @@ trait QueryComponentFacetTrait
             if (array_key_exists($config['Title'], $filterFacets) &&
                 $filter = array_filter($filterFacets[$config['Title']], 'strlen')
             ) {
+                // @todo add unit tests for this bit. It's crucial but untested
                 $filter = is_array($filter) ? $filter : [$filter];
                 $field = str_replace('.', '_', $config['Field']);
                 $criteria = Criteria::where($field)->in($filter);
