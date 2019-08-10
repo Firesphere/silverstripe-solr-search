@@ -97,10 +97,13 @@ class BaseIndexTest extends SapphireTest
 
     public function testAddStoredField()
     {
+        $ftsFields = $this->index->getFulltextFields();
         $this->index->addStoredField('Test');
         $fields = $this->index->getStoredFields();
 
         $this->assertContains('Test', $fields);
+
+        $this->index->setFulltextFields($ftsFields);
     }
 
     public function testGetSynonyms()
