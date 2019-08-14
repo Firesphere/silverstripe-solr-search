@@ -44,6 +44,23 @@ class SearchIntrospection
     }
 
     /**
+     * @param $class
+     * @param $includeSubclasses
+     * @return array
+     * @throws ReflectionException
+     */
+    protected static function getHierarchyClasses($class, $includeSubclasses): array
+    {
+        $classes = array_values(ClassInfo::ancestry($class));
+        $classes = self::getSubClasses($class, $includeSubclasses, $classes);
+
+        $classes = array_unique($classes);
+        $classes = self::excludeDataObjectIDx($classes);
+
+        return $classes;
+    }
+
+    /**
      * @param $field
      * @return array
      * @throws Exception
@@ -95,11 +112,10 @@ class SearchIntrospection
         $source = $this->getSourceName($source);
 
         foreach (self::getHierarchy($source) as $dataClass) {
-            $options = [];
             $singleton = singleton($dataClass);
             $schema = DataObject::getSchema();
             $className = $singleton->getClassName();
-            $options['multi_valued'] = false;
+            $options = ['multi_valued' => false];
 
             $class = $this->getRelationData($lookup, $schema, $className, $options);
 
@@ -147,23 +163,17 @@ class SearchIntrospection
         $cacheKey = sprintf('%s-%s-%s', $class, $includeSubclasses ? 'sc' : 'an', $dataOnly ? 'do' : 'al');
 
         if (!isset(self::$hierarchy[$cacheKey])) {
-            $classes = array_values(ClassInfo::ancestry($class));
-            $classes = self::getSubClasses($class, $includeSubclasses, $classes);
-
-            $classes = array_unique($classes);
-            $classes = self::excludeDataObjectIDx($classes);
+            $classes = self::getHierarchyClasses($class, $includeSubclasses);
 
             if ($dataOnly) {
-                foreach ($classes as $i => $schemaClass) {
-                    if (!DataObject::getSchema()->classHasTable($schemaClass)) {
-                        unset($classes[$i]);
-                    }
-                }
+                $classes = array_filter($classes, static function ($class) {
+                    return DataObject::getSchema()->classHasTable($class);
+                });
             }
 
-            self::$hierarchy[$cacheKey] = $classes;
+            self::$hierarchy[$cacheKey] = array_values($classes);
 
-            return $classes;
+            return array_values($classes);
         }
 
         return self::$hierarchy[$cacheKey];
@@ -216,10 +226,12 @@ class SearchIntrospection
         }
         if ($hasMany = $schema->hasManyComponent($className, $lookup)) {
             $options['multi_valued'] = true;
+
             return $hasMany;
         }
         if ($key = $schema->manyManyComponent($className, $lookup)) {
             $options['multi_valued'] = true;
+
             return $key['childClass'];
         }
 
