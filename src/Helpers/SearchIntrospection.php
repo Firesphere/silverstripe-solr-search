@@ -3,7 +3,7 @@
 namespace Firesphere\SolrSearch\Helpers;
 
 use Exception;
-use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Traits\GetSetSearchIntrospectionTrait;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\DataObject;
@@ -15,16 +15,15 @@ use SilverStripe\ORM\DataObjectSchema;
  */
 class SearchIntrospection
 {
-    protected static $ancestry = [];
-    protected static $hierarchy = [];
-    /**
-     * @var BaseIndex
-     */
-    protected $index;
+    use GetSetSearchIntrospectionTrait;
     /**
      * @var array
      */
-    protected $found = [];
+    protected static $ancestry = [];
+    /**
+     * @var array
+     */
+    protected static $hierarchy = [];
 
     /**
      * Check if class is subclass of (a) the class in $instanceOf, or (b) any of the classes in the array $instanceOf
@@ -326,32 +325,5 @@ class SearchIntrospection
         ];
 
         return $found;
-    }
-
-    /**
-     * @return BaseIndex
-     */
-    public function getIndex(): BaseIndex
-    {
-        return $this->index;
-    }
-
-    /**
-     * @param mixed $index
-     * @return $this
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFound(): array
-    {
-        return $this->found;
     }
 }
