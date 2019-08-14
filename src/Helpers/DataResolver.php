@@ -27,6 +27,10 @@ class DataResolver
      */
     protected $component;
     /**
+     * @var string
+     */
+    protected $shortName;
+    /**
      * @var array
      */
     protected $columns = [];
@@ -48,6 +52,7 @@ class DataResolver
         $this->columns = $columns;
         $this->component = $component;
         $this->columnName = $this->columns ? array_shift($this->columns) : null;
+        $this->shortName = ClassInfo::shortName($component);
     }
 
     /**
@@ -61,7 +66,7 @@ class DataResolver
             return $this->component->toMap();
         }
         // Inspect component has attribute
-        if ($this->component->hasField($this->columnName) && empty($this->columns)) {
+        if (empty($this->columns) && $this->component->hasField($this->columnName)) {
             return $this->component->{$this->columnName};
         }
         $this->cannotIdentifyException($this->component, array_merge([$this->columnName], $this->columns));
@@ -106,7 +111,7 @@ class DataResolver
                 $method = "get{$this->columnName}";
             } else {
                 throw new LogicException(
-                    sprintf('Method, "%s" not found on "%s"', $this->columnName, ClassInfo::shortName($this->component))
+                    sprintf('Method, "%s" not found on "%s"', $this->columnName, $this->shortName)
                 );
             }
             $value = $this->component->$method();
@@ -159,6 +164,7 @@ class DataResolver
             $data = $this->component->{$this->columnName};
             $dbObject = $this->component->dbObject($this->columnName);
             if ($dbObject) {
+                // @todo do we need to set the value?
                 $dbObject->setValue($data);
 
                 return self::identify($dbObject, $this->columns);
