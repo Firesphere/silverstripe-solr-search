@@ -270,14 +270,7 @@ class SearchIntrospection
                         $type = $match[1];
                     }
 
-                    $found = $this->getFoundOriginData(
-                        $field,
-                        $fullfield,
-                        $fieldOptions,
-                        $dataclass,
-                        $type,
-                        $found
-                    );
+                    $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
                 }
             }
             $this->found[$class . '_' . $fullfield] = $found;
