@@ -37,7 +37,7 @@ class DataResolver
 
     /**
      * DataResolver constructor.
-     * @param DataObject|ArrayList|SS_List $component
+     * @param DataObject|ArrayList|SS_List|DBField $component
      * @param array|string $columns
      */
     public function __construct($component, $columns = [])

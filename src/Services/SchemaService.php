@@ -121,12 +121,12 @@ class SchemaService extends ViewableData
     {
         $return = ArrayList::create();
         $store = $this->store;
-        $this->store = true;
+        $this->setStore(true);
         foreach ($this->index->getFulltextFields() as $field) {
             $this->getFieldDefinition($field, $return);
         }
 
-        $this->store = $store;
+        $this->setStore($store);
 
         return $return;
     }
@@ -229,7 +229,7 @@ class SchemaService extends ViewableData
     {
         $return = ArrayList::create();
         $originalStore = $this->store;
-        $this->store = Director::isDev() ? true : false;
+        $this->setStore(Director::isDev() ? true : false);
         $fields = $this->index->getFilterFields();
         foreach ($this->index->getFacetFields() as $facetField) {
             $fields[] = $facetField['Field'];
@@ -239,7 +239,7 @@ class SchemaService extends ViewableData
             $this->getFieldDefinition($field, $return);
         }
 
-        $this->store = $originalStore;
+        $this->setStore($originalStore);
 
         return $return;
     }

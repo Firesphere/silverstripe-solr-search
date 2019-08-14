@@ -10,6 +10,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 
 /**
+ * @todo clean up unneeded methods
  * Some additional introspection tools that are used often by the fulltext search code
  */
 class SearchIntrospection
