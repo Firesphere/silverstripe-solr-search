@@ -206,23 +206,24 @@ class SearchIntrospection
      * @param DataObjectSchema $schema
      * @param $className
      * @param array $options
-     * @return array|null
+     * @return string|array|null
      * @throws Exception
      */
     protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options)
     {
-        $class = null;
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
-            $class = $hasOne;
-        } elseif ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-            $class = $hasMany;
+            return $hasOne;
+        }
+        if ($hasMany = $schema->hasManyComponent($className, $lookup)) {
             $options['multi_valued'] = true;
-        } elseif ($key = $schema->manyManyComponent($className, $lookup)) {
-            $class = $key['childClass'];
+            return $hasMany;
+        }
+        if ($key = $schema->manyManyComponent($className, $lookup)) {
             $options['multi_valued'] = true;
+            return $key['childClass'];
         }
 
-        return $class;
+        return null;
     }
 
     /**
