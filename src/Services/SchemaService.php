@@ -7,6 +7,7 @@ use Exception;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Traits\GetSetSchemaServiceTrait;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
@@ -16,24 +17,7 @@ use SilverStripe\View\ViewableData;
 
 class SchemaService extends ViewableData
 {
-
-    /**
-     * @var bool
-     */
-    protected $store = false;
-    /**
-     * @var string ABSOLUTE Path to template
-     */
-    protected $template;
-
-    /**
-     * @var string ABSOLUTE Path to types.ss template
-     */
-    protected $typesTemplate;
-    /**
-     * @var BaseIndex
-     */
-    protected $index;
+    use GetSetSchemaServiceTrait;
 
     /**
      * @var SearchIntrospection
@@ -53,64 +37,6 @@ class SchemaService extends ViewableData
         parent::__construct();
         $this->introspection = Injector::inst()->get(SearchIntrospection::class);
         $this->coreService = Injector::inst()->get(SolrCoreService::class);
-    }
-
-    /**
-     * @return BaseIndex
-     */
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
-    /**
-     * @param BaseIndex $index
-     * @return SchemaService
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
-        // Add the index to the introspection as well, there's no need for a separate call here
-        // We're loading this core, why would we want the introspection from a different index?
-        $this->introspection->setIndex($index);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIndexName()
-    {
-        return $this->index->getIndexName();
-    }
-
-    /**
-     * @return string
-     */
-    public function getDefaultField()
-    {
-        return $this->index->getDefaultField();
-    }
-
-    /**
-     * Get the Identifier Field for Solr
-     *
-     * @return string
-     */
-    public function getIDField()
-    {
-        return SolrCoreService::ID_FIELD;
-    }
-
-    /**
-     * Get the Identifier Field for Solr
-     *
-     * @return string
-     */
-    public function getClassID()
-    {
-        return SolrCoreService::CLASS_ID_FIELD;
     }
 
     /**
@@ -260,25 +186,6 @@ class SchemaService extends ViewableData
     }
 
     /**
-     * @return string
-     */
-    public function getTypesTemplate()
-    {
-        return $this->typesTemplate;
-    }
-
-    /**
-     * @param string $typesTemplate
-     * @return SchemaService
-     */
-    public function setTypesTemplate($typesTemplate)
-    {
-        $this->typesTemplate = $typesTemplate;
-
-        return $this;
-    }
-
-    /**
      * @return DBHTMLText
      */
     public function generateSchema()
@@ -296,25 +203,6 @@ class SchemaService extends ViewableData
     /**
      * @return string
      */
-    public function getTemplate()
-    {
-        return $this->template;
-    }
-
-    /**
-     * @param string $template
-     * @return SchemaService
-     */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getExtrasPath()
     {
         // @todo configurable but with default to the current absolute path
@@ -324,13 +212,5 @@ class SchemaService extends ViewableData
         $solrVersion = $this->coreService->getSolrVersion();
 
         return sprintf($confDirs[$solrVersion]['extras'], $dir);
-    }
-
-    /**
-     * @param bool $store
-     */
-    public function setStore(bool $store): void
-    {
-        $this->store = $store;
     }
 }
