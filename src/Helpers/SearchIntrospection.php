@@ -208,7 +208,7 @@ class SearchIntrospection
      * @return array|null
      * @throws Exception
      */
-    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options): ?array
+    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options)
     {
         $class = null;
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
