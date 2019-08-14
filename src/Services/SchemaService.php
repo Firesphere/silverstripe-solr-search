@@ -161,6 +161,24 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * @return array
+     */
+    protected function getStoreFields(): array
+    {
+        $boostedFields = $this->index->getBoostedFields();
+        $storedFields = $this->index->getStoredFields();
+        $facetFields = $this->index->getFacetFields();
+        $facetArray = [];
+        foreach ($facetFields as $key => $facetField) {
+            $facetArray[] = $key . '.' . $facetField['Field'];
+        }
+        // Boosts, facets and obviously stored fields need to be stored
+        $storeFields = array_merge($storedFields, array_keys($boostedFields), $facetArray);
+
+        return $storeFields;
+    }
+
+    /**
      * @return ArrayList
      */
     public function getCopyFields()
@@ -314,23 +332,5 @@ class SchemaService extends ViewableData
     public function setStore(bool $store): void
     {
         $this->store = $store;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getStoreFields(): array
-    {
-        $boostedFields = $this->index->getBoostedFields();
-        $storedFields = $this->index->getStoredFields();
-        $facetFields = $this->index->getFacetFields();
-        $facetArray = [];
-        foreach ($facetFields as $key => $facetField) {
-            $facetArray[] = $key . '.' . $facetField['Field'];
-        }
-        // Boosts, facets and obviously stored fields need to be stored
-        $storeFields = array_merge($storedFields, array_keys($boostedFields), $facetArray);
-
-        return $storeFields;
     }
 }

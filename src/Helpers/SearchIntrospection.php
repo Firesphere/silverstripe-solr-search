@@ -6,7 +6,6 @@ use Exception;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 
@@ -209,7 +208,7 @@ class SearchIntrospection
      * @return array|null
      * @throws Exception
      */
-    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options)
+    protected function getRelationData($lookup, DataObjectSchema $schema, $className, array &$options): ?array
     {
         $class = null;
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {

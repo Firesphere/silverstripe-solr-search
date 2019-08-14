@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Jobs;
 
 use Exception;
-use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use ReflectionException;
