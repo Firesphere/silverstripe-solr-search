@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 
 trait GetSetSearchIntrospectionTrait
