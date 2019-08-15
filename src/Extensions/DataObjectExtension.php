@@ -211,6 +211,7 @@ class DataObjectExtension extends DataExtension
 
 
         if ($owner->canView(null)) {
+            self::$canViewClasses[$owner->ClassName] = ['1-null'];
             // Anyone can view
             return ['1-null'];
         }
@@ -220,6 +221,7 @@ class DataObjectExtension extends DataExtension
         foreach (self::getMembers() as $member) {
             $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
         }
+
 
         if (!$owner->hasField('ShowInSearch')) {
             self::$canViewClasses[$owner->ClassName] = $return;
