@@ -216,10 +216,7 @@ class DataObjectExtension extends DataExtension
         } else {
             // Return a default '0-0' to basically say "noboday can view"
             $return[] = '0-0';
-            if (!self::$members) {
-                self::$members = Member::get();
-            }
-            foreach (self::$members as $member) {
+            foreach (self::getMembers() as $member) {
                 $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
             }
         }
@@ -232,5 +229,17 @@ class DataObjectExtension extends DataExtension
         Security::setCurrentUser($currMember);
 
         return $return;
+    }
+
+    /**
+     * @return DataList
+     */
+    protected static function getMembers()
+    {
+        if (!self::$members) {
+            self::$members = Member::get();
+        }
+
+        return self::$members
     }
 }
