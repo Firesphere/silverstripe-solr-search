@@ -121,7 +121,7 @@ class DocumentFactory
             $fieldData = $this->getIntrospection()->getFieldIntrospection($field);
             foreach ($fieldData as $dataField => $options) {
                 // Only one field per class, so let's take the fieldData. This will override previous additions
-                $this->addField($doc, $item, $fieldData[$dataField]);
+                $this->addField($doc, $item, $options);
                 if (array_key_exists($field, $boostFields)) {
                     $doc->setFieldBoost($dataField, $boostFields[$field]);
                 }
@@ -131,7 +131,7 @@ class DocumentFactory
 
     /**
      * @param Document $doc
-     * @param          $object
+     * @param DataObject $object
      * @param          $field
      *
      * @throws LogicException
@@ -161,7 +161,7 @@ class DocumentFactory
 
     /**
      * Determine if the given object is one of the given type
-     * @param string|array $class
+     * @param string|array|DataObject $class
      * @param array|string $base Class or list of base classes
      * @return bool
      */

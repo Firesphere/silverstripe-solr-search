@@ -111,12 +111,10 @@ class SearchIntrospection
         $source = $this->getSourceName($source);
 
         foreach (self::getHierarchy($source) as $dataClass) {
-            $singleton = singleton($dataClass);
             $schema = DataObject::getSchema();
-            $className = $singleton->getClassName();
             $options = ['multi_valued' => false];
 
-            $class = $this->getRelationData($lookup, $schema, $className, $options);
+            $class = $this->getRelationData($lookup, $schema, $dataClass, $options);
 
             if (is_string($class) && $class) {
                 if (!isset($options['origin'])) {
