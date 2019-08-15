@@ -240,6 +240,6 @@ class DataObjectExtension extends DataExtension
             self::$members = Member::get();
         }
 
-        return self::$members
+        return self::$members;
     }
 }
