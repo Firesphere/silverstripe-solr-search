@@ -25,4 +25,14 @@ class TestRelationObject extends DataObject implements TestOnly
     {
         return ['cow', 'sheep'];
     }
+
+    public function getCow()
+    {
+        return $this->getFarmAnimals()[0];
+    }
+
+    public function getSheep()
+    {
+        return $this->getFarmAnimals()[1];
+    }
 }

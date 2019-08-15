@@ -195,8 +195,19 @@ class DataResolverTest extends SapphireTest
 
     public function testGetMethodReturnsArray()
     {
+        /** @var TestRelationObject $relationOne */
         $relationOne = $this->objFromFixture(TestRelationObject::class, 'relationOne');
-        $this->assertEquals($relationOne->FarmAnimals, DataResolver::identify($relationOne, 'FarmAnimals'));
+        $this->assertEquals($relationOne->getFarmAnimals(), DataResolver::identify($relationOne, 'FarmAnimals'));
+    }
+
+    public function testMethodReturnsString()
+    {
+        /** @var TestRelationObject $relationOne */
+        $relationOne = $this->objFromFixture(TestRelationObject::class, 'relationOne');
+        $this->assertEquals('cow', DataResolver::identify($relationOne, 'Cow'));
+        $this->assertEquals('sheep', DataResolver::identify($relationOne, 'Sheep'));
+        $this->assertEquals('cow', DataResolver::identify($relationOne, 'getCow'));
+        $this->assertEquals('sheep', DataResolver::identify($relationOne, 'getSheep'));
     }
 
     public function testArrayList()
