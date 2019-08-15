@@ -43,23 +43,6 @@ class SearchIntrospection
     }
 
     /**
-     * @param $class
-     * @param $includeSubclasses
-     * @return array
-     * @throws ReflectionException
-     */
-    protected static function getHierarchyClasses($class, $includeSubclasses): array
-    {
-        $classes = array_values(ClassInfo::ancestry($class));
-        $classes = self::getSubClasses($class, $includeSubclasses, $classes);
-
-        $classes = array_unique($classes);
-        $classes = self::excludeDataObjectIDx($classes);
-
-        return $classes;
-    }
-
-    /**
      * @param $field
      * @return array
      * @throws Exception
@@ -174,6 +157,23 @@ class SearchIntrospection
         }
 
         return self::$hierarchy[$cacheKey];
+    }
+
+    /**
+     * @param $class
+     * @param $includeSubclasses
+     * @return array
+     * @throws ReflectionException
+     */
+    protected static function getHierarchyClasses($class, $includeSubclasses): array
+    {
+        $classes = array_values(ClassInfo::ancestry($class));
+        $classes = self::getSubClasses($class, $includeSubclasses, $classes);
+
+        $classes = array_unique($classes);
+        $classes = self::excludeDataObjectIDx($classes);
+
+        return $classes;
     }
 
     /**

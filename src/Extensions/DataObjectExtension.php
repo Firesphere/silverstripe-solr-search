@@ -209,18 +209,17 @@ class DataObjectExtension extends DataExtension
         $currMember = Security::getCurrentUser();
         Security::setCurrentUser(null);
 
-        $return = [];
 
         if ($owner->canView(null)) {
-            $return[] = '1-null';
-        } else {
-            // Return a default '0-0' to basically say "noboday can view"
-            $return[] = '0-0';
-            foreach (self::getMembers() as $member) {
-                $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
-            }
+            // Anyone can view
+            return ['1-null'];
         }
-
+        $return = [];
+        // Return a default '0-0' to basically say "noboday can view"
+        $return[] = '0-0';
+        foreach (self::getMembers() as $member) {
+            $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
+        }
 
         if (!$owner->hasField('ShowInSearch')) {
             self::$canViewClasses[$owner->ClassName] = $return;

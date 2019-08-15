@@ -21,14 +21,14 @@ class TestRelationObject extends DataObject implements TestOnly
         return true;
     }
 
-    public function getFarmAnimals()
-    {
-        return ['cow', 'sheep'];
-    }
-
     public function getCow()
     {
         return $this->getFarmAnimals()[0];
+    }
+
+    public function getFarmAnimals()
+    {
+        return ['cow', 'sheep'];
     }
 
     public function getSheep()

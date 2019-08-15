@@ -291,7 +291,7 @@ class BaseIndexTest extends SapphireTest
     {
         $this->index->addCopyField('mycopyfield', ['Content']);
         $expected = [
-            '_text'   => ['*'],
+            '_text'       => ['*'],
             'mycopyfield' => ['Content']
         ];
         $this->assertEquals($expected, $this->index->getCopyFields());

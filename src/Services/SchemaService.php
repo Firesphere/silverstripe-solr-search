@@ -6,7 +6,6 @@ namespace Firesphere\SolrSearch\Services;
 use Exception;
 use Firesphere\SolrSearch\Helpers\SearchIntrospection;
 use Firesphere\SolrSearch\Helpers\Statics;
-use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Traits\GetSetSchemaServiceTrait;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;

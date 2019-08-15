@@ -73,6 +73,24 @@ class DataResolver
     }
 
     /**
+     * @param DataObject|ArrayData|SS_List $component
+     * @param array $columns
+     *
+     * @return void
+     * @throws LogicException
+     */
+    protected function cannotIdentifyException($component, $columns = [])
+    {
+        throw new LogicException(
+            sprintf(
+                'Cannot identify, "%s" from class "%s"',
+                implode('.', $columns),
+                ClassInfo::shortName($component)
+            )
+        );
+    }
+
+    /**
      * Resolves a DataList values
      * @return array|mixed
      * @throws LogicException
@@ -95,6 +113,27 @@ class DataResolver
         }
 
         return $data;
+    }
+
+    /**
+     * @param DataObject|ArrayData|SS_List|DBField $obj
+     * @param array|string $columns
+     *
+     * @return mixed
+     * @throws LogicException
+     */
+    public static function identify($obj, $columns = [])
+    {
+        /** @var @see {self::$objTypes} $type */
+        foreach (self::$objTypes as $type => $method) {
+            if ($obj instanceof $type) {
+                $method = 'resolve' . $method;
+
+                return (new self($obj, $columns))->{$method}();
+            }
+        }
+
+        throw new LogicException(sprintf('Class: %s, is not supported.', ClassInfo::shortName($obj)));
     }
 
     /**
@@ -123,24 +162,6 @@ class DataResolver
         }
 
         return $value;
-    }
-
-    /**
-     * @param DataObject|ArrayData|SS_List $component
-     * @param array $columns
-     *
-     * @return void
-     * @throws LogicException
-     */
-    protected function cannotIdentifyException($component, $columns = [])
-    {
-        throw new LogicException(
-            sprintf(
-                'Cannot identify, "%s" from class "%s"',
-                implode('.', $columns),
-                ClassInfo::shortName($component)
-            )
-        );
     }
 
     /**
@@ -177,26 +198,5 @@ class DataResolver
             return $data;
         }
         $this->cannotIdentifyException($this->component, [$this->columnName]);
-    }
-
-    /**
-     * @param DataObject|ArrayData|SS_List|DBField $obj
-     * @param array|string $columns
-     *
-     * @return mixed
-     * @throws LogicException
-     */
-    public static function identify($obj, $columns = [])
-    {
-        /** @var @see {self::$objTypes} $type */
-        foreach (self::$objTypes as $type => $method) {
-            if ($obj instanceof $type) {
-                $method = 'resolve' . $method;
-
-                return (new self($obj, $columns))->{$method}();
-            }
-        }
-
-        throw new LogicException(sprintf('Class: %s, is not supported.', ClassInfo::shortName($obj)));
     }
 }
