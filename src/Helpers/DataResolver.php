@@ -156,6 +156,12 @@ class DataResolver
         // Inspect component for element $relation
         if ($this->component->hasMethod($this->columnName)) {
             $relation = $this->columnName;
+            // We hit a direct method that returns a non-object
+            if (!is_object($this->component->$relation()) &&
+                !is_array($this->component->$relation())
+            ) {
+                return $this->component->$relation();
+            }
 
             return self::identify($this->component->$relation(), $this->columns);
         }
@@ -191,10 +197,6 @@ class DataResolver
 
                 return (new self($obj, $columns))->{$method}();
             }
-        }
-        // We hit a direct method that returns a non-object
-        if (!is_object($obj) && !is_array($obj)) {
-            return $obj;
         }
 
         throw new LogicException(sprintf('Class: %s, is not supported.', ClassInfo::shortName($obj)));

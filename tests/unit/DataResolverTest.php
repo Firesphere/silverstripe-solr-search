@@ -19,7 +19,13 @@ use stdClass;
 
 class DataResolverTest extends SapphireTest
 {
+    /**
+     * @var string
+     */
     protected static $fixture_file = '../fixtures/DataResolver.yml';
+    /**
+     * @var array
+     */
     protected static $extra_dataobjects = [
         TestObject::class,
         TestPage::class,
