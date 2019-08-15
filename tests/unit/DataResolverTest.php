@@ -212,6 +212,7 @@ class DataResolverTest extends SapphireTest
         $relationOne = $this->objFromFixture(TestRelationObject::class, 'relationOne');
         $this->assertEquals('cow', DataResolver::identify($relationOne, 'Cow'));
         $this->assertEquals('sheep', DataResolver::identify($relationOne, 'Sheep'));
+        $this->assertEquals(['cow', 'sheep'], DataResolver::identify($relationOne, 'getFarmAnimals'));
         $this->assertEquals('cow', DataResolver::identify($relationOne, 'getCow'));
         $this->assertEquals('sheep', DataResolver::identify($relationOne, 'getSheep'));
     }

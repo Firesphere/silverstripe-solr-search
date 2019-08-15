@@ -157,9 +157,7 @@ class DataResolver
         if ($this->component->hasMethod($this->columnName)) {
             $relation = $this->columnName;
             // We hit a direct method that returns a non-object
-            if (!is_object($this->component->$relation()) &&
-                !is_array($this->component->$relation())
-            ) {
+            if (!is_object($this->component->$relation())) {
                 return $this->component->$relation();
             }
 
