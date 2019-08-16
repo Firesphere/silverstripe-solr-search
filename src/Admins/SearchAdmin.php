@@ -7,8 +7,8 @@ use SilverStripe\Admin\ModelAdmin;
 
 /**
  * Class \Firesphere\SolrSearch\Admins\SearchAdmin
+ * @todo implement search administration, e.g. Elevation and Facets
  *
- */
 class SearchAdmin extends ModelAdmin
 {
     private static $managed_models = [
@@ -21,3 +21,4 @@ class SearchAdmin extends ModelAdmin
 
     private static $menu_title = 'Search';
 }
+/** **/

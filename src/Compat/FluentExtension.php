@@ -11,7 +11,9 @@ if (!class_exists('TractorCow\\Fluent\\Model\\Locale')) {
 
 /**
  * Class FluentExtension
+ *
  * @package Firesphere\SolrSearch\Compat
+ * @property FluentExtension $owner
  */
 class FluentExtension extends Extension
 {
