@@ -92,7 +92,7 @@ class DataResolverTest extends SapphireTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \LogicException
      * @expectedExceptionMessage Method, "SuperNice" not found on "DBDatetime"
      */
     public function testMethodNotFoundFromDBField()
