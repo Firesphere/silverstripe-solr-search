@@ -2,7 +2,7 @@
 
 namespace Firesphere\SolrSearch\Helpers;
 
-use Firesphere\SolrSearch\Traits\ResolveTrait;
+use Firesphere\SolrSearch\Traits\DataResolveTrait;
 use LogicException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\ArrayList;
@@ -13,7 +13,7 @@ use SilverStripe\View\ArrayData;
 
 class DataResolver
 {
-    use ResolveTrait;
+    use DataResolveTrait;
 
     /**
      * Supported object types

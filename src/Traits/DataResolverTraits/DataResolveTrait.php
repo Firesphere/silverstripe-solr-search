@@ -13,7 +13,7 @@ use SilverStripe\View\ArrayData;
  * Trait ResolveTrait All resolver methods for the DataResolver
  * @package Firesphere\SolrSearch\Traits
  */
-trait ResolveTrait
+trait DataResolveTrait
 {
     /**
      * @var DataObject|ArrayList|SS_List|DBField
@@ -82,6 +82,7 @@ trait ResolveTrait
     protected function resolveField()
     {
         if ($this->columnName) {
+            // @todo could be simplified if possible?
             if ($this->component->hasMethod($this->columnName)) {
                 $method = $this->columnName;
             } elseif ($this->component->hasMethod("get{$this->columnName}")) {
@@ -101,7 +102,8 @@ trait ResolveTrait
             $this->cannotIdentifyException($this->component, $this->columns);
         }
 
-        return $value;
+        // Remove unneeded space around the resulting items
+        return trim($value);
     }
 
     /**
