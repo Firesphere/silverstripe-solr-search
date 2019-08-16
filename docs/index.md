@@ -3,9 +3,8 @@
 02. Installation
 03. Usage
 04. Customisation
-05. Configuration
-06. CMS Usage
-07. Fulltext Search compatibility
-08. Extending
-09. Debugging
-10. About
+05. CMS Usage
+06. Fulltext Search compatibility
+07. Debugging
+08. About
+11. FAQ

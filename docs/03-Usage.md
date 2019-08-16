@@ -60,10 +60,6 @@ Available methods are:
 | addFacetField | Field to build faceting on | No | `$this->addFacetField(SiteTree::class, ['Title' => 'FacetObject', 'Field' => 'FacetObjectID']);` |
  
 
-\* Although not required, it's highly reccomended
-
-\*\* The second option of an array can be omitted and directly given the boost value
-
 ### Using YML
 
 ```yml
@@ -101,3 +97,9 @@ The compatibility module has an extension method that allows you to build your i
 ## Accessing Solr
 
 If available, you can access your Solr instance at `http://mydomain.com:8983`
+
+
+----------
+\* Although not required, it's highly reccomended
+
+\*\* The second option of an array can be omitted and directly given the boost value
