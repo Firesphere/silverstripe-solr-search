@@ -4,8 +4,10 @@
 namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
@@ -86,14 +88,13 @@ class DataObjectExtension extends DataExtension
             $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
             // If we don't get an exception, mark the item as clean
             // Added bonus, array_flip removes duplicates
-            $values = array_flip($ids);
-            unset($values[$owner->ID]);
-
-            $record->IDs = json_encode(array_keys($values));
-            $record->write();
+            $this->clearIDs($owner, $ids, $record);
             Versioned::set_reading_mode($mode);
         } catch (Exception $error) {
             Versioned::set_reading_mode($mode);
+            $solrLogger = new SolrLogger();
+            $solrLogger->saveSolrLog('Config');
+
             $this->registerException($ids, $record, $error);
         }
     }
@@ -121,9 +122,26 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * @param DataObject $owner
+     * @param array $ids
+     * @param DirtyClass $record
+     * @throws ValidationException
+     */
+    protected function clearIDs(DataObject $owner, array $ids, DirtyClass $record): void
+    {
+        $values = array_flip($ids);
+        unset($values[$owner->ID]);
+
+        $record->IDs = json_encode(array_keys($values));
+        $record->write();
+    }
+
+    /**
      * @param array $ids
      * @param $record
-     * @param Exception $e
+     * @param Exception $error
+     * @throws ValidationException
+     * @throws GuzzleException
      */
     protected function registerException(array $ids, $record, Exception $error): void
     {
@@ -141,6 +159,9 @@ class DataObjectExtension extends DataExtension
                 $owner->ID
             )
         );
+        $solrLogger = new SolrLogger();
+        $solrLogger->saveSolrLog('Index');
+
         $logger->error($error->getMessage());
     }
 
@@ -156,6 +177,7 @@ class DataObjectExtension extends DataExtension
 
     /**
      * @throws ValidationException
+     * @throws GuzzleException
      */
     public function onAfterDelete(): void
     {
@@ -170,11 +192,7 @@ class DataObjectExtension extends DataExtension
             (new SolrCoreService())->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
             // If successful, remove it from the array
             // Added bonus, array_flip removes duplicates
-            $values = array_flip($ids);
-            unset($values[$owner->ID]);
-
-            $record->IDs = json_encode(array_keys($values));
-            $record->write();
+            $this->clearIDs($owner, $ids, $record);
         } catch (Exception $error) {
             $this->registerException($ids, $record, $error);
         }
@@ -209,20 +227,17 @@ class DataObjectExtension extends DataExtension
         $currMember = Security::getCurrentUser();
         Security::setCurrentUser(null);
 
-
         if ($owner->canView(null)) {
             self::$canViewClasses[$owner->ClassName] = ['1-null'];
 
             // Anyone can view
             return ['1-null'];
         }
-        $return = [];
         // Return a default '0-0' to basically say "noboday can view"
-        $return[] = '0-0';
+        $return = ['0-0'];
         foreach (self::getMembers() as $member) {
             $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
         }
-
 
         if (!$owner->hasField('ShowInSearch')) {
             self::$canViewClasses[$owner->ClassName] = $return;
@@ -238,7 +253,7 @@ class DataObjectExtension extends DataExtension
      */
     protected static function getMembers()
     {
-        if (!self::$members) {
+        if (empty(self::$members)) {
             self::$members = Member::get();
         }
 

@@ -5,9 +5,11 @@ namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
@@ -16,8 +18,13 @@ use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 
+/**
+ * Class SolrIndexTask
+ * @package Firesphere\SolrSearch\Tasks
+ */
 class SolrIndexTask extends BuildTask
 {
     use LoggerTrait;
@@ -89,6 +96,7 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request
      * @return int|bool
      * @throws Exception
+     * @throws GuzzleException
      * @todo defer to background because it may run out of memory
      */
     public function run($request)
@@ -115,6 +123,9 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
         );
+        // Grab the latest logs from indexing if needed
+        $solrLogger = new SolrLogger();
+        $solrLogger->saveSolrLog('Config');
 
         return $groups;
     }
@@ -173,6 +184,7 @@ class SolrIndexTask extends BuildTask
      * @param $group
      * @return int
      * @throws Exception
+     * @throws GuzzleException
      */
     protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
     {
@@ -190,7 +202,8 @@ class SolrIndexTask extends BuildTask
      * @param BaseIndex $index
      * @param int $group
      * @return int
-     * @throws Exception
+     * @throws GuzzleException
+     * @throws ValidationException
      */
     private function indexClass($isGroup, $class, BaseIndex $index, int $group): int
     {
@@ -202,8 +215,8 @@ class SolrIndexTask extends BuildTask
         while ($group <= $groups) { // Run from oldest to newest
             try {
                 $this->doReindex($group, $class, $batchLength, $index);
-            } catch (Exception $e) {
-                $this->getLogger()->error($e->getMessage());
+            } catch (Exception $error) {
+                $this->logException($index->getIndexName(), $group, $error);
                 $group++;
                 continue;
             }
@@ -237,5 +250,25 @@ class SolrIndexTask extends BuildTask
             $update->addCommit();
             $client->update($update);
         }
+    }
+
+    /**
+     * @param string $index
+     * @param int $group
+     * @param Exception $exception
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    private function logException($index, int $group, Exception $exception)
+    {
+        $this->getLogger()->error($exception->getMessage());
+        $msg = sprintf(
+            "Error indexing core %s on group %s," . PHP_EOL .
+            "Please log in to the CMS to find out more about Indexing errors" . PHP_EOL .
+            'Last known error:',
+            $index,
+            $group
+        );
+        SolrLogger::logMessage('ERROR', $msg, $index);
     }
 }

@@ -31,12 +31,6 @@ trait QueryComponentBoostTrait
     }
 
     /**
-     * Any class using this needs getQueryArray
-     * @return mixed
-     */
-    abstract public function getQueryArray();
-
-    /**
      * @param array $boostTerms
      * @return QueryComponentFactory
      */
@@ -67,6 +61,12 @@ trait QueryComponentBoostTrait
             }
         }
     }
+
+    /**
+     * Any class using this needs getQueryArray
+     * @return mixed
+     */
+    abstract public function getQueryArray();
 
     /**
      * Set boosting at Query time
