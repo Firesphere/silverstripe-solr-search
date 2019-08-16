@@ -102,8 +102,7 @@ trait DataResolveTrait
             $this->cannotIdentifyException($this->component, $this->columns);
         }
 
-        // Remove unneeded space around the resulting items
-        return trim($value);
+        return $value;
     }
 
     /**
