@@ -4,8 +4,10 @@
 namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
@@ -94,6 +96,9 @@ class DataObjectExtension extends DataExtension
             Versioned::set_reading_mode($mode);
         } catch (Exception $error) {
             Versioned::set_reading_mode($mode);
+            $solrLogger = new SolrLogger();
+            $solrLogger->saveSolrLog('Config');
+
             $this->registerException($ids, $record, $error);
         }
     }
@@ -123,7 +128,9 @@ class DataObjectExtension extends DataExtension
     /**
      * @param array $ids
      * @param $record
-     * @param Exception $e
+     * @param Exception $error
+     * @throws ValidationException
+     * @throws GuzzleException
      */
     protected function registerException(array $ids, $record, Exception $error): void
     {
@@ -141,6 +148,9 @@ class DataObjectExtension extends DataExtension
                 $owner->ID
             )
         );
+        $solrLogger = new SolrLogger();
+        $solrLogger->saveSolrLog('Index');
+
         $logger->error($error->getMessage());
     }
 

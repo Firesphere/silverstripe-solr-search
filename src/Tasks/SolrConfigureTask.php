@@ -4,19 +4,25 @@
 namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
 use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\ValidationException;
 
+/**
+ * Class SolrConfigureTask
+ * @package Firesphere\SolrSearch\Tasks
+ */
 class SolrConfigureTask extends BuildTask
 {
     use LoggerTrait;
@@ -24,7 +30,7 @@ class SolrConfigureTask extends BuildTask
     protected static $storeModes = [
         'file' => FileConfigStore::class,
         'post' => PostConfigStore::class,
-//        'webdav' => WebdavConfigStore::class, // @todo
+//        'webdav' => WebdavConfigStore::class,
     ];
     private static $segment = 'SolrConfigureTask';
     protected $title = 'Configure Solr cores';
@@ -42,6 +48,8 @@ class SolrConfigureTask extends BuildTask
      * @param HTTPRequest $request
      * @return bool|Exception
      * @throws ReflectionException
+     * @throws ValidationException
+     * @throws GuzzleException
      */
     public function run($request)
     {
@@ -52,9 +60,7 @@ class SolrConfigureTask extends BuildTask
         foreach ($indexes as $index) {
             try {
                 $this->configureIndex($index);
-            } catch (RequestException $error) {
-                $exception = $error->getResponse()->getBody()->getContents();
-                $this->getLogger()->error($exception);
+            } catch (Exception $error) {
                 $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
                 // Continue to the next index
                 continue;
@@ -63,6 +69,9 @@ class SolrConfigureTask extends BuildTask
         }
 
         $this->extend('onAfterSolrConfigureTask');
+        // Grab the latest logs
+        $solrLogger = new SolrLogger();
+        $solrLogger->saveSolrLog('Config');
 
         return true;
     }
@@ -71,6 +80,8 @@ class SolrConfigureTask extends BuildTask
      * Update the index on the given store
      *
      * @param string $index
+     * @throws ValidationException
+     * @throws GuzzleException
      */
     protected function configureIndex($index): void
     {
@@ -97,7 +108,8 @@ class SolrConfigureTask extends BuildTask
         try {
             $service->$method($index, $configStore);
             $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
-        } catch (RequestException $error) {
+        } catch (Exception $error) {
+            $this->logException($index, $error);
             throw new RuntimeException($error);
         }
     }
@@ -128,5 +140,23 @@ class SolrConfigureTask extends BuildTask
         $this->extend('onBeforeConfig', $configStore, $storeConfig);
 
         return $configStore;
+    }
+
+    /**
+     * @param $index
+     * @param Exception $error
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    protected function logException($index, Exception $error): void
+    {
+        $this->getLogger()->error($error);
+        $msg = sprintf(
+            "Error loading core %s,\n" .
+            "Please log in to the CMS to find out more about Configuration errors\n" .
+            'Last known error:',
+            $index
+        );
+        SolrLogger::logMessage('ERROR', $msg, $index);
     }
 }

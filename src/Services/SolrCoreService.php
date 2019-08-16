@@ -5,8 +5,10 @@ namespace Firesphere\SolrSearch\Services;
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\FieldResolver;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 use LogicException;
 use ReflectionClass;
@@ -108,6 +110,8 @@ class SolrCoreService
      * @param $core string - The name of the core
      * @param ConfigStore $configStore
      * @return bool
+     * @throws Exception
+     * @throws GuzzleException
      */
     public function coreCreate($core, $configStore): bool
     {
@@ -116,9 +120,16 @@ class SolrCoreService
         $action->setCore($core);
         $action->setInstanceDir($configStore->instanceDir($core));
         $this->admin->setAction($action);
-        $response = $this->client->coreAdmin($this->admin);
+        try {
+            $response = $this->client->coreAdmin($this->admin);
 
-        return $response->getWasSuccessful();
+            return $response->getWasSuccessful();
+        } catch (Exception $e) {
+            $solrLogger = new SolrLogger();
+            $solrLogger->saveSolrLog('Config');
+
+            throw new Exception($e);
+        }
     }
 
     /**

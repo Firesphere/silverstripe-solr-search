@@ -1,0 +1,91 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 8
+  },
+  "watcher": "Log4j2",
+  "info": {
+    "levels": [
+      "ALL",
+      "TRACE",
+      "DEBUG",
+      "INFO",
+      "WARN",
+      "ERROR",
+      "FATAL",
+      "OFF"
+    ],
+    "last": 1566605737148,
+    "buffer": 50,
+    "threshold": "WARN"
+  },
+  "history": {
+    "numFound": 9,
+    "start": 0,
+    "docs": [
+      {
+        "time": "2019-08-24T00:15:33.550Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrConfig",
+        "message": "Couldn't add files from /var/www/mysite/www/.solr/CircleCITestIndex/./lib filtered by null to classpath: /var/www/mysite/www/.solr/CircleCITestIndex/./lib",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.010Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.TrieIntField]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.016Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.TrieFloatField]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.022Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.TrieLongField]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.027Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.TrieDoubleField]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.036Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.TrieDateField]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.066Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.WordDelimiterFilterFactory]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:34.071Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrResourceLoader",
+        "message": "Solr loaded a deprecated plugin/analysis class [solr.SynonymFilterFactory]. Please consult documentation how to replace it accordingly.",
+        "core": "x:CircleCITestIndex"
+      },
+      {
+        "time": "2019-08-24T00:15:37.148Z",
+        "level": "WARN",
+        "logger": "org.apache.solr.core.SolrConfig",
+        "message": "Couldn't add files from /var/www/mysite/www/.solr/bambusa/./lib filtered by null to classpath: /var/www/mysite/www/.solr/bambusa/./lib",
+        "core": "x:bambusa"
+      }
+    ]
+  }
+}

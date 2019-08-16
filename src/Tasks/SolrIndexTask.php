@@ -5,20 +5,23 @@ namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
-use SilverStripe\Control\Director;
-use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\BuildTask;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\DataObject;
+use SilverStripe\Dev;
+use SilverStripe\ORM;
 use SilverStripe\Versioned\Versioned;
 
-class SolrIndexTask extends BuildTask
+/**
+ * Class SolrIndexTask
+ * @package Firesphere\SolrSearch\Tasks
+ */
+class SolrIndexTask extends Dev\BuildTask
 {
     use LoggerTrait;
     /**
@@ -57,7 +60,7 @@ class SolrIndexTask extends BuildTask
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
-        $this->setDebug(Director::isDev() || Director::is_cli());
+        $this->setDebug(Control\Director::isDev() || Control\Director::is_cli());
     }
 
     /**
@@ -86,9 +89,10 @@ class SolrIndexTask extends BuildTask
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
-     * @param HTTPRequest $request
+     * @param Control\HTTPRequest $request
      * @return int|bool
      * @throws Exception
+     * @throws GuzzleException
      * @todo defer to background because it may run out of memory
      */
     public function run($request)
@@ -115,12 +119,15 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
         );
+        // Grab the latest logs from indexing if needed
+        $solrLogger = new SolrLogger();
+        $solrLogger->saveSolrLog('Config');
 
         return $groups;
     }
 
     /**
-     * @param HTTPRequest $request
+     * @param Control\HTTPRequest $request
      * @return array
      */
     protected function taskSetup($request): array
@@ -160,7 +167,7 @@ class SolrIndexTask extends BuildTask
     {
         if (!empty($vars['clear'])) {
             $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
-            $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
+            $this->service->doManipulate(ORM\ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
         }
 
         return $vars;
@@ -173,6 +180,7 @@ class SolrIndexTask extends BuildTask
      * @param $group
      * @return int
      * @throws Exception
+     * @throws GuzzleException
      */
     protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
     {
@@ -190,7 +198,8 @@ class SolrIndexTask extends BuildTask
      * @param BaseIndex $index
      * @param int $group
      * @return int
-     * @throws Exception
+     * @throws GuzzleException
+     * @throws ORM\ValidationException
      */
     private function indexClass($isGroup, $class, BaseIndex $index, int $group): int
     {
@@ -202,9 +211,9 @@ class SolrIndexTask extends BuildTask
         while ($group <= $groups) { // Run from oldest to newest
             try {
                 $this->doReindex($group, $class, $batchLength, $index);
-            } catch (Exception $e) {
-                $this->getLogger()->error($e->getMessage());
-                $group++;
+            } catch (Exception $error) {
+                $this->logException($index->getIndexName(), $group, $error);
+
                 continue;
             }
             $group++;
@@ -224,10 +233,10 @@ class SolrIndexTask extends BuildTask
     private function doReindex($group, $class, $batchLength, BaseIndex $index): void
     {
         // Generate filtered list of local records
-        $baseClass = DataObject::getSchema()->baseDataClass($class);
+        $baseClass = ORM\DataObject::getSchema()->baseDataClass($class);
         $client = $index->getClient();
-        /** @var DataList|DataObject[] $items */
-        $items = DataObject::get($baseClass)
+        /** @var ORM\DataList|ORD\DataObject[] $items */
+        $items = ORM\DataObject::get($baseClass)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
         $update = $client->createUpdate();
@@ -237,5 +246,26 @@ class SolrIndexTask extends BuildTask
             $update->addCommit();
             $client->update($update);
         }
+    }
+
+    /**
+     * @param string $index
+     * @param int $group
+     * @param Exception $exception
+     * @return int
+     * @throws GuzzleException
+     * @throws ORM\ValidationException
+     */
+    private function logException($index, int $group, Exception $exception): int
+    {
+        $this->getLogger()->error($exception->getMessage());
+        $msg = sprintf(
+            "Error indexing core %s on group %s,\n" .
+            "Please log in to the CMS to find out more about Indexing errors\n" .
+            'Last known error:',
+            $index,
+            $group
+        );
+        SolrLogger::logMessage('ERROR', $msg, $index);
     }
 }
