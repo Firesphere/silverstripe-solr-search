@@ -92,9 +92,10 @@ trait ResolveTrait
                 );
             }
 
-            return $this->component->$method();
+            $value =  $this->component->$method();
+        } else {
+            $value = $this->component->getValue();
         }
-        $value = $this->component->getValue();
 
         if (!empty($this->columns)) {
             $this->cannotIdentifyException($this->component, $this->columns);
