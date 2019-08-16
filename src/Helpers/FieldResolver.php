@@ -246,8 +246,8 @@ class FieldResolver
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
-            if (!empty($this->found[$class . '_' . $field])) {
-                return $this->found[$class . '_' . $field];
+            if (!empty($this->found[$class . '_' . $fullfield])) {
+                return $this->found[$class . '_' . $fullfield];
             }
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
