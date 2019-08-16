@@ -202,20 +202,9 @@ class DocumentFactory
             $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
         }
 
-        $name = $this->sanitiseName($field['name']);
+        $name = getShortFieldName($field['name']);
 
         $doc->addField($name, $value);
-    }
-
-    /**
-     * @param string $field
-     * @return string
-     */
-    public function sanitiseName($field)
-    {
-        $name = explode('\\', $field);
-
-        return end($name);
     }
 
     /**

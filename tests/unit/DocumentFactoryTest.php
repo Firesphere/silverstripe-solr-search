@@ -191,7 +191,7 @@ class DocumentFactoryTest extends SapphireTest
     {
         $factory = new DocumentFactory();
 
-        $this->assertEquals('hello', $factory->sanitiseName('Test\\Name\\hello'));
+        $this->assertEquals('hello', getShortFieldName('Test\\Name\\hello'));
     }
 
     public function testGetLogger()

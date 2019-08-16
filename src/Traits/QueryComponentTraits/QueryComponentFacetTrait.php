@@ -31,8 +31,7 @@ trait QueryComponentFacetTrait
         $facets = $this->clientQuery->getFacetSet();
         // Facets should be set from the index configuration
         foreach ($this->index->getFacetFields() as $class => $config) {
-            $shortClass = explode('\\', $class);
-            $shortClass = end($shortClass);
+            $shortClass = getShortFieldName($class);
             $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
             $facets->createFacetField('facet-' . $config['Title'])->setField($field);
         }
@@ -52,8 +51,7 @@ trait QueryComponentFacetTrait
             ) {
                 // @todo add unit tests for this bit. It's crucial but untested
                 $filter = is_array($filter) ? $filter : [$filter];
-                $shortClass = explode('\\', $class);
-                $shortClass = end($shortClass);
+                $shortClass = getShortFieldName($class);
                 $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
                 $criteria = Criteria::where($field)->in($filter);
                 $this->clientQuery

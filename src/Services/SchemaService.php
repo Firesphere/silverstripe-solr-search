@@ -69,8 +69,7 @@ class SchemaService extends ViewableData
         $storeFields = $this->getStoreFields();
         foreach ($field as $name => $options) {
             // Temporary short-name solution until the Introspection is properly solved
-            $name = explode('\\', $name);
-            $name = end($name);
+            $name = getShortFieldName($name);
             // Boosted fields are always stored
             $store = ($this->store || array_key_exists($options['name'], $storeFields)) ? 'true' : 'false';
             $item = [
