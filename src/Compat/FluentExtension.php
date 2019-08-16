@@ -17,7 +17,6 @@ if (!class_exists('TractorCow\\Fluent\\Model\\Locale')) {
  */
 class FluentExtension extends Extension
 {
-
     public function getModifiedData($foundData)
     {
         // @todo check modify the found data with the specifics for each language
