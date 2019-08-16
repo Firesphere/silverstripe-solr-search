@@ -6,7 +6,7 @@ namespace Firesphere\SolrSearch\Factories;
 use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\DataResolver;
-use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
@@ -53,7 +53,7 @@ class DocumentFactory
      */
     public function __construct()
     {
-        $this->introspection = Injector::inst()->get(SearchIntrospection::class);
+        $this->introspection = Injector::inst()->get(FieldResolver::class);
     }
 
     /**
@@ -118,7 +118,7 @@ class DocumentFactory
     protected function buildField($fields, Document $doc, DataObject $item, array $boostFields): void
     {
         foreach ($fields as $field) {
-            $fieldData = $this->getIntrospection()->getFieldIntrospection($field);
+            $fieldData = $this->getIntrospection()->resolveField($field);
             foreach ($fieldData as $dataField => $options) {
                 // Only one field per class, so let's take the fieldData. This will override previous additions
                 $this->addField($doc, $item, $options);

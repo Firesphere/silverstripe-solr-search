@@ -4,14 +4,14 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\FieldResolver;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 
 trait DocumentFactoryTrait
 {
     /**
-     * @var SearchIntrospection
+     * @var FieldResolver
      */
     protected $introspection;
     /**
@@ -43,9 +43,9 @@ trait DocumentFactoryTrait
     }
 
     /**
-     * @return SearchIntrospection
+     * @return FieldResolver
      */
-    public function getIntrospection(): SearchIntrospection
+    public function getIntrospection(): FieldResolver
     {
         return $this->introspection;
     }

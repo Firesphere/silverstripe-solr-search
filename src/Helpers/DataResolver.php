@@ -15,7 +15,6 @@ class DataResolver
 {
     use ResolveTrait;
 
-    protected static $resolveField = false;
     /**
      * Supported object types
      * @var array map of objects to methods
@@ -50,7 +49,7 @@ class DataResolver
      * @return void
      * @throws LogicException
      */
-    protected function cannotIdentifyException($component, $columns = [])
+    protected function cannotIdentifyException($component, $columns = []): void
     {
         throw new LogicException(
             sprintf(
@@ -79,6 +78,6 @@ class DataResolver
             }
         }
 
-        throw new LogicException(sprintf('Class: %s, is not supported.', ClassInfo::shortName($obj)));
+        throw new LogicException(sprintf('Class: %s is not supported.', ClassInfo::shortName($obj)));
     }
 }

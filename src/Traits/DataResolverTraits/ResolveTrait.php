@@ -7,6 +7,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\View\ArrayData;
 
 /**
  * Trait ResolveTrait All resolver methods for the DataResolver
@@ -90,10 +91,11 @@ trait ResolveTrait
                     sprintf('Method, "%s" not found on "%s"', $this->columnName, $this->shortName)
                 );
             }
-            $value = $this->component->$method();
-        } else {
-            $value = $this->component->getValue();
+
+            return $this->component->$method();
         }
+        $value = $this->component->getValue();
+
         if (!empty($this->columns)) {
             $this->cannotIdentifyException($this->component, $this->columns);
         }
@@ -136,4 +138,13 @@ trait ResolveTrait
         }
         $this->cannotIdentifyException($this->component, [$this->columnName]);
     }
+
+    /**
+     * @param DataObject|ArrayData|SS_List $component
+     * @param array $columns
+     *
+     * @return void
+     * @throws LogicException
+     */
+    abstract protected function cannotIdentifyException($component, $columns = []): void;
 }

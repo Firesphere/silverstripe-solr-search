@@ -55,7 +55,7 @@ class DataResolverTest extends SapphireTest
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Class: stdClass, is not supported.
+     * @expectedExceptionMessage Class: stdClass is not supported.
      */
     public function testUnsupportedObjectException()
     {

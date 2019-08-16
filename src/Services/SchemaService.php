@@ -4,7 +4,7 @@
 namespace Firesphere\SolrSearch\Services;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Traits\GetSetSchemaServiceTrait;
 use SilverStripe\Control\Director;
@@ -19,7 +19,7 @@ class SchemaService extends ViewableData
     use GetSetSchemaServiceTrait;
 
     /**
-     * @var SearchIntrospection
+     * @var FieldResolver
      */
     protected $introspection;
 
@@ -34,7 +34,7 @@ class SchemaService extends ViewableData
     public function __construct()
     {
         parent::__construct();
-        $this->introspection = Injector::inst()->get(SearchIntrospection::class);
+        $this->introspection = Injector::inst()->get(FieldResolver::class);
         $this->coreService = Injector::inst()->get(SolrCoreService::class);
     }
 
@@ -64,7 +64,7 @@ class SchemaService extends ViewableData
      */
     protected function getFieldDefinition($fieldName, &$return, $copyField = null)
     {
-        $field = $this->introspection->getFieldIntrospection($fieldName);
+        $field = $this->introspection->resolveField($fieldName);
         $typeMap = Statics::getTypeMap();
         $storeFields = $this->getStoreFields();
         foreach ($field as $name => $options) {

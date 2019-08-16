@@ -13,7 +13,7 @@ use SilverStripe\ORM\DataObjectSchema;
  * @todo clean up unneeded methods
  * Some additional introspection tools that are used often by the fulltext search code
  */
-class SearchIntrospection
+class FieldResolver
 {
     use GetSetSearchIntrospectionTrait;
     /**
@@ -33,7 +33,7 @@ class SearchIntrospection
      * @todo remove in favour of DataObjectSchema
      * @static
      */
-    public static function isSubclassOf($class, $instanceOf)
+    public static function isSubclassOf($class, $instanceOf): bool
     {
         $ancestry = self::$ancestry[$class] ?? self::$ancestry[$class] = ClassInfo::ancestry($class);
 
@@ -48,7 +48,7 @@ class SearchIntrospection
      * @throws Exception
      *
      */
-    public function getFieldIntrospection($field)
+    public function resolveField($field)
     {
         $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
@@ -70,7 +70,7 @@ class SearchIntrospection
 
                 // @todo remove repetition
                 foreach ($buildSources as $source => $baseOptions) {
-                    $next = $this->getRelationIntrospection($source, $lookup, $next);
+                    $next = $this->resolveRelation($source, $lookup, $next);
                 }
 
                 $buildSources = $next;
@@ -89,7 +89,7 @@ class SearchIntrospection
      * @return array
      * @throws Exception
      */
-    protected function getRelationIntrospection($source, $lookup, array $next): array
+    protected function resolveRelation($source, $lookup, array $next): array
     {
         $source = $this->getSourceName($source);
 
@@ -243,12 +243,9 @@ class SearchIntrospection
      * @return array
      * @throws ReflectionException
      */
-    public function getFieldOptions($field, array $sources, $fullfield, array $found): array
+    protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
-            if (is_int($class)) {
-                $class = $fieldOptions;
-            }
             if (!empty($this->found[$class . '_' . $field])) {
                 return $this->found[$class . '_' . $field];
             }
@@ -283,7 +280,7 @@ class SearchIntrospection
      * @param string $dataclass
      * @return string
      */
-    public function getType($fields, $field, $dataclass)
+    protected function getType($fields, $field, $dataclass)
     {
         if (!empty($fields[$field])) {
             return $fields[$field];

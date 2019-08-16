@@ -6,7 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 use Firesphere\SolrSearch\Compat\SubsitesExtension;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Page;
 use Psr\Log\LoggerInterface;
@@ -150,7 +150,7 @@ class DocumentFactoryTest extends SapphireTest
     public function testConstruct()
     {
         $factory = new DocumentFactory();
-        $this->assertInstanceOf(SearchIntrospection::class, $factory->getIntrospection());
+        $this->assertInstanceOf(FieldResolver::class, $factory->getIntrospection());
     }
 
     public function testBuildItems()

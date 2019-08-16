@@ -4,7 +4,7 @@ namespace Firesphere\SolrSearch\Services;
 
 use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\SearchIntrospection;
+use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use GuzzleHttp\HandlerStack;
@@ -194,7 +194,7 @@ class SolrCoreService
         $items = ($items instanceof DataObject) ? ArrayList::create([$items]) : $items;
         $items = ($items instanceof SS_List) ? $items : ArrayList::create($items);
 
-        $hierarchy = SearchIntrospection::getHierarchy($items->first()->ClassName);
+        $hierarchy = FieldResolver::getHierarchy($items->first()->ClassName);
 
         foreach ($indexes as $indexString) {
             /** @var BaseIndex $index */
