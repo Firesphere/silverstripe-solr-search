@@ -37,7 +37,7 @@ trait DataResolveTrait
      * @return mixed
      * @throws LogicException
      */
-    public function resolveArrayData()
+    protected function resolveArrayData()
     {
         if (empty($this->columnName)) {
             return $this->component->toMap();
@@ -54,7 +54,7 @@ trait DataResolveTrait
      * @return array|mixed
      * @throws LogicException
      */
-    public function resolveList()
+    protected function resolveList()
     {
         if (empty($this->columnName)) {
             return $this->component->toNestedArray();

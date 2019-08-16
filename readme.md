@@ -13,11 +13,7 @@ Readme and docs to be completed at a later stage. Currently under heavy developm
 Solarium documentation:
 https://solarium.readthedocs.io
 
-## Schema management
-
-This module uses a managed schema.
-
-# Installing Solr
+# Installing Solr locally
 
 ## Debian Jessie
 
@@ -43,19 +39,11 @@ tar xvf solr-8.1.0.tgz solr-8.1.0/bin/install_solr_service.sh --strip-components
 sudo bash ./install_solr_service.sh solr-8.1.0.tgz
 ```
 
-This will install Solr 8.1 as a service on your (virtual) machine
-
-### Pros
-
-- Schema can be altered on the fly
-- Schema management is connected to the CMS (TDB)
-
-### Cons
-
-- Managed schema changes currently get destroyed on a reconfigure
+This will install Solr 8.x as a service on your (virtual) machine
 
 ## Supports
 
+Solr4 backward compatibility is available, default support is
 Solr6 or higher
 
 # Test setup
@@ -93,17 +81,6 @@ Happy searching after that... once this is done
 
 # FAQ
 
-### Whats with the composer.lock file?
-
-It's needed for caching in CircleCI
-
-### Why index from bottom to top?
-
-More recent items are often more important than old items. Therefore, it makes sense to make sure
-the newer items are in the index, before the old ones.
-
-This is because a limitation of both PHP and Java, not being able to write to disk fast enough.
-
 ### What do you mean not fast enough?
 
 All indexing, as well as the search, require disk space. If the disk can not respond fast enough to a write,
@@ -119,7 +96,7 @@ Yes, very fast
 
 ### Compatible with the Fulltext Search Module?
 
-99% and counting, does that work for you?
+99% and counting, does that work for you? Have a look at the compatibility module
 
 ### Why do I need to name my index?
 
