@@ -121,6 +121,9 @@ class BaseIndexTest extends SapphireTest
         $result = $index->buildSolrQuery($query);
         $filterQuery = $result->getFilterQuery('facet-Parent');
         $this->assertEquals('SiteTree_ParentID:' . $id, $filterQuery->getQuery());
+        $query->setHighlight(['Test']);
+        $result = $index->doSearch($query);
+        $this->assertInstanceOf(Highlighting::class, $result->getHighlight());
     }
 
     public function testStoredFields()

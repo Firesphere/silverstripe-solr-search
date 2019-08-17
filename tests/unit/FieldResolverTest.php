@@ -64,9 +64,7 @@ class FieldResolverTest extends SapphireTest
                 [
                     'name'         => SiteTree::class . '_Content',
                     'field'        => 'Content',
-                    'fullfield'    => 'Content',
                     'origin'       => SiteTree::class,
-                    'class'        => SiteTree::class,
                     'type'         => 'HTMLText',
                     'multi_valued' => false,
                 ],

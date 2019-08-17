@@ -126,27 +126,43 @@ trait DataResolveTrait
         }
         // Inspect component for element $relation
         if ($this->component->hasMethod($this->columnName)) {
-            $relation = $this->columnName;
-            // We hit a direct method that returns a non-object
-            if (!is_object($this->component->$relation())) {
-                return $this->component->$relation();
-            }
-
-            return self::identify($this->component->$relation(), $this->columns);
+            return $this->getMethodValue();
         }
         // Inspect component has attribute
         if ($this->component->hasField($this->columnName)) {
-            $data = $this->component->{$this->columnName};
-            $dbObject = $this->component->dbObject($this->columnName);
-            if ($dbObject) {
-                // @todo do we need to set the value?
-                $dbObject->setValue($data);
-
-                return self::identify($dbObject, $this->columns);
-            }
-
-            return $data;
+            return $this->getFieldValue();
         }
         $this->cannotIdentifyException($this->component, [$this->columnName]);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getMethodValue()
+    {
+        $relation = $this->columnName;
+        // We hit a direct method that returns a non-object
+        if (!is_object($this->component->$relation())) {
+            return $this->component->$relation();
+        }
+
+        return self::identify($this->component->$relation(), $this->columns);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getFieldValue()
+    {
+        $data = $this->component->{$this->columnName};
+        $dbObject = $this->component->dbObject($this->columnName);
+        if ($dbObject) {
+            // @todo do we need to set the value?
+            $dbObject->setValue($data);
+
+            return self::identify($dbObject, $this->columns);
+        }
+
+        return $data;
     }
 }
