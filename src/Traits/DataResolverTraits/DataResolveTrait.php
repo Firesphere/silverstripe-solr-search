@@ -50,6 +50,15 @@ trait DataResolveTrait
     }
 
     /**
+     * @param DataObject|ArrayData|SS_List $component
+     * @param array $columns
+     *
+     * @return void
+     * @throws LogicException
+     */
+    abstract protected function cannotIdentifyException($component, $columns = []): void;
+
+    /**
      * Resolves a DataList values
      * @return array|mixed
      * @throws LogicException
@@ -93,7 +102,7 @@ trait DataResolveTrait
                 );
             }
 
-            $value =  $this->component->$method();
+            $value = $this->component->$method();
         } else {
             $value = $this->component->getValue();
         }
@@ -104,7 +113,6 @@ trait DataResolveTrait
 
         return $value;
     }
-
     /**
      * Resolves a DataObject value
      * @return mixed
@@ -115,19 +123,50 @@ trait DataResolveTrait
         if (empty($this->columnName)) {
             return $this->component->toMap();
         }
+        if ($return = $this->componentHasMethod()) {
+            return $return;
+        }
+        if ($return = $this->componentHasField()) {
+            return $return;
+        }
+
+        $this->cannotIdentifyException($this->component, [$this->columnName]);
+    }
+
+    /**
+     * If a component has a method, return the method outcome
+     *
+     * @return bool|string|array|SS_List
+     */
+    protected function componentHasMethod()
+    {
+        $return = false;
         // Inspect component for element $relation
         if ($this->component->hasMethod($this->columnName)) {
             $relation = $this->columnName;
             // We hit a direct method that returns a non-object
             if (!is_object($this->component->$relation())) {
-                return $this->component->$relation();
+                $return = $this->component->$relation();
+            } else {
+                $return = self::identify($this->component->$relation(), $this->columns);
             }
-
-            return self::identify($this->component->$relation(), $this->columns);
         }
+
+        return $return;
+    }
+
+    /**
+     * If a component has the field, attempt to return the field value
+     *
+     * @return bool|array|string
+     */
+    protected function componentHasField()
+    {
+        $return = false;
         // Inspect component has attribute
         if ($this->component->hasField($this->columnName)) {
             $data = $this->component->{$this->columnName};
+            $return = $data;
             $dbObject = $this->component->dbObject($this->columnName);
             if ($dbObject) {
                 // @todo do we need to set the value?
@@ -135,18 +174,9 @@ trait DataResolveTrait
 
                 return self::identify($dbObject, $this->columns);
             }
-
-            return $data;
         }
-        $this->cannotIdentifyException($this->component, [$this->columnName]);
+
+        return $return;
     }
 
-    /**
-     * @param DataObject|ArrayData|SS_List $component
-     * @param array $columns
-     *
-     * @return void
-     * @throws LogicException
-     */
-    abstract protected function cannotIdentifyException($component, $columns = []): void;
 }

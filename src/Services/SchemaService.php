@@ -51,6 +51,8 @@ class SchemaService extends ViewableData
             $this->getFieldDefinition($field, $return);
         }
 
+        $this->extend('onBeforeFulltextFields', $return);
+
         $this->setStore($store);
 
         return $return;
@@ -67,6 +69,7 @@ class SchemaService extends ViewableData
         $field = $this->introspection->resolveField($fieldName);
         $typeMap = Statics::getTypeMap();
         $storeFields = $this->getStoreFields();
+        $item = [];
         foreach ($field as $name => $options) {
             // Temporary short-name solution until the Introspection is properly solved
             $name = getShortFieldName($name);
@@ -82,6 +85,8 @@ class SchemaService extends ViewableData
             ];
             $return->push($item);
         }
+
+        $this->extend('onAfterFieldDefinition', $return, $item);
     }
 
     /**
@@ -117,6 +122,8 @@ class SchemaService extends ViewableData
 
             $return->push($item);
         }
+
+        $this->extend('onBeforeCopyFields', $return);
 
         return $return;
     }
@@ -162,6 +169,7 @@ class SchemaService extends ViewableData
         foreach ($fields as $field) {
             $this->getFieldDefinition($field, $return);
         }
+        $this->extend('onBeforeFilterFields', $return);
 
         $this->setStore($originalStore);
 

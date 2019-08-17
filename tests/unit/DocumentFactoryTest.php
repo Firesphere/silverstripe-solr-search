@@ -16,7 +16,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ViewableData;
 use Solarium\Core\Client\Client;
-use Solarium\QueryType\Update\Query\Document\Document;
+use Solarium\QueryType\Update\Query\Document;
 
 class DocumentFactoryTest extends SapphireTest
 {

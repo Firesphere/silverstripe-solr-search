@@ -237,10 +237,6 @@ trait BaseIndexTrait
     {
         $this->copyFields[$field] = $options;
 
-        if (!in_array($field, $this->getFulltextFields(), true)) {
-            $this->addFulltextField($field);
-        }
-
         return $this;
     }
 

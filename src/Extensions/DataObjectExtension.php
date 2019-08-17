@@ -212,6 +212,7 @@ class DataObjectExtension extends DataExtension
 
         if ($owner->canView(null)) {
             self::$canViewClasses[$owner->ClassName] = ['1-null'];
+
             // Anyone can view
             return ['1-null'];
         }

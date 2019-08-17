@@ -19,6 +19,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DB;
 use Solarium\Core\Client\Client;
 
 class SolrCoreServiceTest extends SapphireTest
@@ -72,7 +73,7 @@ class SolrCoreServiceTest extends SapphireTest
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testWrongUpdateItems()
     {

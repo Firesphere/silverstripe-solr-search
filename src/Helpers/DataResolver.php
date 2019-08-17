@@ -43,24 +43,6 @@ class DataResolver
     }
 
     /**
-     * @param DataObject|ArrayData|SS_List $component
-     * @param array $columns
-     *
-     * @return void
-     * @throws LogicException
-     */
-    protected function cannotIdentifyException($component, $columns = []): void
-    {
-        throw new LogicException(
-            sprintf(
-                'Cannot identify, "%s" from class "%s"',
-                implode('.', $columns),
-                ClassInfo::shortName($component)
-            )
-        );
-    }
-
-    /**
      * @param DataObject|ArrayData|SS_List|DBField $obj
      * @param array|string $columns
      *
@@ -79,5 +61,23 @@ class DataResolver
         }
 
         throw new LogicException(sprintf('Class: %s is not supported.', ClassInfo::shortName($obj)));
+    }
+
+    /**
+     * @param DataObject|ArrayData|SS_List $component
+     * @param array $columns
+     *
+     * @return void
+     * @throws LogicException
+     */
+    protected function cannotIdentifyException($component, $columns = []): void
+    {
+        throw new LogicException(
+            sprintf(
+                'Cannot identify, "%s" from class "%s"',
+                implode('.', $columns),
+                ClassInfo::shortName($component)
+            )
+        );
     }
 }
