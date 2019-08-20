@@ -1,7 +1,6 @@
-# Enable the following for extensive debug output
-Firesphere\SolrSearch\Indexes\BaseIndex:
-  extensions:
-    - Firesphere\SolrSearch\Compat\SubsitesExtension # Subsites compatibility
 SilverStripe\ORM\DataObject:
   extensions:
     - Firesphere\SolrSearch\Extensions\DataObjectExtension
+Firesphere\SolrSearch\Indexes\BaseIndex:
+  extensions:
+    - Firesphere\SolrSearch\Compat\SubsitesExtension # Subsites compatibility

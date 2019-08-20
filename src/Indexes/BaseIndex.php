@@ -169,9 +169,10 @@ abstract class BaseIndex
      */
     public function doSearch(BaseQuery $query)
     {
-        $this->extend('onBeforeSearch', $query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
+
+        $this->extend('onBeforeSearch', $query, $clientQuery);
 
         $result = $this->client->select($clientQuery);
 
@@ -269,7 +270,7 @@ abstract class BaseIndex
         // Return values to make the key reset
         // Only return unique values
         // And make it all a single array
-        return array_values(
+        $fields = array_values(
             array_unique(
                 array_merge(
                     $this->getFulltextFields(),
@@ -279,6 +280,10 @@ abstract class BaseIndex
                 )
             )
         );
+
+        $this->extend('updateFieldsForIndexing', $fields);
+
+        return $fields;
     }
 
     /**

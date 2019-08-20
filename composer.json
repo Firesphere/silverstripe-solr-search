@@ -25,7 +25,7 @@
     "ext-json": "*",
     "silverstripe/framework": "^4",
     "silverstripe/queuedjobs": "^4",
-    "solarium/solarium": "^4.2",
+    "solarium/solarium": "^5.0",
     "minimalcode/search": "^1.0",
     "guzzlehttp/guzzle": "^6.3"
   },

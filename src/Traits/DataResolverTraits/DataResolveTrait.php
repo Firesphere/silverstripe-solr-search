@@ -50,6 +50,15 @@ trait DataResolveTrait
     }
 
     /**
+     * @param DataObject|ArrayData|SS_List $component
+     * @param array $columns
+     *
+     * @return void
+     * @throws LogicException
+     */
+    abstract protected function cannotIdentifyException($component, $columns = []): void;
+
+    /**
      * Resolves a DataList values
      * @return array|mixed
      * @throws LogicException
@@ -93,7 +102,7 @@ trait DataResolveTrait
                 );
             }
 
-            $value =  $this->component->$method();
+            $value = $this->component->$method();
         } else {
             $value = $this->component->getValue();
         }
@@ -140,13 +149,4 @@ trait DataResolveTrait
         }
         $this->cannotIdentifyException($this->component, [$this->columnName]);
     }
-
-    /**
-     * @param DataObject|ArrayData|SS_List $component
-     * @param array $columns
-     *
-     * @return void
-     * @throws LogicException
-     */
-    abstract protected function cannotIdentifyException($component, $columns = []): void;
 }

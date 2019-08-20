@@ -16,16 +16,18 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBField;
-use Solarium\QueryType\Update\Query\Document\Document;
+use Solarium\QueryType\Update\Query\Document;
 use Solarium\QueryType\Update\Query\Query;
 
 class DocumentFactory
 {
     use Configurable;
+    use Extensible;
     use DocumentFactoryTrait;
     use LoggerTrait;
 
@@ -142,6 +144,8 @@ class DocumentFactory
             return;
         }
 
+        $this->extend('onBeforeAddField', $field);
+
         try {
             $valuesForField = [DataResolver::identify($object, $field['field'])];
         } catch (Exception $e) {
@@ -155,6 +159,7 @@ class DocumentFactory
             if ($value === null) {
                 continue;
             }
+            $this->extend('onBeforeAddDoc', $field, $value);
             $this->addToDoc($doc, $field, $type, $value);
         }
     }
@@ -204,7 +209,7 @@ class DocumentFactory
 
         $name = getShortFieldName($field['name']);
 
-        $doc->addField($name, $value);
+        $doc->addField($name, $value, null, Document::MODIFIER_SET);
     }
 
     /**

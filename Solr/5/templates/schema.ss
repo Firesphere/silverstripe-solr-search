@@ -56,16 +56,16 @@
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
         <field name='ViewStatus' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-<%--        Copyfields--%>
+        <!--        Copyfields -->
         <% loop $CopyFields %>
             <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
         <% end_loop %>
-<%--        Fulltext fields--%>
+        <!--        Fulltext fields -->
         <% loop $FulltextFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
 
-<%--        Filter/Facet fields--%>
+        <!--        Filter/Facet fields -->
         <% loop $FilterFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
