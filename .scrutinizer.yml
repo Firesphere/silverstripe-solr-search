@@ -10,7 +10,7 @@ build:
         directories:
           - vendor/
 filter:
-  paths: ["src/*", "tests/*"]
+  paths: ["src/*"]
 
 tools:
   external_code_coverage: true

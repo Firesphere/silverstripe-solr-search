@@ -6,8 +6,13 @@ namespace Firesphere\SolrSearch\Traits;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
+use Solarium\Component\Facet\Field;
 use Solarium\QueryType\Select\Query\Query;
 
+/**
+ * Trait QueryComponentFacetTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait QueryComponentFacetTrait
 {
     /**
@@ -33,7 +38,9 @@ trait QueryComponentFacetTrait
         foreach ($this->index->getFacetFields() as $class => $config) {
             $shortClass = getShortFieldName($class);
             $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
-            $facets->createFacetField('facet-' . $config['Title'])->setField($field);
+            /** @var Field $facet */
+            $facet = $facets->createFacetField('facet-' . $config['Title']);
+            $facet->setField($field);
         }
         // Count however, comes from the query
         $facets->setMinCount($this->query->getFacetsMinCount());

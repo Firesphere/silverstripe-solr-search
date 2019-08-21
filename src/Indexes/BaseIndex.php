@@ -10,8 +10,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\Traits\BaseIndexTrait;
-use Firesphere\SolrSearch\Traits\GetterSetterTrait;
+use Firesphere\SolrSearch\Traits;
 use LogicException;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -34,8 +33,8 @@ abstract class BaseIndex
 {
     use Extensible;
     use Configurable;
-    use GetterSetterTrait;
-    use BaseIndexTrait;
+    use Traits\GetterSetterTrait;
+    use Traits\BaseIndexTrait;
 
     private static $fieldTypes = [
         'FulltextFields',

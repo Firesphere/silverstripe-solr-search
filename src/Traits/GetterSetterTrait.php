@@ -74,7 +74,7 @@ trait GetterSetterTrait
      * @param int|null $boost
      * @return $this
      */
-    public function addBoostedField($field, $options = [], $boost = null): self
+    public function addBoostedField($field, $options = [], $boost = null)
     {
         if ($boost === null && is_int($options)) {
             $boost = $options;

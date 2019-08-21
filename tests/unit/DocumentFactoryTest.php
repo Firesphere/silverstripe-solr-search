@@ -189,8 +189,6 @@ class DocumentFactoryTest extends SapphireTest
 
     public function testSanitiseField()
     {
-        $factory = new DocumentFactory();
-
         $this->assertEquals('hello', getShortFieldName('Test\\Name\\hello'));
     }
 

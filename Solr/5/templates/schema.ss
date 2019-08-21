@@ -46,9 +46,7 @@
 -->
 
 <schema name="$IndexName" version="1.5">
-
     $Types
-
     <fields>
         <%-- Default fields, needed for all items --%>
         <field name='$IDField' type='string' indexed='true' stored='true' required='true'/>
@@ -56,19 +54,22 @@
         <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
         <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
         <field name='ViewStatus' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-        <!--        Copyfields -->
+        <!-- Copyfields -->
         <% loop $CopyFields %>
             <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
         <% end_loop %>
-        <!--        Fulltext fields -->
+        <!-- End Copyfields -->
+        <!-- Fulltext fields -->
         <% loop $FulltextFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
+        <!-- End Fulltext fields -->
 
-        <!--        Filter/Facet fields -->
+        <!-- Filter/Facet fields -->
         <% loop $FilterFieldDefinitions %>
             <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
         <% end_loop %>
+        <!-- End Filter/Facet fields -->
 
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
     </fields>
@@ -82,6 +83,4 @@
     <df>$DefaultField</df>
 
     <solrQueryParser q.op="OR"/>
-
-
 </schema>

@@ -50,7 +50,6 @@ class FieldResolver
      */
     public function resolveField($field)
     {
-        $fullfield = str_replace('.', '_', $field);
         $sources = $this->index->getClasses();
         $buildSources = [];
 
@@ -77,7 +76,7 @@ class FieldResolver
             }
         }
 
-        $found = $this->getFieldOptions($field, $buildSources, $fullfield, $found);
+        $found = $this->getFieldOptions($field, $buildSources, $found);
 
         return $found;
     }
@@ -221,14 +220,11 @@ class FieldResolver
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
             return $hasOne;
         }
+        $options['multi_valued'] = true;
         if ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-            $options['multi_valued'] = true;
-
             return $hasMany;
         }
         if ($key = $schema->manyManyComponent($className, $lookup)) {
-            $options['multi_valued'] = true;
-
             return $key['childClass'];
         }
 
@@ -238,13 +234,14 @@ class FieldResolver
     /**
      * @param $field
      * @param array $sources
-     * @param $fullfield
      * @param array $found
      * @return array
      * @throws ReflectionException
      */
-    protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
+    protected function getFieldOptions($field, array $sources, array $found): array
     {
+        $fullfield = str_replace('.', '_', $field);
+
         foreach ($sources as $class => $fieldOptions) {
             if (!empty($this->found[$class . '_' . $fullfield])) {
                 return $this->found[$class . '_' . $fullfield];
@@ -257,7 +254,7 @@ class FieldResolver
                 $type = $this->getType($fields, $field, $dataclass);
 
                 if ($type) {
-                    // Don't search through child classes of a class we matched on. TODO: Should we?
+                    // Don't search through child classes of a class we matched on.
                     $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
                     // Trim arguments off the type string
                     if (preg_match('/^(\w+)\(/', $type, $match)) {
@@ -287,35 +284,34 @@ class FieldResolver
         }
 
         $singleton = singleton($dataclass);
-        $type = $singleton->castingClass($field);
-        if (!$type) {
-            // @todo should this be null?
-            $type = 'String';
-        }
 
-        return $type;
+        return $singleton->castingClass($field);
     }
 
     /**
      * @param string $field
-     * @param string $fullfield
+     * @param string $fullField
      * @param array $fieldOptions
      * @param string $dataclass
      * @param string $type
      * @param array $found
      * @return array
      */
-    private function getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found): array
-    {
+    private function getFoundOriginData(
+        $field,
+        $fullField,
+        $fieldOptions,
+        $dataclass,
+        $type,
+        $found
+    ): array {
         // Get the origin
         $origin = $fieldOptions['origin'] ?? $dataclass;
 
-        $found["{$origin}_{$fullfield}"] = [
-            'name'         => "{$origin}_{$fullfield}",
+        $found["{$origin}_{$fullField}"] = [
+            'name'         => "{$origin}_{$fullField}",
             'field'        => $field,
-            'fullfield'    => $fullfield,
             'origin'       => $origin,
-            'class'        => $dataclass,
             'type'         => $type,
             'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
         ];

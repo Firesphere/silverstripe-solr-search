@@ -53,6 +53,15 @@ trait BaseIndexTrait
     ];
 
     /**
+     * Add an abstract for the add Boosted Field to keep things consistent
+     * @param string $field
+     * @param array|int $options
+     * @param null|int $boost
+     * @return mixed
+     */
+    abstract public function addBoostedField($field, $options = [], $boost = null);
+
+    /**
      * @return array
      */
     public function getCopyFields(): array

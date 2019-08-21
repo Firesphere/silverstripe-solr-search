@@ -260,6 +260,6 @@ class QueryComponentFactory
         $spellcheck->setBuild(true);
         $spellcheck->setCollate(true);
         $spellcheck->setExtendedResults(true);
-        $spellcheck->setCollateExtendedResults('true');
+        $spellcheck->setCollateExtendedResults(true);
     }
 }

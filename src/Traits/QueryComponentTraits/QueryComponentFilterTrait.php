@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
+use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use Solarium\QueryType\Select\Query\Query;
 
@@ -40,6 +41,7 @@ trait QueryComponentFilterTrait
     {
         // Filter by what the user is allowed to see
         $viewIDs = ['1-null']; // null is always an option as that means publicly visible
+        /** @var Member $currentUser */
         $currentUser = Security::getCurrentUser();
         if ($currentUser && $currentUser->exists()) {
             $viewIDs[] = '1-' . $currentUser->ID;
