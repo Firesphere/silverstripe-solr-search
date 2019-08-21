@@ -287,13 +287,8 @@ class FieldResolver
         }
 
         $singleton = singleton($dataclass);
-        $type = $singleton->castingClass($field);
-        if (!$type) {
-            // @todo should this be null?
-            $type = 'String';
-        }
 
-        return $type;
+        return $singleton->castingClass($field);
     }
 
     /**
