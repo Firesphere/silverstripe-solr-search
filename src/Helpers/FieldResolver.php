@@ -220,14 +220,11 @@ class FieldResolver
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
             return $hasOne;
         }
+        $options['multi_valued'] = true;
         if ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-            $options['multi_valued'] = true;
-
             return $hasMany;
         }
         if ($key = $schema->manyManyComponent($className, $lookup)) {
-            $options['multi_valued'] = true;
-
             return $key['childClass'];
         }
 
