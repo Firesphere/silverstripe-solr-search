@@ -148,7 +148,7 @@ class SolrConfigureTask extends BuildTask
      * @throws GuzzleException
      * @throws ValidationException
      */
-    protected function logException($index, Exception $error): void
+    private function logException($index, Exception $error): void
     {
         $this->getLogger()->error($error);
         $msg = sprintf(
