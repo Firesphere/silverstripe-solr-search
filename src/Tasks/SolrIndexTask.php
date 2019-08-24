@@ -11,17 +11,21 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
-use SilverStripe\Control;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev;
-use SilverStripe\ORM;
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
 
 /**
  * Class SolrIndexTask
  * @package Firesphere\SolrSearch\Tasks
  */
-class SolrIndexTask extends Dev\BuildTask
+class SolrIndexTask extends BuildTask
 {
     use LoggerTrait;
     /**
@@ -60,7 +64,7 @@ class SolrIndexTask extends Dev\BuildTask
         Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
-        $this->setDebug(Control\Director::isDev() || Control\Director::is_cli());
+        $this->setDebug(Director::isDev() || Director::is_cli());
     }
 
     /**
@@ -89,7 +93,7 @@ class SolrIndexTask extends Dev\BuildTask
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
-     * @param Control\HTTPRequest $request
+     * @param HTTPRequest $request
      * @return int|bool
      * @throws Exception
      * @throws GuzzleException
@@ -127,7 +131,7 @@ class SolrIndexTask extends Dev\BuildTask
     }
 
     /**
-     * @param Control\HTTPRequest $request
+     * @param HTTPRequest $request
      * @return array
      */
     protected function taskSetup($request): array
@@ -167,7 +171,7 @@ class SolrIndexTask extends Dev\BuildTask
     {
         if (!empty($vars['clear'])) {
             $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
-            $this->service->doManipulate(ORM\ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
+            $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
         }
 
         return $vars;
@@ -199,7 +203,7 @@ class SolrIndexTask extends Dev\BuildTask
      * @param int $group
      * @return int
      * @throws GuzzleException
-     * @throws ORM\ValidationException
+     * @throws ValidationException
      */
     private function indexClass($isGroup, $class, BaseIndex $index, int $group): int
     {
@@ -233,10 +237,10 @@ class SolrIndexTask extends Dev\BuildTask
     private function doReindex($group, $class, $batchLength, BaseIndex $index): void
     {
         // Generate filtered list of local records
-        $baseClass = ORM\DataObject::getSchema()->baseDataClass($class);
+        $baseClass = DataObject::getSchema()->baseDataClass($class);
         $client = $index->getClient();
-        /** @var ORM\DataList|ORM\DataObject[] $items */
-        $items = ORM\DataObject::get($baseClass)
+        /** @var DataList|DataObject[] $items */
+        $items = DataObject::get($baseClass)
             ->sort('ID ASC')
             ->limit($batchLength, ($group * $batchLength));
         $update = $client->createUpdate();
@@ -253,7 +257,7 @@ class SolrIndexTask extends Dev\BuildTask
      * @param int $group
      * @param Exception $exception
      * @throws GuzzleException
-     * @throws ORM\ValidationException
+     * @throws ValidationException
      */
     private function logException($index, int $group, Exception $exception)
     {

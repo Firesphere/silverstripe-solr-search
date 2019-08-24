@@ -166,6 +166,7 @@ class DataObjectExtension extends DataExtension
 
     /**
      * @throws ValidationException
+     * @throws GuzzleException
      */
     public function onAfterDelete(): void
     {

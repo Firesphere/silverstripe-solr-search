@@ -79,17 +79,16 @@ class SolrLogger
         foreach ($arrayResponse['history']['docs'] as $error) {
             $filter = [
                 'Timestamp' => $error['time'],
-                'Level'     => $error['level'],
                 'Index'     => $error['core'],
+                'Level'     => $error['level'],
             ];
             if (!SolrLog::get()->filter($filter)->exists()) {
-                SolrLog::create([
-                    'Timestamp' => $error['time'],
-                    'Message'   => $error['message'],
-                    'Index'     => $error['core'],
-                    'Type'      => $type,
-                    'Level'     => $error['level'],
-                ])->write();
+                $logData = [
+                    'Message' => $error['message'],
+                    'Type'    => $type,
+                ];
+                $log = array_merge($filter, $logData);
+                SolrLog::create($log)->write();
             }
         }
     }

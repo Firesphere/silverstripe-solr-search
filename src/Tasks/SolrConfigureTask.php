@@ -8,7 +8,8 @@ use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\Stores;
+use Firesphere\SolrSearch\Stores\FileConfigStore;
+use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
@@ -16,7 +17,6 @@ use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ValidationException;
 
 /**
@@ -28,9 +28,9 @@ class SolrConfigureTask extends BuildTask
     use LoggerTrait;
 
     protected static $storeModes = [
-        'file' => Stores\FileConfigStore::class,
-        'post' => Stores\PostConfigStore::class,
-//        'webdav' => Stores\WebdavConfigStore::class,
+        'file' => FileConfigStore::class,
+        'post' => PostConfigStore::class,
+//        'webdav' => WebdavConfigStore::class,
     ];
     private static $segment = 'SolrConfigureTask';
     protected $title = 'Configure Solr cores';
@@ -152,8 +152,8 @@ class SolrConfigureTask extends BuildTask
     {
         $this->getLogger()->error($error);
         $msg = sprintf(
-            "Error loading core %s," . PHP_EOL .
-            "Please log in to the CMS to find out more about Configuration errors" . PHP_EOL .
+            'Error loading core %s,' . PHP_EOL .
+            'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL .
             'Last known error:',
             $index
         );
