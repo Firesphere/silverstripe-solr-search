@@ -53,10 +53,6 @@ class SolrLoggerTest extends SapphireTest
             'AwesomeTest',
             $output
         );
-        $this->assertContains(
-            'CircleCITestIndex',
-            $output
-        );
         ob_end_clean();
     }
 }
