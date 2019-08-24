@@ -16,6 +16,7 @@ use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ValidationException;
 
 /**
@@ -151,8 +152,8 @@ class SolrConfigureTask extends BuildTask
     {
         $this->getLogger()->error($error);
         $msg = sprintf(
-            "Error loading core %s,\n" .
-            "Please log in to the CMS to find out more about Configuration errors\n" .
+            "Error loading core %s," . PHP_EOL .
+            "Please log in to the CMS to find out more about Configuration errors" . PHP_EOL .
             'Last known error:',
             $index
         );

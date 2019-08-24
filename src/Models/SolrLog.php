@@ -53,7 +53,7 @@ class SolrLog extends DataObject
      */
     public function getLastErrorLine()
     {
-        $lines = explode("\n", $this->Message);
+        $lines = explode(PHP_EOL, $this->Message);
 
         return $lines[0];
     }
