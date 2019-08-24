@@ -15,7 +15,7 @@ class Synonyms
     use Configurable;
 
     /**
-     * @var Synonym list
+     * @var array Synonym list
      */
     protected static $synonyms;
 
