@@ -29,7 +29,7 @@ class Synonyms
             $result[] = implode(',', $synonym);
         }
 
-        return implode("\n", $result) . "\n";
+        return implode(PHP_EOL, $result) . PHP_EOL;
     }
 
     public static function getSynonyms($defaults = true)

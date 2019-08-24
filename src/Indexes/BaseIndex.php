@@ -3,14 +3,18 @@
 
 namespace Firesphere\SolrSearch\Indexes;
 
+use Exception;
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
+use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\Traits;
+use Firesphere\SolrSearch\Traits\GetterSetterTrait;
+use Firesphere\SolrSearch\Traits\BaseIndexTrait;
+use GuzzleHttp\Exception\GuzzleException;
 use LogicException;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -18,6 +22,7 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
@@ -33,8 +38,8 @@ abstract class BaseIndex
 {
     use Extensible;
     use Configurable;
-    use Traits\GetterSetterTrait;
-    use Traits\BaseIndexTrait;
+    use GetterSetterTrait;
+    use BaseIndexTrait;
 
     private static $fieldTypes = [
         'FulltextFields',
@@ -165,6 +170,8 @@ abstract class BaseIndex
      *
      * @param BaseQuery $query
      * @return SearchResult|ArrayData|mixed
+     * @throws GuzzleException
+     * @throws ValidationException
      */
     public function doSearch(BaseQuery $query)
     {
@@ -173,7 +180,12 @@ abstract class BaseIndex
 
         $this->extend('onBeforeSearch', $query, $clientQuery);
 
-        $result = $this->client->select($clientQuery);
+        try {
+            $result = $this->client->select($clientQuery);
+        } catch (Exception $e) {
+            $logger = new SolrLogger();
+            $logger->saveSolrLog('Query');
+        }
 
         $this->rawQuery = $result;
 
