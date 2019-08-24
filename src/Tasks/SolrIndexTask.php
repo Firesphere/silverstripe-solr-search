@@ -213,7 +213,7 @@ class SolrIndexTask extends Dev\BuildTask
                 $this->doReindex($group, $class, $batchLength, $index);
             } catch (Exception $error) {
                 $this->logException($index->getIndexName(), $group, $error);
-
+                $group++;
                 continue;
             }
             $group++;
