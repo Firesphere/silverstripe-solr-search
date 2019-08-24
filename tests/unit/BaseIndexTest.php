@@ -300,6 +300,22 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals($expected, $this->index->getCopyFields());
     }
 
+    public function testAddFulltextField()
+    {
+        $this->index->addFulltextField('myfield', null, ['boost' => 2]);
+
+        $this->assertArrayHasKey('myfield', $this->index->getBoostedFields());
+        $this->assertEquals(2, $this->index->getBoostedFields()['myfield']);
+    }
+
+    public function testAddSortField()
+    {
+        $this->index->addSortField('TestField');
+
+        $this->assertContains('TestField', $this->index->getFulltextFields());
+        $this->assertContains('TestField', $this->index->getSortFields());
+    }
+
     protected function setUp()
     {
         $task = new SolrConfigureTask();

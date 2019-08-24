@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Jobs;
 use Exception;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
+use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -50,6 +51,7 @@ class SolrIndexJob extends AbstractQueuedJob
      * Do some processing yourself!
      * @return self
      * @throws Exception
+     * @throws GuzzleException
      */
     public function process()
     {
