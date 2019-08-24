@@ -252,11 +252,10 @@ class SolrIndexTask extends Dev\BuildTask
      * @param string $index
      * @param int $group
      * @param Exception $exception
-     * @return int
      * @throws GuzzleException
      * @throws ORM\ValidationException
      */
-    private function logException($index, int $group, Exception $exception): int
+    private function logException($index, int $group, Exception $exception)
     {
         $this->getLogger()->error($exception->getMessage());
         $msg = sprintf(
