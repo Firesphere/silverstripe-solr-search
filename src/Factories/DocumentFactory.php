@@ -25,7 +25,7 @@ use Solarium\QueryType\Update\Query\Document;
 use Solarium\QueryType\Update\Query\Query;
 
 /**
- * @summary Build documents to be pushed to Solr
+ * Factory to push documents to be pushed to Solr
  */
 class DocumentFactory
 {
@@ -44,11 +44,13 @@ class DocumentFactory
         'tdouble'
     ];
     /**
+     * Debug this build
      * @var bool
      */
     protected $debug = false;
 
     /**
+     * Where to log
      * @var null|LoggerInterface
      */
     protected $logger;
@@ -101,6 +103,7 @@ class DocumentFactory
     }
 
     /**
+     * Add fields that should always be included
      * @param Document $doc
      * @param DataObject|DataObjectExtension $item
      */
@@ -114,6 +117,7 @@ class DocumentFactory
     }
 
     /**
+     * Create the required record for a field
      * @param $fields
      * @param Document $doc
      * @param DataObject $item
@@ -135,6 +139,7 @@ class DocumentFactory
     }
 
     /**
+     * Add a single field to the Solr index
      * @param Document $doc
      * @param DataObject $object
      * @param          $field
@@ -199,6 +204,7 @@ class DocumentFactory
     }
 
     /**
+     * Push field to a document
      * @param Document $doc
      * @param array $field
      * @param string $type
@@ -217,6 +223,7 @@ class DocumentFactory
     }
 
     /**
+     * Are we debugging?
      * @return bool
      */
     public function isDebug(): bool
@@ -225,6 +232,7 @@ class DocumentFactory
     }
 
     /**
+     * Set to true if debugging should be enabled
      * @param bool $debug
      * @return DocumentFactory
      */
