@@ -29,7 +29,7 @@ class ConfigStoreTest extends SapphireTest
 
     public function testFileConstructGood()
     {
-        $store = new FileConfigStore(['path' => 'test']);
+        $store = new FileConfigStore(['uri' => 'http://test.com', 'path' => 'test']);
         $this->assertEquals(Director::baseFolder() . '/test/lol', $store->instanceDir('lol'));
 
         $this->assertEquals(['path' => Director::baseFolder() . '/test'], $store->getConfig());
