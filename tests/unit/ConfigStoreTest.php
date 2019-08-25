@@ -32,7 +32,13 @@ class ConfigStoreTest extends SapphireTest
         $store = new FileConfigStore(['uri' => 'http://test.com', 'path' => 'test']);
         $this->assertEquals(Director::baseFolder() . '/test/lol', $store->instanceDir('lol'));
 
-        $this->assertEquals(['path' => Director::baseFolder() . '/test'], $store->getConfig());
+        $this->assertEquals(
+            [
+                'path' => Director::baseFolder() . '/test',
+                'uri'  => 'http://test.com'
+            ],
+            $store->getConfig()
+        );
     }
 
     /**
@@ -45,7 +51,7 @@ class ConfigStoreTest extends SapphireTest
 
     public function testPostConstructGood()
     {
-        $store = new PostConfigStore(['path' => 'test']);
+        $store = new PostConfigStore(['uri' => 'http://test.com', 'path' => 'test']);
 
         $this->assertEquals('test/', $store->getPath());
 
