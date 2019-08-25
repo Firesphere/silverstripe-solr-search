@@ -8,6 +8,7 @@ use SilverStripe\ORM\DataExtension;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\SubsitesExtension
+ * Add support for subsites
  *
  * @property BaseIndex|SubsitesExtension $owner
  */

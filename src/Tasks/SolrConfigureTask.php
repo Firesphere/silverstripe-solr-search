@@ -153,8 +153,7 @@ class SolrConfigureTask extends BuildTask
         $this->getLogger()->error($error);
         $msg = sprintf(
             'Error loading core %s,' . PHP_EOL .
-            'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL .
-            'Last known error:',
+            'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL,
             $index
         );
         SolrLogger::logMessage('ERROR', $msg, $index);

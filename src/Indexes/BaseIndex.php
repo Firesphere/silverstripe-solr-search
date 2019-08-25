@@ -41,6 +41,11 @@ abstract class BaseIndex
     use GetterSetterTrait;
     use BaseIndexTrait;
 
+    /**
+     * Field types that can be added
+     * Used in init to call build methods from configuration yml
+     * @array
+     */
     private static $fieldTypes = [
         'FulltextFields',
         'SortFields',
@@ -131,7 +136,7 @@ abstract class BaseIndex
             if (!count($this->getClasses())) {
                 Deprecation::notice(
                     '5',
-                    'You are running init at the top of your method. The new API requires it to be at the bottom'
+                    'No classes to add to index found, did you maybe call parent::init() too early?'
                 );
             }
 

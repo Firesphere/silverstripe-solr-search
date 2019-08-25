@@ -62,7 +62,7 @@ class SolrIndexTask extends BuildTask
         parent::__construct();
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
-        Versioned::set_reading_mode(Versioned::DRAFT . '.' . Versioned::LIVE);
+        Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
         $this->setDebug(Director::isDev() || Director::is_cli());
@@ -117,7 +117,7 @@ class SolrIndexTask extends BuildTask
                 continue;
             }
 
-            $vars = $this->clearIndex($vars, $indexName, $index);
+            $this->clearIndex($vars, $index);
 
             $groups = $this->indexClassForIndex($classes, $isGroup, $index, $group);
         }
@@ -162,20 +162,18 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Clear the given index if a full re-index is needed
+     *
      * @param $vars
-     * @param $indexName
      * @param BaseIndex $index
-     * @return mixed
      * @throws Exception
      */
-    protected function clearIndex($vars, $indexName, BaseIndex $index)
+    public function clearIndex($vars, BaseIndex $index)
     {
         if (!empty($vars['clear'])) {
-            $this->getLogger()->info(sprintf('Clearing index %s', $indexName));
+            $this->getLogger()->info(sprintf('Clearing index %s', $index->getIndexName()));
             $this->service->doManipulate(ArrayList::create([]), SolrCoreService::DELETE_TYPE_ALL, $index);
         }
-
-        return $vars;
     }
 
     /**
@@ -264,9 +262,8 @@ class SolrIndexTask extends BuildTask
     {
         $this->getLogger()->error($exception->getMessage());
         $msg = sprintf(
-            "Error indexing core %s on group %s," . PHP_EOL .
-            "Please log in to the CMS to find out more about Indexing errors" . PHP_EOL .
-            'Last known error:',
+            'Error indexing core %s on group %s,' . PHP_EOL .
+            'Please log in to the CMS to find out more about Indexing errors' . PHP_EOL,
             $index,
             $group
         );

@@ -57,7 +57,8 @@ class SolrLogger
             ->first();
 
         $err = ($lastError === null) ? 'Unknown' : $lastError->getLastErrorLine();
-        Debug::dump($message . PHP_EOL . $err);
+        $message .= 'Last known error:' . PHP_EOL . $err;
+        Debug::dump($message);
     }
 
     /**
