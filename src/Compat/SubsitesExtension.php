@@ -13,6 +13,9 @@ use SilverStripe\ORM\DataExtension;
  */
 class SubsitesExtension extends DataExtension
 {
+    /**
+     * Add the subsite ID for each page, if subsites is enabled.
+     */
     public function onBeforeInit()
     {
         // Add default support for Subsites.
