@@ -59,6 +59,11 @@ class SolrCoreService
     /**
      * @var array
      */
+    protected $baseIndexes = [];
+
+    /**
+     * @var array
+     */
     protected $validIndexes = [];
 
     /**
@@ -83,6 +88,7 @@ class SolrCoreService
         $this->client = new Client($config);
         $this->client->setAdapter(new Guzzle());
         $this->admin = $this->client->createCoreAdmin();
+        $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
         $this->filterIndexes();
     }
 
@@ -91,10 +97,9 @@ class SolrCoreService
      */
     protected function filterIndexes(): void
     {
-        $indexes = ClassInfo::subclassesFor(BaseIndex::class);
         $enabledIndexes = static::config()->get('indexes');
-        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : $indexes;
-        foreach ($indexes as $subindex) {
+        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : $this->baseIndexes;
+        foreach ($this->baseIndexes as $subindex) {
             // If the config of indexes is set, and the requested index isn't in it, skip addition
             // Or, the index simply doesn't exist, also a valid option
             if (!in_array($subindex, $enabledIndexes, true)) {

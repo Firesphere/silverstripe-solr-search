@@ -81,10 +81,22 @@ class ConfigStoreTest extends SapphireTest
         $mock = new MockHandler([
             new Response(200, ['X-Foo' => 'Bar'], $dummyData),
             new Response(200, ['X-Foo' => 'Bar'], $dummyData),
+            new Response(200, ['X-Foo' => 'Bar'], $dummyData),
         ]);
 
         $fileUpload = $store->uploadFile('TestIndex', __DIR__ . '/../fixtures/solrResponse.json', $mock)->getBody();
         $this->assertEquals($dummyData, $fileUpload);
+        $stringUpload = $store->uploadString('TestIndex', 'solr.xml', '<xml>test</xml>', $mock)->getBody();
+        $this->assertEquals($dummyData, $stringUpload);
+        $store = new PostConfigStore([
+            'uri'  => 'http://localhost',
+            'path' => 'test',
+            'auth' => [
+                'username' => 'test',
+                'password' => 'test'
+            ]
+        ]);
+
         $stringUpload = $store->uploadString('TestIndex', 'solr.xml', '<xml>test</xml>', $mock)->getBody();
         $this->assertEquals($dummyData, $stringUpload);
     }
