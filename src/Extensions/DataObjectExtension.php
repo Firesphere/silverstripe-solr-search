@@ -99,9 +99,6 @@ class DataObjectExtension extends DataExtension
             Versioned::set_reading_mode($mode);
         } catch (Exception $error) {
             Versioned::set_reading_mode($mode);
-            $solrLogger = new SolrLogger();
-            $solrLogger->saveSolrLog('Config');
-
             $this->registerException($ids, $record, $error);
         }
     }
