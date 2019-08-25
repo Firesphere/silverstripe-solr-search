@@ -44,7 +44,7 @@ class Synonyms
     public static function getSynonyms($defaults = true)
     {
         // If we want the defaults, load it in to the array, otherwise return an empty array
-        $usuk = $defaults ? static::config()->get('usuk') : [];
+        $usuk = $defaults ? static::config()->get('usuk')['synonyms'] : [];
         $synonyms = static::config()->get('synonyms') ?: [];
 
         return array_merge($usuk, $synonyms);

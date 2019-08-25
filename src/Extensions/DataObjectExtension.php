@@ -29,6 +29,8 @@ use SilverStripe\Versioned\Versioned;
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
  *
+ * Extend every DataObject with the option to update the index.
+ *
  * @property CarouselItem|BlocksPage|Item|File|Image|SiteConfig|ChangeSetItem|SecurityAlert|Package|ElementalArea|ElementForm|Blog|SiteTree|Group|Member|EditableCustomRule|EditableFormField|UserDefinedForm|EditableOption|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
@@ -36,14 +38,17 @@ class DataObjectExtension extends DataExtension
     public const WRITE = 'write';
     public const DELETE = 'delete';
     /**
+     * canView cache
      * @var array
      */
     public static $canViewClasses = [];
     /**
+     * Member cache
      * @var DataList
      */
     protected static $members;
     /**
+     * Don't check these classes
      * @var array
      */
     protected static $excludedClasses = [
@@ -53,6 +58,7 @@ class DataObjectExtension extends DataExtension
     ];
 
     /**
+     * Update the index after write.
      * @throws ValidationException
      */
     public function onAfterWrite()
@@ -73,6 +79,7 @@ class DataObjectExtension extends DataExtension
     /**
      * @param DataObject $owner
      * @throws ValidationException
+     * @throws GuzzleException
      */
     protected function pushToSolr(DataObject $owner): void
     {
@@ -167,6 +174,7 @@ class DataObjectExtension extends DataExtension
 
     /**
      * @throws ValidationException
+     * @throws GuzzleException
      */
     public function onAfterPublish()
     {
