@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Stores;
 
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use GuzzleHttp\Client;
+use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Solarium\Exception\RuntimeException;
 
@@ -28,6 +29,9 @@ class PostConfigStore implements ConfigStore
         if (empty($config)) {
             throw new RuntimeException('No config defined', 1);
         }
+        if (!isset($config['uri'])) {
+            throw new LogicException('No URI endpoint defined');
+        }
         if (!isset($config['path'])) {
             $config['path'] = '/';
         }
@@ -43,11 +47,12 @@ class PostConfigStore implements ConfigStore
      * Upload a file to Solr for index $index
      * @param $index string - The name of an index (which is also used as the name of the Solr core for the index)
      * @param $file string - A path to a file to upload. The base name of the file will be used on the remote side
+     * @param null|\Countable $handler A handler used for testing, not to be used in Live environments
      * @return ResponseInterface
      */
-    public function uploadFile($index, $file)
+    public function uploadFile($index, $file, $handler = null)
     {
-        return $this->uploadString($index, $file, file_get_contents($file));
+        return $this->uploadString($index, $file, file_get_contents($file), $handler);
     }
 
     /**
@@ -55,15 +60,16 @@ class PostConfigStore implements ConfigStore
      * @param string $index - The name of an index (which is also used as the name of the Solr core for the index)
      * @param string $filename - The base name of the file to use on the remote side
      * @param string $string - The content to upload
+     * @param null|\Countable $handler A handler used for testing, not to be used in Live environments
      * @return ResponseInterface
      */
-    public function uploadString($index, $filename, $string)
+    public function uploadString($index, $filename, $string, $handler = null)
     {
         $info = pathinfo($filename);
         $clientConfig = [
             'base_uri' => $this->config['uri'],
             'headers'  => [
-                'Content-Type' => static::$extensions[$info['extension']]
+                'Content-Type' => static::$extensions[$info['extension']] ?? 'text/plain'
             ]
         ];
         // Add auth to the post if needed
@@ -72,6 +78,10 @@ class PostConfigStore implements ConfigStore
                 $this->config['auth']['username'],
                 $this->config['auth']['password'],
             ];
+        }
+        // For testing purposes, set the handler. Usually not used
+        if ($handler) {
+            $clientConfig['handler'] = $handler;
         }
 
         $client = new Client($clientConfig);
