@@ -8,7 +8,6 @@ use Firesphere\SolrSearch\Models\SolrLog;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrLoggerTest extends SapphireTest

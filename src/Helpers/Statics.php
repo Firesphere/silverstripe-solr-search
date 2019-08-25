@@ -5,6 +5,11 @@ namespace Firesphere\SolrSearch\Helpers;
 
 use SilverStripe\Core\Config\Configurable;
 
+/**
+ * Class Statics
+ * Typemap static helper
+ * @package Firesphere\SolrSearch\Helpers
+ */
 class Statics
 {
     use Configurable;

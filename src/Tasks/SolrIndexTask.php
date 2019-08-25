@@ -23,6 +23,7 @@ use SilverStripe\Versioned\Versioned;
 
 /**
  * Class SolrIndexTask
+ * @description Index items to Solr through a tasks
  * @package Firesphere\SolrSearch\Tasks
  */
 class SolrIndexTask extends BuildTask

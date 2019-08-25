@@ -9,7 +9,6 @@ use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
-use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
@@ -18,10 +17,8 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
-use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
-use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
 use SilverStripe\Versioned\Versioned;
@@ -31,7 +28,7 @@ use SilverStripe\Versioned\Versioned;
  *
  * Extend every DataObject with the option to update the index.
  *
- * @property CarouselItem|BlocksPage|Item|File|Image|SiteConfig|ChangeSetItem|SecurityAlert|Package|ElementalArea|ElementForm|Blog|SiteTree|Group|Member|EditableCustomRule|EditableFormField|UserDefinedForm|EditableOption|DataObjectExtension $owner
+ * @property DataObject|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {
@@ -60,6 +57,7 @@ class DataObjectExtension extends DataExtension
     /**
      * Update the index after write.
      * @throws ValidationException
+     * @throws GuzzleException
      */
     public function onAfterWrite()
     {
