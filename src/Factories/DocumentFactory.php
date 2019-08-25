@@ -24,6 +24,9 @@ use SilverStripe\ORM\FieldType\DBField;
 use Solarium\QueryType\Update\Query\Document;
 use Solarium\QueryType\Update\Query\Query;
 
+/**
+ * @summary Build documents to be pushed to Solr
+ */
 class DocumentFactory
 {
     use Configurable;

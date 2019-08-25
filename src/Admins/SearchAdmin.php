@@ -9,6 +9,8 @@ use SilverStripe\Admin\ModelAdmin;
  * Class \Firesphere\SolrSearch\Admins\SearchAdmin
  *
  * @todo implement search administration, e.g. Elevation and Facets
+ * @summary Manage or see the Solr configuration. Default implementation of SilverStripe ModelAdmin
+ * Nothing to see here
  */
 class SearchAdmin extends ModelAdmin
 {
