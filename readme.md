@@ -8,10 +8,13 @@
 
 # Modern SilverStripe Solr Search
 
-Readme and docs to be completed at a later stage. Currently under heavy development.
+Full documentation in the docs folder
 
-Solarium documentation:
+## Solarium documentation:
 https://solarium.readthedocs.io
+
+## API Docs:
+https://firesphere.github.io/solr/
 
 # Installing Solr locally
 

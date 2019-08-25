@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Compat\SubsitesExtension;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
@@ -79,5 +80,21 @@ class SolrIndexTaskTest extends SapphireTest
         $this->assertInstanceOf(LoggerInterface::class, $task->getLogger());
         $task->setLogger(null);
         $this->assertInstanceOf(LoggerInterface::class, $task->getLogger());
+    }
+
+    /**
+     * @covers \Firesphere\SolrSearch\Tasks\SolrIndexTask::logException
+     */
+    public function testLogException()
+    {
+        ob_start();
+        $exception = new \Exception('Test exception');
+        $task = new SolrIndexTask();
+        TestHelper::invokeMethod($task, 'logException', ['CircleCITestIndex', 2, $exception]);
+
+        $expected = 'Error indexing core CircleCITestIndex on group 2';
+        $this->assertContains($expected, ob_get_clean());
+
+        ob_end_clean();
     }
 }
