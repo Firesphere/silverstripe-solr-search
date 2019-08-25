@@ -368,7 +368,7 @@ class SolrCoreService
 
         $client = new \GuzzleHttp\Client($clientConfig);
 
-        $result = $client->get('solr/admin/info/system');
+        $result = $client->get('solr/admin/info/system?wt=json');
         $result = json_decode($result->getBody(), 1);
 
         $solrVersion = 5;

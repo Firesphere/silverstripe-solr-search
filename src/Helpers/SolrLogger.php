@@ -80,7 +80,7 @@ class SolrLogger
         foreach ($arrayResponse['history']['docs'] as $error) {
             $filter = [
                 'Timestamp' => $error['time'],
-                'Index'     => $error['core'],
+                'Index'     => $error['core'] ?? 'x:Unknown',
                 'Level'     => $error['level'],
             ];
             if (!SolrLog::get()->filter($filter)->exists()) {
