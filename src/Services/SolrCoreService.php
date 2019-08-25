@@ -105,10 +105,7 @@ class SolrCoreService
             if (!in_array($subindex, $enabledIndexes, true)) {
                 continue;
             }
-            $ref = new ReflectionClass($subindex);
-            if ($ref->isInstantiable()) {
-                $this->validIndexes[] = $subindex;
-            }
+            $this->checkReflection($subindex);
         }
     }
 
@@ -400,5 +397,19 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * If a reflection class is instantiable, add it to the list
+     * Otherwise, do nothing
+     * @param $subindex
+     * @throws ReflectionException
+     */
+    protected function checkReflection($subindex): void
+    {
+        $reflectionClass = new ReflectionClass($subindex);
+        if ($reflectionClass->isInstantiable()) {
+            $this->validIndexes[] = $subindex;
+        }
     }
 }
