@@ -4,3 +4,6 @@ SilverStripe\ORM\DataObject:
 Firesphere\SolrSearch\Indexes\BaseIndex:
   extensions:
     - Firesphere\SolrSearch\Compat\SubsitesExtension # Subsites compatibility
+SilverStripe\Forms\GridField\GridField:
+  extensions:
+    - Firesphere\SolrSearch\Extensions\GridFieldExtension

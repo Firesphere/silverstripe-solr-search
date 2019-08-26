@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Models;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\Security\Member;
 
 /**
@@ -21,7 +22,7 @@ class SolrLog extends DataObject
     private static $table_name = 'SolrLog';
 
     private static $db = [
-        'Timestamp' => 'Varchar(50)',
+        'Timestamp' => 'Datetime',
         'Message'   => 'Text',
         'Index'     => 'Varchar(255)',
         'Type'      => 'Enum("Config,Index,Query")',
@@ -37,6 +38,7 @@ class SolrLog extends DataObject
 
     private static $searchable_fields = [
         'Created',
+        'Timestamp',
         'Index',
         'Type',
         'Level'
@@ -46,7 +48,24 @@ class SolrLog extends DataObject
         'Timestamp' => true,
     ];
 
-    private static $sort = 'Created DESC';
+    /**
+     * Used to give the Gridfield rows a corresponding colour
+     * @var array
+     */
+    protected static $row_color = [
+        'ERROR' => 'alert alert-danger',
+        'WARN' => 'alert alert-warning',
+        'INFO' => 'alert alert-info',
+    ];
+
+    private static $sort = 'Timestamp DESC';
+
+    public function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+
+        $this->Timestamp = DBDatetime::create()->setValue(strtotime($this->Timestamp));
+    }
 
     /**
      * @return mixed
@@ -96,5 +115,16 @@ class SolrLog extends DataObject
         }
 
         return parent::canDelete($member) || Director::isDev();
+    }
+
+    /**
+     * Get the extra classes to colour the gridfield rows
+     * @return mixed|string
+     */
+    public function getExtraClass()
+    {
+        $classMap = static::$row_color;
+
+        return $classMap[$this->Level] ?? 'alert alert-info';
     }
 }

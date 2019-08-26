@@ -4,6 +4,7 @@ namespace Firesphere\SolrSearch\Admins;
 
 use Firesphere\SolrSearch\Models\SolrLog;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\View\Requirements;
 
 /**
  * Class \Firesphere\SolrSearch\Admins\SearchAdmin
@@ -40,5 +41,12 @@ class SearchAdmin extends ModelAdmin
      * @var string
      */
     private static $menu_title = 'Search';
+
+    public function init()
+    {
+        parent::init();
+
+        Requirements::css('firesphere/solr-search:client/dist/main.css');
+    }
 }
 /** **/

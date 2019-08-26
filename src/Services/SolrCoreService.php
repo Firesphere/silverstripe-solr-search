@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 use LogicException;
@@ -366,7 +367,7 @@ class SolrCoreService
             $clientConfig['handler'] = $handler;
         }
 
-        $client = new \GuzzleHttp\Client($clientConfig);
+        $client = new GuzzleClient($clientConfig);
 
         $result = $client->get('solr/admin/info/system?wt=json');
         $result = json_decode($result->getBody(), 1);

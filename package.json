@@ -1,0 +1,19 @@
+{
+  "name": "solr-search",
+  "description": "Searching done right",
+  "version": "1.0",
+  "private": false,
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "laravel-mix": "^4.1.2",
+    "sass-loader": "^7.3.1",
+    "vue-template-compiler": "^2.6.10",
+    "webpack-bundle-analyzer": "^3.4.1",
+    "sass": "^1.22.10"
+  },
+  "scripts": {
+    "build": "NODE_ENV=development ./node_modules/.bin/webpack-cli --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "yarn build --watch",
+    "package": "NODE_ENV=production ./node_modules/.bin/webpack-cli --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  }
+}

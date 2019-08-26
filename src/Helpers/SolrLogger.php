@@ -24,10 +24,9 @@ class SolrLogger
     public function __construct($handler = null)
     {
         $config = SolrCoreService::config()->get('config');
-        $endpoint = $config['endpoint'];
-        $hostConfig = array_values($endpoint);
+        $hostConfig = array_shift($config['endpoint']);
         $guzzleConfig = [
-            'base_uri' => $hostConfig[0]['host'] . ':' . $hostConfig[0]['port']
+            'base_uri' => $hostConfig['host'] . ':' . $hostConfig['port']
         ];
         if ($handler) {
             $guzzleConfig['handler'] = $handler;

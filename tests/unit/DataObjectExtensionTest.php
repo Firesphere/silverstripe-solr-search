@@ -3,7 +3,9 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
+use Firesphere\SolrSearch\Extensions\GridFieldExtension;
 use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Page;
@@ -11,6 +13,7 @@ use Psr\Log\NullLogger;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\DefaultAdminService;
 
 class DataObjectExtensionTest extends SapphireTest
@@ -71,6 +74,38 @@ class DataObjectExtensionTest extends SapphireTest
         $ids = json_decode($dirty->IDs, 1);
         $this->assertArrayNotHasKey($id, array_flip($ids));
         $page->delete();
+    }
+
+    public function testGetExtraClass()
+    {
+        $cleanDO = DataObject::create();
+
+        $extension = new GridFieldExtension();
+
+        $emptyClasses = [];
+        $extension->updateNewRowClasses($emptyClasses, 1, '', $cleanDO);
+        $this->assertNotContains('alert alert-warning', $emptyClasses);
+
+        $logItem = SolrLog::create();
+        $logItem->Level = 'WARN';
+        $emptyClasses = [];
+        $extension->updateNewRowClasses($emptyClasses, 1, '', $logItem);
+        $this->assertContains('alert alert-warning', $emptyClasses);
+
+        $logItem->Level = 'INFO';
+        $emptyClasses = [];
+        $extension->updateNewRowClasses($emptyClasses, 1, '', $logItem);
+        $this->assertContains('alert alert-info', $emptyClasses);
+
+        $logItem->Level = 'ERROR';
+        $emptyClasses = [];
+        $extension->updateNewRowClasses($emptyClasses, 1, '', $logItem);
+        $this->assertContains('alert alert-danger', $emptyClasses);
+
+        $logItem->Level = 'SOMETHING';
+        $emptyClasses = [];
+        $extension->updateNewRowClasses($emptyClasses, 1, '', $logItem);
+        $this->assertContains('alert alert-info', $emptyClasses);
     }
 
     protected function setUp()

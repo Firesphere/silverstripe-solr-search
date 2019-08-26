@@ -1,0 +1,14 @@
+.table tbody tr.even {
+  &.alert-danger {
+    background-color: #ffb9b9 !important;
+  }
+
+  &.alert-warning {
+    background-color: #fce7a4 !important;
+  }
+
+  &.alert-info {
+    background-color: #ace1eb !important;
+  }
+}
+
