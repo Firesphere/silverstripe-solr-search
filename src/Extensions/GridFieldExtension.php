@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Extensions;
 
-
 use Firesphere\SolrSearch\Models\SolrLog;
 use SilverStripe\Core\Extension;
 
