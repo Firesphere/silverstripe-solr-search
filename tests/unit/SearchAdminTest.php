@@ -5,7 +5,6 @@ namespace Firesphere\SolrSearch\Tests;
 
 
 use Firesphere\SolrSearch\Admins\SearchAdmin;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\View\Requirements;
 
