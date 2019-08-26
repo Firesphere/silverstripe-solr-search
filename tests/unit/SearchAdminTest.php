@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Admins\SearchAdmin;
 use SilverStripe\Control\Session;
 use SilverStripe\Dev\SapphireTest;
