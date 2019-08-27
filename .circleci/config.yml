@@ -129,3 +129,43 @@ jobs:
       - store_artifacts:
           path: /var/www/html/coverage
           destination: phpunit
+  docs:
+    docker:
+      - image: ssmarco/php-solr:latest
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "18:12:44:3c:09:ac:67:45:f3:b8:6c:bd:df:77:97:f3"
+      - run: apt-get update && apt-get install graphviz -y
+      - run:
+          name: Setup SSH
+          command: |
+            touch ~/.ssh/known_hosts
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Install repositories
+          command: |
+            git clone git@github.com:Firesphere/Firesphere.github.io.git . -q
+            git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git compat -q
+            git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q
+      - run:
+          name: Setup git
+          command: |
+            git config --global user.name "CircleCI"
+            git config --global user.email circleci@casa-laguna.net
+      - run:
+          name: Generate docs
+          command: |
+            php phpdoc.phar -d "compat/src","search/src" -t solr
+      - run:
+          name: Commit and upload
+          command: |
+            git add solr
+            git commit -m "API doc update for Solr from CircleCI update"
+            git push
+workflows:
+  version: 2
+  build_and_docs:
+    jobs:
+      - build
+      - docs
