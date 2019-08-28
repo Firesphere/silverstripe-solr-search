@@ -130,6 +130,8 @@ jobs:
           path: /var/www/html/coverage
           destination: phpunit
   docs:
+    docker:
+      - image: ssmarco/php-solr:latest
     steps:
       - add_ssh_keys:
           fingerprints:
