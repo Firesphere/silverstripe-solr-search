@@ -130,9 +130,6 @@ jobs:
           path: /var/www/html/coverage
           destination: phpunit
   docs:
-    branches:
-      only:
-        - master
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -141,30 +138,30 @@ jobs:
       - run:
           name: Setup SSH
           command: |
-            touch ~/.ssh/known_hosts
-            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            case $CIRCLE_BRANCH in "master") touch ~/.ssh/known_hosts esac
+            case $CIRCLE_BRANCH in "master") ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts esac
       - run:
           name: Install repositories
           command: |
-            git clone git@github.com:Firesphere/Firesphere.github.io.git . -q
-            git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git compat -q
-            git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q
+            case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/Firesphere.github.io.git . -q esac
+            case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git compat -q esac
+            case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q esac
       - run:
           name: Setup git
           command: |
-            git config --global user.name "CircleCI"
-            git config --global user.email circleci@casa-laguna.net
-            git config --global push.default simple
+            case $CIRCLE_BRANCH in "master") git config --global user.name "CircleCI" esac
+            case $CIRCLE_BRANCH in "master") git config --global user.email circleci@casa-laguna.net esac
+            case $CIRCLE_BRANCH in "master") git config --global push.default simple esac
       - run:
           name: Generate docs
           command: |
-            php phpdoc.phar -d "compat/src","search/src" -t solr
+            case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src" -t solr esac
       - run:
           name: Commit and upload
           command: |
-            git add solr
-            git commit -m "API doc update for Solr from CircleCI update"
-            git push
+            case $CIRCLE_BRANCH in "master") git add solr esac
+            case $CIRCLE_BRANCH in "master") git commit -m "API doc update for Solr from CircleCI update" esac
+            case $CIRCLE_BRANCH in "master") git push esac
 workflows:
   version: 2
   build_and_docs:
