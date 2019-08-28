@@ -84,6 +84,27 @@ class BaseIndexTest extends SapphireTest
         $this->assertCount(1, $index->getFacetFields());
     }
 
+    public function testAddAllFulltextFields()
+    {
+        $this->index->addAllFulltextFields();
+
+        $expected = [
+            'Title',
+            'Content',
+            'ClassName',
+            'URLSegment',
+            'MenuTitle',
+            'MetaDescription',
+            'ExtraMeta',
+            'ReportClass',
+        ];
+
+        $fulltextFields = $this->index->getFulltextFields();
+        foreach ($expected as $field) {
+            $this->assertContains($field, $fulltextFields);
+        }
+    }
+
     public function testFacetFields()
     {
         /** @var Page $parent */

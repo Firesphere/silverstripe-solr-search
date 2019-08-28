@@ -19,8 +19,16 @@ use SilverStripe\Security\Member;
  */
 class SolrLog extends DataObject
 {
+    /**
+     * Used to give the Gridfield rows a corresponding colour
+     * @var array
+     */
+    protected static $row_color = [
+        'ERROR' => 'alert alert-danger',
+        'WARN'  => 'alert alert-warning',
+        'INFO'  => 'alert alert-info',
+    ];
     private static $table_name = 'SolrLog';
-
     private static $db = [
         'Timestamp' => 'Datetime',
         'Message'   => 'Text',
@@ -28,14 +36,12 @@ class SolrLog extends DataObject
         'Type'      => 'Enum("Config,Index,Query")',
         'Level'     => 'Varchar(10)'
     ];
-
     private static $summary_fields = [
         'Timestamp',
         'Index',
         'Type',
         'Level'
     ];
-
     private static $searchable_fields = [
         'Created',
         'Timestamp',
@@ -43,21 +49,9 @@ class SolrLog extends DataObject
         'Type',
         'Level'
     ];
-
     private static $indexes = [
         'Timestamp' => true,
     ];
-
-    /**
-     * Used to give the Gridfield rows a corresponding colour
-     * @var array
-     */
-    protected static $row_color = [
-        'ERROR' => 'alert alert-danger',
-        'WARN' => 'alert alert-warning',
-        'INFO' => 'alert alert-info',
-    ];
-
     private static $sort = 'Timestamp DESC';
 
     public function onBeforeWrite()

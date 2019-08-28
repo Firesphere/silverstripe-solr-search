@@ -4,7 +4,11 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBString;
 use Solarium\Core\Client\Client;
 
 /**
@@ -205,6 +209,54 @@ trait BaseIndexTrait
         $this->sortFields = $sortFields;
 
         return $this;
+    }
+
+    /**
+     * @param bool $includeSubclasses
+     * @throws \ReflectionException
+     * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
+     */
+    public function addFulltextFields($includeSubclasses = true)
+    {
+        $this->addAllFulltextFields();
+    }
+
+    /**
+     * Add all database-backed text fields as fulltext searchable fields.
+     *
+     * For every class included in the index, examines those classes and all parent looking for "DBText" database
+     * fields (Varchar, Text, HTMLText, etc) and adds them all as fulltext searchable fields.
+     *
+     * Note, there is no check on boosting etc. That needs to be done manually.
+     * @throws \ReflectionException
+     */
+    public function addAllFulltextFields()
+    {
+        $classes = $this->getClasses();
+        foreach ($classes as $key => $class) {
+            $fields = DataObject::getSchema()->databaseFields($class, true);
+
+            $this->addFulltextFieldsForClass($fields);
+        }
+    }
+
+    /**
+     * @param array $fields
+     * @throws \ReflectionException
+     */
+    protected function addFulltextFieldsForClass(array $fields): void
+    {
+        foreach ($fields as $field => $type) {
+            $pos = strpos($type, '(');
+            if ($pos !== false) {
+                $type = substr($type, 0, $pos);
+            }
+            $conf = Config::inst()->get(Injector::class, $type);
+            $ref = new \ReflectionClass($conf['class']);
+            if ($ref->isSubclassOf(DBString::class)) {
+                $this->addFulltextField($field);
+            }
+        }
     }
 
     /**

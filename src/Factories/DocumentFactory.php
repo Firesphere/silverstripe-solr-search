@@ -174,10 +174,10 @@ class DocumentFactory
 
     /**
      * Determine if the given object is one of the given type
-     * @todo remove in favour of the inheritance check from PHP
      * @param string|array|DataObject $class
      * @param array|string $base Class or list of base classes
      * @return bool
+     * @todo remove in favour of the inheritance check from PHP
      */
     protected function classIs($class, $base): bool
     {

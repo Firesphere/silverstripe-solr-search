@@ -3,10 +3,8 @@
 
 namespace Firesphere\SolrSearch\Jobs;
 
-use Exception;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
