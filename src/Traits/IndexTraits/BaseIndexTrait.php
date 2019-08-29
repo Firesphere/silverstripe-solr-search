@@ -194,6 +194,12 @@ trait BaseIndexTrait
     abstract public function addBoostedField($field, $options = [], $boost = null);
 
     /**
+     * This trait requires classes to be set, so getClasses can be called.
+     * @return array
+     */
+    abstract public function getClasses(): array;
+
+    /**
      * @return array
      */
     public function getSortFields(): array
