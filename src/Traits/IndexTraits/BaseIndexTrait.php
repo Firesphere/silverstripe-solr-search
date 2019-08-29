@@ -8,6 +8,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBString;
 use Solarium\Core\Client\Client;
 
@@ -228,9 +229,10 @@ trait BaseIndexTrait
      * fields (Varchar, Text, HTMLText, etc) and adds them all as fulltext searchable fields.
      *
      * Note, there is no check on boosting etc. That needs to be done manually.
+     * @param string $dbType
      * @throws \ReflectionException
      */
-    public function addAllFulltextFields()
+    protected function addAllFields($dbType = DBString::class)
     {
         $classes = $this->getClasses();
         foreach ($classes as $key => $class) {
@@ -241,10 +243,30 @@ trait BaseIndexTrait
     }
 
     /**
-     * @param array $fields
+     * Add all text-type fields to the given index
      * @throws \ReflectionException
      */
-    protected function addFulltextFieldsForClass(array $fields): void
+    public function addAllFulltextFields()
+    {
+        $this->addAllFields(DBString::class);
+    }
+
+    /**
+     * Add all date-type fields to the given index
+     * @throws \ReflectionException
+     */
+    public function addAllDateFields()
+    {
+        $this->addAllFields(DBDate::class);
+    }
+
+    /**
+     * Add all fields of a given type to the index
+     * @param array $fields The fields on the DataObject
+     * @param string $dbType Class type the reflection should extend
+     * @throws \ReflectionException
+     */
+    protected function addFulltextFieldsForClass(array $fields, $dbType = DBString::class): void
     {
         foreach ($fields as $field => $type) {
             $pos = strpos($type, '(');
@@ -253,7 +275,7 @@ trait BaseIndexTrait
             }
             $conf = Config::inst()->get(Injector::class, $type);
             $ref = new \ReflectionClass($conf['class']);
-            if ($ref->isSubclassOf(DBString::class)) {
+            if ($ref->isSubclassOf($dbType)) {
                 $this->addFulltextField($field);
             }
         }

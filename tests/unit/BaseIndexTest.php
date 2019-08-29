@@ -84,7 +84,7 @@ class BaseIndexTest extends SapphireTest
         $this->assertCount(1, $index->getFacetFields());
     }
 
-    public function testAddAllFulltextFields()
+    public function testAddAllFieldsTypes()
     {
         $this->index->addAllFulltextFields();
 
@@ -100,6 +100,24 @@ class BaseIndexTest extends SapphireTest
         ];
 
         $fulltextFields = $this->index->getFulltextFields();
+        foreach ($expected as $field) {
+            $this->assertContains($field, $fulltextFields);
+        }
+
+        $this->index->addFulltextFields();
+
+        $fulltextFields2 = $this->index->getFulltextFields();
+        $this->assertEquals($fulltextFields, $fulltextFields2);
+
+        $this->index->addAllDateFields();
+
+        $expected = [
+            'Created',
+            'LastEdited'
+        ];
+
+        $fulltextFields = $this->index->getFulltextFields();
+
         foreach ($expected as $field) {
             $this->assertContains($field, $fulltextFields);
         }
