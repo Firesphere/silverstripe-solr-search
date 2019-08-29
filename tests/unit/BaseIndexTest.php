@@ -111,6 +111,8 @@ class BaseIndexTest extends SapphireTest
 
         $this->index->addAllDateFields();
 
+        Debug::dump($this->index->getFulltextFields());
+
         $expected = [
             'Created',
             'LastEdited'
