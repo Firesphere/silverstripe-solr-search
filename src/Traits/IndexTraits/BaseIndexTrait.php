@@ -232,13 +232,13 @@ trait BaseIndexTrait
      * @param string $dbType
      * @throws \ReflectionException
      */
-    protected function addAllFields($dbType = DBString::class)
+    protected function addAllFieldsByType($dbType = DBString::class): void
     {
         $classes = $this->getClasses();
         foreach ($classes as $key => $class) {
             $fields = DataObject::getSchema()->databaseFields($class, true);
 
-            $this->addFulltextFieldsForClass($fields);
+            $this->addFulltextFieldsForClass($fields, $dbType);
         }
     }
 
@@ -248,7 +248,7 @@ trait BaseIndexTrait
      */
     public function addAllFulltextFields()
     {
-        $this->addAllFields(DBString::class);
+        $this->addAllFieldsByType(DBString::class);
     }
 
     /**
@@ -257,7 +257,7 @@ trait BaseIndexTrait
      */
     public function addAllDateFields()
     {
-        $this->addAllFields(DBDate::class);
+        $this->addAllFieldsByType(DBDate::class);
     }
 
     /**
