@@ -111,6 +111,20 @@ class SolrCoreService
     }
 
     /**
+     * If a reflection class is instantiable, add it to the list
+     * Otherwise, do nothing
+     * @param $subindex
+     * @throws ReflectionException
+     */
+    protected function checkReflection($subindex): void
+    {
+        $reflectionClass = new ReflectionClass($subindex);
+        if ($reflectionClass->isInstantiable()) {
+            $this->validIndexes[] = $subindex;
+        }
+    }
+
+    /**
      * Create a new core
      * @param $core string - The name of the core
      * @param ConfigStore $configStore
@@ -398,19 +412,5 @@ class SolrCoreService
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * If a reflection class is instantiable, add it to the list
-     * Otherwise, do nothing
-     * @param $subindex
-     * @throws ReflectionException
-     */
-    protected function checkReflection($subindex): void
-    {
-        $reflectionClass = new ReflectionClass($subindex);
-        if ($reflectionClass->isInstantiable()) {
-            $this->validIndexes[] = $subindex;
-        }
     }
 }

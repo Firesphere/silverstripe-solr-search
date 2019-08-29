@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Extensions;
 use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
@@ -52,6 +53,7 @@ class DataObjectExtension extends DataExtension
         DirtyClass::class,
         ChangeSet::class,
         ChangeSetItem::class,
+        SolrLog::class,
     ];
 
     /**

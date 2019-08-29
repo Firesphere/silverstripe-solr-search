@@ -17,6 +17,7 @@ use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ValidationException;
 
 /**
@@ -62,6 +63,7 @@ class SolrConfigureTask extends BuildTask
                 $this->configureIndex($index);
             } catch (Exception $error) {
                 $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
+                Debug::dump($error); // in browser mode, it might not always show
                 // Continue to the next index
                 continue;
             }

@@ -4,7 +4,12 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\ORM\FieldType\DBString;
 use Solarium\Core\Client\Client;
 
 /**
@@ -189,6 +194,12 @@ trait BaseIndexTrait
     abstract public function addBoostedField($field, $options = [], $boost = null);
 
     /**
+     * This trait requires classes to be set, so getClasses can be called.
+     * @return array
+     */
+    abstract public function getClasses(): array;
+
+    /**
      * @return array
      */
     public function getSortFields(): array
@@ -205,6 +216,75 @@ trait BaseIndexTrait
         $this->sortFields = $sortFields;
 
         return $this;
+    }
+
+    /**
+     * @param bool $includeSubclasses
+     * @throws \ReflectionException
+     * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
+     */
+    public function addFulltextFields($includeSubclasses = true)
+    {
+        $this->addAllFulltextFields();
+    }
+
+    /**
+     * Add all database-backed text fields as fulltext searchable fields.
+     *
+     * For every class included in the index, examines those classes and all parent looking for "DBText" database
+     * fields (Varchar, Text, HTMLText, etc) and adds them all as fulltext searchable fields.
+     *
+     * Note, there is no check on boosting etc. That needs to be done manually.
+     * @param string $dbType
+     * @throws \ReflectionException
+     */
+    protected function addAllFieldsByType($dbType = DBString::class): void
+    {
+        $classes = $this->getClasses();
+        foreach ($classes as $key => $class) {
+            $fields = DataObject::getSchema()->databaseFields($class, true);
+
+            $this->addFulltextFieldsForClass($fields, $dbType);
+        }
+    }
+
+    /**
+     * Add all text-type fields to the given index
+     * @throws \ReflectionException
+     */
+    public function addAllFulltextFields()
+    {
+        $this->addAllFieldsByType(DBString::class);
+    }
+
+    /**
+     * Add all date-type fields to the given index
+     * @throws \ReflectionException
+     */
+    public function addAllDateFields()
+    {
+        $this->addAllFieldsByType(DBDate::class);
+    }
+
+    /**
+     * Add all fields of a given type to the index
+     * @param array $fields The fields on the DataObject
+     * @param string $dbType Class type the reflection should extend
+     * @throws \ReflectionException
+     */
+    protected function addFulltextFieldsForClass(array $fields, $dbType = DBString::class): void
+    {
+        foreach ($fields as $field => $type) {
+            $pos = strpos($type, '(');
+            if ($pos !== false) {
+                $type = substr($type, 0, $pos);
+            }
+            $conf = Config::inst()->get(Injector::class, $type);
+            $ref = new \ReflectionClass($conf['class']);
+            if ($ref->isSubclassOf($dbType)) {
+                $this->addFulltextField($field);
+            }
+        }
     }
 
     /**
