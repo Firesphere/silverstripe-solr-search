@@ -315,7 +315,7 @@ class BaseIndexTest extends SapphireTest
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('Hame', [], 0, 2);
-        $query->setSpellcheck(true);
+        $query->setSpellcheck(false);
         $index->doSearch($query);
         $queryArray = $index->getQueryTerms();
 
