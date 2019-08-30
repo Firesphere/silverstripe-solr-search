@@ -382,9 +382,9 @@ class BaseIndexTest extends SapphireTest
 
     protected function setUp()
     {
-//        $task = new SolrConfigureTask();
-//        $task->setLogger(new NullLogger());
-//        $task->run(new NullHTTPRequest());
+        $task = new SolrConfigureTask();
+        $task->setLogger(new NullLogger());
+        $task->run(new NullHTTPRequest());
 
         $this->index = Injector::inst()->get(TestIndex::class, false);
 
