@@ -56,6 +56,12 @@ trait BaseIndexTrait
             '*'
         ],
     ];
+    /**
+     * usedAllFields is used to determine if the addAllFields method has been caled
+     * This is to prevent a notice if there is no yml.
+     * @var bool
+     */
+    protected $usedAllFields = false;
 
     /**
      * @return array
@@ -240,6 +246,7 @@ trait BaseIndexTrait
      */
     protected function addAllFieldsByType($dbType = DBString::class): void
     {
+        $this->usedAllFields = true;
         $classes = $this->getClasses();
         foreach ($classes as $key => $class) {
             $fields = DataObject::getSchema()->databaseFields($class, true);
