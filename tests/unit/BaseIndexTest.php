@@ -310,6 +310,23 @@ class BaseIndexTest extends SapphireTest
         $this->assertNotEmpty($result->getCollatedSpellcheck());
     }
 
+    public function testDoRetry()
+    {
+
+        $index = new CircleCITestIndex();
+        $query = new BaseQuery();
+        $query->addTerm('Hame', [], 0, 2);
+        $query->setSpellcheck(true);
+        $index->doSearch($query);
+        $queryArray = $index->getQueryTerms();
+
+        $query->setFollowSpellcheck(true);
+
+        $index->doSearch($query);
+        $queryArray2 = $index->getQueryTerms();
+        $this->assertNotEquals($queryArray, $queryArray2);
+    }
+
     public function testGetFieldsForSubsites()
     {
         $this->assertContains('SubsiteID', $this->index->getFilterFields());

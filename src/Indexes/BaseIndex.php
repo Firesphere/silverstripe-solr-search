@@ -260,14 +260,21 @@ abstract class BaseIndex
     }
 
     /**
+     * Retry the query with the first collated spellcheck found.
+     *
      * @param BaseQuery $query
      * @param SearchResult $searchResult
      * @return SearchResult|mixed|ArrayData
+     * @throws GuzzleException
+     * @throws ValidationException
      */
     protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
     {
         $terms = $query->getTerms();
-        $terms[0]['text'] = $searchResult->getCollatedSpellcheck();
+        $spellChecked = $searchResult->getCollatedSpellcheck();
+        // Remove the fuzzyness from the collated check
+        $term = preg_replace('/~\d+/', '', $spellChecked);
+        $terms[0]['text'] = $term;
         $query->setTerms($terms);
         $this->retry = true;
 
