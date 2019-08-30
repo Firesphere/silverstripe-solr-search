@@ -312,7 +312,6 @@ class BaseIndexTest extends SapphireTest
 
     public function testDoRetry()
     {
-
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
         $query->addTerm('Hame', [], 0, 2);
@@ -320,11 +319,17 @@ class BaseIndexTest extends SapphireTest
         $index->doSearch($query);
         $queryArray = $index->getQueryTerms();
 
+        $index = new CircleCITestIndex();
+        $query = new BaseQuery();
+        $query->addTerm('Hame', [], 0, 2);
         $query->setFollowSpellcheck(true);
-
+        $query->setSpellcheck(true);
         $index->doSearch($query);
         $queryArray2 = $index->getQueryTerms();
         $this->assertNotEquals($queryArray, $queryArray2);
+        foreach ($queryArray2 as $queryTerm) {
+            $this->assertNotContains('~2~', $queryTerm);
+        }
     }
 
     public function testGetFieldsForSubsites()
@@ -377,9 +382,9 @@ class BaseIndexTest extends SapphireTest
 
     protected function setUp()
     {
-        $task = new SolrConfigureTask();
-        $task->setLogger(new NullLogger());
-        $task->run(new NullHTTPRequest());
+//        $task = new SolrConfigureTask();
+//        $task->setLogger(new NullLogger());
+//        $task->run(new NullHTTPRequest());
 
         $this->index = Injector::inst()->get(TestIndex::class, false);
 

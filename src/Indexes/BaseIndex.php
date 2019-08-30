@@ -255,7 +255,6 @@ abstract class BaseIndex
     {
         return !$this->retry &&
             $query->shouldFollowSpellcheck() &&
-            $result->getNumFound() === 0 &&
             $searchResult->getCollatedSpellcheck();
     }
 
