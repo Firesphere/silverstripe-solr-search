@@ -246,6 +246,11 @@ abstract class BaseIndex
 
     /**
      * Check if the query should be retried with spellchecking
+     * Conditions are:
+     * It is not already a retry with spellchecking
+     * Spellchecking is enabled
+     * If spellchecking is enabled and nothing is found OR it should follow spellchecking none the less
+     * There is a spellcheck output
      * @param BaseQuery $query
      * @param Result $result
      * @param SearchResult $searchResult
@@ -254,7 +259,8 @@ abstract class BaseIndex
     protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool
     {
         return !$this->retry &&
-            $query->shouldFollowSpellcheck() &&
+            $query->hasSpellcheck() &&
+            ($query->shouldFollowSpellcheck() || $result->getNumFound() === 0) &&
             $searchResult->getCollatedSpellcheck();
     }
 
