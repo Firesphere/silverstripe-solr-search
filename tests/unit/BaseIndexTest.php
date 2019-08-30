@@ -301,10 +301,13 @@ class BaseIndexTest extends SapphireTest
 
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Home', [], 0, 2);
-        $index->doSearch($query);
+        $query->addTerm('Hame', [], 0, 2);
+        $query->setSpellcheck(true);
+        $result = $index->doSearch($query);
 
-        $this->assertContains('Home~2', $index->getQueryTerms());
+        $this->assertInstanceOf(ArrayList::class, $result->getSpellcheck());
+        $this->assertGreaterThan(0, $result->getSpellcheck()->count());
+        $this->assertNotEmpty($result->getCollatedSpellcheck());
     }
 
     public function testGetFieldsForSubsites()
