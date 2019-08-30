@@ -29,28 +29,12 @@ trait SearchResultSetTrait
     protected $highlight;
 
     /**
-     * @var ArrayList
-     */
-    protected $spellcheck;
-
-    /**
      * @param $highlight
      * @return SearchResult
      */
     public function setHighlight($highlight): self
     {
         $this->highlight = $highlight;
-
-        return $this;
-    }
-
-    /**
-     * @param $check
-     * @return SearchResult
-     */
-    public function setSpellcheck($check): self
-    {
-        $this->spellcheck = $check;
 
         return $this;
     }
