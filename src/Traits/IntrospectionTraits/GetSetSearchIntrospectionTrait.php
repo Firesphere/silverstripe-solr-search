@@ -5,6 +5,10 @@ namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 
+/**
+ * Trait GetSetSearchIntrospectionTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait GetSetSearchIntrospectionTrait
 {
     /**

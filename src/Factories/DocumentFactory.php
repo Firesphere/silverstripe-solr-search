@@ -25,7 +25,9 @@ use Solarium\QueryType\Update\Query\Document;
 use Solarium\QueryType\Update\Query\Query;
 
 /**
+ * Class DocumentFactory
  * Factory to create documents to be pushed to Solr
+ * @package Firesphere\SolrSearch\Factories
  */
 class DocumentFactory
 {

@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Extensions;
 
 use Firesphere\SolrSearch\Models\SolrLog;
 use SilverStripe\Core\Extension;
+use SilverStripe\Forms\GridField\GridField;
 
 /**
  * Class GridFieldExtension

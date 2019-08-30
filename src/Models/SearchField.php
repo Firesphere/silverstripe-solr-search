@@ -19,6 +19,7 @@ use SilverStripe\ORM\DataObject;
  * @property int $ParentID
  * @method SearchClass Parent()
  * @method DataList|SearchClass[] Children()
+ * @package Firesphere\SolrSearch\Models
  */
 class SearchField extends DataObject
 {

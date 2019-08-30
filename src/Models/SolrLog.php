@@ -16,6 +16,7 @@ use SilverStripe\Security\Member;
  * @property string $Index
  * @property string $Type
  * @property string $Level
+ * @package Firesphere\SolrSearch\Models
  */
 class SolrLog extends DataObject
 {

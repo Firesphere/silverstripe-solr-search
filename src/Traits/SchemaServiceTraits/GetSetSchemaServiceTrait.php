@@ -7,6 +7,10 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 
+/**
+ * Trait GetSetSchemaServiceTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait GetSetSchemaServiceTrait
 {
     /**

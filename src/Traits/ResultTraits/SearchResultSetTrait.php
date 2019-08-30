@@ -8,6 +8,10 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;
 
+/**
+ * Trait SearchResultSetTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait SearchResultSetTrait
 {
     /**

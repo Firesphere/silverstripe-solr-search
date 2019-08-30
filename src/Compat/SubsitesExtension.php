@@ -10,6 +10,7 @@ use SilverStripe\ORM\DataExtension;
  * Class \Firesphere\SolrSearch\Compat\SubsitesExtension
  * Add support for subsites
  *
+ * @package Firesphere\SolrSearch\Compat
  * @property BaseIndex|SubsitesExtension $owner
  */
 class SubsitesExtension extends DataExtension

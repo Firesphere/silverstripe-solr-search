@@ -12,6 +12,7 @@ use SilverStripe\ORM\DataObject;
  * @property string $Type
  * @property string $Class
  * @property string $IDs
+ * @package Firesphere\SolrSearch\Models
  */
 class DirtyClass extends DataObject
 {

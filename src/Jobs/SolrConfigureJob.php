@@ -11,6 +11,10 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ValidationException;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
+/**
+ * Class SolrConfigureJob
+ * @package Firesphere\SolrSearch\Jobs
+ */
 class SolrConfigureJob extends AbstractQueuedJob
 {
 

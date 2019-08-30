@@ -10,8 +10,10 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 
 /**
+ * Class FieldResolver
  * @todo clean up unneeded methods
  * Some additional introspection tools that are used often by the fulltext search code
+ * @package Firesphere\SolrSearch\Helpers
  */
 class FieldResolver
 {

@@ -71,6 +71,9 @@ class FileConfigStore implements ConfigStore
         return $targetDir;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getPath()
     {
         return $this->config['path'];

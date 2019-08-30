@@ -14,6 +14,10 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\ViewableData;
 
+/**
+ * Class SchemaService
+ * @package Firesphere\SolrSearch\Services
+ */
 class SchemaService extends ViewableData
 {
     use GetSetSchemaServiceTrait;

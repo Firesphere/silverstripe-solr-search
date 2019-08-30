@@ -8,8 +8,20 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\Validator;
 
+/**
+ * Class SolrSearchForm
+ * @package Firesphere\SolrSearch\Forms
+ */
 class SolrSearchForm extends Form
 {
+    /**
+     * SolrSearchForm constructor.
+     * @param RequestHandler|null $controller
+     * @param string $name
+     * @param FieldList|null $fields
+     * @param FieldList|null $actions
+     * @param Validator|null $validator
+     */
     public function __construct(
         RequestHandler $controller = null,
         $name = self::DEFAULT_NAME,

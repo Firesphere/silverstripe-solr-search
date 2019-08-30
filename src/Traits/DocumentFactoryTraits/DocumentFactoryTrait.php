@@ -8,6 +8,10 @@ use Firesphere\SolrSearch\Helpers\FieldResolver;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 
+/**
+ * Trait DocumentFactoryTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait DocumentFactoryTrait
 {
     /**

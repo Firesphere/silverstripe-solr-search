@@ -13,6 +13,7 @@ use SilverStripe\ORM\DataObject;
  * @property int $SearchFieldID
  * @method SearchField SearchField()
  * @method DataList|SearchField[] SearchFields()
+ * @package Firesphere\SolrSearch\Models
  */
 class SearchClass extends DataObject
 {

@@ -28,15 +28,30 @@ class SolrConfigureTask extends BuildTask
 {
     use LoggerTrait;
 
+    /**
+     * @var array
+     */
     protected static $storeModes = [
         'file' => FileConfigStore::class,
         'post' => PostConfigStore::class,
 //        'webdav' => WebdavConfigStore::class,
     ];
+    /**
+     * @var string
+     */
     private static $segment = 'SolrConfigureTask';
+    /**
+     * @var string
+     */
     protected $title = 'Configure Solr cores';
+    /**
+     * @var string
+     */
     protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
 
+    /**
+     * SolrConfigureTask constructor.
+     */
     public function __construct()
     {
         parent::__construct();

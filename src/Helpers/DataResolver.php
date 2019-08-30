@@ -11,6 +11,10 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\View\ArrayData;
 
+/**
+ * Class DataResolver
+ * @package Firesphere\SolrSearch\Helpers
+ */
 class DataResolver
 {
     use DataResolveTrait;

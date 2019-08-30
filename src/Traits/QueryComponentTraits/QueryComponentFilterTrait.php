@@ -9,6 +9,10 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use Solarium\QueryType\Select\Query\Query;
 
+/**
+ * Trait QueryComponentFilterTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait QueryComponentFilterTrait
 {
     /**

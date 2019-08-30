@@ -10,8 +10,15 @@ use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Solarium\Exception\RuntimeException;
 
+/**
+ * Class PostConfigStore
+ * @package Firesphere\SolrSearch\Stores
+ */
 class PostConfigStore implements ConfigStore
 {
+    /**
+     * @var array
+     */
     protected static $extensions = [
         'xml' => 'text/xml',
         'txt' => 'text/plain',

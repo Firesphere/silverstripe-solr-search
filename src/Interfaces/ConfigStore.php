@@ -5,6 +5,10 @@ namespace Firesphere\SolrSearch\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Interface ConfigStore
+ * @package Firesphere\SolrSearch\Interfaces
+ */
 interface ConfigStore
 {
     /**

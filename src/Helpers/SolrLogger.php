@@ -10,6 +10,10 @@ use GuzzleHttp\Exception\GuzzleException;
 use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ValidationException;
 
+/**
+ * Class SolrLogger
+ * @package Firesphere\SolrSearch\Helpers
+ */
 class SolrLogger
 {
     /**

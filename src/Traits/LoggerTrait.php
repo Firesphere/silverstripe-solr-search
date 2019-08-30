@@ -6,6 +6,10 @@ namespace Firesphere\SolrSearch\Traits;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
 
+/**
+ * Trait LoggerTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait LoggerTrait
 {
     /**

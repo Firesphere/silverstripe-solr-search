@@ -5,6 +5,10 @@ namespace Firesphere\SolrSearch\Traits;
 
 use SilverStripe\Dev\Deprecation;
 
+/**
+ * Trait GetterSetterTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait GetterSetterTrait
 {
     /**

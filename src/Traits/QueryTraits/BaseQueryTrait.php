@@ -3,6 +3,10 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
+/**
+ * Trait BaseQueryTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait BaseQueryTrait
 {
     /**

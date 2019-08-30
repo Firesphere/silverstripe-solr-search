@@ -12,6 +12,7 @@ use SilverStripe\ORM\ValidationException;
  * @property string $Query
  * @property int $Results
  * @property int $PagesVisited
+ * @package Firesphere\SolrSearch\Models
  */
 class QueryRecord extends DataObject
 {

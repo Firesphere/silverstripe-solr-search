@@ -21,6 +21,10 @@ use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
 use Solarium\QueryType\Select\Result\Document;
 use Solarium\QueryType\Select\Result\Result;
 
+/**
+ * Class SearchResult
+ * @package Firesphere\SolrSearch\Results
+ */
 class SearchResult
 {
     use SearchResultGetTrait;

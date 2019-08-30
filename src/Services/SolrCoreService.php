@@ -27,6 +27,10 @@ use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use Solarium\QueryType\Update\Result;
 
+/**
+ * Class SolrCoreService
+ * @package Firesphere\SolrSearch\Services
+ */
 class SolrCoreService
 {
     /**
@@ -45,8 +49,17 @@ class SolrCoreService
      * Solr update types
      */
     public const DELETE_TYPE_ALL = 'deleteall';
+    /**
+     * string
+     */
     public const DELETE_TYPE = 'delete';
+    /**
+     * string
+     */
     public const UPDATE_TYPE = 'update';
+    /**
+     * string
+     */
     public const CREATE_TYPE = 'create';
 
 

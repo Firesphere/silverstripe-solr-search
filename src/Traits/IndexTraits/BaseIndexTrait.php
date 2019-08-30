@@ -219,7 +219,7 @@ trait BaseIndexTrait
     }
 
     /**
-     * @param bool $includeSubclasses
+     * @param bool $includeSubclasses Compatibility mode, not actually used
      * @throws \ReflectionException
      * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
      */

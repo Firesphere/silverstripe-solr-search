@@ -7,6 +7,10 @@ use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
 
+/**
+ * Trait QueryComponentBoostTrait
+ * @package Firesphere\SolrSearch\Traits
+ */
 trait QueryComponentBoostTrait
 {
     /**
