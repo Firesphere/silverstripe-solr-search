@@ -13,6 +13,8 @@ use SilverStripe\ORM\ValidationException;
 
 /**
  * Class SolrLogger
+ *
+ * Log information from Solr to the CMS for reference
  * @package Firesphere\SolrSearch\Helpers
  */
 class SolrLogger

@@ -14,6 +14,8 @@ use Solarium\QueryType\Select\Query\Query;
 
 /**
  * Class QueryComponentFactory
+ *
+ * Build a query component for each available build part
  * @package Firesphere\SolrSearch\Factories
  */
 class QueryComponentFactory
@@ -22,12 +24,20 @@ class QueryComponentFactory
     use QueryComponentBoostTrait;
     use QueryComponentFacetTrait;
 
+    /**
+     * Default fields that should always be added
+     * @var array
+     */
     public const DEFAULT_FIELDS = [
         SolrCoreService::ID_FIELD,
         SolrCoreService::CLASS_ID_FIELD,
         SolrCoreService::CLASSNAME
     ];
 
+    /**
+     * Build methods to run
+     * @var array
+     */
     protected static $builds = [
         'Terms',
         'ViewFilter',
