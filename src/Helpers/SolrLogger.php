@@ -41,6 +41,8 @@ class SolrLogger
     }
 
     /**
+     * Log the given message and dump it out.
+     * Also boot the Log to get the latest errors from Solr
      * @param string $type
      * @param string $message
      * @param string $index
@@ -66,6 +68,7 @@ class SolrLogger
     }
 
     /**
+     * Save the latest Solr errors to the log
      * @param string $type
      * @throws GuzzleException
      * @throws ValidationException
@@ -99,6 +102,7 @@ class SolrLogger
     }
 
     /**
+     * Return the Guzzle Client
      * @return Client
      */
     public function getClient(): Client
@@ -107,6 +111,7 @@ class SolrLogger
     }
 
     /**
+     * Set the Guzzle client
      * @param Client $client
      * @return SolrLogger
      */

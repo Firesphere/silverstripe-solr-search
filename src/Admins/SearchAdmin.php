@@ -41,6 +41,9 @@ class SearchAdmin extends ModelAdmin
      */
     private static $menu_title = 'Search';
 
+    /**
+     * Make sure the custom CSS for highlighting in the GridField is loaded
+     */
     public function init()
     {
         parent::init();
