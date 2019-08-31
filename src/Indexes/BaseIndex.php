@@ -130,7 +130,7 @@ abstract class BaseIndex
     public function init()
     {
         if (!self::config()->get($this->getIndexName())) {
-            throw new LogicException('This index has no name, cannot create index without name');
+            Deprecation::notice('5', 'Please set an index name and use a config yml');
         }
 
         if (!empty($this->getClasses()) && !$this->usedAllFields) {
