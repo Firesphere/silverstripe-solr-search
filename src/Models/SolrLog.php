@@ -7,6 +7,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\PermissionProvider;
 
 /**
  * Class \Firesphere\SolrSearch\Models\SolrError
@@ -18,7 +19,7 @@ use SilverStripe\Security\Member;
  * @property string $Level
  * @package Firesphere\SolrSearch\Models
  */
-class SolrLog extends DataObject
+class SolrLog extends DataObject implements PermissionProvider
 {
     /**
      * Used to give the Gridfield rows a corresponding colour
@@ -29,7 +30,13 @@ class SolrLog extends DataObject
         'WARN'  => 'alert alert-warning',
         'INFO'  => 'alert alert-info',
     ];
+    /**
+     * @var string Database table name
+     */
     private static $table_name = 'SolrLog';
+    /**
+     * @var array Database columns
+     */
     private static $db = [
         'Timestamp' => 'Datetime',
         'Message'   => 'Text',
@@ -37,12 +44,18 @@ class SolrLog extends DataObject
         'Type'      => 'Enum("Config,Index,Query")',
         'Level'     => 'Varchar(10)'
     ];
+    /**
+     * @var array Summary fields
+     */
     private static $summary_fields = [
         'Timestamp',
         'Index',
         'Type',
         'Level'
     ];
+    /**
+     * @var array Searchable fields
+     */
     private static $searchable_fields = [
         'Created',
         'Timestamp',
@@ -50,11 +63,20 @@ class SolrLog extends DataObject
         'Type',
         'Level'
     ];
+    /**
+     * @var array Timestamp is indexed
+     */
     private static $indexes = [
         'Timestamp' => true,
     ];
-    private static $sort = 'Timestamp DESC';
+    /**
+     * @var string Default sort
+     */
+    private static $default_sort = 'Timestamp DESC';
 
+    /**
+     * Convert the Timestamp to a DBDatetime for compatibility
+     */
     public function onBeforeWrite()
     {
         parent::onBeforeWrite();
@@ -63,7 +85,8 @@ class SolrLog extends DataObject
     }
 
     /**
-     * @return mixed
+     * Return the first line of this log item error
+     * @return string
      */
     public function getLastErrorLine()
     {
@@ -73,7 +96,10 @@ class SolrLog extends DataObject
     }
 
     /**
+     * Not creatable by users
+     *
      * @param null|Member $member
+     * @param array $context
      * @return bool|mixed
      */
     public function canCreate($member = null, $context = [])
@@ -82,6 +108,8 @@ class SolrLog extends DataObject
     }
 
     /**
+     * Not editable by users
+     *
      * @param null|Member $member
      * @return bool|mixed
      */
@@ -91,6 +119,8 @@ class SolrLog extends DataObject
     }
 
     /**
+     * Member has view access?
+     *
      * @param null|Member $member
      * @return bool|mixed
      */
@@ -100,6 +130,8 @@ class SolrLog extends DataObject
     }
 
     /**
+     * Only deleteable by admins or when in dev mode to clean up
+     *
      * @param null|Member $member
      * @return bool|mixed
      */
@@ -121,5 +153,35 @@ class SolrLog extends DataObject
         $classMap = static::$row_color;
 
         return $classMap[$this->Level] ?? 'alert alert-info';
+    }
+
+
+    /**
+     * Return a map of permission codes to add to the dropdown shown in the Security section of the CMS.
+     * array(
+     *   'VIEW_SITE' => 'View the site',
+     * );
+     * @return array
+     */
+    public function providePermissions()
+    {
+        return [
+            'DELETE_LOG' => [
+                'name'     => _t(self::class . '.PERMISSION_DELETE_DESCRIPTION', 'Delete Solr logs'),
+                'category' => _t('Permissions.LOGS_CATEGORIES', 'Solr logs permissions'),
+                'help'     => _t(
+                    self::class . '.PERMISSION_DELETE_HELP',
+                    'Permission required to delete existing Solr logs.'
+                )
+            ],
+            'VIEW_LOG'   => [
+                'name'     => _t(self::class . '.PERMISSION_VIEW_DESCRIPTION', 'View Solr logs'),
+                'category' => _t('Permissions.LOGS_CATEGORIES', 'Solr logs permissions'),
+                'help'     => _t(
+                    self::class . '.PERMISSION_VIEW_HELP',
+                    'Permission required to view existing Solr logs.'
+                )
+            ],
+        ];
     }
 }
