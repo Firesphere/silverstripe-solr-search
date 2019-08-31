@@ -107,6 +107,8 @@ class SolrCoreService
     }
 
     /**
+     * Filter enabled indexes down to valid indexes that can be instantiated
+     * or are allowed from config
      * @throws ReflectionException
      */
     protected function filterIndexes(): void
@@ -119,22 +121,23 @@ class SolrCoreService
             if (!in_array($subindex, $enabledIndexes, true)) {
                 continue;
             }
-            $this->checkReflection($subindex);
+            if ($this->checkReflection($subindex)) {
+                $this->validIndexes[] = $subindex;
+            }
         }
     }
 
     /**
-     * If a reflection class is instantiable, add it to the list
-     * Otherwise, do nothing
+     * Check if the class is instantiable
      * @param $subindex
+     * @return bool
      * @throws ReflectionException
      */
-    protected function checkReflection($subindex): void
+    protected function checkReflection($subindex): bool
     {
         $reflectionClass = new ReflectionClass($subindex);
-        if ($reflectionClass->isInstantiable()) {
-            $this->validIndexes[] = $subindex;
-        }
+
+        return $reflectionClass->isInstantiable();
     }
 
     /**
@@ -191,6 +194,7 @@ class SolrCoreService
     }
 
     /**
+     * Get the core status
      * @param string $core
      * @return StatusResult|null
      */
@@ -222,6 +226,7 @@ class SolrCoreService
     }
 
     /**
+     * Update items in the list to Solr
      * @param SS_List|DataObject $items
      * @param string $type
      * @param null|string $index
@@ -275,6 +280,7 @@ class SolrCoreService
     }
 
     /**
+     * Execute the manipulation of solr documents
      * @param SS_List $items
      * @param $type
      * @param BaseIndex $index
@@ -295,6 +301,7 @@ class SolrCoreService
     }
 
     /**
+     * get the update object ready
      * @param SS_List $items
      * @param string $type
      * @param BaseIndex $index
@@ -330,6 +337,7 @@ class SolrCoreService
     }
 
     /**
+     * Create the documents and add to the update
      * @param BaseIndex $index
      * @param SS_List $items
      * @param \Solarium\QueryType\Update\Query\Query $update
@@ -346,6 +354,7 @@ class SolrCoreService
     }
 
     /**
+     * Get the document factory prepared
      * @param SS_List $items
      * @return DocumentFactory
      */
@@ -360,6 +369,7 @@ class SolrCoreService
     }
 
     /**
+     * Check if we are in debug mode
      * @return bool
      */
     public function isInDebugMode(): bool
@@ -368,6 +378,7 @@ class SolrCoreService
     }
 
     /**
+     * Set the debug mode
      * @param bool $inDebugMode
      * @return SolrCoreService
      */
@@ -379,6 +390,7 @@ class SolrCoreService
     }
 
     /**
+     * Check the Solr version to use
      * @param HandlerStack|null $handler Used for testing the solr version
      * @return int
      */
@@ -399,16 +411,13 @@ class SolrCoreService
         $result = $client->get('solr/admin/info/system?wt=json');
         $result = json_decode($result->getBody(), 1);
 
-        $solrVersion = 5;
         $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
-        if ($version > 0) {
-            $solrVersion = 4;
-        }
 
-        return $solrVersion;
+        return ($version > 0) ? 4 : 5;
     }
 
     /**
+     * Get the client
      * @return Client
      */
     public function getClient(): Client
@@ -417,6 +426,7 @@ class SolrCoreService
     }
 
     /**
+     * Set the client
      * @param Client $client
      * @return SolrCoreService
      */
