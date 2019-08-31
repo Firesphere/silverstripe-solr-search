@@ -131,6 +131,8 @@ abstract class BaseIndex
     {
         if (!self::config()->get($this->getIndexName())) {
             Deprecation::notice('5', 'Please set an index name and use a config yml');
+
+            return;
         }
 
         if (!empty($this->getClasses()) && !$this->usedAllFields) {
