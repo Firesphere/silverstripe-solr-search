@@ -129,7 +129,7 @@ abstract class BaseIndex
      */
     public function init()
     {
-        if (!self::config()->get($this->getIndexName())) {
+        if (!$this->getIndexName()) {
             throw new LogicException('This index has no name, cannot create index without name');
         }
 
