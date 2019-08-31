@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Helpers;
 
+use Countable;
 use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Client;
@@ -23,7 +24,7 @@ class SolrLogger
 
     /**
      * SolrLogger constructor.
-     * @param null $handler
+     * @param null|Countable $handler
      */
     public function __construct($handler = null)
     {

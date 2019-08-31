@@ -132,15 +132,11 @@ abstract class BaseIndex
         if (!self::config()->get($this->getIndexName())) {
             Deprecation::notice('5', 'Please set an index name and use a config yml');
 
-            // If the old init method is found, skip the config based init
-            if (!count($this->getClasses())) {
-                Deprecation::notice(
-                    '5',
-                    'No classes to add to index found, did you maybe call parent::init() too early?'
-                );
-            }
-
             return;
+        }
+
+        if (!empty($this->getClasses()) && !$this->usedAllFields) {
+            Deprecation::notice('5', 'It is adviced to use a config YML for most cases');
         }
 
 
@@ -246,6 +242,11 @@ abstract class BaseIndex
 
     /**
      * Check if the query should be retried with spellchecking
+     * Conditions are:
+     * It is not already a retry with spellchecking
+     * Spellchecking is enabled
+     * If spellchecking is enabled and nothing is found OR it should follow spellchecking none the less
+     * There is a spellcheck output
      * @param BaseQuery $query
      * @param Result $result
      * @param SearchResult $searchResult
@@ -254,20 +255,27 @@ abstract class BaseIndex
     protected function doRetry(BaseQuery $query, Result $result, SearchResult $searchResult): bool
     {
         return !$this->retry &&
-            $query->shouldFollowSpellcheck() &&
-            $result->getNumFound() === 0 &&
+            $query->hasSpellcheck() &&
+            ($query->shouldFollowSpellcheck() || $result->getNumFound() === 0) &&
             $searchResult->getCollatedSpellcheck();
     }
 
     /**
+     * Retry the query with the first collated spellcheck found.
+     *
      * @param BaseQuery $query
      * @param SearchResult $searchResult
      * @return SearchResult|mixed|ArrayData
+     * @throws GuzzleException
+     * @throws ValidationException
      */
     protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
     {
         $terms = $query->getTerms();
-        $terms[0]['text'] = $searchResult->getCollatedSpellcheck();
+        $spellChecked = $searchResult->getCollatedSpellcheck();
+        // Remove the fuzzyness from the collated check
+        $term = preg_replace('/~\d+/', '', $spellChecked);
+        $terms[0]['text'] = $term;
         $query->setTerms($terms);
         $this->retry = true;
 
