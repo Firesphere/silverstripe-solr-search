@@ -69,7 +69,7 @@ class QueryComponentFactory
      * Build the full query
      * @return Query
      */
-    public function buildQuery()
+    public function buildQuery(): Query
     {
         foreach (static::$builds as $build) {
             $method = sprintf('build%s', $build);
@@ -96,6 +96,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Get the base query
      * @return BaseQuery
      */
     public function getQuery(): BaseQuery
@@ -104,8 +105,9 @@ class QueryComponentFactory
     }
 
     /**
+     * Set the base query
      * @param BaseQuery $query
-     * @return QueryComponentFactory
+     * @return self
      */
     public function setQuery(BaseQuery $query): self
     {
@@ -115,6 +117,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Get the array of terms used to query Solr
      * @return array
      */
     public function getQueryArray(): array
@@ -123,10 +126,11 @@ class QueryComponentFactory
     }
 
     /**
+     * Set the array of queries that are sent to Solr
      * @param array $queryArray
-     * @return QueryComponentFactory
+     * @return self
      */
-    public function setQueryArray(array $queryArray): QueryComponentFactory
+    public function setQueryArray(array $queryArray): self
     {
         $this->queryArray = $queryArray;
 
@@ -134,6 +138,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Get the client Query components
      * @return Query
      */
     public function getClientQuery(): Query
@@ -143,9 +148,9 @@ class QueryComponentFactory
 
     /**
      * @param Query $clientQuery
-     * @return QueryComponentFactory
+     * @return self
      */
-    public function setClientQuery(Query $clientQuery): QueryComponentFactory
+    public function setClientQuery(Query $clientQuery): self
     {
         $this->clientQuery = $clientQuery;
 
@@ -153,6 +158,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Get the query helper
      * @return Helper
      */
     public function getHelper(): Helper
@@ -161,10 +167,11 @@ class QueryComponentFactory
     }
 
     /**
+     * Set the Helper
      * @param Helper $helper
-     * @return QueryComponentFactory
+     * @return self
      */
-    public function setHelper(Helper $helper): QueryComponentFactory
+    public function setHelper(Helper $helper): self
     {
         $this->helper = $helper;
 
@@ -172,6 +179,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Get the BaseIndex
      * @return BaseIndex
      */
     public function getIndex(): BaseIndex
@@ -180,10 +188,11 @@ class QueryComponentFactory
     }
 
     /**
+     * Set a BaseIndex
      * @param BaseIndex $index
-     * @return QueryComponentFactory
+     * @return self
      */
-    public function setIndex(BaseIndex $index): QueryComponentFactory
+    public function setIndex(BaseIndex $index): self
     {
         $this->index = $index;
 
@@ -191,6 +200,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Build the terms and boost terms
      * @return void
      */
     protected function buildTerms(): void
@@ -218,6 +228,7 @@ class QueryComponentFactory
     }
 
     /**
+     * Escape the search query
      * @param string $searchTerm
      * @param Helper $helper
      * @return string

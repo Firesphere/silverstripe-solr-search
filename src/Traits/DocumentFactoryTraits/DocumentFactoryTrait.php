@@ -17,7 +17,7 @@ trait DocumentFactoryTrait
     /**
      * @var FieldResolver
      */
-    protected $introspection;
+    protected $fieldResolver;
     /**
      * @var null|ArrayList|DataList
      */
@@ -49,9 +49,9 @@ trait DocumentFactoryTrait
     /**
      * @return FieldResolver
      */
-    public function getIntrospection(): FieldResolver
+    public function getFieldResolver(): FieldResolver
     {
-        return $this->introspection;
+        return $this->fieldResolver;
     }
 
     /**

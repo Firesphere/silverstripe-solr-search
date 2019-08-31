@@ -52,17 +52,11 @@ class DocumentFactory
     protected $debug = false;
 
     /**
-     * Where to log
-     * @var null|LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * DocumentFactory constructor, sets up introspection
+     * DocumentFactory constructor, sets up the field resolver
      */
     public function __construct()
     {
-        $this->introspection = Injector::inst()->get(FieldResolver::class);
+        $this->fieldResolver = Injector::inst()->get(FieldResolver::class);
     }
 
     /**
@@ -77,7 +71,7 @@ class DocumentFactory
     public function buildItems($fields, $index, $update): array
     {
         $class = $this->getClass();
-        $this->getIntrospection()->setIndex($index);
+        $this->getFieldResolver()->setIndex($index);
         $boostFields = $index->getBoostedFields();
         $docs = [];
         $debugString = sprintf('Adding %s to %s%s', $class, $index->getIndexName(), PHP_EOL);
@@ -129,7 +123,7 @@ class DocumentFactory
     protected function buildField($fields, Document $doc, DataObject $item, array $boostFields): void
     {
         foreach ($fields as $field) {
-            $fieldData = $this->getIntrospection()->resolveField($field);
+            $fieldData = $this->getFieldResolver()->resolveField($field);
             foreach ($fieldData as $dataField => $options) {
                 // Only one field per class, so let's take the fieldData. This will override previous additions
                 $this->addField($doc, $item, $options);
@@ -196,8 +190,8 @@ class DocumentFactory
 
     /**
      * Check if a base class is an instance of the expected base group
-     * @param $class
-     * @param $base
+     * @param string|DataObject $class
+     * @param string $base
      * @return bool
      */
     protected function classEquals($class, $base): bool

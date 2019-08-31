@@ -150,7 +150,7 @@ class DocumentFactoryTest extends SapphireTest
     public function testConstruct()
     {
         $factory = new DocumentFactory();
-        $this->assertInstanceOf(FieldResolver::class, $factory->getIntrospection());
+        $this->assertInstanceOf(FieldResolver::class, $factory->getFieldResolver());
     }
 
     public function testBuildItems()
@@ -170,7 +170,7 @@ class DocumentFactoryTest extends SapphireTest
         $docs = $factory->buildItems($fields, $index, $update);
         $this->assertCount(SiteTree::get()->count(), $docs);
         $this->assertInternalType('array', $docs);
-        $this->assertInstanceOf(BaseIndex::class, $factory->getIntrospection()->getIndex());
+        $this->assertInstanceOf(BaseIndex::class, $factory->getFieldResolver()->getIndex());
         /** @var Document $doc */
         foreach ($docs as $i => $doc) {
             $this->assertInstanceOf(Document::class, $doc);
