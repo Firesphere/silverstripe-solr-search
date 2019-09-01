@@ -151,9 +151,9 @@ jobs:
     working_directory: /var/www/html
 
     steps:
+      - run: apt-get update;apt-get install default-jre
       # redundant, just to be sure
       - run: cd /var/www/html
-      - run: apt-get install default-jre
       - checkout
       - run:
           name: Error log setup
