@@ -199,8 +199,7 @@ jobs:
             service apache2 restart
             service solr restart
             mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
-            chown -R solr:solr /var/www/html/.solr
-            su solr vendor/bin/sake dev/tasks/SolrConfigureTask
+            vendor/bin/sake dev/tasks/SolrConfigureTask
       - run:
           name: Check Solr Core - CircleCITestIndex is successfully created
           command: |
@@ -216,19 +215,10 @@ jobs:
             if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
             echo "Solr has successfully indexed documents"
       - run:
-          name: Permission changes and testing
-          command: |
-            usermod -a -G www-data solr
-            groups solr
-            usermod -a -G solr www-data
-            groups www-data
-            chown -R solr:www-data /var/www/html
-            chmod -R u+rwxs,g+rwxs /var/www/html
-      - run:
           name: Run tests
           command: |
             set +e
-            su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
+            vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
   docs:
     docker:
       - image: ssmarco/php-solr:latest
