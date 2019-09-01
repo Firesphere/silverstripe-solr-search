@@ -207,13 +207,6 @@ jobs:
             echo "CircleCITestIndex is successfully created"
       - run: vendor/bin/sake dev/tasks/SolrIndexTask
       - run:
-          name: Check Solr has successfully indexed the default 3 pages
-          command: |
-            wget http://localhost:8983/solr/CircleCITestIndex/update?commit=true&wt=json
-            RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*&wt=json) | grep -o '"numFound":3')
-            if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
-            echo "Solr has successfully indexed documents"
-      - run:
           name: Run tests
           command: |
             set +e
