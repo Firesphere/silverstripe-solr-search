@@ -190,7 +190,7 @@ jobs:
       - run:
           name: Start a solr4 instance
           command: |
-            cd localsolr/server;java-jar start.jar
+            cd localsolr/server;java -jar start.jar
           background: true
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
