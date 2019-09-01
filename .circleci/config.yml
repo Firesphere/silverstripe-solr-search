@@ -151,7 +151,7 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      - run: apt-get update;apt-get install default-jre apt-transport-https lsb-release netcat software-properties-common -y --no-interaction
+      - run: apt-get update;apt-get install default-jre apt-transport-https lsb-release netcat software-properties-common -y
       # redundant, just to be sure
       - run: cd /var/www/html
       - checkout
