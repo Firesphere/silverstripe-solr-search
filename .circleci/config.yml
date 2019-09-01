@@ -197,7 +197,6 @@ jobs:
           name: Run Solr Configure
           command: |
             service apache2 restart
-            service solr restart
             mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
             vendor/bin/sake dev/tasks/SolrConfigureTask
       - run:
