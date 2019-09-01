@@ -5,6 +5,8 @@ namespace Firesphere\SolrSearch\Traits;
 
 /**
  * Trait BaseQueryTrait
+ * Extraction from the BaseQuery class to keep things readable.
+ * This trait adds the support for adding the basic field/filter/term/facet options
  * @package Firesphere\SolrSearch\Traits
  */
 trait BaseQueryTrait
@@ -64,6 +66,7 @@ trait BaseQueryTrait
     }
 
     /**
+     * Adds filters to filter on by value
      * @param string $field
      * @param string $value
      * @return $this
@@ -90,6 +93,7 @@ trait BaseQueryTrait
     }
 
     /**
+     * Exclude fields from the search action
      * @param $field
      * @param $value
      * @return $this
@@ -103,6 +107,7 @@ trait BaseQueryTrait
     }
 
     /**
+     * Add faceting
      * @param string $field
      * @param string $value
      * @return $this
