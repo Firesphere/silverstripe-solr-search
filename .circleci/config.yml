@@ -205,7 +205,7 @@ jobs:
             RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
             if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
             echo "CircleCITestIndex is successfully created"
-      - run: su solr vendor/bin/sake dev/tasks/SolrIndexTask
+      - run: vendor/bin/sake dev/tasks/SolrIndexTask
       - run:
           name: Check Solr has successfully indexed the default 3 pages
           command: |
