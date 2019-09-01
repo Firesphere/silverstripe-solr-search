@@ -38,7 +38,7 @@ class SolrConfigureJobTest extends SapphireTest
             $response = json_decode($solrResponse);
             $this->assertEquals('OK', $response->status);
         } catch (\Exception $e) {
-            Debug::dump('Running old solr versiono]. Not testing');
+            Debug::dump('Running old solr version. Not testing');
         }
     }
 
