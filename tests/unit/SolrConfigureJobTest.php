@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Page;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrConfigureJobTest extends SapphireTest
@@ -37,7 +38,7 @@ class SolrConfigureJobTest extends SapphireTest
             $response = json_decode($solrResponse);
             $this->assertEquals('OK', $response->status);
         } catch (\Exception $e) {
-            echo "Running old solr";
+            Debug::dump('Running old solr versiono]. Not testing');
         }
     }
 
