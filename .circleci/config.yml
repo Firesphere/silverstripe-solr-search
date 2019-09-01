@@ -129,6 +129,107 @@ jobs:
       - store_artifacts:
           path: /var/www/html/coverage
           destination: phpunit
+  solr4:
+    environment:
+      docker:
+        - image: brettt89/silverstripe-web:7.1-platform
+          environment:
+            - SS_DATABASE_SERVER=127.0.0.1
+            - SS_DATABASE_USERNAME=root
+            - SS_DATABASE_PASSWORD=ubuntu
+            - SS_DATABASE_NAME=circle_test
+            - SS_ENVIRONMENT_TYPE=test
+            - SS_DEFAULT_ADMIN_USERNAME=admin
+            - SS_DEFAULT_ADMIN_PASSWORD=password
+            - DEBUGBAR_DISABLE=true
+        - image: circleci/mysql:5.7
+          environment:
+            - MYSQL_USER=root
+            - MYSQL_ROOT_PASSWORD=ubuntu
+            - MYSQL_DATABASE=circle_test
+            - MYSQL_HOST=127.0.0.1
+
+      working_directory: /var/www/html
+
+      steps:
+        # redundant, just to be sure
+        - run: cd /var/www/html
+        - run: apt-get install default-jre
+        - checkout
+        - run:
+            name: Error log setup
+            command: |
+              echo ' ' > error.log
+              chmod 777 error.log
+        - run: echo '{}' > composer.lock
+        - restore_cache:
+            keys:
+              - silverstripe-search-cache-{{ checksum "composer.lock" }}
+              # fallback to using the latest cache if no exact match is found
+              - silverstripe-search-cache-
+        - run:
+            name: Composer requirements
+            command: |
+              composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
+              composer vendor-expose
+        - save_cache:
+            key: silverstripe-search-cache-{{ checksum "composer.lock" }}
+            paths:
+              - vendor
+              - app
+              - public
+              - resources
+              - _resources
+        - run:
+            name: Setup Integration Pre-requisites
+            command: |
+              cp .circleci/.env.test ./.env
+              cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
+              cp .circleci/Subsite.phpsrc app/src/Subsite.php
+              cp .circleci/TestIndexTwo.yml app/_config/search.yml
+        - run: git clone git@github.com:silverstripe-archive/silverstripe-fulltextsearch-localsolr.git localsolr
+        - run:
+            name: Start a solr4 instance
+            command: |
+              cd localsolr/server;java-jar start.jar
+            background: true
+        - run: vendor/bin/sake dev/build flush=all skipannotation=true
+        - run:
+            name: Run Solr Configure
+            command: |
+              service apache2 restart
+              service solr restart
+              mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
+              chown -R solr:solr /var/www/html/.solr
+              su solr vendor/bin/sake dev/tasks/SolrConfigureTask
+        - run:
+            name: Check Solr Core - CircleCITestIndex is successfully created
+            command: |
+              RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
+              if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
+              echo "CircleCITestIndex is successfully created"
+        - run: su solr vendor/bin/sake dev/tasks/SolrIndexTask
+        - run:
+            name: Check Solr has successfully indexed the default 3 pages
+            command: |
+              wget http://localhost:8983/solr/CircleCITestIndex/update?commit=true
+              RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":3')
+              if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
+              echo "Solr has successfully indexed documents"
+        - run:
+            name: Permission changes and testing
+            command: |
+              usermod -a -G www-data solr
+              groups solr
+              usermod -a -G solr www-data
+              groups www-data
+              chown -R solr:www-data /var/www/html
+              chmod -R u+rwxs,g+rwxs /var/www/html
+        - run:
+            name: Run tests
+            command: |
+              set +e
+              su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
   docs:
     docker:
       - image: ssmarco/php-solr:latest
