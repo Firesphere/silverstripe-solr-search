@@ -112,7 +112,11 @@ class SolrCoreServiceTest extends SapphireTest
 
     public function testGetSolrVersion()
     {
-        $this->assertEquals(5, $this->service->getSolrVersion());
+        if ($this->service->getSolrVersion() !== 5) {
+            $this->assertEquals(4, $this->service->getSolrVersion());
+        } else {
+            $this->assertEquals(5, $this->service->getSolrVersion());
+        }
         $version4 = [
             'responseHeader' =>
                 [
