@@ -61,6 +61,7 @@ class BaseIndexTest extends SapphireTest
         $this->assertCount(1, $this->index->getClasses());
         $this->assertCount(2, $this->index->getFulltextFields());
         $this->assertContains(SiteTree::class, $this->index->getClasses());
+        $this->assertEquals([], $this->index->getHistory());
     }
 
     public function testInit()
@@ -149,6 +150,7 @@ class BaseIndexTest extends SapphireTest
         $clientQuery = $index->buildSolrQuery($query);
         $this->arrayHasKey('facet-Parent', $clientQuery->getFacetSet()->getFacets());
         $result = $index->doSearch($query);
+        $this->assertContains('Test', $index->getHistory());
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
         $facets = $result->getFacets();
         /** @var ArrayList $parents */

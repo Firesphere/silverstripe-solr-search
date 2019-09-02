@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\Queries;
 
 use Firesphere\SolrSearch\Traits\BaseQueryTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
+use SilverStripe\Control\Controller;
 
 /**
  * Class BaseQuery
@@ -15,16 +16,13 @@ class BaseQuery
     use GetterSetterTrait;
     use BaseQueryTrait;
     /**
-     * @var array
-     */
-    protected $history = [];
-    /**
      * Key-value pairs of fields and what to filter against
      *
      * @var array
      */
     protected $filter = [];
     /**
+     * Same as {@link self::$filter} but reverses
      * @var array
      */
     protected $exclude = [];
@@ -37,49 +35,47 @@ class BaseQuery
      */
     protected $facetFilter = [];
     /**
+     * Pagination start
      * @var int
      */
     protected $start = 0;
-
     /**
+     * Total rows to display
      * @var int
      */
     protected $rows = 10;
-
     /**
      * Always get the ID. If you don't, you need to implement your own solution
      * @var array
      */
     protected $fields = [];
-
     /**
+     * Sorting
      * @var array
      */
     protected $sort = [];
-
     /**
      * Enable spellchecking?
      * @var bool
      */
     protected $spellcheck = true;
-
     /**
      * Follow spellchecking if there are no results
      * @var bool
      */
     protected $followSpellcheck = false;
-
     /**
+     * Minimum results a facet query has to have
      * @var int
      */
     protected $facetsMinCount = 0;
-
     /**
+     * Search terms
      * @var array
      */
     protected $terms = [];
-
     /**
+     * Highlighted items
      * @var array
      */
     protected $highlight = [];

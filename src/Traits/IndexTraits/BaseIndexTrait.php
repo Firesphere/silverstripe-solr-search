@@ -57,11 +57,15 @@ trait BaseIndexTrait
         ],
     ];
     /**
-     * usedAllFields is used to determine if the addAllFields method has been caled
+     * usedAllFields is used to determine if the addAllFields method has been called
      * This is to prevent a notice if there is no yml.
      * @var bool
      */
     protected $usedAllFields = false;
+    /**
+     * @var array Search history for the current user
+     */
+    protected $history = [];
 
     /**
      * @return array
@@ -384,6 +388,25 @@ trait BaseIndexTrait
     public function setStoredFields(array $storedFields): self
     {
         $this->storedFields = $storedFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHistory(): array
+    {
+        return $this->history;
+    }
+
+    /**
+     * @param array $history
+     * @return self
+     */
+    public function setHistory(array $history): self
+    {
+        $this->history = $history;
 
         return $this;
     }
