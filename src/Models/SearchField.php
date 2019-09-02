@@ -14,12 +14,12 @@ use SilverStripe\ORM\DataObject;
 /**
  * Class \Firesphere\SolrSearch\Models\SearchField
  *
+ * @package Firesphere\SolrSearch\Models
  * @property string $Field
  * @property string $Type
  * @property int $ParentID
  * @method SearchClass Parent()
  * @method DataList|SearchClass[] Children()
- * @package Firesphere\SolrSearch\Models
  */
 class SearchField extends DataObject
 {

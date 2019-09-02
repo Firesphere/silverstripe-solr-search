@@ -12,12 +12,12 @@ use SilverStripe\Security\PermissionProvider;
 /**
  * Class \Firesphere\SolrSearch\Models\SolrError
  *
+ * @package Firesphere\SolrSearch\Models
  * @property string $Timestamp
  * @property string $Message
  * @property string $Index
  * @property string $Type
  * @property string $Level
- * @package Firesphere\SolrSearch\Models
  */
 class SolrLog extends DataObject implements PermissionProvider
 {

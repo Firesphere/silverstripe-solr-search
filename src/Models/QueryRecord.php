@@ -9,10 +9,10 @@ use SilverStripe\ORM\ValidationException;
 /**
  * Class \Firesphere\SolrSearch\Models\QueryRecording
  *
+ * @package Firesphere\SolrSearch\Models
  * @property string $Query
  * @property int $Results
  * @property int $PagesVisited
- * @package Firesphere\SolrSearch\Models
  */
 class QueryRecord extends DataObject
 {

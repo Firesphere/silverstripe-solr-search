@@ -9,10 +9,10 @@ use SilverStripe\ORM\DataObject;
  * Class \Firesphere\SolrSearch\Models\DirtyClass
  * Keeping track of Dirty classes in Solr
  *
+ * @package Firesphere\SolrSearch\Models
  * @property string $Type
  * @property string $Class
  * @property string $IDs
- * @package Firesphere\SolrSearch\Models
  */
 class DirtyClass extends DataObject
 {
