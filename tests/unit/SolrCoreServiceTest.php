@@ -43,6 +43,7 @@ class SolrCoreServiceTest extends SapphireTest
         $expected = [
             CircleCITestIndex::class,
             TestIndex::class,
+            TestIndex3::class,
             TestIndexTwo::class,
         ];
 
