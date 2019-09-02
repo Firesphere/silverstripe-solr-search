@@ -211,6 +211,12 @@ jobs:
           command: |
             set +e
             vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
+      - store_test_results:
+          path: /var/www/html/coverage
+      - store_artifacts:
+          path: /var/www/html/coverage
+          destination: phpunit
+
   docs:
     docker:
       - image: ssmarco/php-solr:latest
