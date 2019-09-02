@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Extensions;
 use Firesphere\SolrSearch\Models\SolrLog;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\ORM\DataObject;
 
 /**
  * Class GridFieldExtension
@@ -19,10 +20,10 @@ class GridFieldExtension extends Extension
 
     /**
      * Add the visibility classes to the GridField
-     * @param $classes
-     * @param $total
-     * @param $index
-     * @param SolrLog $record
+     * @param array $classes
+     * @param int $total
+     * @param int $index
+     * @param DataObject $record
      */
     public function updateNewRowClasses(&$classes, $total, $index, $record)
     {

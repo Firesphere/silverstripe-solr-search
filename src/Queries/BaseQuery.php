@@ -5,7 +5,7 @@ namespace Firesphere\SolrSearch\Queries;
 
 use Firesphere\SolrSearch\Traits\BaseQueryTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
-use SilverStripe\Control\Controller;
+use SilverStripe\Core\Injector\Injectable;
 
 /**
  * Class BaseQuery
@@ -15,6 +15,7 @@ class BaseQuery
 {
     use GetterSetterTrait;
     use BaseQueryTrait;
+    use Injectable;
     /**
      * Key-value pairs of fields and what to filter against
      *

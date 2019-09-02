@@ -393,6 +393,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Get the search history for the current user on this index
      * @return array
      */
     public function getHistory(): array
@@ -401,6 +402,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set the search history for the current user on this index
      * @param array $history
      * @return self
      */

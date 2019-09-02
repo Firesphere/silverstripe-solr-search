@@ -21,6 +21,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\ValidationException;
@@ -40,6 +41,7 @@ abstract class BaseIndex
 {
     use Extensible;
     use Configurable;
+    use Injectable;
     use GetterSetterTrait;
     use BaseIndexTrait;
     /**
