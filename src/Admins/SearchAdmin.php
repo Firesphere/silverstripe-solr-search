@@ -52,4 +52,3 @@ class SearchAdmin extends ModelAdmin
         Requirements::css('firesphere/solr-search:client/dist/main.css');
     }
 }
-/** **/

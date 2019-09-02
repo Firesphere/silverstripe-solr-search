@@ -10,6 +10,7 @@ use SilverStripe\Forms\Validator;
 
 /**
  * Class SolrSearchForm
+ * Basic form to start searching
  * @package Firesphere\SolrSearch\Forms
  */
 class SolrSearchForm extends Form

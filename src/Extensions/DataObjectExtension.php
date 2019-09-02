@@ -58,6 +58,7 @@ class DataObjectExtension extends DataExtension
     ];
 
     /**
+     * Push the item to solr if it is not versioned
      * Update the index after write.
      * @throws ValidationException
      * @throws GuzzleException
@@ -78,6 +79,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Try to push the newly updated item to Solr
      * @param DataObject $owner
      * @throws ValidationException
      * @throws GuzzleException
@@ -105,6 +107,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Find or create a new DirtyClass for recording dirty IDs
      * @param DataObject $owner
      * @param string $type
      * @return DirtyClass
@@ -127,6 +130,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Remove the owner ID from the dirty ID set
      * @param DataObject $owner
      * @param array $ids
      * @param DirtyClass $record
@@ -142,6 +146,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Register the exception of the attempted index for later clean-up use
      * @param array $ids
      * @param $record
      * @param Exception $error
@@ -171,6 +176,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Push the item to Solr after publishing
      * @throws ValidationException
      * @throws GuzzleException
      */
@@ -182,6 +188,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Attempt to remove the item from Solr
      * @throws ValidationException
      * @throws GuzzleException
      */
@@ -224,6 +231,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Get the view permissions for each member in the system
      * @param DataObject|SiteTree $owner
      * @return array
      */
@@ -255,6 +263,7 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Get the static list of members
      * @return DataList
      */
     protected static function getMembers()

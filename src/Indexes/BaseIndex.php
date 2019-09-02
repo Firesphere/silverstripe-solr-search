@@ -118,6 +118,7 @@ abstract class BaseIndex
     }
 
     /**
+     * Name of this index
      * @return string
      */
     abstract public function getIndexName();
