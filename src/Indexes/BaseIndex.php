@@ -16,6 +16,7 @@ use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use LogicException;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
@@ -41,6 +42,10 @@ abstract class BaseIndex
     use Configurable;
     use GetterSetterTrait;
     use BaseIndexTrait;
+    /**
+     * Session key for the query history
+     */
+    public const SEARCH_HISTORY_KEY = 'query_history';
 
     /**
      * Field types that can be added
@@ -89,6 +94,8 @@ abstract class BaseIndex
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $this->client = new Client($config);
         $this->client->setAdapter(new Guzzle());
+        $session = Controller::curr()->getRequest()->getSession();
+        $this->history = $session->get(self::SEARCH_HISTORY_KEY) ?: [];
 
         // Set up the schema service, only used in the generation of the schema
         $schemaService = Injector::inst()->get(SchemaService::class, false);
@@ -201,6 +208,8 @@ abstract class BaseIndex
 
         // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);
+
+        Controller::curr()->getRequest()->getSession()->set(self::SEARCH_HISTORY_KEY, $this->getHistory());
 
         return $searchResult;
     }
