@@ -29,7 +29,7 @@ class SolrConfigureTask extends BuildTask
     use LoggerTrait;
 
     /**
-     * @var array
+     * @var array Available stores
      */
     protected static $storeModes = [
         'file' => FileConfigStore::class,
@@ -37,15 +37,15 @@ class SolrConfigureTask extends BuildTask
 //        'webdav' => WebdavConfigStore::class,
     ];
     /**
-     * @var string
+     * @var string URLSegment
      */
     private static $segment = 'SolrConfigureTask';
     /**
-     * @var string
+     * @var string Title
      */
     protected $title = 'Configure Solr cores';
     /**
-     * @var string
+     * @var string Description
      */
     protected $description = 'Create or reload a Solr Core by adding or reloading a configuration.';
 
@@ -132,6 +132,7 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * Get the config and load it to Solr
      * @param BaseIndex $instance
      * @return ConfigStore
      */
@@ -145,6 +146,7 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * Get the store for the given config
      * @param $storeConfig
      * @return ConfigStore
      */
@@ -160,6 +162,7 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * Log an exception error
      * @param $index
      * @param Exception $error
      * @throws GuzzleException

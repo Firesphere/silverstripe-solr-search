@@ -15,11 +15,13 @@ class Statics
     use Configurable;
 
     /**
+     * The actual typemap should be read from config
      * @var array map SilverStripe DB types to Solr types
      */
     protected static $typemap;
 
     /**
+     * Get the typemap
      * @return array
      */
     public static function getTypeMap()

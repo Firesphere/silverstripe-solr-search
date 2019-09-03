@@ -17,14 +17,14 @@ use Solarium\Exception\RuntimeException;
 class PostConfigStore implements ConfigStore
 {
     /**
-     * @var array
+     * @var array file extensions
      */
     protected static $extensions = [
         'xml' => 'text/xml',
         'txt' => 'text/plain',
     ];
     /**
-     * @var array
+     * @var array Store configuration
      */
     protected $config;
 
@@ -100,6 +100,7 @@ class PostConfigStore implements ConfigStore
     }
 
     /**
+     * Get the path to the config
      * @return string
      */
     public function getPath()
