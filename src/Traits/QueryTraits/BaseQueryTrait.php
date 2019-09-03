@@ -12,27 +12,27 @@ namespace Firesphere\SolrSearch\Traits;
 trait BaseQueryTrait
 {
     /**
-     * @var array
+     * @var array Terms to search
      */
     protected $terms = [];
 
     /**
-     * @var array
+     * @var array Fields to filter
      */
     protected $filter = [];
 
     /**
-     * @var array
+     * @var array Fields to search
      */
     protected $fields = [];
 
     /**
-     * @var array
+     * @var array Faceting
      */
     protected $facetFilter = [];
 
     /**
-     * @var array
+     * @var array Fields to exclude
      */
     protected $exclude = [];
 
