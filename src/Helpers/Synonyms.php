@@ -7,6 +7,7 @@ use SilverStripe\Core\Config\Configurable;
 
 /**
  * Class Synonyms
+ * List out UK to US synonyms and synonyms from {@link SiteConfig}
  * Source: @link https://raw.githubusercontent.com/heiswayi/spelling-uk-vs-us/
  * @package Firesphere\SolrSearch\Helpers
  */
