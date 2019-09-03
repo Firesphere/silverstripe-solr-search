@@ -14,10 +14,10 @@ use SilverStripe\Security\PermissionProvider;
  *
  * @package Firesphere\SolrSearch\Models
  * @property string $Timestamp
- * @property string $Message
  * @property string $Index
  * @property string $Type
  * @property string $Level
+ * @property string $Message
  */
 class SolrLog extends DataObject implements PermissionProvider
 {
@@ -39,10 +39,10 @@ class SolrLog extends DataObject implements PermissionProvider
      */
     private static $db = [
         'Timestamp' => 'Datetime',
-        'Message'   => 'Text',
         'Index'     => 'Varchar(255)',
         'Type'      => 'Enum("Config,Index,Query")',
-        'Level'     => 'Varchar(10)'
+        'Level'     => 'Varchar(10)',
+        'Message'   => 'Text',
     ];
     /**
      * @var array Summary fields

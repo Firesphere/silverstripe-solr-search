@@ -35,6 +35,7 @@ use Solarium\QueryType\Select\Result\Result;
 /**
  * Class BaseIndex
  * Base for creating a new Solr core.
+ *
  * @package Firesphere\SolrSearch\Indexes
  */
 abstract class BaseIndex

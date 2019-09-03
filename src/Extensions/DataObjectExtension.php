@@ -18,8 +18,10 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
+use SilverStripe\Security\LoginAttempt;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\ChangeSet;
 use SilverStripe\Versioned\ChangeSetItem;
 use SilverStripe\Versioned\Versioned;
@@ -55,6 +57,9 @@ class DataObjectExtension extends DataExtension
         ChangeSet::class,
         ChangeSetItem::class,
         SolrLog::class,
+        LoginAttempt::class,
+        Member::class,
+        SiteConfig::class,
     ];
 
     /**
