@@ -82,6 +82,7 @@ class BaseQuery
     protected $highlight = [];
 
     /**
+     * Get the offset to start
      * @return int
      */
     public function getStart(): int
@@ -90,6 +91,7 @@ class BaseQuery
     }
 
     /**
+     * Set the offset to start
      * @param int $start
      * @return $this
      */
@@ -101,6 +103,7 @@ class BaseQuery
     }
 
     /**
+     * Get the rows to return
      * @return int
      */
     public function getRows(): int
@@ -109,6 +112,7 @@ class BaseQuery
     }
 
     /**
+     * Set the rows to return
      * @param int $rows
      * @return $this
      */
@@ -120,6 +124,7 @@ class BaseQuery
     }
 
     /**
+     * Get the fields to return
      * @return array
      */
     public function getFields(): array
@@ -140,6 +145,7 @@ class BaseQuery
     }
 
     /**
+     * Get the sort fields
      * @return array
      */
     public function getSort(): array
@@ -148,6 +154,7 @@ class BaseQuery
     }
 
     /**
+     * Set the sort fields
      * @param array $sort
      * @return $this
      */
@@ -159,6 +166,7 @@ class BaseQuery
     }
 
     /**
+     * Get the facet count minimum to use
      * @return int
      */
     public function getFacetsMinCount(): int
@@ -167,6 +175,7 @@ class BaseQuery
     }
 
     /**
+     * Set the minimum count of facets to be returned
      * @param mixed $facetsMinCount
      * @return $this
      */
@@ -178,6 +187,7 @@ class BaseQuery
     }
 
     /**
+     * Get the search terms
      * @return array
      */
     public function getTerms(): array
@@ -186,6 +196,7 @@ class BaseQuery
     }
 
     /**
+     * Set the search tearms
      * @param array $terms
      * @return $this
      */
@@ -197,6 +208,7 @@ class BaseQuery
     }
 
     /**
+     * Get the filters
      * @return array
      */
     public function getFilter(): array
@@ -205,6 +217,7 @@ class BaseQuery
     }
 
     /**
+     * Set the query filters
      * @param array $filter
      * @return $this
      */
@@ -216,6 +229,7 @@ class BaseQuery
     }
 
     /**
+     * Get the excludes
      * @return array
      */
     public function getExclude(): array
@@ -224,6 +238,7 @@ class BaseQuery
     }
 
     /**
+     * Set the query excludes
      * @param array $exclude
      * @return $this
      */
@@ -235,6 +250,7 @@ class BaseQuery
     }
 
     /**
+     * Add a highlight parameter
      * @param $field
      * @return $this
      */
@@ -246,6 +262,7 @@ class BaseQuery
     }
 
     /**
+     * Get the highlight parameters
      * @return array
      */
     public function getHighlight(): array
@@ -254,6 +271,7 @@ class BaseQuery
     }
 
     /**
+     * Set the highlight parameters
      * @param array $highlight
      * @return $this
      */
@@ -265,6 +283,7 @@ class BaseQuery
     }
 
     /**
+     * Do we have spellchecking
      * @return bool
      */
     public function hasSpellcheck(): bool
@@ -273,6 +292,7 @@ class BaseQuery
     }
 
     /**
+     * Set the spellchecking on this query
      * @param bool $spellcheck
      * @return self
      */
@@ -284,6 +304,7 @@ class BaseQuery
     }
 
     /**
+     * Set if we should follow spellchecking
      * @param bool $followSpellcheck
      * @return BaseQuery
      */
@@ -295,6 +316,7 @@ class BaseQuery
     }
 
     /**
+     * Should spellcheck suggestions be followed
      * @return bool
      */
     public function shouldFollowSpellcheck(): bool
@@ -303,6 +325,7 @@ class BaseQuery
     }
 
     /**
+     * Get the facet filtering
      * @return array
      */
     public function getFacetFilter(): array
@@ -311,6 +334,7 @@ class BaseQuery
     }
 
     /**
+     * Set the facet filtering
      * @param array $facetFilter
      * @return BaseQuery
      */
