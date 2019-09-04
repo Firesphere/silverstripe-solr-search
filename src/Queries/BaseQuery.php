@@ -8,7 +8,9 @@ use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use SilverStripe\Core\Injector\Injectable;
 
 /**
- * Class BaseQuery
+ * Class BaseQuery is the base of every query executed.
+ *
+ * Build a query to execute agains Solr. Uses as simle as possible an interface.
  * @package Firesphere\SolrSearch\Queries
  */
 class BaseQuery
@@ -16,25 +18,6 @@ class BaseQuery
     use GetterSetterTrait;
     use BaseQueryTrait;
     use Injectable;
-    /**
-     * Key-value pairs of fields and what to filter against
-     *
-     * @var array
-     */
-    protected $filter = [];
-    /**
-     * Same as {@link self::$filter} but reverses
-     * @var array
-     */
-    protected $exclude = [];
-    /**
-     * Key => value pairs of facets to apply
-     * [
-     *     'FacetTitle' => [1, 2, 3]
-     * ]
-     * @var array
-     */
-    protected $facetFilter = [];
     /**
      * Pagination start
      * @var int

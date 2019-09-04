@@ -15,7 +15,8 @@ use Solarium\Core\Client\Client;
 /**
  * This is slightly cheating, but it works and also makes things more readable.
  *
- * Trait BaseIndexTrait
+ * This is slightly cheating, but it works and also makes things more readable.
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait BaseIndexTrait

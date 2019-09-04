@@ -6,8 +6,8 @@ namespace Firesphere\SolrSearch\Traits;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 
 /**
- * Trait GetSetSearchIntrospectionTrait
  * Setters and getters for the introspection.
+ *
  * Setters and getters to help with introspection/resolving, it's fairly simple, but extracted
  * so it's cleaner to read the code
  * @package Firesphere\SolrSearch\Traits

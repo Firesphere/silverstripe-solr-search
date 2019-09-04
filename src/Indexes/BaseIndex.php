@@ -33,8 +33,8 @@ use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
 /**
- * Class BaseIndex
  * Base for creating a new Solr core.
+ *
  * Base index settings and methods. Should be extended with at least a name for the index
  * @package Firesphere\SolrSearch\Indexes
  */
