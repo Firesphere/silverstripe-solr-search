@@ -87,6 +87,7 @@ class SolrCoreService
 
     /**
      * Add debugging information
+     *
      * @var bool
      */
     protected $inDebugMode = false;
@@ -94,6 +95,7 @@ class SolrCoreService
 
     /**
      * SolrCoreService constructor.
+     *
      * @throws ReflectionException
      */
     public function __construct()
@@ -109,6 +111,7 @@ class SolrCoreService
     /**
      * Filter enabled indexes down to valid indexes that can be instantiated
      * or are allowed from config
+     *
      * @throws ReflectionException
      */
     protected function filterIndexes(): void
@@ -118,17 +121,18 @@ class SolrCoreService
         foreach ($this->baseIndexes as $subindex) {
             // If the config of indexes is set, and the requested index isn't in it, skip addition
             // Or, the index simply doesn't exist, also a valid option
-            if (!in_array($subindex, $enabledIndexes, true)) {
+            if (!in_array($subindex, $enabledIndexes, true) ||
+                !$this->checkReflection($subindex)
+            ) {
                 continue;
             }
-            if ($this->checkReflection($subindex)) {
-                $this->validIndexes[] = $subindex;
-            }
+            $this->validIndexes[] = $subindex;
         }
     }
 
     /**
      * Check if the class is instantiable
+     *
      * @param $subindex
      * @return bool
      * @throws ReflectionException
@@ -142,6 +146,7 @@ class SolrCoreService
 
     /**
      * Create a new core
+     *
      * @param $core string - The name of the core
      * @param ConfigStore $configStore
      * @return bool
@@ -197,6 +202,7 @@ class SolrCoreService
 
     /**
      * Get the core status
+     *
      * @param string $core
      * @return StatusResult|null
      */
@@ -213,6 +219,7 @@ class SolrCoreService
 
     /**
      * Remove a core from Solr
+     *
      * @param string $core core name
      * @return StatusResult|null A result is successful
      */
@@ -229,6 +236,7 @@ class SolrCoreService
 
     /**
      * Update items in the list to Solr
+     *
      * @param SS_List|DataObject $items
      * @param string $type
      * @param null|string $index
@@ -264,6 +272,7 @@ class SolrCoreService
 
     /**
      * Get valid indexes for the project
+     *
      * @param null|string $index
      * @return array
      */
@@ -283,6 +292,7 @@ class SolrCoreService
 
     /**
      * Execute the manipulation of solr documents
+     *
      * @param SS_List $items
      * @param $type
      * @param BaseIndex $index
@@ -304,6 +314,7 @@ class SolrCoreService
 
     /**
      * get the update object ready
+     *
      * @param SS_List $items
      * @param string $type
      * @param BaseIndex $index
@@ -340,6 +351,7 @@ class SolrCoreService
 
     /**
      * Create the documents and add to the update
+     *
      * @param BaseIndex $index
      * @param SS_List $items
      * @param \Solarium\QueryType\Update\Query\Query $update
@@ -357,6 +369,7 @@ class SolrCoreService
 
     /**
      * Get the document factory prepared
+     *
      * @param SS_List $items
      * @return DocumentFactory
      */
@@ -372,6 +385,7 @@ class SolrCoreService
 
     /**
      * Check if we are in debug mode
+     *
      * @return bool
      */
     public function isInDebugMode(): bool
@@ -381,6 +395,7 @@ class SolrCoreService
 
     /**
      * Set the debug mode
+     *
      * @param bool $inDebugMode
      * @return SolrCoreService
      */
@@ -393,6 +408,7 @@ class SolrCoreService
 
     /**
      * Check the Solr version to use
+     *
      * @param HandlerStack|null $handler Used for testing the solr version
      * @return int
      */
@@ -401,7 +417,7 @@ class SolrCoreService
         $config = self::config()->get('config');
         $firstEndpoint = array_shift($config['endpoint']);
         $clientConfig = [
-            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port']
+            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port'],
         ];
 
         if ($handler) {
@@ -420,6 +436,7 @@ class SolrCoreService
 
     /**
      * Get the client
+     *
      * @return Client
      */
     public function getClient(): Client
@@ -429,6 +446,7 @@ class SolrCoreService
 
     /**
      * Set the client
+     *
      * @param Client $client
      * @return SolrCoreService
      */

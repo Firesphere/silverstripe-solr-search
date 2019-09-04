@@ -9,11 +9,10 @@ use SilverStripe\View\Requirements;
 
 /**
  * Class \Firesphere\SolrSearch\Admins\SearchAdmin
- *
- * @package Firesphere\SolrSearch\Admins
- *
  * Manage or see the Solr configuration. Default implementation of SilverStripe ModelAdmin
  * Nothing to see here
+ *
+ * @package Firesphere\SolrSearch\Admins
  */
 class SearchAdmin extends ModelAdmin
 {
