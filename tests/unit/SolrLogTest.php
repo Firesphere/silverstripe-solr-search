@@ -24,6 +24,8 @@ class SolrLogTest extends SapphireTest
     {
         $this->assertFalse($this->log->canCreate());
         $this->assertFalse($this->log->canEdit());
+        $this->assertTrue($this->log->canDelete());
+        $this->assertFalse($this->log->canDelete());
         /** @var DefaultAdminService $admin */
         $admin = singleton(DefaultAdminService::class);
         $admin = $admin->findOrCreateDefaultAdmin();
@@ -41,4 +43,29 @@ class SolrLogTest extends SapphireTest
 
         $this->assertEquals('Testing', $error2->getLastErrorLine());
     }
+
+    public function testProvidePermissions()
+    {
+        $expected = [
+            'DELETE_LOG' => [
+                'name'     => _t(self::class . '.PERMISSION_DELETE_DESCRIPTION', 'Delete Solr logs'),
+                'category' => _t('Permissions.LOGS_CATEGORIES', 'Solr logs permissions'),
+                'help'     => _t(
+                    self::class . '.PERMISSION_DELETE_HELP',
+                    'Permission required to delete existing Solr logs.'
+                )
+            ],
+            'VIEW_LOG'   => [
+                'name'     => _t(self::class . '.PERMISSION_VIEW_DESCRIPTION', 'View Solr logs'),
+                'category' => _t('Permissions.LOGS_CATEGORIES', 'Solr logs permissions'),
+                'help'     => _t(
+                    self::class . '.PERMISSION_VIEW_HELP',
+                    'Permission required to view existing Solr logs.'
+                )
+            ],
+        ];
+
+        $this->assertEquals($expected, $this->log->providePermissions());
+    }
+
 }
