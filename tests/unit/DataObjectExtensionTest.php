@@ -70,7 +70,7 @@ class DataObjectExtensionTest extends SapphireTest
 
         $extension->onAfterDelete();
         /** @var DirtyClass $dirty */
-        $dirty = DirtyClass::get()->filter(['Class' => Page::class, 'Type' => DataObjectExtension::DELETE])->first();
+        $dirty = DirtyClass::get()->filter(['Class' => Page::class, 'Type' => SolrCoreService::DELETE_TYPE])->first();
         $ids = json_decode($dirty->IDs, 1);
         $this->assertArrayNotHasKey($id, array_flip($ids));
         $page->delete();
