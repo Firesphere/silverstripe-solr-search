@@ -12,15 +12,16 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 trait GetSetSearchIntrospectionTrait
 {
     /**
-     * @var BaseIndex
+     * @var BaseIndex Index to use
      */
     protected $index;
     /**
-     * @var array
+     * @var array Found items
      */
     protected $found = [];
 
     /**
+     * Get the current index
      * @return BaseIndex
      */
     public function getIndex(): BaseIndex
@@ -29,6 +30,7 @@ trait GetSetSearchIntrospectionTrait
     }
 
     /**
+     * Set the current index
      * @param mixed $index
      * @return $this
      */
@@ -40,6 +42,7 @@ trait GetSetSearchIntrospectionTrait
     }
 
     /**
+     * Get whatever is found
      * @return array
      */
     public function getFound(): array

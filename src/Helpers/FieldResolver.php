@@ -162,6 +162,8 @@ class FieldResolver
     }
 
     /**
+     * Get the hierarchy for a class
+     * @todo clean this up to be more compatible with PHP features
      * @param $class
      * @param $includeSubclasses
      * @return array
