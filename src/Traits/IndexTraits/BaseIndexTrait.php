@@ -21,35 +21,35 @@ use Solarium\Core\Client\Client;
 trait BaseIndexTrait
 {
     /**
-     * @var Client
+     * @var Client Query client
      */
     protected $client;
     /**
-     * @var array
+     * @var array Facet fields
      */
     protected $facetFields = [];
     /**
-     * @var array
+     * @var array Fulltext fields
      */
     protected $fulltextFields = [];
     /**
-     * @var array
+     * @var array Filterable fields
      */
     protected $filterFields = [];
     /**
-     * @var array
+     * @var array Sortable fields
      */
     protected $sortFields = [];
     /**
-     * @var string
+     * @var string Default search field
      */
     protected $defaultField = '_text';
     /**
-     * @var array
+     * @var array Stored fields
      */
     protected $storedFields = [];
     /**
-     * @var array
+     * @var array Fields to copy to the default fields
      */
     protected $copyFields = [
         '_text' => [
@@ -68,6 +68,7 @@ trait BaseIndexTrait
     protected $history = [];
 
     /**
+     * Return the copy fields
      * @return array
      */
     public function getCopyFields(): array
@@ -76,6 +77,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set the copy fields
      * @param array $copyField
      * @return $this
      */
@@ -87,6 +89,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Return the default field for this index
      * @return string
      */
     public function getDefaultField(): string
@@ -95,6 +98,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set the default field for this index
      * @param string $defaultField
      * @return $this
      */
@@ -106,6 +110,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a field to sort on
      * @param $sortField
      * @return $this
      */
@@ -124,6 +129,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Get the fulltext fields
      * @return array
      */
     public function getFulltextFields(): array
@@ -136,6 +142,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set the fulltext fields
      * @param array $fulltextFields
      * @return $this
      */
@@ -147,6 +154,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Get the filter fields
      * @return array
      */
     public function getFilterFields(): array
@@ -155,6 +163,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set the filter fields
      * @param array $filterFields
      * @return $this
      */
@@ -166,6 +175,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a single Fulltext field
      * @param string $fulltextField
      * @param null|string $forceType
      * @param array $options
@@ -210,6 +220,7 @@ trait BaseIndexTrait
     abstract public function getClasses(): array;
 
     /**
+     * Get the sortable fields
      * @return array
      */
     public function getSortFields(): array
@@ -218,6 +229,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set/override the sortable fields
      * @param array $sortFields
      * @return $this
      */
@@ -229,6 +241,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a Fulltext Field
      * @param bool $includeSubclasses Compatibility mode, not actually used
      * @throws \ReflectionException
      * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
@@ -299,6 +312,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a facet field
      * @param $field
      * @param array $options
      * @return $this
@@ -315,6 +329,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a filterable field
      * @param $filterField
      * @return $this
      */
@@ -329,6 +344,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a copy field
      * @param string $field Name of the copyfield
      * @param array $options Array of all fields that should be copied to this copyfield
      * @return $this
@@ -341,6 +357,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add a stored/fulltext field
      * @param string $field
      * @param null|string $forceType
      * @param array $extraOptions
@@ -355,6 +372,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Get the client
      * @return Client
      */
     public function getClient()
@@ -363,6 +381,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set/override the client
      * @param Client $client
      * @return $this
      */
@@ -374,6 +393,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Get the stored field list
      * @return array
      */
     public function getStoredFields(): array
@@ -382,6 +402,7 @@ trait BaseIndexTrait
     }
 
     /**
+     * Set/override the stored field list
      * @param array $storedFields
      * @return BaseIndex
      */
