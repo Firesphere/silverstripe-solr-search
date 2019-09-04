@@ -9,25 +9,28 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 
 /**
- * Trait DocumentFactoryTrait
+ * Trait DocumentFactoryTrait is a basic getter setter for the DocumentFactory.
+ *
+ * Getter and setter helpers
  * @package Firesphere\SolrSearch\Traits
  */
 trait DocumentFactoryTrait
 {
     /**
-     * @var FieldResolver
+     * @var FieldResolver Resolver for fields
      */
     protected $fieldResolver;
     /**
-     * @var null|ArrayList|DataList
+     * @var null|ArrayList|DataList Items to create documents for
      */
     protected $items;
     /**
-     * @var string
+     * @var string Current class that's being indexed
      */
     protected $class;
 
     /**
+     * Current class being indexed
      * @return string
      */
     public function getClass(): string
@@ -36,6 +39,7 @@ trait DocumentFactoryTrait
     }
 
     /**
+     * Set the current class to be indexed
      * @param string $class
      * @return DocumentFactory
      */
@@ -47,6 +51,7 @@ trait DocumentFactoryTrait
     }
 
     /**
+     * Get the FieldResolver class
      * @return FieldResolver
      */
     public function getFieldResolver(): FieldResolver
@@ -55,6 +60,7 @@ trait DocumentFactoryTrait
     }
 
     /**
+     * Get the items being indexed
      * @return ArrayList|DataList|null
      */
     public function getItems()
@@ -63,6 +69,7 @@ trait DocumentFactoryTrait
     }
 
     /**
+     * Set the items to index
      * @param ArrayList|DataList|null $items
      * @return DocumentFactory
      */
