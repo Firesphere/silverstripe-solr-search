@@ -28,7 +28,10 @@ use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use Solarium\QueryType\Update\Result;
 
 /**
- * Class SolrCoreService
+ * Class SolrCoreService provides the base connection to Solr.
+ *
+ * Default service to connect to Solr and handle all base requirements to support Solr.
+ * Default constants are available to support any set up.
  * @package Firesphere\SolrSearch\Services
  */
 class SolrCoreService
@@ -36,52 +39,49 @@ class SolrCoreService
     /**
      * Unique ID in Solr
      */
-    public const ID_FIELD = 'id';
+    const ID_FIELD = 'id';
     /**
      * SilverStripe ID of the object
      */
-    public const CLASS_ID_FIELD = 'ObjectID';
+    const CLASS_ID_FIELD = 'ObjectID';
     /**
      * Name of the field that can be used for queries
      */
-    public const CLASSNAME = 'ClassName';
+    const CLASSNAME = 'ClassName';
     /**
      * Solr update types
      */
-    public const DELETE_TYPE_ALL = 'deleteall';
+    const DELETE_TYPE_ALL = 'deleteall';
     /**
      * string
      */
-    public const DELETE_TYPE = 'delete';
+    const DELETE_TYPE = 'delete';
     /**
      * string
      */
-    public const UPDATE_TYPE = 'update';
+    const UPDATE_TYPE = 'update';
     /**
      * string
      */
-    public const CREATE_TYPE = 'create';
+    const CREATE_TYPE = 'create';
 
 
     use Configurable;
 
     /**
-     * @var Client
+     * @var Client The current client
      */
     protected $client;
-
     /**
-     * @var array
+     * @var array Base indexes that exist
      */
     protected $baseIndexes = [];
-
     /**
-     * @var array
+     * @var array Valid indexes out of the base indexes
      */
     protected $validIndexes = [];
-
     /**
-     * @var Query
+     * @var Query A core admin object
      */
     protected $admin;
 
@@ -168,6 +168,7 @@ class SolrCoreService
     }
 
     /**
+     * Reload the given core
      * @param $core
      * @return StatusResult|null
      */
@@ -184,6 +185,7 @@ class SolrCoreService
     }
 
     /**
+     * Check the status of a core
      * @param string $core
      * @return StatusResult|null
      * @deprecated backward compatibility stub
