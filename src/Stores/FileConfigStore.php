@@ -9,13 +9,15 @@ use Solarium\Exception\RuntimeException;
 
 /**
  * Class FileConfigStore
+ * Store the config in a file storage on the local file system.
+ * Store the config in a file storage on the local file system, usually in project/.solr/indexname
  * @package Firesphere\SolrSearch\Stores
  */
 class FileConfigStore implements ConfigStore
 {
 
     /**
-     * @var array
+     * @var array Configuration to use
      */
     protected $config;
 
@@ -51,6 +53,7 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Get the target dir for the file saving
      * @param $index
      * @return string
      */
@@ -72,6 +75,7 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Path to the store location
      * @return mixed|string
      */
     public function getPath()
@@ -80,6 +84,8 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Upload/load a file in to the storage
+     *
      * @param string $index
      * @param string $filename
      * @param string $string
@@ -92,6 +98,7 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Location of the instance
      * @param string|null $index
      * @return string|null
      */
@@ -101,6 +108,7 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Get the config
      * @return array
      */
     public function getConfig(): array
@@ -109,6 +117,7 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Set the config
      * @param array $config
      * @return $this
      */
