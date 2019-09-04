@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Tests;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Jobs\SolrClearDirtyClassesJob;
 use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Page;
 use SilverStripe\Dev\SapphireTest;
 
@@ -27,7 +28,7 @@ class SolrClearDirtyClassesJobTest extends SapphireTest
         $id = $page->write();
 
         $dirtyClass = DirtyClass::create([
-            'Type'  => DataObjectExtension::WRITE,
+            'Type'  => SolrCoreService::UPDATE_TYPE,
             'Class' => Page::class,
             'IDs'   => json_encode([$id]),
         ])->write();
@@ -37,7 +38,7 @@ class SolrClearDirtyClassesJobTest extends SapphireTest
         $this->assertNull(DirtyClass::get()->byID($dirtyClass));
 
         $dirtyClass = DirtyClass::create([
-            'Type'  => DataObjectExtension::DELETE,
+            'Type'  => SolrCoreService::DELETE_TYPE,
             'Class' => Page::class,
             'IDs'   => json_encode([$id]),
         ])->write();

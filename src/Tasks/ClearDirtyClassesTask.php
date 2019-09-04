@@ -52,26 +52,26 @@ class ClearDirtyClassesTask extends BuildTask
      */
     public function run($request)
     {
-        /** @var DataList|DirtyClass $classes */
-        $classes = DirtyClass::get();
+        /** @var DataList|DirtyClass $dirtyObjectList */
+        $dirtyObjectList = DirtyClass::get();
         /** @var SolrCoreService $service */
         $service = new SolrCoreService();
         $solrLogger = new SolrLogger();
-        foreach ($classes as $class) {
-            $dirtyClass = $class->Class;
-            $ids = json_decode($class->IDs, true);
+        foreach ($dirtyObjectList as $dirtyObject) {
+            $dirtyClass = $dirtyObject->Class;
+            $ids = json_decode($dirtyObject->IDs, true);
             try {
                 $type = SolrCoreService::UPDATE_TYPE;
                 $dirtyClasses = ArrayList::create();
-                if ($class->Type === DataObjectExtension::WRITE) {
+                if ($dirtyObject->Type === SolrCoreService::UPDATE_TYPE) {
                     $dirtyClasses = $dirtyClass::get()->byIDs($ids);
                 }
-                if ($class->Type === DataObjectExtension::DELETE) {
+                if ($dirtyObject->Type === SolrCoreService::DELETE_TYPE) {
                     $dirtyClasses = $this->createDeleteList($ids, $dirtyClass);
                     $type = SolrCoreService::DELETE_TYPE;
                 }
                 $service->updateItems($dirtyClasses, $type);
-                $class->delete();
+                $dirtyObject->delete();
             } catch (Exception $exception) {
                 $this->getLogger()->error($exception->getMessage());
                 continue;
@@ -82,6 +82,7 @@ class ClearDirtyClassesTask extends BuildTask
 
     /**
      * Create an ArrayList of the dirty items to be deleted from Solr
+     * Uses the given class name to generate stub objects
      *
      * @param array $items
      * @param string $dirtyClass
