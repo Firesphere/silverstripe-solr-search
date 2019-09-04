@@ -7,12 +7,14 @@ use SilverStripe\Dev\Deprecation;
 
 /**
  * Trait GetterSetterTrait
+ *
+ * Getters and setters shared between the Index and Query
  * @package Firesphere\SolrSearch\Traits
  */
 trait GetterSetterTrait
 {
     /**
-     * @var array
+     * @var array Classes to use
      */
     protected $class = [];
 
@@ -36,6 +38,7 @@ trait GetterSetterTrait
     protected $facetFields = [];
 
     /**
+     * Set the classes
      * @param array $class
      * @return $this
      */
@@ -47,6 +50,7 @@ trait GetterSetterTrait
     }
 
     /**
+     * Add a class to index or query
      * $options is not used anymore, added for backward compatibility
      * @param $class
      * @param array $options unused
@@ -63,6 +67,8 @@ trait GetterSetterTrait
     }
 
     /**
+     * Get classes
+     *
      * @return array
      */
     public function getClasses(): array
@@ -90,6 +96,8 @@ trait GetterSetterTrait
     }
 
     /**
+     * Get the boosted fields
+     *
      * @return array
      */
     public function getBoostedFields(): array
@@ -111,6 +119,8 @@ trait GetterSetterTrait
     }
 
     /**
+     * Get the facet fields
+     *
      * @return array
      */
     public function getFacetFields(): array
@@ -119,6 +129,8 @@ trait GetterSetterTrait
     }
 
     /**
+     * Set the facet fields
+     *
      * @param array $facetFields
      * @return $this
      */
