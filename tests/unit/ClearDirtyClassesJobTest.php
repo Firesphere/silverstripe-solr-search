@@ -4,17 +4,17 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
-use Firesphere\SolrSearch\Jobs\SolrClearDirtyClassesJob;
+use Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Page;
 use SilverStripe\Dev\SapphireTest;
 
-class SolrClearDirtyClassesJobTest extends SapphireTest
+class ClearDirtyClassesJobTest extends SapphireTest
 {
     public function testGetTitle()
     {
-        $job = new SolrClearDirtyClassesJob();
+        $job = new ClearDirtyClassesJob();
         $this->assertEquals(
             'Clear out dirty objects in Solr',
             $job->getTitle()
@@ -23,7 +23,7 @@ class SolrClearDirtyClassesJobTest extends SapphireTest
 
     public function testProcess()
     {
-        $job = new SolrClearDirtyClassesJob();
+        $job = new ClearDirtyClassesJob();
         $page = Page::create(['Title' => 'UpdatePageTest']);
         $id = $page->write();
 

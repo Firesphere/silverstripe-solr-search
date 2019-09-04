@@ -7,7 +7,7 @@ use Firesphere\SolrSearch\Tasks\ClearDirtyClassesTask;
 use SilverStripe\Control\NullHTTPRequest;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
-class SolrClearDirtyClassesJob extends AbstractQueuedJob
+class ClearDirtyClassesJob extends AbstractQueuedJob
 {
 
     /**

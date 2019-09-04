@@ -13,7 +13,7 @@ use SilverStripe\Forms\Validator;
  * Basic form to start searching
  * @package Firesphere\SolrSearch\Forms
  */
-class SolrSearchForm extends Form
+class SearchForm extends Form
 {
     /**
      * SolrSearchForm constructor.
