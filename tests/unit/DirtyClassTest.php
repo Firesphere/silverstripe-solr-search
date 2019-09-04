@@ -18,13 +18,4 @@ class DirtyClassTest extends SapphireTest
         $this->assertFalse($dirtyClass->canEdit(null));
         $this->assertFalse($dirtyClass->canDelete(null));
     }
-
-    public function testGetCMSFields()
-    {
-        $class = DirtyClass::create();
-        $fields = $class->getCMSFields();
-
-        $this->assertNotNull($fields->dataFieldByName('Class'));
-        $this->assertNotNull($fields->dataFieldByName('IDs'));
-    }
 }
