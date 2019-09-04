@@ -24,7 +24,6 @@ class SolrLogTest extends SapphireTest
     {
         $this->assertFalse($this->log->canCreate(null));
         $this->assertFalse($this->log->canEdit(null));
-        $this->assertFalse($this->log->canDelete(null));
         /** @var DefaultAdminService $admin */
         $admin = singleton(DefaultAdminService::class);
         $admin = $admin->findOrCreateDefaultAdmin();
