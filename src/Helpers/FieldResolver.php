@@ -11,7 +11,6 @@ use SilverStripe\ORM\DataObjectSchema;
 
 /**
  * Class FieldResolver
- * @todo clean up unneeded methods
  * Some additional introspection tools that are used often by the fulltext search code
  * @package Firesphere\SolrSearch\Helpers
  */
@@ -19,11 +18,11 @@ class FieldResolver
 {
     use GetSetSearchIntrospectionTrait;
     /**
-     * @var array
+     * @var array Class Ancestry
      */
     protected static $ancestry = [];
     /**
-     * @var array
+     * @var array Class Hierarchy, could be replaced with Ancestry
      */
     protected static $hierarchy = [];
 
@@ -45,6 +44,7 @@ class FieldResolver
     }
 
     /**
+     * Resolve a field ancestry
      * @param $field
      * @return array
      * @throws Exception
@@ -84,6 +84,7 @@ class FieldResolver
     }
 
     /**
+     * Resolve relations if possible
      * @param $source
      * @param $lookup
      * @param array $next
@@ -178,6 +179,8 @@ class FieldResolver
     }
 
     /**
+     * Get the subclasses for the given class
+     * Should be replaced with PHP native methods
      * @param $class
      * @param $includeSubclasses
      * @param array $classes
@@ -195,6 +198,7 @@ class FieldResolver
     }
 
     /**
+     * Objects to exclude from the index
      * @param array $classes
      * @return array
      */
@@ -210,6 +214,7 @@ class FieldResolver
     }
 
     /**
+     * Relational data
      * @param $lookup
      * @param DataObjectSchema $schema
      * @param $className
@@ -234,6 +239,7 @@ class FieldResolver
     }
 
     /**
+     * Create field options for the given index field
      * @param $field
      * @param array $sources
      * @param array $found
@@ -274,6 +280,7 @@ class FieldResolver
     }
 
     /**
+     * Get the type of this field
      * @param array $fields
      * @param string $field
      * @param string $dataclass
@@ -291,6 +298,8 @@ class FieldResolver
     }
 
     /**
+     * FoundOriginData is a helper to make sure the options are properly set.
+     *
      * @param string $field
      * @param string $fullField
      * @param array $fieldOptions

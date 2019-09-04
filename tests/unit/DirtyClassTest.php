@@ -3,14 +3,12 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\Models\DirtyClass;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 
 class DirtyClassTest extends SapphireTest
 {
-
     public function testCan()
     {
         $dirtyClass = DirtyClass::create();

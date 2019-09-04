@@ -65,5 +65,4 @@ class SolrLogTest extends SapphireTest
 
         $this->assertEquals($expected, $this->log->providePermissions());
     }
-
 }
