@@ -3,7 +3,7 @@
 namespace Firesphere\SolrSearch\Helpers;
 
 use Exception;
-use Firesphere\SolrSearch\Traits\GetSetSearchIntrospectionTrait;
+use Firesphere\SolrSearch\Traits\GetSetSearchResolverTrait;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\DataObject;
@@ -16,7 +16,7 @@ use SilverStripe\ORM\DataObjectSchema;
  */
 class FieldResolver
 {
-    use GetSetSearchIntrospectionTrait;
+    use GetSetSearchResolverTrait;
     /**
      * @var array Class Ancestry
      */
