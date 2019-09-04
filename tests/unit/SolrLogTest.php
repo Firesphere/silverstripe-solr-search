@@ -32,6 +32,16 @@ class SolrLogTest extends SapphireTest
         $this->assertTrue($this->log->canView($admin));
     }
 
+    public function testGetCMSFields()
+    {
+        $log = SolrLog::create([]);
+        $this->assertExists($log->getCMSFields()->dataFieldByName('Timestamp'));
+        $this->assertExists($log->getCMSFields()->dataFieldByName('Index'));
+        $this->assertExists($log->getCMSFields()->dataFieldByName('Type'));
+        $this->assertExists($log->getCMSFields()->dataFieldByName('Message'));
+        $this->assertExists($log->getCMSFields()->dataFieldByName('Level'));
+    }
+
     public function testProvidePermissions()
     {
         $expected = [
