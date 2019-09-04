@@ -35,11 +35,11 @@ class SolrLogTest extends SapphireTest
     public function testGetCMSFields()
     {
         $log = SolrLog::create([]);
-        $this->assertExists($log->getCMSFields()->dataFieldByName('Timestamp'));
-        $this->assertExists($log->getCMSFields()->dataFieldByName('Index'));
-        $this->assertExists($log->getCMSFields()->dataFieldByName('Type'));
-        $this->assertExists($log->getCMSFields()->dataFieldByName('Message'));
-        $this->assertExists($log->getCMSFields()->dataFieldByName('Level'));
+        $this->assertNotNull($log->getCMSFields()->dataFieldByName('Timestamp'));
+        $this->assertNotNull($log->getCMSFields()->dataFieldByName('Index'));
+        $this->assertNotNull($log->getCMSFields()->dataFieldByName('Type'));
+        $this->assertNotNull($log->getCMSFields()->dataFieldByName('Message'));
+        $this->assertNotNull($log->getCMSFields()->dataFieldByName('Level'));
 
         $this->assertTrue($log->getCMSFields()->dataFieldByName('Timestamp')->isReadonly());
         $this->assertTrue($log->getCMSFields()->dataFieldByName('Index')->isReadonly());
