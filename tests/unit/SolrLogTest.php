@@ -40,6 +40,12 @@ class SolrLogTest extends SapphireTest
         $this->assertExists($log->getCMSFields()->dataFieldByName('Type'));
         $this->assertExists($log->getCMSFields()->dataFieldByName('Message'));
         $this->assertExists($log->getCMSFields()->dataFieldByName('Level'));
+
+        $this->assertTrue($log->getCMSFields()->dataFieldByName('Timestamp')->isReadonly());
+        $this->assertTrue($log->getCMSFields()->dataFieldByName('Index')->isReadonly());
+        $this->assertTrue($log->getCMSFields()->dataFieldByName('Type')->isReadonly());
+        $this->assertTrue($log->getCMSFields()->dataFieldByName('Message')->isReadonly());
+        $this->assertTrue($log->getCMSFields()->dataFieldByName('Level')->isReadonly());
     }
 
     public function testProvidePermissions()
