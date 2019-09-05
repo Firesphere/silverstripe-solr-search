@@ -47,6 +47,7 @@ class DataResolver
     }
 
     /**
+     * Identify the given object's columns
      * @param DataObject|ArrayData|SS_List|DBField $obj
      * @param array|string $columns
      *
@@ -68,6 +69,7 @@ class DataResolver
     }
 
     /**
+     * An error occured, so log it
      * @param DataObject|ArrayData|SS_List $component
      * @param array $columns
      *
