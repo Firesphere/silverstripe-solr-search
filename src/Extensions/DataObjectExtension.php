@@ -36,8 +36,6 @@ use SilverStripe\Versioned\Versioned;
  */
 class DataObjectExtension extends DataExtension
 {
-    public const WRITE = 'write';
-    public const DELETE = 'delete';
     /**
      * canView cache
      * @var array
@@ -92,7 +90,7 @@ class DataObjectExtension extends DataExtension
     protected function pushToSolr(DataObject $owner): void
     {
         /** @var DataObject $owner */
-        $record = $this->getDirtyClass($owner, self::WRITE);
+        $record = $this->getDirtyClass($owner, SolrCoreService::UPDATE_TYPE);
 
         $ids = json_decode($record->IDs, 1) ?: [];
         $mode = Versioned::get_reading_mode();
@@ -202,7 +200,7 @@ class DataObjectExtension extends DataExtension
         /** @var DataObject $owner */
         $owner = $this->owner;
         /** @var DirtyClass $record */
-        $record = $this->getDirtyClass($owner, self::DELETE);
+        $record = $this->getDirtyClass($owner, SolrCoreService::DELETE_TYPE);
 
         $ids = json_decode($record->IDs, 1) ?: [];
         parent::onAfterDelete();
