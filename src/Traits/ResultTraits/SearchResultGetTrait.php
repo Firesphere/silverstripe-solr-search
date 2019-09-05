@@ -14,31 +14,32 @@ use Solarium\Component\Result\Highlighting\Highlighting;
 trait SearchResultGetTrait
 {
     /**
-     * @var int
+     * @var int Total items in the result
      */
     protected $totalItems;
 
     /**
-     * @var ArrayData
+     * @var ArrayData Facet results
      */
     protected $facets;
 
     /**
-     * @var Highlighting
+     * @var Highlighting Highlighting
      */
     protected $highlight;
 
     /**
-     * @var ArrayList
+     * @var ArrayList Spellcheck results
      */
     protected $spellcheck;
 
     /**
-     * @var string
+     * @var string Collated spellcheck
      */
     protected $collatedSpellcheck;
 
     /**
+     * Retrieve the facets from the results
      * @return ArrayData
      */
     public function getFacets(): ArrayData
@@ -47,6 +48,7 @@ trait SearchResultGetTrait
     }
 
     /**
+     * Get the collated spellcheck
      * @return string
      */
     public function getCollatedSpellcheck()
@@ -55,6 +57,7 @@ trait SearchResultGetTrait
     }
 
     /**
+     * Get the highlighting
      * @return Highlighting|null
      */
     public function getHighlight(): ?Highlighting
@@ -63,6 +66,7 @@ trait SearchResultGetTrait
     }
 
     /**
+     * Get the spellchecked results
      * @return ArrayList
      */
     public function getSpellcheck(): ArrayList
@@ -71,6 +75,7 @@ trait SearchResultGetTrait
     }
 
     /**
+     * Total items in the result
      * @return int
      */
     public function getTotalItems(): int

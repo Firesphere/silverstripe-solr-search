@@ -10,21 +10,23 @@ use Solarium\Component\Facet\Field;
 use Solarium\QueryType\Select\Query\Query;
 
 /**
- * Trait QueryComponentFacetTrait
+ * Trait QueryComponentFacetTrait deals with the facets.
+ *
+ * Faceting for any given query or index.
  * @package Firesphere\SolrSearch\Traits
  */
 trait QueryComponentFacetTrait
 {
     /**
-     * @var BaseIndex
+     * @var BaseIndex Index to query
      */
     protected $index;
     /**
-     * @var BaseQuery
+     * @var BaseQuery Query to use
      */
     protected $query;
     /**
-     * @var Query
+     * @var Query Solarium query
      */
     protected $clientQuery;
 
