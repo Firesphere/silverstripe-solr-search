@@ -16,6 +16,7 @@ use Solarium\QueryType\Select\Query\Query;
  * Class QueryComponentFactory
  *
  * Build a query component for each available build part
+ *
  * @package Firesphere\SolrSearch\Factories
  */
 class QueryComponentFactory
@@ -26,16 +27,18 @@ class QueryComponentFactory
 
     /**
      * Default fields that should always be added
+     *
      * @var array
      */
     public const DEFAULT_FIELDS = [
         SolrCoreService::ID_FIELD,
         SolrCoreService::CLASS_ID_FIELD,
-        SolrCoreService::CLASSNAME
+        SolrCoreService::CLASSNAME,
     ];
 
     /**
      * Build methods to run
+     *
      * @var array
      */
     protected static $builds = [
@@ -46,7 +49,7 @@ class QueryComponentFactory
         'Excludes',
         'Facets',
         'FacetQuery',
-        'Spellcheck'
+        'Spellcheck',
     ];
     /**
      * @var BaseQuery
@@ -67,6 +70,7 @@ class QueryComponentFactory
 
     /**
      * Build the full query
+     *
      * @return Query
      */
     public function buildQuery(): Query
@@ -97,6 +101,7 @@ class QueryComponentFactory
 
     /**
      * Get the base query
+     *
      * @return BaseQuery
      */
     public function getQuery(): BaseQuery
@@ -106,6 +111,7 @@ class QueryComponentFactory
 
     /**
      * Set the base query
+     *
      * @param BaseQuery $query
      * @return self
      */
@@ -118,6 +124,7 @@ class QueryComponentFactory
 
     /**
      * Get the array of terms used to query Solr
+     *
      * @return array
      */
     public function getQueryArray(): array
@@ -127,6 +134,7 @@ class QueryComponentFactory
 
     /**
      * Set the array of queries that are sent to Solr
+     *
      * @param array $queryArray
      * @return self
      */
@@ -139,6 +147,7 @@ class QueryComponentFactory
 
     /**
      * Get the client Query components
+     *
      * @return Query
      */
     public function getClientQuery(): Query
@@ -159,6 +168,7 @@ class QueryComponentFactory
 
     /**
      * Get the query helper
+     *
      * @return Helper
      */
     public function getHelper(): Helper
@@ -168,6 +178,7 @@ class QueryComponentFactory
 
     /**
      * Set the Helper
+     *
      * @param Helper $helper
      * @return self
      */
@@ -180,6 +191,7 @@ class QueryComponentFactory
 
     /**
      * Get the BaseIndex
+     *
      * @return BaseIndex
      */
     public function getIndex(): BaseIndex
@@ -189,6 +201,7 @@ class QueryComponentFactory
 
     /**
      * Set a BaseIndex
+     *
      * @param BaseIndex $index
      * @return self
      */
@@ -201,6 +214,7 @@ class QueryComponentFactory
 
     /**
      * Build the terms and boost terms
+     *
      * @return void
      */
     protected function buildTerms(): void
@@ -232,6 +246,7 @@ class QueryComponentFactory
 
     /**
      * Escape the search query
+     *
      * @param string $searchTerm
      * @param Helper $helper
      * @return string

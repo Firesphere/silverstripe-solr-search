@@ -12,6 +12,7 @@ use Solarium\Exception\RuntimeException;
 
 /**
  * Class PostConfigStore
+ *
  * @package Firesphere\SolrSearch\Stores
  */
 class PostConfigStore implements ConfigStore
@@ -30,6 +31,7 @@ class PostConfigStore implements ConfigStore
 
     /**
      * FileConfigStore constructor.
+     *
      * @param array $config
      */
     public function __construct($config)
@@ -53,6 +55,7 @@ class PostConfigStore implements ConfigStore
 
     /**
      * Upload a file to Solr for index $index
+     *
      * @param $index string - The name of an index (which is also used as the name of the Solr core for the index)
      * @param $file string - A path to a file to upload. The base name of the file will be used on the remote side
      * @param null|Countable $handler A handler used for testing, not to be used in Live environments
@@ -65,6 +68,7 @@ class PostConfigStore implements ConfigStore
 
     /**
      * Upload a file to Solr from a string for index $index
+     *
      * @param string $index - The name of an index (which is also used as the name of the Solr core for the index)
      * @param string $filename - The base name of the file to use on the remote side
      * @param string $string - The content to upload
@@ -77,8 +81,8 @@ class PostConfigStore implements ConfigStore
         $clientConfig = [
             'base_uri' => $this->config['uri'],
             'headers'  => [
-                'Content-Type' => static::$extensions[$info['extension']] ?? 'text/plain'
-            ]
+                'Content-Type' => static::$extensions[$info['extension']] ?? 'text/plain',
+            ],
         ];
         // Add auth to the post if needed
         if (isset($this->config['auth'])) {
@@ -101,6 +105,7 @@ class PostConfigStore implements ConfigStore
 
     /**
      * Get the path to the config
+     *
      * @return string
      */
     public function getPath()
@@ -110,6 +115,7 @@ class PostConfigStore implements ConfigStore
 
     /**
      * Get the instanceDir to tell Solr to use for index $index
+     *
      * @param string|null $index string - The name of an index
      *          (which is also used as the name of the Solr core for the index)
      * @return null|string

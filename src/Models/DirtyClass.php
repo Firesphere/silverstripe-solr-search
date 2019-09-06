@@ -37,11 +37,12 @@ class DirtyClass extends DataObject
     private static $summary_fields = [
         'Class',
         'Type',
-        'IDs'
+        'IDs',
     ];
 
     /**
      * Make the CMS fields readable
+     *
      * @return FieldList
      */
     public function getCMSFields()
@@ -55,7 +56,7 @@ class DirtyClass extends DataObject
 
         $fields->addFieldsToTab('Root.Main', [
             ReadonlyField::create('Class', 'Class', $class),
-            ReadonlyField::create('IDs', _t(self::class . '.DIRTYIDS', 'Dirty IDs'), $IDs)
+            ReadonlyField::create('IDs', _t(self::class . '.DIRTYIDS', 'Dirty IDs'), $IDs),
         ]);
 
         return $fields;
@@ -63,6 +64,7 @@ class DirtyClass extends DataObject
 
     /**
      * Nope, can't delete these
+     *
      * @param null|Member $member
      * @return bool
      */
@@ -73,6 +75,7 @@ class DirtyClass extends DataObject
 
     /**
      * Nope, can't edit these
+     *
      * @param null|Member $member
      * @return bool
      */
@@ -83,6 +86,7 @@ class DirtyClass extends DataObject
 
     /**
      * Nope, can't create these
+     *
      * @param null|Member $member
      * @param array $context
      * @return bool

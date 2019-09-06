@@ -1,0 +1,24 @@
+en:
+  Firesphere\SolrSearch\Admins\SearchAdmin:
+    MENUTITLE: Search
+  Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob:
+    CLEARSOLRDIRTY: 'Clear out dirty objects in Solr'
+  Firesphere\SolrSearch\Models\DirtyClass:
+    DIRTYIDS: 'Dirty IDs'
+    PLURALNAME: 'Dirty Classs'
+    PLURALS:
+      one: 'A Dirty Class'
+      other: '{count} Dirty Classs'
+    SINGULARNAME: 'Dirty Class'
+  Firesphere\SolrSearch\Models\SolrLog:
+    PERMISSION_DELETE_DESCRIPTION: 'Delete Solr logs'
+    PERMISSION_DELETE_HELP: 'Permission required to delete existing Solr logs.'
+    PERMISSION_VIEW_DESCRIPTION: 'View Solr logs'
+    PERMISSION_VIEW_HELP: 'Permission required to view existing Solr logs.'
+    PLURALNAME: 'Solr Logs'
+    PLURALS:
+      one: 'A Solr Log'
+      other: '{count} Solr Logs'
+    SINGULARNAME: 'Solr Log'
+  Permissions:
+    LOGS_CATEGORIES: 'Solr logs permissions'

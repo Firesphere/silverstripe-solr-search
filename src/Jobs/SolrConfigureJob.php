@@ -13,6 +13,7 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 /**
  * Class SolrConfigureJob
+ *
  * @package Firesphere\SolrSearch\Jobs
  */
 class SolrConfigureJob extends AbstractQueuedJob
@@ -28,6 +29,7 @@ class SolrConfigureJob extends AbstractQueuedJob
 
     /**
      * Do some processing yourself!
+     *
      * @return void
      * @throws ReflectionException
      * @throws GuzzleException

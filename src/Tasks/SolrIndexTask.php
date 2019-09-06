@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
@@ -23,6 +24,7 @@ use SilverStripe\Versioned\Versioned;
 
 /**
  * Class SolrIndexTask
+ *
  * @description Index items to Solr through a tasks
  * @package Firesphere\SolrSearch\Tasks
  */
@@ -33,22 +35,22 @@ class SolrIndexTask extends BuildTask
      * @var string
      */
     private static $segment = 'SolrIndexTask';
-
     /**
      * @var string
      */
     protected $title = 'Solr Index update';
-
     /**
      * @var string
      */
     protected $description = 'Add or update documents to an existing Solr core.';
-
+    /**
+     * @var array Store the current states for all instances of SiteState
+     */
+    public $currentStates;
     /**
      * @var bool
      */
     protected $debug = false;
-
     /**
      * @var SolrCoreService
      */
@@ -56,6 +58,8 @@ class SolrIndexTask extends BuildTask
 
     /**
      * SolrIndexTask constructor. Sets up the document factory
+     *
+     * @throws \ReflectionException
      */
     public function __construct()
     {
@@ -66,6 +70,7 @@ class SolrIndexTask extends BuildTask
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
         $this->setDebug(Director::isDev() || Director::is_cli());
+        $this->currentStates = SiteState::currentStates();
     }
 
     /**
@@ -227,6 +232,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Reindex the given group, for each state
+     *
      * @param int $group
      * @param string $class
      * @param int $batchLength
@@ -235,20 +242,34 @@ class SolrIndexTask extends BuildTask
      */
     private function doReindex($group, $class, $batchLength, BaseIndex $index): void
     {
-        // Generate filtered list of local records
-        $baseClass = DataObject::getSchema()->baseDataClass($class);
-        $client = $index->getClient();
-        /** @var DataList|DataObject[] $items */
-        $items = DataObject::get($baseClass)
-            ->sort('ID ASC')
-            ->limit($batchLength, ($group * $batchLength));
-        $update = $client->createUpdate();
-        if ($items->count()) {
-            $this->service->setInDebugMode($this->debug);
-            $this->service->updateIndex($index, $items, $update);
-            $update->addCommit();
-            $client->update($update);
+        foreach (SiteState::getStates() as $state) {
+            if ($state !== 'default') {
+                SiteState::withState($state);
+            }
+            $this->stateReindex($group, $class, $batchLength, $index);
         }
+
+        // Reset the variants back to it's original state for the next round
+        foreach ($this->currentStates as $variant => $value) {
+            singleton($variant)->activateState($value);
+        }
+    }
+
+    /**
+     * Execute the update on the client
+     *
+     * @param BaseIndex $index
+     * @param $items
+     * @throws Exception
+     */
+    private function updateIndex(BaseIndex $index, $items): void
+    {
+        $client = $index->getClient();
+        $update = $client->createUpdate();
+        $this->service->setInDebugMode($this->debug);
+        $this->service->updateIndex($index, $items, $update);
+        $update->addCommit();
+        $client->update($update);
     }
 
     /**
@@ -268,5 +289,25 @@ class SolrIndexTask extends BuildTask
             $group
         );
         SolrLogger::logMessage('ERROR', $msg, $index);
+    }
+
+    /**
+     * @param $group
+     * @param $class
+     * @param $batchLength
+     * @param BaseIndex $index
+     * @throws Exception
+     */
+    private function stateReindex($group, $class, $batchLength, BaseIndex $index): void
+    {
+// Generate filtered list of local records
+        $baseClass = DataObject::getSchema()->baseDataClass($class);
+        /** @var DataList|DataObject[] $items */
+        $items = DataObject::get($baseClass)
+            ->sort('ID ASC')
+            ->limit($batchLength, ($group * $batchLength));
+        if ($items->count()) {
+            $this->updateIndex($index, $items);
+        }
     }
 }

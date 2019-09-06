@@ -13,6 +13,7 @@ use SilverStripe\View\ArrayData;
 
 /**
  * Class DataResolver
+ *
  * @package Firesphere\SolrSearch\Helpers
  */
 class DataResolver
@@ -21,17 +22,19 @@ class DataResolver
 
     /**
      * Supported object types
+     *
      * @var array map of objects to methods
      */
     private static $objTypes = [
         DataObject::class => 'DataObject',
         ArrayData::class  => 'ArrayData',
         SS_List::class    => 'List',
-        DBField::class    => 'Field'
+        DBField::class    => 'Field',
     ];
 
     /**
      * DataResolver constructor.
+     *
      * @param DataObject|ArrayList|SS_List|DBField $component
      * @param array|string $columns
      */
@@ -48,6 +51,7 @@ class DataResolver
 
     /**
      * Identify the given object's columns
+     *
      * @param DataObject|ArrayData|SS_List|DBField $obj
      * @param array|string $columns
      *
@@ -70,6 +74,7 @@ class DataResolver
 
     /**
      * An error occured, so log it
+     *
      * @param DataObject|ArrayData|SS_List $component
      * @param array $columns
      *

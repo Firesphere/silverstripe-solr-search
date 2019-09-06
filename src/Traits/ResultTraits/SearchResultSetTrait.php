@@ -4,31 +4,32 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Results\SearchResult;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;
 
 /**
  * Trait SearchResultSetTrait
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait SearchResultSetTrait
 {
     /**
-     * @var int
+     * @var int Total items in result
      */
     protected $totalItems;
     /**
-     * @var ArrayData
+     * @var ArrayData Facets
      */
     protected $facets;
 
     /**
-     * @var Highlighting
+     * @var Highlighting Highlighted items
      */
     protected $highlight;
 
     /**
+     * Set the highlighted items
      * @param $highlight
      * @return SearchResult
      */
@@ -40,6 +41,7 @@ trait SearchResultSetTrait
     }
 
     /**
+     * Set the total amount of results
      * @param $count
      * @return self
      */

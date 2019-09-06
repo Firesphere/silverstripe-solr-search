@@ -11,16 +11,17 @@ use Solarium\QueryType\Select\Query\Query;
 
 /**
  * Trait QueryComponentFilterTrait
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait QueryComponentFilterTrait
 {
     /**
-     * @var BaseQuery
+     * @var BaseQuery Base query that's about to be executed
      */
     protected $query;
     /**
-     * @var Query
+     * @var Query Solarium query
      */
     protected $clientQuery;
 

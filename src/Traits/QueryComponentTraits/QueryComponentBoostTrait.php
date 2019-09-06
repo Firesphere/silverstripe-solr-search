@@ -9,6 +9,7 @@ use Minimalcode\Search\Criteria;
 
 /**
  * Trait QueryComponentBoostTrait
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait QueryComponentBoostTrait
@@ -68,6 +69,7 @@ trait QueryComponentBoostTrait
 
     /**
      * Any class using this needs getQueryArray
+     *
      * @return mixed
      */
     abstract public function getQueryArray();

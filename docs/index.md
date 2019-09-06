@@ -1,10 +1,10 @@
 # Solr Search
-01. Changelog
-02. Installation
-03. Usage
-04. Customisation
-05. CMS Usage
-06. Fulltext Search compatibility
-07. Debugging
-08. About
-11. FAQ
+01. [Changelog](./01-Changelog.md)
+02. [Installation](./02-Installation.md)
+03. [Usage](./03-Usage.md)
+04. [Customisation](./04-Customisation.md)
+05. [CMS Usage](./05-CMS-Usage.md)
+06. [Fulltext Search compatibility](./06-Fulltext-Search-Compatibility.md)
+07. [Debugging](./07-Debugging.md)
+08. [About](./08-About.md)
+11. [FAQ](./11-FAQ.md)

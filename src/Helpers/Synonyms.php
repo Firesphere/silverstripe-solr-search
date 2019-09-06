@@ -9,6 +9,7 @@ use SilverStripe\Core\Config\Configurable;
  * Class Synonyms
  * List out UK to US synonyms and synonyms from {@link SiteConfig}
  * Source: @link https://raw.githubusercontent.com/heiswayi/spelling-uk-vs-us/
+ *
  * @package Firesphere\SolrSearch\Helpers
  */
 class Synonyms
@@ -23,6 +24,7 @@ class Synonyms
     /**
      * Make the UK to US spelling synonyms as a newline separated string
      * Or any other synonyms defined if the user wishes to do so
+     *
      * @param bool $defaults add Default UK-US synonyms to the list
      * @return string
      */
@@ -39,6 +41,7 @@ class Synonyms
     /**
      * Get the available synonyms as an array from config
      * Defaulting to adding the UK to US spelling differences
+     *
      * @param bool $defaults adds the UK to US spelling to the list if true
      * @return array
      */

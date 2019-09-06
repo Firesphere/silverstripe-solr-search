@@ -9,6 +9,7 @@ use SilverStripe\Dev\Deprecation;
  * Trait GetterSetterTrait for getting and setting data
  *
  * Getters and setters shared between the Index and Query
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait GetterSetterTrait
@@ -23,6 +24,7 @@ trait GetterSetterTrait
      * [
      *     'FieldName' => 2,
      * ]
+     *
      * @var array
      */
     protected $boostedFields = [];
@@ -33,12 +35,14 @@ trait GetterSetterTrait
      *      'Field' => 'SiteTree_ChannelID',
      *      'Title' => 'Channel'
      * ],
+     *
      * @var array
      */
     protected $facetFields = [];
 
     /**
      * Set the classes
+     *
      * @param array $class
      * @return $this
      */
@@ -52,11 +56,12 @@ trait GetterSetterTrait
     /**
      * Add a class to index or query
      * $options is not used anymore, added for backward compatibility
+     *
      * @param $class
      * @param array $options unused
      * @return $this
      */
-    public function addClass($class, $options = array()): self
+    public function addClass($class, $options = []): self
     {
         if (count($options)) {
             Deprecation::notice('5.0', 'Options are not used anymore');

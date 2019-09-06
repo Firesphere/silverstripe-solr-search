@@ -18,27 +18,31 @@ class SearchAdmin extends ModelAdmin
 {
     /**
      * Models managed by this admin
+     *
      * @var array
      */
     private static $managed_models = [
         SolrLog::class,
-        DirtyClass::class
+        DirtyClass::class,
     ];
 
     /**
      * Add a pretty magnifying glass to the sidebar menu
+     *
      * @var string
      */
     private static $menu_icon_class = 'font-icon-search';
 
     /**
      * Where to find me
+     *
      * @var string
      */
     private static $url_segment = 'searchadmin';
 
     /**
      * My name
+     *
      * @var string
      */
     private static $menu_title = 'Search';

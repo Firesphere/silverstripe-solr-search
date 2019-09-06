@@ -23,6 +23,7 @@ class SolrLog extends DataObject implements PermissionProvider
 {
     /**
      * Used to give the Gridfield rows a corresponding colour
+     *
      * @var array
      */
     protected static $row_color = [
@@ -51,7 +52,7 @@ class SolrLog extends DataObject implements PermissionProvider
         'Timestamp',
         'Index',
         'Type',
-        'Level'
+        'Level',
     ];
     /**
      * @var array Searchable fields
@@ -61,7 +62,7 @@ class SolrLog extends DataObject implements PermissionProvider
         'Timestamp',
         'Index',
         'Type',
-        'Level'
+        'Level',
     ];
     /**
      * @var array Timestamp is indexed
@@ -86,6 +87,7 @@ class SolrLog extends DataObject implements PermissionProvider
 
     /**
      * Return the first line of this log item error
+     *
      * @return string
      */
     public function getLastErrorLine()
@@ -146,6 +148,7 @@ class SolrLog extends DataObject implements PermissionProvider
 
     /**
      * Get the extra classes to colour the gridfield rows
+     *
      * @return mixed|string
      */
     public function getExtraClass()
@@ -161,6 +164,7 @@ class SolrLog extends DataObject implements PermissionProvider
      * array(
      *   'VIEW_SITE' => 'View the site',
      * );
+     *
      * @return array
      */
     public function providePermissions()
@@ -172,7 +176,7 @@ class SolrLog extends DataObject implements PermissionProvider
                 'help'     => _t(
                     self::class . '.PERMISSION_DELETE_HELP',
                     'Permission required to delete existing Solr logs.'
-                )
+                ),
             ],
             'VIEW_LOG'   => [
                 'name'     => _t(self::class . '.PERMISSION_VIEW_DESCRIPTION', 'View Solr logs'),
@@ -180,7 +184,7 @@ class SolrLog extends DataObject implements PermissionProvider
                 'help'     => _t(
                     self::class . '.PERMISSION_VIEW_HELP',
                     'Permission required to view existing Solr logs.'
-                )
+                ),
             ],
         ];
     }

@@ -15,6 +15,7 @@ use SilverStripe\ORM\ValidationException;
  * Class SolrLogger
  *
  * Log information from Solr to the CMS for reference
+ *
  * @package Firesphere\SolrSearch\Helpers
  */
 class SolrLogger
@@ -26,6 +27,7 @@ class SolrLogger
 
     /**
      * SolrLogger constructor.
+     *
      * @param null|Countable $handler
      */
     public function __construct($handler = null)
@@ -33,7 +35,7 @@ class SolrLogger
         $config = SolrCoreService::config()->get('config');
         $hostConfig = array_shift($config['endpoint']);
         $guzzleConfig = [
-            'base_uri' => $hostConfig['host'] . ':' . $hostConfig['port']
+            'base_uri' => $hostConfig['host'] . ':' . $hostConfig['port'],
         ];
         if ($handler) {
             $guzzleConfig['handler'] = $handler;
@@ -45,6 +47,7 @@ class SolrLogger
     /**
      * Log the given message and dump it out.
      * Also boot the Log to get the latest errors from Solr
+     *
      * @param string $type
      * @param string $message
      * @param string $index
@@ -59,9 +62,9 @@ class SolrLogger
         $lastError = SolrLog::get()
             ->filter([
                 'Index' => 'x:' . $index,
-                'Level' => $type
+                'Level' => $type,
             ])
-            ->sort('Created ASC')
+            ->sort('Timestamp DESC')
             ->first();
 
         $err = ($lastError === null) ? 'Unknown' : $lastError->getLastErrorLine();
@@ -71,6 +74,7 @@ class SolrLogger
 
     /**
      * Save the latest Solr errors to the log
+     *
      * @param string $type
      * @throws GuzzleException
      * @throws ValidationException
@@ -80,8 +84,8 @@ class SolrLogger
         $response = $this->client->request('GET', 'solr/admin/info/logging', [
             'query' => [
                 'since' => 0,
-                'wt'    => 'json'
-            ]
+                'wt'    => 'json',
+            ],
         ]);
 
         $arrayResponse = json_decode($response->getBody(), true);
@@ -105,6 +109,7 @@ class SolrLogger
 
     /**
      * Return the Guzzle Client
+     *
      * @return Client
      */
     public function getClient(): Client
@@ -114,6 +119,7 @@ class SolrLogger
 
     /**
      * Set the Guzzle client
+     *
      * @param Client $client
      * @return SolrLogger
      */
