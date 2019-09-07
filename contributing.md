@@ -75,36 +75,65 @@ Here's a handy checklist for making sure your PR will be accepted as quickly as 
 
 # After submitting your PR
 
-Here's a nice tip for PR-driven development in general. After you've submitted the PR, do a 'pre-code-review'. Go through the diffs, line by line, and be your own code reviewer. Does something look weird? Is something not quite straightforward? It's quite likely that you'll spot errors at this stage which you missed before, simply because you're looking at the code with a reviewer's mindset.
+Here's a nice tip for PR-driven development in general. After you've submitted the PR, do a 'pre-code-review'. 
+Go through the diffs, line by line, and be your own code reviewer. Does something look weird? 
+Is something not quite straightforward? It's quite likely that you'll spot errors at this stage which you missed before, 
+simply because you're looking at the code with a reviewer's mindset.
 
-If so, fix them! But if you can foresee a question from a code reviewer, comment on the code to answer it in advance. (Even better, improve the code so that the question doesn't arise.)
+If so, fix them! But if you can foresee a question from a code reviewer, comment on the code to answer it in advance. 
+(Even better, improve the code so that the question doesn't arise.)
 
 # The code review process
 
-If you've completed all these steps, I _will_ invest significant time and energy in giving your PR a detailed code review. This is a powerful and beneficial process which can not only improve the code, but can also help you learn to be a better engineer and a better Go programmer—and the same goes for me!
+If you've completed all these steps, I _will_ invest significant time and energy in giving your PR a detailed code review. 
+This is a powerful and beneficial process which can not only improve the code, but can also help you learn to be a better 
+engineer and a better Go programmer—and the same goes for me!
 
 ## Expect to be taken seriously
 
-Don't think of code review as a "you got this wrong, fix it" kind of conversation (this isn't a helpful review comment). Instead, think of it as a discussion where both sides can ask questions, make suggestions, clarify problems and misunderstandings, catch mistakes, and add improvements.
+Don't think of code review as a "you got this wrong, fix it" kind of conversation (this isn't a helpful review comment). 
+Instead, think of it as a discussion where both sides can ask questions, make suggestions, clarify problems and misunderstandings, 
+catch mistakes, and add improvements.
 
-You shouldn't be disappointed if you don't get a simple 'LGTM' and an instant merge. If this is what you're used to, then your team isn't really doing code review to its full potential. Instead, the more comments you get, the more seriously it means I'm taking your work. Where appropriate, I'll say what I liked as well as what I'd like to see improved.
+You shouldn't be disappointed if you don't get a simple 'LGTM' and an instant merge. 
+If this is what you're used to, then your team isn't really doing code review to its full potential. 
+Instead, the more comments you get, the more seriously it means I'm taking your work. Where appropriate, 
+I'll say what I liked as well as what I'd like to see improved.
 
 ## Dealing with comments
 
-Now comes the tricky bit. You may not agree with some of the code review comments. Reviewing code is a delicate business in the first place, requiring diplomacy as well as discretion, but responding to code reviews is also a skilled task.
+Now comes the tricky bit. You may not agree with some of the code review comments. 
+Reviewing code is a delicate business in the first place, requiring diplomacy as well as discretion, 
+but responding to code reviews is also a skilled task.
 
-If you find yourself reacting emotionally, take a break. Go walk in the woods for a while, or play with a laughing child. When you come back to the code, approach it as though it were someone else's, not your own, and ask yourself seriously whether or not the reviewer _has a point_.
+If you find yourself reacting emotionally, take a break. Go walk in the woods for a while, 
+or play with a laughing child. When you come back to the code, approach it as though it were someone else's, 
+not your own, and ask yourself seriously whether or not the reviewer _has a point_.
 
-If you genuinely think the reviewer has just misunderstood something, or made a mistake, try to clarify the issue. Ask questions, don't make accusations. Remember that every project has a certain way of doing things, which may not be your way. It's polite to go along with these practices and conventions.
+If you genuinely think the reviewer has just misunderstood something, or made a mistake, 
+try to clarify the issue. Ask questions, don't make accusations. Remember that every project has a certain way of doing things, 
+which may not be your way. It's polite to go along with these practices and conventions.
 
-You may feel as though you're doing the project maintainer a favour by contributing, as indeed you are, but an open source project is like somebody's home. They're used to living there, they probably like it the way it is, and they don't always respond well to strangers marching in and rearranging the furniture. Be considerate, and be willing to listen and make changes.
+You may feel as though you're doing the project maintainer a favour by contributing, as indeed you are, 
+but an open source project is like somebody's home. They're used to living there, they probably like it the way it is, 
+and they don't always respond well to strangers marching in and rearranging the furniture. 
+
+Be considerate, and be willing to listen and make changes.
 
 ## This may take a while
 
-Don't be impatient. We've all had the experience of sending in our beautifully-crafted PR and then waiting, waiting, waiting. Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am I invisible?
+Don't be impatient. We've all had the experience of sending in our beautifully-crafted PR and then waiting, waiting, waiting. 
+Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am I invisible?
 
-In fact, doing a _proper_ and serious code review is a time-consuming business. It's not just a case of skim-reading the diffs. The reviewer will need to check out your branch, run the tests, think carefully about what you've done, make suggestions, test alternatives. It's almost as much work as writing the PR in the first place.
+In fact, doing a _proper_ and serious code review is a time-consuming business. It's not just a case of skim-reading the diffs. 
+The reviewer will need to check out your branch, run the tests, think carefully about what you've done, 
+make suggestions, test alternatives. It's almost as much work as writing the PR in the first place.
 
-Open source maintainers are just regular folk with jobs, kids, and zero free time or energy. They may not be able to drop everything and put in several hours on your PR. The task may have to wait a week or two until they can get sufficient time and peace and quiet to work on it. Don't pester them. It's fine to add a comment on the PR if you haven't heard anything for a while, asking if the reviewer's been able to look at it and whether there's anything you can do to help speed things up. Comments like 'Y U NO MERGE' are unlikely to elicit a positive response.
+Open source maintainers are just regular folk with jobs, kids, and zero free time or energy. 
+They may not be able to drop everything and put in several hours on your PR. 
+The task may have to wait a week or two until they can get sufficient time and peace and quiet to work on it. 
+Don't pester them. It's fine to add a comment on the PR if you haven't heard anything for a while, 
+asking if the reviewer's been able to look at it and whether there's anything you can do to help speed things up. 
+Comments like 'Y U NO MERGE' are unlikely to elicit a positive response.
 
 Thanks again for helping out!
