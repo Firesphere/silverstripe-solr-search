@@ -30,6 +30,7 @@ trait SearchResultSetTrait
 
     /**
      * Set the highlighted items
+     *
      * @param $highlight
      * @return SearchResult
      */
@@ -42,6 +43,7 @@ trait SearchResultSetTrait
 
     /**
      * Set the total amount of results
+     *
      * @param $count
      * @return self
      */

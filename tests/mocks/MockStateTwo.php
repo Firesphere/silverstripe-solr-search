@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\States\SiteState;
 use SilverStripe\Dev\TestOnly;
 

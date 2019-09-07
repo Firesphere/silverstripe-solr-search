@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-
 use Firesphere\SolrSearch\States\SiteState;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
@@ -11,7 +10,6 @@ use SilverStripe\Versioned\Versioned;
 
 class SiteStateTest extends SapphireTest
 {
-
     public function testStates()
     {
         $default = ['default'];

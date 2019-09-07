@@ -177,23 +177,6 @@ abstract class SiteState
     }
 
     /**
-     * Activate a site state for indexing
-     *
-     * @param $state
-     * @throws ReflectionException
-     */
-    public static function withState($state): void
-    {
-        /**
-         * @var string $variant
-         * @var static $instance
-         */
-        foreach (self::variants() as $variant => $instance) {
-            $instance->activateState($state);
-        }
-    }
-
-    /**
      * Does this state apply to the current object/environment settings
      *
      * @return bool
@@ -221,5 +204,22 @@ abstract class SiteState
     public function setEnabled(bool $enabled): void
     {
         $this->enabled = $enabled;
+    }
+
+    /**
+     * Activate a site state for indexing
+     *
+     * @param $state
+     * @throws ReflectionException
+     */
+    public static function withState($state): void
+    {
+        /**
+         * @var string $variant
+         * @var static $instance
+         */
+        foreach (self::variants() as $variant => $instance) {
+            $instance->activateState($state);
+        }
     }
 }

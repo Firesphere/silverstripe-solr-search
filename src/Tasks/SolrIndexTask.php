@@ -12,6 +12,7 @@ use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -36,6 +37,10 @@ class SolrIndexTask extends BuildTask
      */
     private static $segment = 'SolrIndexTask';
     /**
+     * @var array Store the current states for all instances of SiteState
+     */
+    public $currentStates;
+    /**
      * @var string
      */
     protected $title = 'Solr Index update';
@@ -43,10 +48,6 @@ class SolrIndexTask extends BuildTask
      * @var string
      */
     protected $description = 'Add or update documents to an existing Solr core.';
-    /**
-     * @var array Store the current states for all instances of SiteState
-     */
-    public $currentStates;
     /**
      * @var bool
      */
@@ -59,7 +60,7 @@ class SolrIndexTask extends BuildTask
     /**
      * SolrIndexTask constructor. Sets up the document factory
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct()
     {
@@ -256,6 +257,26 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * @param $group
+     * @param $class
+     * @param $batchLength
+     * @param BaseIndex $index
+     * @throws Exception
+     */
+    private function stateReindex($group, $class, $batchLength, BaseIndex $index): void
+    {
+        // Generate filtered list of local records
+        $baseClass = DataObject::getSchema()->baseDataClass($class);
+        /** @var DataList|DataObject[] $items */
+        $items = DataObject::get($baseClass)
+            ->sort('ID ASC')
+            ->limit($batchLength, ($group * $batchLength));
+        if ($items->count()) {
+            $this->updateIndex($index, $items);
+        }
+    }
+
+    /**
      * Execute the update on the client
      *
      * @param BaseIndex $index
@@ -279,7 +300,7 @@ class SolrIndexTask extends BuildTask
      * @throws GuzzleException
      * @throws ValidationException
      */
-    private function logException($index, int $group, Exception $exception)
+    private function logException($index, int $group, Exception $exception): void
     {
         $this->getLogger()->error($exception->getMessage());
         $msg = sprintf(
@@ -289,25 +310,5 @@ class SolrIndexTask extends BuildTask
             $group
         );
         SolrLogger::logMessage('ERROR', $msg, $index);
-    }
-
-    /**
-     * @param $group
-     * @param $class
-     * @param $batchLength
-     * @param BaseIndex $index
-     * @throws Exception
-     */
-    private function stateReindex($group, $class, $batchLength, BaseIndex $index): void
-    {
-// Generate filtered list of local records
-        $baseClass = DataObject::getSchema()->baseDataClass($class);
-        /** @var DataList|DataObject[] $items */
-        $items = DataObject::get($baseClass)
-            ->sort('ID ASC')
-            ->limit($batchLength, ($group * $batchLength));
-        if ($items->count()) {
-            $this->updateIndex($index, $items);
-        }
     }
 }

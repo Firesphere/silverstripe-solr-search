@@ -30,6 +30,7 @@ class ClearDirtyClassesJob extends AbstractQueuedJob
 
     /**
      * Run the dirty class cleanup task from Queued Jobs
+     *
      * @throws GuzzleException
      * @throws ReflectionException
      * @throws ValidationException
