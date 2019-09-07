@@ -130,13 +130,8 @@ abstract class SiteState
     /**
      * Returns an array of variants.
      *
-     * With no arguments, returns all variants
-     *
-     * With a classname as the first argument, returns the variants that apply to that class
-     * (optionally including subclasses)
-     *
      * @static
-     * @param bool $force
+     * @param bool $force Force updating the variants
      * @return array - An array of (string)$variantClassName => (Object)$variantInstance pairs
      * @throws ReflectionException
      */
