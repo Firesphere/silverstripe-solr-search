@@ -56,21 +56,12 @@ class ClearDirtyClassesTask extends BuildTask
         $dirtyObjectList = DirtyClass::get();
         /** @var SolrCoreService $service */
         $service = new SolrCoreService();
+        /** @var SolrLogger $solrLogger */
         $solrLogger = new SolrLogger();
         foreach ($dirtyObjectList as $dirtyObject) {
-            $dirtyClass = $dirtyObject->Class;
-            $ids = json_decode($dirtyObject->IDs, true);
+            $dirtyClasses = $this->getDirtyClasses($dirtyObject);
             try {
-                $type = SolrCoreService::UPDATE_TYPE;
-                $dirtyClasses = ArrayList::create();
-                if ($dirtyObject->Type === SolrCoreService::UPDATE_TYPE) {
-                    $dirtyClasses = $dirtyClass::get()->byIDs($ids);
-                }
-                if ($dirtyObject->Type === SolrCoreService::DELETE_TYPE) {
-                    $dirtyClasses = $this->createDeleteList($ids, $dirtyClass);
-                    $type = SolrCoreService::DELETE_TYPE;
-                }
-                $service->updateItems($dirtyClasses, $type);
+                $service->updateItems($dirtyClasses, $dirtyObject->Type);
                 $dirtyObject->delete();
             } catch (Exception $exception) {
                 $this->getLogger()->error($exception->getMessage());
@@ -86,17 +77,34 @@ class ClearDirtyClassesTask extends BuildTask
      *
      * @param array $items
      * @param string $dirtyClass
+     * @param $dirtyClasses
      * @return ArrayList
      */
-    protected function createDeleteList($items, $dirtyClass): ArrayList
+    protected function createDeleteList($items, $dirtyClass, &$dirtyClasses): ArrayList
     {
         /** @var ArrayList $deletions */
-        $deletions = ArrayList::create();
         foreach ($items as $item) {
             $dirtItem = $dirtyClass::create(['ID' => $item]);
-            $deletions->push($dirtItem);
+            $dirtyClasses->push($dirtItem);
+        }
+    }
+
+    /**
+     * @param $dirtyObject
+     * @return ArrayList|DataList
+     */
+    private function getDirtyClasses($dirtyObject)
+    {
+        $dirtyClass = $dirtyObject->Class;
+        $ids = json_decode($dirtyObject->IDs, true);
+        $dirtyClasses = ArrayList::create();
+        if ($dirtyObject->Type === SolrCoreService::UPDATE_TYPE) {
+            $dirtyClasses = $dirtyClass::get()->byIDs($ids);
+        }
+        if ($dirtyObject->Type === SolrCoreService::DELETE_TYPE) {
+            $this->createDeleteList($ids, $dirtyClass, $dirtyClasses);
         }
 
-        return $deletions;
+        return $dirtyClasses;
     }
 }
