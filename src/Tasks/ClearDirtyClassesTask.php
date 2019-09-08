@@ -80,9 +80,8 @@ class ClearDirtyClassesTask extends BuildTask
      * @param array $items
      * @param string $dirtyClass
      * @param $dirtyClasses
-     * @return ArrayList
      */
-    protected function createDeleteList($items, $dirtyClass, &$dirtyClasses): ArrayList
+    protected function createDeleteList($items, $dirtyClass, &$dirtyClasses)
     {
         /** @var ArrayList $deletions */
         foreach ($items as $item) {

@@ -35,7 +35,8 @@ use Solarium\QueryType\Select\Result\Result;
 /**
  * Base for creating a new Solr core.
  *
- * Base index settings and methods. Should be extended with at least a name for the index
+ * Base index settings and methods. Should be extended with at least a name for the index.
+ * This is an abstract class that can not be instantiated on it's own
  *
  * @package Firesphere\SolrSearch\Indexes
  */
@@ -132,7 +133,7 @@ abstract class BaseIndex
     }
 
     /**
-     * Name of this index
+     * Name of this index.
      *
      * @return string
      */
