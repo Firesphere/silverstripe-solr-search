@@ -4,14 +4,24 @@
 namespace Firesphere\SolrSearch\Jobs;
 
 use Firesphere\SolrSearch\Tasks\ClearDirtyClassesTask;
+use GuzzleHttp\Exception\GuzzleException;
+use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
+use SilverStripe\ORM\ValidationException;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
+/**
+ * Class ClearDirtyClassesJob is the queued job version of the ClearDirtyClassesTask
+ *
+ * Clean up any dirty classes in Solr due to objects not being updated properly
+ *
+ * @package Firesphere\SolrSearch\Jobs
+ */
 class ClearDirtyClassesJob extends AbstractQueuedJob
 {
 
     /**
-     * @return string
+     * @return string Title of this job
      */
     public function getTitle()
     {
@@ -19,7 +29,11 @@ class ClearDirtyClassesJob extends AbstractQueuedJob
     }
 
     /**
-     * Do some processing yourself!
+     * Run the dirty class cleanup task from Queued Jobs
+     *
+     * @throws GuzzleException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
     public function process()
     {

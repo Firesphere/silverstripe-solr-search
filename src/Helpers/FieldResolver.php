@@ -12,6 +12,7 @@ use SilverStripe\ORM\DataObjectSchema;
 /**
  * Class FieldResolver
  * Some additional introspection tools that are used often by the fulltext search code
+ *
  * @package Firesphere\SolrSearch\Helpers
  */
 class FieldResolver
@@ -28,6 +29,7 @@ class FieldResolver
 
     /**
      * Check if class is subclass of (a) the class in $instanceOf, or (b) any of the classes in the array $instanceOf
+     *
      * @param string $class Name of the class to test
      * @param array|string $instanceOf Class ancestry it should be in
      * @return bool
@@ -45,6 +47,7 @@ class FieldResolver
 
     /**
      * Resolve a field ancestry
+     *
      * @param $field
      * @return array
      * @throws Exception
@@ -85,6 +88,7 @@ class FieldResolver
 
     /**
      * Resolve relations if possible
+     *
      * @param $source
      * @param $lookup
      * @param array $next
@@ -118,6 +122,7 @@ class FieldResolver
     /**
      * This is used to clean the source name from suffix
      * suffixes are needed to support multiple relations with the same name on different page types
+     *
      * @param string $source
      * @return string
      */
@@ -163,11 +168,12 @@ class FieldResolver
 
     /**
      * Get the hierarchy for a class
-     * @todo clean this up to be more compatible with PHP features
+     *
      * @param $class
      * @param $includeSubclasses
      * @return array
      * @throws ReflectionException
+     * @todo clean this up to be more compatible with PHP features
      */
     protected static function getHierarchyClasses($class, $includeSubclasses): array
     {
@@ -183,6 +189,7 @@ class FieldResolver
     /**
      * Get the subclasses for the given class
      * Should be replaced with PHP native methods
+     *
      * @param $class
      * @param $includeSubclasses
      * @param array $classes
@@ -201,6 +208,7 @@ class FieldResolver
 
     /**
      * Objects to exclude from the index
+     *
      * @param array $classes
      * @return array
      */
@@ -217,6 +225,7 @@ class FieldResolver
 
     /**
      * Relational data
+     *
      * @param $lookup
      * @param DataObjectSchema $schema
      * @param $className
@@ -242,6 +251,7 @@ class FieldResolver
 
     /**
      * Create field options for the given index field
+     *
      * @param $field
      * @param array $sources
      * @param array $found
@@ -283,6 +293,7 @@ class FieldResolver
 
     /**
      * Get the type of this field
+     *
      * @param array $fields
      * @param string $field
      * @param string $dataclass

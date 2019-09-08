@@ -13,7 +13,6 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\DocumentFactoryTrait;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use LogicException;
-use Psr\Log\LoggerInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
@@ -27,6 +26,7 @@ use Solarium\QueryType\Update\Query\Query;
 /**
  * Class DocumentFactory
  * Factory to create documents to be pushed to Solr
+ *
  * @package Firesphere\SolrSearch\Factories
  */
 class DocumentFactory
@@ -38,15 +38,17 @@ class DocumentFactory
 
     /**
      * Numeral types in Solr
+     *
      * @var array
      */
     protected static $numerals = [
         'tint',
         'tfloat',
-        'tdouble'
+        'tdouble',
     ];
     /**
      * Debug this build
+     *
      * @var bool
      */
     protected $debug = false;
@@ -62,6 +64,7 @@ class DocumentFactory
     /**
      * Note, it can only take one type of class at a time!
      * So make sure you properly loop and set $class
+     *
      * @param $fields
      * @param BaseIndex $index
      * @param Query $update
@@ -85,7 +88,7 @@ class DocumentFactory
             $doc = $update->createDocument();
             $this->addDefaultFields($doc, $item);
 
-            $this->buildField($fields, $doc, $item, $boostFields);
+            $this->buildFields($fields, $doc, $item, $boostFields);
             $item->destroy();
 
             $docs[] = $doc;
@@ -100,6 +103,7 @@ class DocumentFactory
 
     /**
      * Add fields that should always be included
+     *
      * @param Document $doc
      * @param DataObject|DataObjectExtension $item
      */
@@ -114,13 +118,14 @@ class DocumentFactory
 
     /**
      * Create the required record for a field
+     *
      * @param $fields
      * @param Document $doc
      * @param DataObject $item
      * @param array $boostFields
      * @throws Exception
      */
-    protected function buildField($fields, Document $doc, DataObject $item, array $boostFields): void
+    protected function buildFields($fields, Document $doc, DataObject $item, array $boostFields): void
     {
         foreach ($fields as $field) {
             $fieldData = $this->getFieldResolver()->resolveField($field);
@@ -136,6 +141,7 @@ class DocumentFactory
 
     /**
      * Add a single field to the Solr index
+     *
      * @param Document $doc
      * @param DataObject $object
      * @param          $field
@@ -170,6 +176,7 @@ class DocumentFactory
 
     /**
      * Determine if the given object is one of the given type
+     *
      * @param string|DataObject $class
      * @param array|string $base Class or list of base classes
      * @return bool
@@ -190,6 +197,7 @@ class DocumentFactory
 
     /**
      * Check if a base class is an instance of the expected base group
+     *
      * @param string|DataObject $class
      * @param string $base
      * @return bool
@@ -201,6 +209,7 @@ class DocumentFactory
 
     /**
      * Push field to a document
+     *
      * @param Document $doc
      * @param array $field
      * @param string $type
@@ -220,6 +229,7 @@ class DocumentFactory
 
     /**
      * Are we debugging?
+     *
      * @return bool
      */
     public function isDebug(): bool
@@ -229,6 +239,7 @@ class DocumentFactory
 
     /**
      * Set to true if debugging should be enabled
+     *
      * @param bool $debug
      * @return DocumentFactory
      */

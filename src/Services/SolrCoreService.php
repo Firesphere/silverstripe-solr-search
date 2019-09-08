@@ -32,6 +32,7 @@ use Solarium\QueryType\Update\Result;
  *
  * Default service to connect to Solr and handle all base requirements to support Solr.
  * Default constants are available to support any set up.
+ *
  * @package Firesphere\SolrSearch\Services
  */
 class SolrCoreService
@@ -174,6 +175,7 @@ class SolrCoreService
 
     /**
      * Reload the given core
+     *
      * @param $core
      * @return StatusResult|null
      */
@@ -191,9 +193,10 @@ class SolrCoreService
 
     /**
      * Check the status of a core
+     *
+     * @deprecated backward compatibility stub
      * @param string $core
      * @return StatusResult|null
-     * @deprecated backward compatibility stub
      */
     public function coreIsActive($core): ?StatusResult
     {

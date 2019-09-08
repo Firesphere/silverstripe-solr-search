@@ -20,6 +20,7 @@ class GridFieldExtension extends Extension
 
     /**
      * Add the visibility classes to the GridField
+     *
      * @param array $classes
      * @param int $total
      * @param int $index

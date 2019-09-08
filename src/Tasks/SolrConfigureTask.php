@@ -22,6 +22,7 @@ use SilverStripe\ORM\ValidationException;
 
 /**
  * Class SolrConfigureTask
+ *
  * @package Firesphere\SolrSearch\Tasks
  */
 class SolrConfigureTask extends BuildTask
@@ -133,6 +134,7 @@ class SolrConfigureTask extends BuildTask
 
     /**
      * Get the config and load it to Solr
+     *
      * @param BaseIndex $instance
      * @return ConfigStore
      */
@@ -147,6 +149,7 @@ class SolrConfigureTask extends BuildTask
 
     /**
      * Get the store for the given config
+     *
      * @param $storeConfig
      * @return ConfigStore
      */
@@ -163,6 +166,7 @@ class SolrConfigureTask extends BuildTask
 
     /**
      * Log an exception error
+     *
      * @param $index
      * @param Exception $error
      * @throws GuzzleException

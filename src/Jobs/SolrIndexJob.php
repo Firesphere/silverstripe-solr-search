@@ -16,6 +16,7 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 /**
  * Class SolrIndexJob
+ *
  * @package Firesphere\SolrSearch\Jobs
  */
 class SolrIndexJob extends AbstractQueuedJob
@@ -35,6 +36,7 @@ class SolrIndexJob extends AbstractQueuedJob
 
     /**
      * The indexes that need to run.
+     *
      * @var array
      */
     protected $indexes;
@@ -49,6 +51,7 @@ class SolrIndexJob extends AbstractQueuedJob
 
     /**
      * Do some processing yourself!
+     *
      * @return self
      * @throws Exception
      * @throws GuzzleException
@@ -65,7 +68,7 @@ class SolrIndexJob extends AbstractQueuedJob
         $indexArgs = [
             'group' => $this->currentStep,
             'index' => $this->indexes[0],
-            'class' => $this->classToIndex[0]
+            'class' => $this->classToIndex[0],
         ];
         /** @var SolrIndexTask $task */
         $task = Injector::inst()->get(SolrIndexTask::class);

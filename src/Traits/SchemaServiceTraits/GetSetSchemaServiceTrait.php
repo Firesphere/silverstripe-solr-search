@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 
 /**
  * Trait GetSetSchemaServiceTrait
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait GetSetSchemaServiceTrait

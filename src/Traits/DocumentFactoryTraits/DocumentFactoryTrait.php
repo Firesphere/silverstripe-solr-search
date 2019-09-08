@@ -12,6 +12,7 @@ use SilverStripe\ORM\DataList;
  * Trait DocumentFactoryTrait is a basic getter setter for the DocumentFactory.
  *
  * Getter and setter helpers
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait DocumentFactoryTrait
@@ -31,6 +32,7 @@ trait DocumentFactoryTrait
 
     /**
      * Current class being indexed
+     *
      * @return string
      */
     public function getClass(): string
@@ -40,6 +42,7 @@ trait DocumentFactoryTrait
 
     /**
      * Set the current class to be indexed
+     *
      * @param string $class
      * @return DocumentFactory
      */
@@ -52,6 +55,7 @@ trait DocumentFactoryTrait
 
     /**
      * Get the FieldResolver class
+     *
      * @return FieldResolver
      */
     public function getFieldResolver(): FieldResolver
@@ -61,6 +65,7 @@ trait DocumentFactoryTrait
 
     /**
      * Get the items being indexed
+     *
      * @return ArrayList|DataList|null
      */
     public function getItems()
@@ -70,6 +75,7 @@ trait DocumentFactoryTrait
 
     /**
      * Set the items to index
+     *
      * @param ArrayList|DataList|null $items
      * @return DocumentFactory
      */

@@ -16,6 +16,7 @@ use SilverStripe\View\ViewableData;
 
 /**
  * Class SchemaService
+ *
  * @package Firesphere\SolrSearch\Services
  */
 class SchemaService extends ViewableData
@@ -85,7 +86,7 @@ class SchemaService extends ViewableData
                 'Indexed'     => 'true',
                 'Stored'      => $options['store'] ?? $store,
                 'MultiValued' => $options['multi_valued'] ? 'true' : 'false',
-                'Destination' => $copyField
+                'Destination' => $copyField,
             ];
             $return->push($item);
         }
@@ -121,7 +122,7 @@ class SchemaService extends ViewableData
         $return = ArrayList::create();
         foreach ($fields as $field => $copyFields) {
             $item = [
-                'Field' => $field
+                'Field' => $field,
             ];
 
             $return->push($item);

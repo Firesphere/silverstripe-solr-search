@@ -4,12 +4,12 @@
 namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
-use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
+use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ArrayList;
@@ -47,7 +47,7 @@ class ClearDirtyClassesTask extends BuildTask
      * @param HTTPRequest $request
      * @return void
      * @throws GuzzleException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws ValidationException
      */
     public function run($request)

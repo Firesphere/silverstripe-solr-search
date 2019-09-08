@@ -9,6 +9,7 @@ use Solarium\Component\Result\Highlighting\Highlighting;
 
 /**
  * Trait SearchResultGetTrait
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait SearchResultGetTrait
@@ -40,6 +41,7 @@ trait SearchResultGetTrait
 
     /**
      * Retrieve the facets from the results
+     *
      * @return ArrayData
      */
     public function getFacets(): ArrayData
@@ -49,6 +51,7 @@ trait SearchResultGetTrait
 
     /**
      * Get the collated spellcheck
+     *
      * @return string
      */
     public function getCollatedSpellcheck()
@@ -58,6 +61,7 @@ trait SearchResultGetTrait
 
     /**
      * Get the highlighting
+     *
      * @return Highlighting|null
      */
     public function getHighlight(): ?Highlighting
@@ -67,6 +71,7 @@ trait SearchResultGetTrait
 
     /**
      * Get the spellchecked results
+     *
      * @return ArrayList
      */
     public function getSpellcheck(): ArrayList
@@ -76,6 +81,7 @@ trait SearchResultGetTrait
 
     /**
      * Total items in the result
+     *
      * @return int
      */
     public function getTotalItems(): int

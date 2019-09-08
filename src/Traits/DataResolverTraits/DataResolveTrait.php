@@ -11,6 +11,7 @@ use SilverStripe\View\ArrayData;
 
 /**
  * Trait ResolveTrait All resolver methods for the DataResolver
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait DataResolveTrait
@@ -34,6 +35,7 @@ trait DataResolveTrait
 
     /**
      * Resolves an ArrayData value
+     *
      * @return mixed
      * @throws LogicException
      */
@@ -60,6 +62,7 @@ trait DataResolveTrait
 
     /**
      * Resolves a DataList values
+     *
      * @return array|mixed
      * @throws LogicException
      */
@@ -85,6 +88,7 @@ trait DataResolveTrait
 
     /**
      * Resolves a Single field in the database.
+     *
      * @return mixed
      * @throws LogicException
      */
@@ -116,6 +120,7 @@ trait DataResolveTrait
 
     /**
      * Resolves a DataObject value
+     *
      * @return mixed
      * @throws LogicException
      */

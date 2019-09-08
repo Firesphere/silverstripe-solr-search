@@ -8,6 +8,7 @@ use SilverStripe\Core\Injector\Injector;
 
 /**
  * Trait LoggerTrait
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait LoggerTrait

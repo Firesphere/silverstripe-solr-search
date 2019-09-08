@@ -11,12 +11,14 @@ use SilverStripe\Forms\Validator;
 /**
  * Class SolrSearchForm
  * Basic form to start searching
+ *
  * @package Firesphere\SolrSearch\Forms
  */
 class SearchForm extends Form
 {
     /**
      * SolrSearchForm constructor.
+     *
      * @param RequestHandler|null $controller
      * @param string $name
      * @param FieldList|null $fields

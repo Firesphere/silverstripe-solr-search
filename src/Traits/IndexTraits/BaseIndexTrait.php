@@ -4,6 +4,8 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use ReflectionClass;
+use ReflectionException;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
@@ -54,12 +56,13 @@ trait BaseIndexTrait
      */
     protected $copyFields = [
         '_text' => [
-            '*'
+            '*',
         ],
     ];
     /**
      * usedAllFields is used to determine if the addAllFields method has been called
      * This is to prevent a notice if there is no yml.
+     *
      * @var bool
      */
     protected $usedAllFields = false;
@@ -70,6 +73,7 @@ trait BaseIndexTrait
 
     /**
      * Return the copy fields
+     *
      * @return array
      */
     public function getCopyFields(): array
@@ -79,6 +83,7 @@ trait BaseIndexTrait
 
     /**
      * Set the copy fields
+     *
      * @param array $copyField
      * @return $this
      */
@@ -91,6 +96,7 @@ trait BaseIndexTrait
 
     /**
      * Return the default field for this index
+     *
      * @return string
      */
     public function getDefaultField(): string
@@ -100,6 +106,7 @@ trait BaseIndexTrait
 
     /**
      * Set the default field for this index
+     *
      * @param string $defaultField
      * @return $this
      */
@@ -112,6 +119,7 @@ trait BaseIndexTrait
 
     /**
      * Add a field to sort on
+     *
      * @param $sortField
      * @return $this
      */
@@ -131,6 +139,7 @@ trait BaseIndexTrait
 
     /**
      * Get the fulltext fields
+     *
      * @return array
      */
     public function getFulltextFields(): array
@@ -144,6 +153,7 @@ trait BaseIndexTrait
 
     /**
      * Set the fulltext fields
+     *
      * @param array $fulltextFields
      * @return $this
      */
@@ -156,6 +166,7 @@ trait BaseIndexTrait
 
     /**
      * Get the filter fields
+     *
      * @return array
      */
     public function getFilterFields(): array
@@ -165,6 +176,7 @@ trait BaseIndexTrait
 
     /**
      * Set the filter fields
+     *
      * @param array $filterFields
      * @return $this
      */
@@ -177,6 +189,7 @@ trait BaseIndexTrait
 
     /**
      * Add a single Fulltext field
+     *
      * @param string $fulltextField
      * @param null|string $forceType
      * @param array $options
@@ -207,6 +220,7 @@ trait BaseIndexTrait
 
     /**
      * Add an abstract for the add Boosted Field to keep things consistent
+     *
      * @param string $field
      * @param array|int $options
      * @param null|int $boost
@@ -215,13 +229,8 @@ trait BaseIndexTrait
     abstract public function addBoostedField($field, $options = [], $boost = null);
 
     /**
-     * This trait requires classes to be set, so getClasses can be called.
-     * @return array
-     */
-    abstract public function getClasses(): array;
-
-    /**
      * Get the sortable fields
+     *
      * @return array
      */
     public function getSortFields(): array
@@ -231,6 +240,7 @@ trait BaseIndexTrait
 
     /**
      * Set/override the sortable fields
+     *
      * @param array $sortFields
      * @return $this
      */
@@ -243,13 +253,24 @@ trait BaseIndexTrait
 
     /**
      * Add a Fulltext Field
-     * @param bool $includeSubclasses Compatibility mode, not actually used
-     * @throws \ReflectionException
+     *
      * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
+     * @param bool $includeSubclasses Compatibility mode, not actually used
+     * @throws ReflectionException
      */
     public function addFulltextFields($includeSubclasses = true)
     {
         $this->addAllFulltextFields();
+    }
+
+    /**
+     * Add all text-type fields to the given index
+     *
+     * @throws ReflectionException
+     */
+    public function addAllFulltextFields()
+    {
+        $this->addAllFieldsByType(DBString::class);
     }
 
     /**
@@ -259,8 +280,9 @@ trait BaseIndexTrait
      * fields (Varchar, Text, HTMLText, etc) and adds them all as fulltext searchable fields.
      *
      * Note, there is no check on boosting etc. That needs to be done manually.
+     *
      * @param string $dbType
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function addAllFieldsByType($dbType = DBString::class): void
     {
@@ -274,28 +296,18 @@ trait BaseIndexTrait
     }
 
     /**
-     * Add all text-type fields to the given index
-     * @throws \ReflectionException
+     * This trait requires classes to be set, so getClasses can be called.
+     *
+     * @return array
      */
-    public function addAllFulltextFields()
-    {
-        $this->addAllFieldsByType(DBString::class);
-    }
-
-    /**
-     * Add all date-type fields to the given index
-     * @throws \ReflectionException
-     */
-    public function addAllDateFields()
-    {
-        $this->addAllFieldsByType(DBDate::class);
-    }
+    abstract public function getClasses(): array;
 
     /**
      * Add all fields of a given type to the index
+     *
      * @param array $fields The fields on the DataObject
      * @param string $dbType Class type the reflection should extend
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function addFulltextFieldsForClass(array $fields, $dbType = DBString::class): void
     {
@@ -305,7 +317,7 @@ trait BaseIndexTrait
                 $type = substr($type, 0, $pos);
             }
             $conf = Config::inst()->get(Injector::class, $type);
-            $ref = new \ReflectionClass($conf['class']);
+            $ref = new ReflectionClass($conf['class']);
             if ($ref->isSubclassOf($dbType)) {
                 $this->addFulltextField($field);
             }
@@ -313,7 +325,18 @@ trait BaseIndexTrait
     }
 
     /**
+     * Add all date-type fields to the given index
+     *
+     * @throws ReflectionException
+     */
+    public function addAllDateFields()
+    {
+        $this->addAllFieldsByType(DBDate::class);
+    }
+
+    /**
      * Add a facet field
+     *
      * @param $field
      * @param array $options
      * @return $this
@@ -331,6 +354,7 @@ trait BaseIndexTrait
 
     /**
      * Add a filterable field
+     *
      * @param $filterField
      * @return $this
      */
@@ -346,6 +370,7 @@ trait BaseIndexTrait
 
     /**
      * Add a copy field
+     *
      * @param string $field Name of the copyfield
      * @param array $options Array of all fields that should be copied to this copyfield
      * @return $this
@@ -359,6 +384,7 @@ trait BaseIndexTrait
 
     /**
      * Add a stored/fulltext field
+     *
      * @param string $field
      * @param null|string $forceType
      * @param array $extraOptions
@@ -374,6 +400,7 @@ trait BaseIndexTrait
 
     /**
      * Get the client
+     *
      * @return Client
      */
     public function getClient()
@@ -383,6 +410,7 @@ trait BaseIndexTrait
 
     /**
      * Set/override the client
+     *
      * @param Client $client
      * @return $this
      */
@@ -395,6 +423,7 @@ trait BaseIndexTrait
 
     /**
      * Get the stored field list
+     *
      * @return array
      */
     public function getStoredFields(): array
@@ -404,6 +433,7 @@ trait BaseIndexTrait
 
     /**
      * Set/override the stored field list
+     *
      * @param array $storedFields
      * @return BaseIndex
      */
@@ -416,6 +446,7 @@ trait BaseIndexTrait
 
     /**
      * Get the search history for the current user on this index
+     *
      * @return array
      */
     public function getHistory(): array
@@ -425,6 +456,7 @@ trait BaseIndexTrait
 
     /**
      * Set the search history for the current user on this index
+     *
      * @param array $history
      * @return self
      */

@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
  *
  * Setters and getters to help with introspection/resolving, it's fairly simple, but extracted
  * so it's cleaner to read the code
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait GetSetSearchResolverTrait
@@ -25,6 +26,7 @@ trait GetSetSearchResolverTrait
 
     /**
      * Get the current index
+     *
      * @return BaseIndex
      */
     public function getIndex(): BaseIndex
@@ -34,6 +36,7 @@ trait GetSetSearchResolverTrait
 
     /**
      * Set the current index
+     *
      * @param mixed $index
      * @return $this
      */
@@ -46,6 +49,7 @@ trait GetSetSearchResolverTrait
 
     /**
      * Get whatever is found
+     *
      * @return array
      */
     public function getFound(): array

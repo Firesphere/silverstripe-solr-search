@@ -13,6 +13,7 @@ use Solarium\QueryType\Select\Query\Query;
  * Trait QueryComponentFacetTrait deals with the facets.
  *
  * Faceting for any given query or index.
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait QueryComponentFacetTrait

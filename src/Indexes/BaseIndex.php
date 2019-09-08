@@ -36,6 +36,7 @@ use Solarium\QueryType\Select\Result\Result;
  * Base for creating a new Solr core.
  *
  * Base index settings and methods. Should be extended with at least a name for the index
+ *
  * @package Firesphere\SolrSearch\Indexes
  */
 abstract class BaseIndex
@@ -53,6 +54,7 @@ abstract class BaseIndex
     /**
      * Field types that can be added
      * Used in init to call build methods from configuration yml
+     *
      * @array
      */
     private static $fieldTypes = [
@@ -63,7 +65,7 @@ abstract class BaseIndex
         'CopyFields',
         'DefaultField',
         'FacetFields',
-        'StoredFields'
+        'StoredFields',
     ];
     /**
      * @var \Solarium\Core\Query\Result\Result
@@ -79,6 +81,7 @@ abstract class BaseIndex
     protected $queryFactory;
     /**
      * The query terms as an array
+     *
      * @var array
      */
     protected $queryTerms = [];
@@ -115,6 +118,7 @@ abstract class BaseIndex
     /**
      * Build a full config for all given endpoints
      * This is to add the current index to e.g. an index or select
+     *
      * @param array $endpoints
      * @return array
      */
@@ -129,6 +133,7 @@ abstract class BaseIndex
 
     /**
      * Name of this index
+     *
      * @return string
      */
     abstract public function getIndexName();
@@ -261,6 +266,7 @@ abstract class BaseIndex
      * Spellchecking is enabled
      * If spellchecking is enabled and nothing is found OR it should follow spellchecking none the less
      * There is a spellcheck output
+     *
      * @param BaseQuery $query
      * @param Result $result
      * @param SearchResult $searchResult
@@ -361,6 +367,7 @@ abstract class BaseIndex
 
     /**
      * Add synonyms. Public to be extendable
+     *
      * @param bool $defaults Include UK to US synonyms
      * @return string
      */

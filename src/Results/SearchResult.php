@@ -23,6 +23,7 @@ use Solarium\QueryType\Select\Result\Result;
 
 /**
  * Class SearchResult
+ *
  * @package Firesphere\SolrSearch\Results
  */
 class SearchResult
@@ -80,6 +81,7 @@ class SearchResult
 
     /**
      * Build the given list of key-value pairs in to a SilverStripe useable array
+     *
      * @param FacetSet|null $facets
      * @return ArrayData
      */
