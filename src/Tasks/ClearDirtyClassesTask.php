@@ -17,8 +17,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ValidationException;
 
 /**
- * Class ClearDirtyClasses
- * Clear out classes that were not succesfully updated or deleted in Solr.
+ * Class ClearDirtyClasses Clear out classes that were not succesfully updated or deleted in Solr.
  *
  * Any classes that failed to index properly or be removed properly need to be cleaned out regularly
  * This task takes care of doing this. It can be run directly via /dev/tasks, or via a queued job
@@ -43,6 +42,9 @@ class ClearDirtyClassesTask extends BuildTask
 
     /**
      * Clean up Dirty Classes in the index
+     *
+     * When there are dirty classes to update or delete, the run will attempt to clean up.
+     * Dirty classes happen when changes to classes are not successfully updated in Solr
      *
      * @param HTTPRequest $request
      * @return void
@@ -90,6 +92,8 @@ class ClearDirtyClassesTask extends BuildTask
     }
 
     /**
+     * Get the objects that need to be deleted or updated as a list
+     *
      * @param $dirtyObject
      * @return ArrayList|DataList
      */
