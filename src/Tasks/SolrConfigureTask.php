@@ -79,7 +79,7 @@ class SolrConfigureTask extends BuildTask
                 $this->configureIndex($index);
             } catch (Exception $error) {
                 $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
-                Debug::dump($error); // in browser mode, it might not always show
+                $this->getLogger()->error($error); // in browser mode, it might not always show
                 // Continue to the next index
                 continue;
             }

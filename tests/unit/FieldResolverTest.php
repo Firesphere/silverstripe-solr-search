@@ -10,7 +10,6 @@ use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\VirtualPage;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ErrorPage\ErrorPage;
 
@@ -83,7 +82,20 @@ class FieldResolverTest extends SapphireTest
 
         $factory->setIndex($index);
 
-        Debug::dump($factory->resolveField('TestObject.TestRelation.Title'));
+        $expected = [
+            TestObject::class . '_TestObject_TestRelation_Title' =>
+                [
+                    'name'         => TestObject::class . '_TestObject_TestRelation_Title',
+                    'field'        => 'Title',
+                    'fullfield'    => 'TestObject_TestRelation_Title',
+                    'origin'       => TestObject::class,
+                    'class'        => TestRelationObject::class,
+                    'type'         => 'Varchar',
+                    'multi_valued' => true,
+                ],
+        ];
+
+        $this->assertEquals($expected, $factory->resolveField('TestObject.TestRelation.Title'));
     }
 
     protected function setUp()
