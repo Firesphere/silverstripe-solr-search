@@ -271,9 +271,9 @@ class SearchResult
 
     /**
      * @param $docID
-     * @return string|null
+     * @return string
      */
-    public function getHighlightByID($docID): ?string
+    public function getHighlightByID($docID): string
     {
         $highlights = [];
         if ($this->highlight && $docID) {

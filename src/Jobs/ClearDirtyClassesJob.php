@@ -21,6 +21,7 @@ class ClearDirtyClassesJob extends AbstractQueuedJob
 {
 
     /**
+     * Give this puppy a name
      * @return string Title of this job
      */
     public function getTitle()
@@ -32,8 +33,8 @@ class ClearDirtyClassesJob extends AbstractQueuedJob
      * Run the dirty class cleanup task from Queued Jobs
      *
      * @throws GuzzleException
-     * @throws ReflectionException
      * @throws ValidationException
+     * @throws ReflectionException
      */
     public function process()
     {

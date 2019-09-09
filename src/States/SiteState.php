@@ -135,7 +135,7 @@ abstract class SiteState
      * @return array - An array of (string)$variantClassName => (Object)$variantInstance pairs
      * @throws ReflectionException
      */
-    public static function variants($force = false): ?array
+    public static function variants($force = false): array
     {
         // Build up and cache a list of all search variants (subclasses of SearchVariant)
         if (!empty(self::$variants) || $force) {

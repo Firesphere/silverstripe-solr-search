@@ -64,7 +64,7 @@ trait SearchResultGetTrait
      *
      * @return Highlighting|null
      */
-    public function getHighlight(): ?Highlighting
+    public function getHighlight()
     {
         return $this->highlight;
     }

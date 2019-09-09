@@ -109,7 +109,7 @@ class SolrIndexTask extends BuildTask
     public function run($request)
     {
         $startTime = time();
-        [$vars, $group, $isGroup] = $this->taskSetup($request);
+        list($vars, $group, $isGroup) = $this->taskSetup($request);
         $groups = 0;
         $indexes = $this->service->getValidIndexes($request->getVar('index'));
 

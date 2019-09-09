@@ -179,7 +179,7 @@ class SolrCoreService
      * @param $core
      * @return StatusResult|null
      */
-    public function coreReload($core): ?StatusResult
+    public function coreReload($core)
     {
         $reload = $this->admin->createReload();
         $reload->setCore($core);
@@ -198,7 +198,7 @@ class SolrCoreService
      * @param string $core
      * @return StatusResult|null
      */
-    public function coreIsActive($core): ?StatusResult
+    public function coreIsActive($core)
     {
         return $this->coreStatus($core);
     }
@@ -209,7 +209,7 @@ class SolrCoreService
      * @param string $core
      * @return StatusResult|null
      */
-    public function coreStatus($core): ?StatusResult
+    public function coreStatus($core)
     {
         $status = $this->admin->createStatus();
         $status->setCore($core);
@@ -226,7 +226,7 @@ class SolrCoreService
      * @param string $core core name
      * @return StatusResult|null A result is successful
      */
-    public function coreUnload($core): ?StatusResult
+    public function coreUnload($core)
     {
         $unload = $this->admin->createUnload();
         $unload->setCore($core);

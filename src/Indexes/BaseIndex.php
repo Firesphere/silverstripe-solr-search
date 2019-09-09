@@ -50,7 +50,7 @@ abstract class BaseIndex
     /**
      * Session key for the query history
      */
-    public const SEARCH_HISTORY_KEY = 'query_history';
+    const SEARCH_HISTORY_KEY = 'query_history';
 
     /**
      * Field types that can be added
