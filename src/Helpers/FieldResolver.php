@@ -55,6 +55,8 @@ class FieldResolver
      */
     public function resolveField($field)
     {
+        $fullfield = str_replace('.', '_', $field);
+
         $sources = $this->index->getClasses();
         $buildSources = [];
 
@@ -81,7 +83,7 @@ class FieldResolver
             }
         }
 
-        $found = $this->getFieldOptions($field, $buildSources, $found);
+        $found = $this->getFieldOptions($field, $buildSources, $fullfield, $found);
 
         return $found;
     }
@@ -238,15 +240,19 @@ class FieldResolver
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
             return $hasOne;
         }
-        $options['multi_valued'] = true;
         if ($hasMany = $schema->hasManyComponent($className, $lookup)) {
+            $options['multi_valued'] = true;
             return $hasMany;
         }
         if ($key = $schema->manyManyComponent($className, $lookup)) {
+            $options['multi_valued'] = true;
+
             return $key['childClass'];
         }
 
-        return null;
+
+
+            return null;
     }
 
     /**
@@ -258,11 +264,12 @@ class FieldResolver
      * @return array
      * @throws ReflectionException
      */
-    protected function getFieldOptions($field, array $sources, array $found): array
+    protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
-        $fullfield = str_replace('.', '_', $field);
-
         foreach ($sources as $class => $fieldOptions) {
+            if (is_int($class)) {
+                $class = $fieldOptions;
+            }
             if (!empty($this->found[$class . '_' . $fullfield])) {
                 return $this->found[$class . '_' . $fullfield];
             }
@@ -307,7 +314,13 @@ class FieldResolver
 
         $singleton = singleton($dataclass);
 
-        return $singleton->castingClass($field);
+        $type = $singleton->castingClass($field);
+        if (!$type) {
+            // @todo should this be null?
+            $type = 'String';
+        }
+
+        return $type;
     }
 
     /**
@@ -321,21 +334,17 @@ class FieldResolver
      * @param array $found
      * @return array
      */
-    private function getFoundOriginData(
-        $field,
-        $fullField,
-        $fieldOptions,
-        $dataclass,
-        $type,
-        $found
-    ): array {
+    private function getFoundOriginData($field, $fullField, $fieldOptions, $dataclass, $type, $found): array
+    {
         // Get the origin
         $origin = $fieldOptions['origin'] ?? $dataclass;
 
         $found["{$origin}_{$fullField}"] = [
             'name'         => "{$origin}_{$fullField}",
             'field'        => $field,
+            'fullfield'    => $fullField,
             'origin'       => $origin,
+            'class'        => $dataclass,
             'type'         => $type,
             'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
         ];
