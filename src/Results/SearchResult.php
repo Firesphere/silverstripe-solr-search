@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Traits\SearchResultGetTrait;
 use Firesphere\SolrSearch\Traits\SearchResultSetTrait;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\PaginatedList;
@@ -20,9 +21,13 @@ use Solarium\Component\Result\Spellcheck\Collation;
 use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
 use Solarium\QueryType\Select\Result\Document;
 use Solarium\QueryType\Select\Result\Result;
+use stdClass;
 
 /**
- * Class SearchResult
+ * Class SearchResult is the combined result in a SilverStripe readable way
+ *
+ * Each of the requested features of a BaseQuery are generated to be easily accessible in the controller.
+ * In the controller, each required item can be accessed through the resulting method in this class.
  *
  * @package Firesphere\SolrSearch\Results
  */
@@ -31,17 +36,23 @@ class SearchResult
     use SearchResultGetTrait;
     use SearchResultSetTrait;
     /**
+     * Query that has been executed
+     *
      * @var BaseQuery
      */
     protected $query;
 
     /**
+     * Index the query has run on
+     *
      * @var BaseIndex
      */
     protected $index;
 
     /**
-     * @var ArrayList
+     * Resulting matches from the query on the index
+     *
+     * @var stdClass|ArrayList|DataList|DataObject
      */
     protected $matches;
 
@@ -69,6 +80,8 @@ class SearchResult
     }
 
     /**
+     * Set the facets to build
+     *
      * @param FacetSet|null $facets
      * @return $this
      */
@@ -101,6 +114,8 @@ class SearchResult
     }
 
     /**
+     * Create facets from each faceted class
+     *
      * @param FacetSet $facets
      * @param array $options
      * @param string $class
@@ -125,6 +140,8 @@ class SearchResult
     }
 
     /**
+     * Get the facets for each class and their count
+     *
      * @param $class
      * @param array $values
      * @param ArrayList $results
@@ -142,6 +159,8 @@ class SearchResult
     }
 
     /**
+     * Set the collated spellcheck string
+     *
      * @param mixed $collatedSpellcheck
      * @return $this
      */
@@ -156,6 +175,8 @@ class SearchResult
     }
 
     /**
+     * Set the spellcheck list as an ArrayList
+     *
      * @param SpellcheckResult|null $spellcheck
      * @return SearchResult
      */
@@ -175,6 +196,8 @@ class SearchResult
     }
 
     /**
+     * Get the matches as a Paginated List
+     *
      * @param HTTPRequest $request
      * @return PaginatedList
      */
@@ -197,6 +220,9 @@ class SearchResult
     }
 
     /**
+     * Get the matches as an ArrayList and add an excerpt if possible.
+     * {@link static::createExcerpt()}
+     *
      * @return ArrayList
      */
     public function getMatches(): ArrayList
@@ -219,6 +245,8 @@ class SearchResult
     }
 
     /**
+     * Set the matches from Solarium as an ArrayList
+     *
      * @param array $result
      * @return $this
      */
@@ -237,6 +265,8 @@ class SearchResult
     }
 
     /**
+     * Check if the match is a DataObject and exists
+     *
      * @param $match
      * @param string $classIDField
      * @return DataObject|bool
@@ -253,6 +283,8 @@ class SearchResult
     }
 
     /**
+     * Generate an excerpt for a DataObject
+     *
      * @param string $idField
      * @param $match
      * @param DataObject $item
@@ -270,6 +302,8 @@ class SearchResult
     }
 
     /**
+     * Get the highlight for a specific document
+     *
      * @param $docID
      * @return string
      */
@@ -287,9 +321,9 @@ class SearchResult
     }
 
     /**
-     * Allow overriding of matches with a custom result
+     * Allow overriding of matches with a custom result. Accepts anything you like, mostly
      *
-     * @param $matches
+     * @param stdClass|ArrayList|DataList|DataObject $matches
      * @return mixed
      */
     public function setCustomisedMatches($matches)

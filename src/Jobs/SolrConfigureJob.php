@@ -20,6 +20,8 @@ class SolrConfigureJob extends AbstractQueuedJob
 {
 
     /**
+     * My name
+     *
      * @return string
      */
     public function getTitle(): string
@@ -28,7 +30,7 @@ class SolrConfigureJob extends AbstractQueuedJob
     }
 
     /**
-     * Do some processing yourself!
+     * Process the queue for indexes that need to be indexed properly
      *
      * @return void
      * @throws ReflectionException

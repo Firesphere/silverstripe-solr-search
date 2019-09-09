@@ -33,26 +33,32 @@ class SolrIndexTask extends BuildTask
 {
     use LoggerTrait;
     /**
+     * URLSegment of this task
      * @var string
      */
     private static $segment = 'SolrIndexTask';
     /**
-     * @var array Store the current states for all instances of SiteState
+     * Store the current states for all instances of SiteState
+     * @var array
      */
     public $currentStates;
     /**
+     * My name
      * @var string
      */
     protected $title = 'Solr Index update';
     /**
+     * What do I do?
      * @var string
      */
     protected $description = 'Add or update documents to an existing Solr core.';
     /**
+     * Debug mode enabled, default false
      * @var bool
      */
     protected $debug = false;
     /**
+     * Singleton of {@link SolrCoreService}
      * @var SolrCoreService
      */
     protected $service;
@@ -75,6 +81,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Set the {@link SolrCoreService}
+     *
      * @param SolrCoreService $service
      * @return SolrIndexTask
      */
@@ -86,6 +94,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Set the debug mode
+     *
      * @param bool $debug
      * @return SolrIndexTask
      */
@@ -138,6 +148,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Set up the requirements for this task
+     *
      * @param HTTPRequest $request
      * @return array
      */
@@ -154,6 +166,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * get the classes to run for this task execution
+     *
      * @param $vars
      * @param array $classes
      * @return bool|array
@@ -183,6 +197,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Index the classes for a specific index
+     *
      * @param $classes
      * @param $isGroup
      * @param BaseIndex $index
@@ -202,6 +218,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Index a single class for a given index. {@link static::indexClassForIndex()}
+     *
      * @param bool $isGroup
      * @param string $class
      * @param BaseIndex $index
@@ -257,6 +275,8 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Index a group of a class for a specific state and index
+     *
      * @param $group
      * @param $class
      * @param $batchLength
@@ -294,6 +314,9 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * Log an exception if it happens. Most are catched, these logs are for the developers
+     * to identify problems and fix them.
+     *
      * @param string $index
      * @param int $group
      * @param Exception $exception

@@ -15,23 +15,33 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 trait GetSetSchemaServiceTrait
 {
     /**
-     * @var string ABSOLUTE Path to template
+     * ABSOLUTE Path to template
+     *
+     * @var string
      */
     protected $template;
     /**
+     * Store the value in Solr
+     *
      * @var bool
      */
     protected $store = false;
     /**
+     * Index to generate the schema for
+     *
      * @var BaseIndex
      */
     protected $index;
     /**
-     * @var string ABSOLUTE Path to types.ss template
+     * ABSOLUTE Path to types.ss template
+     *
+     * @var string
      */
     protected $typesTemplate;
 
     /**
+     * Set the store value
+     *
      * @param bool $store
      */
     public function setStore(bool $store): void
@@ -40,6 +50,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Get the Index that's being used
+     *
      * @return BaseIndex
      */
     public function getIndex()
@@ -48,6 +60,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Set the index that's being used and add the introspection for it
+     *
      * @param BaseIndex $index
      * @return SchemaService
      */
@@ -56,12 +70,14 @@ trait GetSetSchemaServiceTrait
         $this->index = $index;
         // Add the index to the introspection as well, there's no need for a separate call here
         // We're loading this core, why would we want the introspection from a different index?
-        $this->introspection->setIndex($index);
+        $this->fieldResolver->setIndex($index);
 
         return $this;
     }
 
     /**
+     * Get the name of the index being used
+     *
      * @return string
      */
     public function getIndexName(): string
@@ -70,6 +86,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Get the default field to generate df components for
+     *
      * @return string|array
      */
     public function getDefaultField()
@@ -98,6 +116,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Get the types template if defined
+     *
      * @return string
      */
     public function getTypesTemplate()
@@ -106,6 +126,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Set custom types template
+     *
      * @param string $typesTemplate
      * @return SchemaService
      */
@@ -117,6 +139,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Get the base template for the schema xml
+     *
      * @return string
      */
     public function getTemplate()
@@ -125,6 +149,8 @@ trait GetSetSchemaServiceTrait
     }
 
     /**
+     * Set a custom template for schema xml
+     *
      * @param string $template
      * @return SchemaService
      */

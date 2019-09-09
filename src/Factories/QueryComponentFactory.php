@@ -52,18 +52,25 @@ class QueryComponentFactory
         'Spellcheck',
     ];
     /**
+     * BaseQuery that needs to be executed
      * @var BaseQuery
      */
     protected $query;
     /**
+     * Helper to escape the query terms properly
+     *
      * @var Helper
      */
     protected $helper;
     /**
+     * Resulting querie parts as an array
+     *
      * @var array
      */
     protected $queryArray = [];
     /**
+     * Index to query
+     *
      * @var BaseIndex
      */
     protected $index;
@@ -156,6 +163,8 @@ class QueryComponentFactory
     }
 
     /**
+     * Set a custom Client Query object
+     *
      * @param Query $clientQuery
      * @return self
      */

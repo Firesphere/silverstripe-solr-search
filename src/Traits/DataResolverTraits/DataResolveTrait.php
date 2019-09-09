@@ -17,18 +17,22 @@ use SilverStripe\View\ArrayData;
 trait DataResolveTrait
 {
     /**
+     * Component to resolve
      * @var DataObject|ArrayList|SS_List|DBField
      */
     protected $component;
     /**
+     * Columns to resolve
      * @var array
      */
     protected $columns = [];
     /**
+     * Column to resolve
      * @var mixed|string|null
      */
     protected $columnName = '';
     /**
+     * ShortName of a class
      * @var string
      */
     protected $shortName;
@@ -52,6 +56,8 @@ trait DataResolveTrait
     }
 
     /**
+     * Each class using this trait should have a way to throw unidentifiable objects or items
+     *
      * @param DataObject|ArrayData|SS_List $component
      * @param array $columns
      *
@@ -132,6 +138,8 @@ trait DataResolveTrait
     }
 
     /**
+     * Get the value for a method
+     *
      * @return mixed
      */
     protected function getMethodValue()
@@ -146,6 +154,8 @@ trait DataResolveTrait
     }
 
     /**
+     * Get the value for a field
+     *
      * @return mixed
      */
     protected function getFieldValue()

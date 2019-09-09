@@ -14,11 +14,15 @@ use SilverStripe\Core\Injector\Injector;
 trait LoggerTrait
 {
     /**
+     * The logger to use
+     *
      * @var LoggerInterface
      */
     protected $logger;
 
     /**
+     * Get the logger
+     *
      * @return LoggerInterface
      */
     public function getLogger()
@@ -31,6 +35,8 @@ trait LoggerTrait
     }
 
     /**
+     * Set the logger if needed
+     *
      * @param LoggerInterface $logger
      */
     public function setLogger($logger): void

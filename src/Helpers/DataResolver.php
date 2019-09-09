@@ -60,7 +60,7 @@ class DataResolver
      */
     public static function identify($obj, $columns = [])
     {
-        /** @var @see {self::$objTypes} $type */
+        /** @var {@link self::$objTypes} $type */
         foreach (self::$objTypes as $type => $method) {
             if ($obj instanceof $type) {
                 $method = 'resolve' . $method;

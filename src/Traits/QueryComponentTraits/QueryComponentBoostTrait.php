@@ -8,26 +8,31 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
 
 /**
- * Trait QueryComponentBoostTrait
+ * Trait QueryComponentBoostTrait adds support for boosting to a QueryComponent
  *
  * @package Firesphere\SolrSearch\Traits
  */
 trait QueryComponentBoostTrait
 {
     /**
+     * BaseQuery that is going to be executed
      * @var BaseQuery
      */
     protected $query;
     /**
+     * Terms that are going to be boosted
      * @var array
      */
     protected $boostTerms = [];
     /**
+     * Query set that has been executed
      * @var array
      */
     protected $queryArray = [];
 
     /**
+     * Get the boosted terms
+     *
      * @return array
      */
     public function getBoostTerms(): array
@@ -36,6 +41,8 @@ trait QueryComponentBoostTrait
     }
 
     /**
+     * Set the boosted terms manually
+     *
      * @param array $boostTerms
      * @return QueryComponentFactory
      */
@@ -47,6 +54,8 @@ trait QueryComponentBoostTrait
     }
 
     /**
+     * Build the boosted field setup through Criteria
+     *
      * Add the index-time boosting to the query
      */
     protected function buildBoosts(): void

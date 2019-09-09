@@ -15,7 +15,9 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 /**
- * Class SolrIndexJob
+ * Class SolrIndexJob is a queued job to index all existing indexes and their classes.
+ *
+ * It always runs on all indexes, to make sure all indexes are up to date.
  *
  * @package Firesphere\SolrSearch\Jobs
  */
@@ -42,6 +44,8 @@ class SolrIndexJob extends AbstractQueuedJob
     protected $indexes;
 
     /**
+     * My name
+     *
      * @return string
      */
     public function getTitle()
@@ -50,7 +54,7 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
-     * Do some processing yourself!
+     * Process this job
      *
      * @return self
      * @throws Exception
@@ -89,6 +93,8 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * Configure the run for the valid indexes
+     *
      * @param stdClass|null $data
      * @throws ReflectionException
      */
@@ -130,6 +136,8 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * Get the next step to execute
+     *
      * @return array
      */
     protected function getNextSteps(): array
@@ -155,6 +163,8 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * Which Indexes should I index
+     *
      * @return array
      */
     public function getClassToIndex(): array
@@ -163,6 +173,8 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * Which classes should I index
+     *
      * @param array $classToIndex
      * @return SolrIndexJob
      */
@@ -174,6 +186,8 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * Get the indexes
+     *
      * @return array
      */
     public function getIndexes(): array
@@ -182,6 +196,8 @@ class SolrIndexJob extends AbstractQueuedJob
     }
 
     /**
+     * Set the indexes if needed
+     *
      * @param array $indexes
      * @return SolrIndexJob
      */

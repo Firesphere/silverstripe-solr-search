@@ -69,14 +69,20 @@ abstract class BaseIndex
         'StoredFields',
     ];
     /**
-     * @var \Solarium\Core\Query\Result\Result
+     * The raw query result
+     *
+     * @var Result
      */
     protected $rawQuery;
     /**
+     * {@link SchemaService}
+     *
      * @var SchemaService
      */
     protected $schemaService;
     /**
+     * {@link QueryComponentFactory}
+     *
      * @var QueryComponentFactory
      */
     protected $queryFactory;
@@ -87,6 +93,8 @@ abstract class BaseIndex
      */
     protected $queryTerms = [];
     /**
+     * Should a retry occur if nothing was found and there are suggestions to follow
+     *
      * @var bool
      */
     private $retry = false;
@@ -224,6 +232,8 @@ abstract class BaseIndex
     }
 
     /**
+     * From the given BaseQuery, generate a Solarium ClientQuery object
+     *
      * @param BaseQuery $query
      * @return Query
      */
@@ -242,6 +252,8 @@ abstract class BaseIndex
     }
 
     /**
+     * Build a factory to use in the SolrQuery building. {@link static::buildSolrQuery()}
+     *
      * @param BaseQuery $query
      * @param Query $clientQuery
      * @return QueryComponentFactory|mixed
@@ -304,6 +316,8 @@ abstract class BaseIndex
     }
 
     /**
+     * Get all fields that are required for indexing in a unique way
+     *
      * @return array
      */
     public function getFieldsForIndexing(): array
@@ -381,6 +395,8 @@ abstract class BaseIndex
     }
 
     /**
+     * Get the final, generated terms
+     *
      * @return array
      */
     public function getQueryTerms(): array
@@ -389,6 +405,8 @@ abstract class BaseIndex
     }
 
     /**
+     * Get the QueryComponentFactory. {@link QueryComponentFactory}
+     *
      * @return QueryComponentFactory
      */
     public function getQueryFactory(): QueryComponentFactory

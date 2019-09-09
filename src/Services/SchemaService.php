@@ -24,11 +24,15 @@ class SchemaService extends ViewableData
     use GetSetSchemaServiceTrait;
 
     /**
+     * The field resolver to find a field for a class
+     *
      * @var FieldResolver
      */
-    protected $introspection;
+    protected $fieldResolver;
 
     /**
+     * CoreService to use
+     *
      * @var SolrCoreService
      */
     protected $coreService;
@@ -39,11 +43,13 @@ class SchemaService extends ViewableData
     public function __construct()
     {
         parent::__construct();
-        $this->introspection = Injector::inst()->get(FieldResolver::class);
+        $this->fieldResolver = Injector::inst()->get(FieldResolver::class);
         $this->coreService = Injector::inst()->get(SolrCoreService::class);
     }
 
     /**
+     * Get all fulltext field definitions that are loaded
+     *
      * @return ArrayList
      * @throws Exception
      */
@@ -64,6 +70,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the field definition for a single field
+     *
      * @param $fieldName
      * @param ArrayList $return
      * @param null|string $copyField
@@ -71,7 +79,7 @@ class SchemaService extends ViewableData
      */
     protected function getFieldDefinition($fieldName, &$return, $copyField = null)
     {
-        $field = $this->introspection->resolveField($fieldName);
+        $field = $this->fieldResolver->resolveField($fieldName);
         $typeMap = Statics::getTypeMap();
         $storeFields = $this->getStoreFields();
         $item = [];
@@ -95,6 +103,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the stored fields. This includes boosted and faceted fields
+     *
      * @return array
      */
     protected function getStoreFields(): array
@@ -113,6 +123,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the fields that should be copied
+     *
      * @return ArrayList
      */
     public function getCopyFields()
@@ -134,6 +146,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the definition of a copy field for determining what to load in to Solr
+     *
      * @return ArrayList
      * @throws Exception
      */
@@ -158,6 +172,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the definitions of a filter field to load in to Solr.
+     *
      * @return ArrayList
      * @throws Exception
      */
@@ -182,6 +198,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get the types template in a rendered state
+     *
      * @return DBHTMLText
      */
     public function getTypes()
@@ -197,6 +215,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Generate the Schema xml
+     *
      * @return DBHTMLText
      */
     public function generateSchema()
@@ -212,6 +232,8 @@ class SchemaService extends ViewableData
     }
 
     /**
+     * Get any extras that need loading in to Solr
+     *
      * @return string
      */
     public function getExtrasPath()

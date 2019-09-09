@@ -16,11 +16,14 @@ use SilverStripe\ORM\ValidationException;
  *
  * Log information from Solr to the CMS for reference
  *
+ * @todo implement {@link LoggerInterface}
  * @package Firesphere\SolrSearch\Helpers
  */
 class SolrLogger
 {
     /**
+     * Guzzle base client to communicate with Solr
+     *
      * @var Client
      */
     protected $client;
@@ -54,7 +57,7 @@ class SolrLogger
      * @throws GuzzleException
      * @throws ValidationException
      */
-    public static function logMessage($type, $message, $index)
+    public static function logMessage($type, $message, $index): void
     {
         $solrLogger = new self();
         $solrLogger->saveSolrLog($type);
