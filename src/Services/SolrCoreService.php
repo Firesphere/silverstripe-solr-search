@@ -17,6 +17,7 @@ use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -37,6 +38,7 @@ use Solarium\QueryType\Update\Result;
  */
 class SolrCoreService
 {
+    use Injectable;
     /**
      * Unique ID in Solr
      */
@@ -291,6 +293,36 @@ class SolrCoreService
 
         // return the array values, to reset the keys
         return array_values($this->validIndexes);
+    }
+
+    /**
+     * Get all classes from all indexes and return them.
+     * Used to get all classes that are to be indexed
+     * @return array
+     */
+    public function getValidClasses()
+    {
+        $indexes = $this->getValidIndexes();
+        $classes = [];
+        foreach ($indexes as $index) {
+            $indexClasses = singleton($index)->getClasses();
+            $classes = array_merge($classes, $indexClasses);
+        }
+
+        return array_unique($classes);
+    }
+
+    /**
+     * Is the given class a valid class to index
+     *
+     * @param string $class
+     * @return bool
+     */
+    public function isValidClass($class): bool
+    {
+        $classes = $this->getValidClasses();
+
+        return in_array($class, $classes, true);
     }
 
     /**

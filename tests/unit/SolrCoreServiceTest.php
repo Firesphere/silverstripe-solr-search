@@ -13,10 +13,12 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Page;
+use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DB;
@@ -137,6 +139,16 @@ class SolrCoreServiceTest extends SapphireTest
         $handler = HandlerStack::create($mock);
 
         $this->assertEquals(4, $this->service->getSolrVersion($handler));
+    }
+
+    public function testValidClasses()
+    {
+        $classes = $this->service->getValidClasses();
+
+        $this->assertFalse($this->service->isValidClass(ModelAdmin::class));
+        $this->assertTrue($this->service->isValidClass(SiteTree::class));
+
+        Debug::dump($classes);
     }
 
     protected function setUp()
