@@ -25,7 +25,7 @@ class FieldResolverTest extends SapphireTest
     /**
      * @var FieldResolver
      */
-    protected $introspection;
+    protected $fieldResolver;
 
     public function testIsSubclassOf()
     {
@@ -100,8 +100,8 @@ class FieldResolverTest extends SapphireTest
 
     protected function setUp()
     {
-        $this->introspection = new FieldResolver();
-        $this->introspection->setIndex(new CircleCITestIndex());
+        $this->fieldResolver = new FieldResolver();
+        $this->fieldResolver->setIndex(new CircleCITestIndex());
 
         return parent::setUp();
     }

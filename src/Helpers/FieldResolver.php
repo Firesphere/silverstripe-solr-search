@@ -264,9 +264,6 @@ class FieldResolver
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
-            if (is_int($class)) {
-                $class = $fieldOptions;
-            }
             if (!empty($this->found[$class . '_' . $fullfield])) {
                 return $this->found[$class . '_' . $fullfield];
             }
