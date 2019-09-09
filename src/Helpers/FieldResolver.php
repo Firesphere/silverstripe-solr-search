@@ -91,7 +91,7 @@ class FieldResolver
     /**
      * Resolve relations if possible
      *
-     * @param $source
+     * @param string $source
      * @param $lookup
      * @param array $next
      * @return array
@@ -240,19 +240,15 @@ class FieldResolver
         if ($hasOne = $schema->hasOneComponent($className, $lookup)) {
             return $hasOne;
         }
+        $options['multi_valued'] = true;
         if ($hasMany = $schema->hasManyComponent($className, $lookup)) {
-            $options['multi_valued'] = true;
             return $hasMany;
         }
         if ($key = $schema->manyManyComponent($className, $lookup)) {
-            $options['multi_valued'] = true;
-
             return $key['childClass'];
         }
 
-
-
-            return null;
+        return null;
     }
 
     /**
@@ -260,6 +256,7 @@ class FieldResolver
      *
      * @param $field
      * @param array $sources
+     * @param string $fullfield
      * @param array $found
      * @return array
      * @throws ReflectionException
