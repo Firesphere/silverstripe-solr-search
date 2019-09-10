@@ -53,6 +53,7 @@ abstract class SiteState
     /**
      * Get available states
      *
+     * @static
      * @return array
      */
     public static function getStates(): array
@@ -63,6 +64,7 @@ abstract class SiteState
     /**
      * Set states
      *
+     * @static
      * @param array $states
      */
     public static function setStates(array $states): void
@@ -73,6 +75,7 @@ abstract class SiteState
     /**
      * Add a state
      *
+     * @static
      * @param $state
      */
     public static function addState($state): void
@@ -83,6 +86,7 @@ abstract class SiteState
     /**
      * Add multiple states
      *
+     * @static
      * @param array $states
      */
     public static function addStates(array $states): void
@@ -93,6 +97,7 @@ abstract class SiteState
     /**
      * Does this class, it's parent (or optionally one of it's children) have the passed extension attached?
      *
+     * @static
      * @param $class
      * @param $extension
      * @return bool
@@ -106,6 +111,7 @@ abstract class SiteState
                 return true;
             }
         }
+
         return false;
     }
 
@@ -151,6 +157,7 @@ abstract class SiteState
     /**
      * Is this extension applied and instantiable
      *
+     * @static
      * @param $variantclass
      * @return bool
      * @throws ReflectionException
@@ -163,6 +170,7 @@ abstract class SiteState
             $variant = singleton($variantclass);
             if ($variant->appliesToEnvironment() && $variant->isEnabled()) {
                 self::$variants[$variantclass] = $variant;
+
                 return true;
             }
         }
