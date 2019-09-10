@@ -41,7 +41,7 @@ class SiteStateTest extends SapphireTest
         $state->setEnabled(true);
         $this->assertTrue($state->isEnabled());
         $expected = [
-           MockStateTwo::class => new MockStateTwo()
+            MockStateTwo::class => new MockStateTwo(),
         ];
 
         $this->assertEquals($expected, SiteState::variants(true));

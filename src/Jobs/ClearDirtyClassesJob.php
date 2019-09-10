@@ -22,6 +22,7 @@ class ClearDirtyClassesJob extends AbstractQueuedJob
 
     /**
      * Give this puppy a name
+     *
      * @return string Title of this job
      */
     public function getTitle()

@@ -53,6 +53,7 @@ class QueryComponentFactory
     ];
     /**
      * BaseQuery that needs to be executed
+     *
      * @var BaseQuery
      */
     protected $query;

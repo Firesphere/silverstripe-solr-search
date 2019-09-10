@@ -41,7 +41,7 @@ class SolrIndexTaskTest extends SapphireTest
     {
         $getVars = [
             'group' => 0,
-            'index' => 'CircleCITestIndex'
+            'index' => 'CircleCITestIndex',
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 
@@ -55,7 +55,7 @@ class SolrIndexTaskTest extends SapphireTest
         $getVars = [
             'group' => 0,
             'index' => 'CircleCITestIndex',
-            'clear' => 1
+            'clear' => 1,
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 

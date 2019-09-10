@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;

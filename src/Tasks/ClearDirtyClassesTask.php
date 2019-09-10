@@ -74,23 +74,6 @@ class ClearDirtyClassesTask extends BuildTask
     }
 
     /**
-     * Create an ArrayList of the dirty items to be deleted from Solr
-     * Uses the given class name to generate stub objects
-     *
-     * @param array $items
-     * @param string $dirtyClass
-     * @param $dirtyClasses
-     */
-    protected function createDeleteList($items, $dirtyClass, &$dirtyClasses)
-    {
-        /** @var ArrayList $deletions */
-        foreach ($items as $item) {
-            $dirtItem = $dirtyClass::create(['ID' => $item]);
-            $dirtyClasses->push($dirtItem);
-        }
-    }
-
-    /**
      * Get the objects that need to be deleted or updated as a list
      *
      * @param $dirtyObject
@@ -109,5 +92,22 @@ class ClearDirtyClassesTask extends BuildTask
         }
 
         return $dirtyClasses;
+    }
+
+    /**
+     * Create an ArrayList of the dirty items to be deleted from Solr
+     * Uses the given class name to generate stub objects
+     *
+     * @param array $items
+     * @param string $dirtyClass
+     * @param $dirtyClasses
+     */
+    protected function createDeleteList($items, $dirtyClass, &$dirtyClasses)
+    {
+        /** @var ArrayList $deletions */
+        foreach ($items as $item) {
+            $dirtItem = $dirtyClass::create(['ID' => $item]);
+            $dirtyClasses->push($dirtItem);
+        }
     }
 }

@@ -35,7 +35,7 @@ class ConfigStoreTest extends SapphireTest
         $this->assertEquals(
             [
                 'path' => Director::baseFolder() . '/test',
-                'uri'  => 'http://test.com'
+                'uri'  => 'http://test.com',
             ],
             $store->getConfig()
         );
@@ -93,8 +93,8 @@ class ConfigStoreTest extends SapphireTest
             'path' => 'test',
             'auth' => [
                 'username' => 'test',
-                'password' => 'test'
-            ]
+                'password' => 'test',
+            ],
         ]);
 
         $stringUpload = $store->uploadString('TestIndex', 'solr.xml', '<xml>test</xml>', $mock)->getBody();

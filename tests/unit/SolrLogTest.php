@@ -14,12 +14,6 @@ class SolrLogTest extends SapphireTest
      */
     protected $log;
 
-    protected function setUp()
-    {
-        $this->log = SolrLog::create();
-        return parent::setUp();
-    }
-
     public function testCan()
     {
         $this->assertFalse($this->log->canCreate(null));
@@ -53,7 +47,7 @@ class SolrLogTest extends SapphireTest
                 'help'     => _t(
                     self::class . '.PERMISSION_DELETE_HELP',
                     'Permission required to delete existing Solr logs.'
-                )
+                ),
             ],
             'VIEW_LOG'   => [
                 'name'     => _t(self::class . '.PERMISSION_VIEW_DESCRIPTION', 'View Solr logs'),
@@ -61,10 +55,16 @@ class SolrLogTest extends SapphireTest
                 'help'     => _t(
                     self::class . '.PERMISSION_VIEW_HELP',
                     'Permission required to view existing Solr logs.'
-                )
+                ),
             ],
         ];
 
         $this->assertEquals($expected, $this->log->providePermissions());
+    }
+
+    protected function setUp()
+    {
+        $this->log = SolrLog::create();
+        return parent::setUp();
     }
 }

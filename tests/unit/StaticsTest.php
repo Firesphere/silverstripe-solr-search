@@ -80,7 +80,7 @@ class StaticsTest extends SapphireTest
         DBDate::class                                => 'tdate',
         'SilverStripe\\ORM\\FieldType\\HTMLFragment' => 'htmltext',
         'HTMLFragment'                               => 'htmltext',
-        'PrimaryKey'                                 => 'tint'
+        'PrimaryKey'                                 => 'tint',
     ];
 
     public function testGetTypesMap()

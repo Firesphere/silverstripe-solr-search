@@ -34,6 +34,7 @@ class DocumentFactoryTest extends SapphireTest
     /**
      * We can't use the constant here for unknown reasons
      * If you change the constant, please replace id here with the appropriate value
+     *
      * @var array
      */
     protected static $expected_docs = [
@@ -135,7 +136,7 @@ class DocumentFactoryTest extends SapphireTest
             'SiteTree_Content'  => '<p>You can fill this page out with your own content, ' .
                 'or delete it and create your own pages.</p>',
             'SiteTree_ParentID' => 0,
-        ]
+        ],
     ];
 
     public function setUp()

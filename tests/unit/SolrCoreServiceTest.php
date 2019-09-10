@@ -18,10 +18,8 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DB;
 use Solarium\Core\Client\Client;
 
 class SolrCoreServiceTest extends SapphireTest
@@ -131,7 +129,7 @@ class SolrCoreServiceTest extends SapphireTest
             'lucene'         =>
                 [
                     'solr-spec-version' => '4.3.2',
-                ]
+                ],
         ];
         $mock = new MockHandler([
             new Response(200, ['X-Foo' => 'Bar'], json_encode($version4)),

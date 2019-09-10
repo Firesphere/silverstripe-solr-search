@@ -18,21 +18,25 @@ trait DataResolveTrait
 {
     /**
      * Component to resolve
+     *
      * @var DataObject|ArrayList|SS_List|DBField
      */
     protected $component;
     /**
      * Columns to resolve
+     *
      * @var array
      */
     protected $columns = [];
     /**
      * Column to resolve
+     *
      * @var mixed|string|null
      */
     protected $columnName = '';
     /**
      * ShortName of a class
+     *
      * @var string
      */
     protected $shortName;
@@ -116,6 +120,27 @@ trait DataResolveTrait
     }
 
     /**
+     * Check if a component has the method instead of it being a property
+     *
+     * @return null|mixed|string
+     * @throws LogicException
+     */
+    protected function checkHasMethod()
+    {
+        if ($this->component->hasMethod($this->columnName)) {
+            $method = $this->columnName;
+        } elseif ($this->component->hasMethod("get{$this->columnName}")) {
+            $method = "get{$this->columnName}";
+        } else {
+            throw new LogicException(
+                sprintf('Method, "%s" not found on "%s"', $this->columnName, $this->shortName)
+            );
+        }
+
+        return $method;
+    }
+
+    /**
      * Resolves a DataObject value
      *
      * @return mixed
@@ -170,25 +195,5 @@ trait DataResolveTrait
         }
 
         return $data;
-    }
-
-    /**
-     * Check if a component has the method instead of it being a property
-     * @return null|mixed|string
-     * @throws LogicException
-     */
-    protected function checkHasMethod()
-    {
-        if ($this->component->hasMethod($this->columnName)) {
-            $method = $this->columnName;
-        } elseif ($this->component->hasMethod("get{$this->columnName}")) {
-            $method = "get{$this->columnName}";
-        } else {
-            throw new LogicException(
-                sprintf('Method, "%s" not found on "%s"', $this->columnName, $this->shortName)
-            );
-        }
-
-        return $method;
     }
 }
