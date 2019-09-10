@@ -302,6 +302,7 @@ class SolrCoreService
      * when any change from a relation is published.
      *
      * @return array
+     * @throws ReflectionException
      */
     public function getValidClasses()
     {
@@ -309,7 +310,9 @@ class SolrCoreService
         $classes = [];
         foreach ($indexes as $index) {
             $indexClasses = singleton($index)->getClasses();
-            $classes = array_merge($classes, $indexClasses);
+            foreach ($indexClasses as $class) {
+                $classes = array_merge($classes, FieldResolver::getHierarchy($class, true));
+            }
         }
 
         return array_unique($classes);
@@ -317,9 +320,11 @@ class SolrCoreService
 
     /**
      * Is the given class a valid class to index
+     * Does not discriminate against the indexes. All indexes are worth the same
      *
      * @param string $class
      * @return bool
+     * @throws ReflectionException
      */
     public function isValidClass($class): bool
     {
