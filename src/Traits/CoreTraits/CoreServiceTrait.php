@@ -7,6 +7,7 @@ namespace Firesphere\SolrSearch\Traits;
 use Firesphere\SolrSearch\Helpers\FieldResolver;
 use ReflectionException;
 use Solarium\Client;
+use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 
 /**
  * Trait CoreServiceTrait to have simple methods that don't really need to be in core.
@@ -27,6 +28,10 @@ trait CoreServiceTrait
      * @var Client The current client
      */
     protected $client;
+    /**
+     * @var Query A core admin object
+     */
+    protected $admin;
 
     /**
      * Check if we are in debug mode
@@ -124,5 +129,21 @@ trait CoreServiceTrait
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getAdmin(): Query
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param Query $admin
+     */
+    public function setAdmin(Query $admin): void
+    {
+        $this->admin = $admin;
     }
 }
