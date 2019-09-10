@@ -55,7 +55,7 @@ class DataObjectExtensionTest extends SapphireTest
 
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         // TestObject has a ShowInSearch :)
-        $this->assertContains($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
 
         $object = new CanViewObject();
         $extension = new DataObjectExtension();
@@ -63,7 +63,8 @@ class DataObjectExtensionTest extends SapphireTest
 
         $this->assertNotEquals(['1-null'], $extension->getViewStatus());
         $this->assertContains(['1-' . $member->ID], $extension->getViewStatus());
-        $this->assertContains($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertEquals($extension->getViewStatus(), DataObjectExtension::$canViewClasses[CanViewObject::class]);
     }
 
     public function testOnAfterDelete()
