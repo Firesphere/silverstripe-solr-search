@@ -148,7 +148,7 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertFalse($this->service->isValidClass(ModelAdmin::class));
         $this->assertTrue($this->service->isValidClass(SiteTree::class));
 
-        Debug::dump($classes);
+        $this->assertEquals([SiteTree::class], $classes);
     }
 
     protected function setUp()

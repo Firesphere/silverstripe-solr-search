@@ -69,14 +69,14 @@ class DataObjectExtension extends DataExtension
      *
      * @throws ValidationException
      * @throws GuzzleException
+     * @throws \ReflectionException
      */
     public function onAfterWrite()
     {
         /** @var DataObject $owner */
         $owner = $this->owner;
-        if (in_array($owner->ClassName, static::$excludedClasses, true) ||
-            (Controller::curr()->getRequest()->getURL() &&
-                strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false)
+        if (Controller::curr()->getRequest()->getURL() &&
+            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false
         ) {
             return;
         }
@@ -91,9 +91,14 @@ class DataObjectExtension extends DataExtension
      * @param DataObject $owner
      * @throws ValidationException
      * @throws GuzzleException
+     * @throws \ReflectionException
      */
     protected function pushToSolr(DataObject $owner): void
     {
+        $service = new SolrCoreService();
+        if (!$service->isValidClass($owner->ClassName)) {
+            return;
+        }
         /** @var DataObject $owner */
         $record = $this->getDirtyClass($owner, SolrCoreService::UPDATE_TYPE);
 
@@ -101,7 +106,6 @@ class DataObjectExtension extends DataExtension
         $mode = Versioned::get_reading_mode();
         try {
             Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
-            $service = new SolrCoreService();
             $service->setInDebugMode(false);
             $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
             // If we don't get an exception, mark the item as clean

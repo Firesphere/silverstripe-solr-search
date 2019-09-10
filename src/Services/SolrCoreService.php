@@ -297,7 +297,10 @@ class SolrCoreService
 
     /**
      * Get all classes from all indexes and return them.
-     * Used to get all classes that are to be indexed
+     * Used to get all classes that are to be indexed on change
+     * Note, only base classes are in this object. A publish recursive is required
+     * when any change from a relation is published.
+     *
      * @return array
      */
     public function getValidClasses()
