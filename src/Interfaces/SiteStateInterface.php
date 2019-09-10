@@ -19,7 +19,7 @@ interface SiteStateInterface
      * @param string $state
      * @return bool
      */
-    public function isApplicable($state): bool;
+    public function stateIsApplicable($state): bool;
 
     /**
      * Reset the SiteState to it's default state

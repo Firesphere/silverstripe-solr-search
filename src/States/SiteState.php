@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\States;
 
 use Firesphere\SolrSearch\Helpers\FieldResolver;
+use Firesphere\SolrSearch\Interfaces\SiteStateInterface;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
@@ -49,6 +50,10 @@ abstract class SiteState
      * @var bool Is this State enabled
      */
     public $enabled = true;
+    /**
+     * @var string Current state
+     */
+    protected $state;
 
     /**
      * Get available states
@@ -218,10 +223,14 @@ abstract class SiteState
     {
         /**
          * @var string $variant
-         * @var static $instance
+         * @var SiteStateInterface $instance
          */
         foreach (self::variants() as $variant => $instance) {
-            $instance->activateState($state);
+            if ($state === 'default') {
+                $instance->setDefaultState();
+            } elseif ($instance->stateIsApplicable($state)) {
+                $instance->activateState($state);
+            }
         }
     }
 }
