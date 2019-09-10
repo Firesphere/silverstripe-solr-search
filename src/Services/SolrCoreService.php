@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use Firesphere\SolrSearch\Traits\CoreServiceTrait;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
@@ -40,6 +41,7 @@ class SolrCoreService
 {
     use Injectable;
     use Configurable;
+    use CoreServiceTrait;
     /**
      * Unique ID in Solr
      */
@@ -70,10 +72,6 @@ class SolrCoreService
     const CREATE_TYPE = 'create';
 
     /**
-     * @var Client The current client
-     */
-    protected $client;
-    /**
      * @var array Base indexes that exist
      */
     protected $baseIndexes = [];
@@ -85,12 +83,6 @@ class SolrCoreService
      * @var Query A core admin object
      */
     protected $admin;
-    /**
-     * Add debugging information
-     *
-     * @var bool
-     */
-    protected $inDebugMode = false;
 
     /**
      * SolrCoreService constructor.
@@ -385,29 +377,6 @@ class SolrCoreService
     }
 
     /**
-     * Check if we are in debug mode
-     *
-     * @return bool
-     */
-    public function isInDebugMode(): bool
-    {
-        return $this->inDebugMode;
-    }
-
-    /**
-     * Set the debug mode
-     *
-     * @param bool $inDebugMode
-     * @return SolrCoreService
-     */
-    public function setInDebugMode(bool $inDebugMode): SolrCoreService
-    {
-        $this->inDebugMode = $inDebugMode;
-
-        return $this;
-    }
-
-    /**
      * Is the given class a valid class to index
      * Does not discriminate against the indexes. All indexes are worth the same
      *
@@ -486,28 +455,5 @@ class SolrCoreService
         $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
 
         return ($version > 0) ? 4 : 5;
-    }
-
-    /**
-     * Get the client
-     *
-     * @return Client
-     */
-    public function getClient(): Client
-    {
-        return $this->client;
-    }
-
-    /**
-     * Set the client
-     *
-     * @param Client $client
-     * @return SolrCoreService
-     */
-    public function setClient($client): SolrCoreService
-    {
-        $this->client = $client;
-
-        return $this;
     }
 }
