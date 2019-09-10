@@ -6,6 +6,7 @@ use SilverStripe\Dev\TestOnly;
 
 /**
  * A simple helper class for test calls to private and protected methods
+ *
  * @link https://jtreminio.com/blog/unit-testing-tutorial-part-iii-testing-protected-private-methods-coverage-reports-and-crap/
  */
 class TestHelper implements TestOnly

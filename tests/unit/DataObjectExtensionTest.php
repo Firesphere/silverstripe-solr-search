@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Page;
 use Psr\Log\NullLogger;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
@@ -56,6 +57,15 @@ class DataObjectExtensionTest extends SapphireTest
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         // TestObject has a ShowInSearch :)
         $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
+
+        $object = new CanViewObject();
+        $extension = new DataObjectExtension();
+        $extension->setOwner($object);
+
+        $this->assertNotContains('1-null', $extension->getViewStatus());
+        $this->assertContains('1-' . $member->ID, $extension->getViewStatus());
+        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertEquals($extension->getViewStatus(), DataObjectExtension::$canViewClasses[CanViewObject::class]);
     }
 
     public function testOnAfterDelete()
@@ -106,6 +116,14 @@ class DataObjectExtensionTest extends SapphireTest
         $emptyClasses = [];
         $extension->updateNewRowClasses($emptyClasses, 1, '', $logItem);
         $this->assertContains('alert alert-info', $emptyClasses);
+    }
+
+    public function testOnAfterWrite()
+    {
+        $url = Controller::curr()->getRequest()->getURL();
+        Controller::curr()->getRequest()->setUrl('dev/build');
+        $this->assertNull((new DataObjectExtension())->onAfterWrite());
+        Controller::curr()->getRequest()->setUrl($url);
     }
 
     protected function setUp()

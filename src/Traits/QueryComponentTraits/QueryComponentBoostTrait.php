@@ -16,16 +16,19 @@ trait QueryComponentBoostTrait
 {
     /**
      * BaseQuery that is going to be executed
+     *
      * @var BaseQuery
      */
     protected $query;
     /**
      * Terms that are going to be boosted
+     *
      * @var array
      */
     protected $boostTerms = [];
     /**
      * Query set that has been executed
+     *
      * @var array
      */
     protected $queryArray = [];

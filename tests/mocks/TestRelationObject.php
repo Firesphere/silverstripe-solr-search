@@ -9,11 +9,11 @@ use SilverStripe\ORM\DataObject;
 class TestRelationObject extends DataObject implements TestOnly
 {
     private static $db = [
-        'Title' => 'Varchar(255)'
+        'Title' => 'Varchar(255)',
     ];
 
     private static $has_one = [
-        'TestObject' => TestObject::class
+        'TestObject' => TestObject::class,
     ];
 
     public function canView($member = null)

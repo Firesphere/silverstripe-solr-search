@@ -17,7 +17,7 @@ class TestObject extends DataObject implements TestOnly
 
     private static $has_many = [
         'TestPages'    => TestPage::class,
-        'TestRelation' => TestRelationObject::class
+        'TestRelation' => TestRelationObject::class,
     ];
 
     public function canView($member = null)

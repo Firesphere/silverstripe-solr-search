@@ -34,31 +34,37 @@ class SolrIndexTask extends BuildTask
     use LoggerTrait;
     /**
      * URLSegment of this task
+     *
      * @var string
      */
     private static $segment = 'SolrIndexTask';
     /**
      * Store the current states for all instances of SiteState
+     *
      * @var array
      */
     public $currentStates;
     /**
      * My name
+     *
      * @var string
      */
     protected $title = 'Solr Index update';
     /**
      * What do I do?
+     *
      * @var string
      */
     protected $description = 'Add or update documents to an existing Solr core.';
     /**
      * Debug mode enabled, default false
+     *
      * @var bool
      */
     protected $debug = false;
     /**
      * Singleton of {@link SolrCoreService}
+     *
      * @var SolrCoreService
      */
     protected $service;

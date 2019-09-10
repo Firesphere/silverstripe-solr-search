@@ -17,7 +17,6 @@ use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ValidationException;
 
 /**

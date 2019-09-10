@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\States;
 
-use Firesphere\SolrSearch\Compat\FluentExtension;
 use Firesphere\SolrSearch\Helpers\FieldResolver;
 use ReflectionClass;
 use ReflectionException;

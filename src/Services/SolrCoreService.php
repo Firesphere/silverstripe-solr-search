@@ -17,6 +17,7 @@ use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -37,6 +38,8 @@ use Solarium\QueryType\Update\Result;
  */
 class SolrCoreService
 {
+    use Injectable;
+    use Configurable;
     /**
      * Unique ID in Solr
      */
@@ -66,9 +69,6 @@ class SolrCoreService
      */
     const CREATE_TYPE = 'create';
 
-
-    use Configurable;
-
     /**
      * @var Client The current client
      */
@@ -85,14 +85,12 @@ class SolrCoreService
      * @var Query A core admin object
      */
     protected $admin;
-
     /**
      * Add debugging information
      *
      * @var bool
      */
     protected $inDebugMode = false;
-
 
     /**
      * SolrCoreService constructor.
@@ -407,6 +405,58 @@ class SolrCoreService
         $this->inDebugMode = $inDebugMode;
 
         return $this;
+    }
+
+    /**
+     * Is the given class a valid class to index
+     * Does not discriminate against the indexes. All indexes are worth the same
+     *
+     * @param string $class
+     * @return bool
+     * @throws ReflectionException
+     */
+    public function isValidClass($class): bool
+    {
+        $classes = $this->getValidClasses();
+
+        return in_array($class, $classes, true);
+    }
+
+    /**
+     * Get all classes from all indexes and return them.
+     * Used to get all classes that are to be indexed on change
+     * Note, only base classes are in this object. A publish recursive is required
+     * when any change from a relation is published.
+     *
+     * @return array
+     * @throws ReflectionException
+     */
+    public function getValidClasses()
+    {
+        $indexes = $this->getValidIndexes();
+        $classes = [];
+        foreach ($indexes as $index) {
+            $classes = $this->getClassesInHierarchy($index, $classes);
+        }
+
+        return array_unique($classes);
+    }
+
+    /**
+     * Get the classes in hierarchy to see if it's valid
+     *
+     * @param $index
+     * @param array $classes
+     * @return array
+     * @throws ReflectionException
+     */
+    protected function getClassesInHierarchy($index, array $classes): array
+    {
+        $indexClasses = singleton($index)->getClasses();
+        foreach ($indexClasses as $class) {
+            $classes = array_merge($classes, FieldResolver::getHierarchy($class, true));
+        }
+        return $classes;
     }
 
     /**
