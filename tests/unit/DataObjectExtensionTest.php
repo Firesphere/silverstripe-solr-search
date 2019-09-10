@@ -12,7 +12,6 @@ use Page;
 use Psr\Log\NullLogger;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\NullHTTPRequest;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -77,7 +76,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension->setOwner($page);
         $service = new SolrCoreService();
         $service->setInDebugMode(false);
-        $service->updateItems(ArrayList::create([$page]), SolrCoreService::DELETE_TYPE);
+        $service->updateItems(ArrayList::create([$page]), SolrCoreService::CREATE_TYPE);
 
         $extension->onAfterDelete();
         /** @var DirtyClass $dirty */
