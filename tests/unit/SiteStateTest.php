@@ -59,6 +59,9 @@ class SiteStateTest extends SapphireTest
         SiteState::withState('Sheep');
         $states = SiteState::currentStates();
         $this->assertEquals('Sheep', $states[MockStateTwo::class]);
+        SiteState::withState('default');
+        $states = SiteState::currentStates();
+        $this->assertEquals('Cow', $states[MockStateTwo::class]);
     }
 
     public function testIsApplicable()
