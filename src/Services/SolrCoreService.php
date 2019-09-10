@@ -278,59 +278,6 @@ class SolrCoreService
     }
 
     /**
-     * Is the given class a valid class to index
-     * Does not discriminate against the indexes. All indexes are worth the same
-     *
-     * @param string $class
-     * @return bool
-     * @throws ReflectionException
-     */
-    public function isValidClass($class): bool
-    {
-        $classes = $this->getValidClasses();
-
-        return in_array($class, $classes, true);
-    }
-
-    /**
-     * Get all classes from all indexes and return them.
-     * Used to get all classes that are to be indexed on change
-     * Note, only base classes are in this object. A publish recursive is required
-     * when any change from a relation is published.
-     *
-     * @return array
-     * @throws ReflectionException
-     */
-    public function getValidClasses()
-    {
-        $indexes = $this->getValidIndexes();
-        $classes = [];
-        foreach ($indexes as $index) {
-            $classes = $this->getClassesInHierarchy($index, $classes);
-        }
-
-        return array_unique($classes);
-    }
-
-    /**
-     * Get the classes in hierarchy to see if it's valid
-     *
-     * @param $index
-     * @param array $classes
-     * @return array
-     * @throws ReflectionException
-     */
-    protected function getClassesInHierarchy($index, array $classes): array
-    {
-        $indexClasses = singleton($index)->getClasses();
-        foreach ($indexClasses as $class) {
-            $classes = array_merge($classes, FieldResolver::getHierarchy($class, true));
-        }
-
-        return $classes;
-    }
-
-    /**
      * Check the Solr version to use
      *
      * @param HandlerStack|null $handler Used for testing the solr version

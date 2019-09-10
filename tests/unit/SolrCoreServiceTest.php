@@ -21,7 +21,13 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
+use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
+use Solarium\QueryType\Server\CoreAdmin\Query\Query;
+use Firesphere\SolrSearch\Tests\TestPage;
+use SilverStripe\ErrorPage\ErrorPage;
+use SilverStripe\CMS\Model\RedirectorPage;
+use SilverStripe\CMS\Model\VirtualPage;
 
 class SolrCoreServiceTest extends SapphireTest
 {
@@ -145,7 +151,25 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertFalse($this->service->isValidClass(ModelAdmin::class));
         $this->assertTrue($this->service->isValidClass(SiteTree::class));
         $this->assertTrue($this->service->isValidClass(Page::class));
-        Debug::dump($this->service->getValidClasses());
+        $expected = [
+            SiteTree::class,
+            'Page',
+            TestPage::class,
+            ErrorPage::class,
+            RedirectorPage::class,
+            VirtualPage::class,
+        ];
+        $this->assertEquals($expected, $this->service->getValidClasses());
+    }
+
+    public function testGetSetAdmin()
+    {
+        $config = SolrCoreService::config()->get('config');
+        $admin = new \Solarium\Client($config);
+        $admin = $admin->createCoreAdmin();
+
+        $this->service->setAdmin($admin);
+        $this->assertInstanceOf(Query::class, $this->service->getAdmin());
     }
 
     protected function setUp()
