@@ -18,6 +18,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use Solarium\Core\Client\Client;
@@ -144,6 +145,7 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertFalse($this->service->isValidClass(ModelAdmin::class));
         $this->assertTrue($this->service->isValidClass(SiteTree::class));
         $this->assertTrue($this->service->isValidClass(Page::class));
+        Debug::dump($this->service->getValidClasses());
     }
 
     protected function setUp()
