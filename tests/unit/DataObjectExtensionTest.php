@@ -64,7 +64,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension->setOwner($object);
 
         $this->assertNotContains('1-null', $extension->getViewStatus());
-        $this->assertContains(['1-' . $member->ID], $extension->getViewStatus());
+        $this->assertContains('1-' . $member->ID, $extension->getViewStatus());
         $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
         $this->assertEquals($extension->getViewStatus(), DataObjectExtension::$canViewClasses[CanViewObject::class]);
     }
