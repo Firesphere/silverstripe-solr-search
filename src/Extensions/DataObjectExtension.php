@@ -195,6 +195,7 @@ class DataObjectExtension extends DataExtension
      *
      * @throws ValidationException
      * @throws GuzzleException
+     * @throws \ReflectionException
      */
     public function onAfterPublish()
     {

@@ -55,7 +55,15 @@ class DataObjectExtensionTest extends SapphireTest
 
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         // TestObject has a ShowInSearch :)
-        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertContains($item->ClassName, DataObjectExtension::$canViewClasses);
+
+        $object = new CanViewObject();
+        $extension = new DataObjectExtension();
+        $extension->setOwner($object);
+
+        $this->assertNotEquals(['1-null'], $extension->getViewStatus());
+        $this->assertContains(['1-' . $member->ID], $extension->getViewStatus());
+        $this->assertContains($item->ClassName, DataObjectExtension::$canViewClasses);
     }
 
     public function testOnAfterDelete()
@@ -66,7 +74,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension->setOwner($page);
         $service = new SolrCoreService();
         $service->setInDebugMode(false);
-        $service->updateItems(ArrayList::create([$page]), SolrCoreService::CREATE_TYPE);
+        $service->updateItems(ArrayList::create([$page]), SolrCoreService::DELETE_TYPE);
 
         $extension->onAfterDelete();
         /** @var DirtyClass $dirty */

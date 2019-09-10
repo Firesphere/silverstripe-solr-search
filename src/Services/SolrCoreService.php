@@ -39,6 +39,7 @@ use Solarium\QueryType\Update\Result;
 class SolrCoreService
 {
     use Injectable;
+    use Configurable;
     /**
      * Unique ID in Solr
      */
@@ -68,9 +69,6 @@ class SolrCoreService
      */
     const CREATE_TYPE = 'create';
 
-
-    use Configurable;
-
     /**
      * @var Client The current client
      */
@@ -87,14 +85,12 @@ class SolrCoreService
      * @var Query A core admin object
      */
     protected $admin;
-
     /**
      * Add debugging information
      *
      * @var bool
      */
     protected $inDebugMode = false;
-
 
     /**
      * SolrCoreService constructor.
