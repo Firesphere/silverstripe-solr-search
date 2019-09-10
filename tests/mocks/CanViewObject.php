@@ -17,6 +17,10 @@ class CanViewObject extends DataObject
      */
     public function canView($member = null, $context = [])
     {
+        if (!$member) {
+            return false;
+        }
+
         return $member->inGroup('administrators');
     }
 }
