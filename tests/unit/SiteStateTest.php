@@ -38,7 +38,9 @@ class SiteStateTest extends SapphireTest
     {
         $state = new MockState();
         $this->assertFalse($state->isEnabled());
+        $this->assertFalse($state->appliesToEnvironment());
         $state->setEnabled(true);
+        $this->assertTrue($state->appliesToEnvironment());
         $this->assertTrue($state->isEnabled());
         $expected = [
             MockStateTwo::class => new MockStateTwo(),
