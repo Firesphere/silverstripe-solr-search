@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use Firesphere\SolrSearch\Helpers\FieldResolver;
 use ReflectionException;
 use Solarium\Client;
@@ -33,6 +32,12 @@ trait CoreServiceTrait
      */
     protected $admin;
 
+    /**
+     * Ensure the getValidIndexes() method exists on all classes using this trait.
+     *
+     * @return mixed
+     */
+    abstract public function getValidIndexes();
     /**
      * Check if we are in debug mode
      *

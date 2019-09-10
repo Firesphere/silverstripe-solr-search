@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-
 use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
