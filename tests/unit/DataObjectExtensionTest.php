@@ -12,6 +12,7 @@ use Page;
 use Psr\Log\NullLogger;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\NullHTTPRequest;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -62,7 +63,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension = new DataObjectExtension();
         $extension->setOwner($object);
 
-        $this->assertNotEquals(['1-null'], $extension->getViewStatus());
+        $this->assertNotContains('1-null', $extension->getViewStatus());
         $this->assertContains(['1-' . $member->ID], $extension->getViewStatus());
         $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
         $this->assertEquals($extension->getViewStatus(), DataObjectExtension::$canViewClasses[CanViewObject::class]);
