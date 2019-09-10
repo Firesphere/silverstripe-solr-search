@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  solr8:
     environment:
       CC_TEST_REPORTER_ID: 586f7041e9f71c44946cdfe8bce27d66c6271d173ec291c2a9aa7e1b56667873
     docker:
@@ -257,8 +257,8 @@ jobs:
             case $CIRCLE_BRANCH in "master") git push ;; esac
 workflows:
   version: 2
-  build_and_docs:
+  dobuild:
     jobs:
-      - build
+      - solr8
       - solr4
       - docs
