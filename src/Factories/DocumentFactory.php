@@ -12,7 +12,6 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\DocumentFactoryTrait;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
-use LogicException;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;

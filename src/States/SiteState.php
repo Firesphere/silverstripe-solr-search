@@ -32,13 +32,15 @@ abstract class SiteState
 {
     use Configurable;
     use Injectable;
+
+    const DEFAULT_STATE = 'default';
     /**
      * States that can be applied
      *
      * @var array
      */
     public static $states = [
-        'default',
+        self::DEFAULT_STATE,
     ];
     /**
      * Variants of SiteState that can be activated
@@ -163,18 +165,18 @@ abstract class SiteState
      * Is this extension applied and instantiable
      *
      * @static
-     * @param $variantclass
+     * @param $variantClass
      * @return bool
      * @throws ReflectionException
      */
-    public static function isApplicable($variantclass): bool
+    public static function isApplicable($variantClass): bool
     {
-        $ref = new ReflectionClass($variantclass);
+        $ref = new ReflectionClass($variantClass);
         if ($ref->isInstantiable()) {
             /** @var SiteState $variant */
-            $variant = singleton($variantclass);
+            $variant = singleton($variantClass);
             if ($variant->appliesToEnvironment() && $variant->isEnabled()) {
-                self::$variants[$variantclass] = $variant;
+                self::$variants[$variantClass] = $variant;
 
                 return true;
             }
@@ -226,7 +228,7 @@ abstract class SiteState
          * @var SiteStateInterface $instance
          */
         foreach (self::variants() as $variant => $instance) {
-            if ($state === 'default') {
+            if ($state === self::DEFAULT_STATE) {
                 $instance->setDefaultState();
             } elseif ($instance->stateIsApplicable($state)) {
                 $instance->activateState($state);

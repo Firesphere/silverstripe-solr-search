@@ -274,10 +274,7 @@ class SolrIndexTask extends BuildTask
             $this->stateReindex($group, $class, $batchLength, $index);
         }
 
-        // Reset the variants back to it's original state for the next round
-        foreach ($this->currentStates as $variant => $value) {
-            singleton($variant)->activateState($value);
-        }
+        SiteState::withState(SiteState::DEFAULT_STATE);
     }
 
     /**
