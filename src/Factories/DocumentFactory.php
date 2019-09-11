@@ -130,11 +130,8 @@ class DocumentFactory
         foreach ($fields as $field) {
             $fieldData = $this->getFieldResolver()->resolveField($field);
             foreach ($fieldData as $dataField => $options) {
-                // Only one field per class, so let's take the fieldData. This will override previous additions
+                $options['boost'] = $boostFields[$field] ?? null;
                 $this->addField($doc, $item, $options);
-                if (array_key_exists($field, $boostFields)) {
-                    $doc->setFieldBoost($dataField, $boostFields[$field]);
-                }
             }
         }
     }
@@ -144,33 +141,31 @@ class DocumentFactory
      *
      * @param Document $doc
      * @param DataObject $object
-     * @param          $field
-     *
-     * @throws LogicException
+     * @param array $options
      */
-    protected function addField($doc, $object, $field): void
+    protected function addField($doc, $object, $options): void
     {
-        if (!$this->classIs($object, $field['origin'])) {
+        if (!$this->classIs($object, $options['origin'])) {
             return;
         }
 
-        $this->extend('onBeforeAddField', $field);
+        $this->extend('onBeforeAddField', $options);
 
         try {
-            $valuesForField = [DataResolver::identify($object, $field['field'])];
+            $valuesForField = [DataResolver::identify($object, $options['field'])];
         } catch (Exception $e) {
             $valuesForField = [];
         }
 
         $typeMap = Statics::getTypeMap();
-        $type = $typeMap[$field['type']] ?? $typeMap['*'];
+        $type = $typeMap[$options['type']] ?? $typeMap['*'];
 
         foreach ($valuesForField as $value) {
             if ($value === null) {
                 continue;
             }
-            $this->extend('onBeforeAddDoc', $field, $value);
-            $this->addToDoc($doc, $field, $type, $value);
+            $this->extend('onBeforeAddDoc', $options, $value);
+            $this->addToDoc($doc, $options, $type, $value);
         }
     }
 
@@ -211,20 +206,20 @@ class DocumentFactory
      * Push field to a document
      *
      * @param Document $doc
-     * @param array $field
+     * @param array $options
      * @param string $type
      * @param DBField|string $value
      */
-    protected function addToDoc($doc, $field, $type, $value): void
+    protected function addToDoc($doc, $options, $type, $value): void
     {
         /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
         if ($type === 'tdate' || $value instanceof DBDate) {
             $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
         }
 
-        $name = getShortFieldName($field['name']);
+        $name = getShortFieldName($options['name']);
 
-        $doc->addField($name, $value, null, Document::MODIFIER_SET);
+        $doc->addField($name, $value, $options['boost'], Document::MODIFIER_SET);
     }
 
     /**
