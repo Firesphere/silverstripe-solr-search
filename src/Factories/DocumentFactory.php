@@ -130,7 +130,7 @@ class DocumentFactory
         foreach ($fields as $field) {
             $fieldData = $this->getFieldResolver()->resolveField($field);
             foreach ($fieldData as $dataField => $options) {
-                $boost = $field[$boostFields] ?? null;
+                $boost = $boostFields[$field] ?? null;
                 $this->addField($doc, $item, $options, $boost);
             }
         }
