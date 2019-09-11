@@ -37,18 +37,24 @@ class SiteStateTest extends SapphireTest
     public function testEnabledDisabled()
     {
         $state = new MockState();
-        $this->assertFalse($state->isEnabled());
-        $this->assertFalse($state->appliesToEnvironment());
+        $enabled = $state->isEnabled();
+        $applies = $state->appliesToEnvironment();
+        $this->assertFalse($enabled);
+        $this->assertFalse($applies);
         $state->setEnabled(true);
-        $this->assertTrue($state->appliesToEnvironment());
-        $this->assertTrue($state->isEnabled());
+        $enabled = $state->isEnabled();
+        $applies = $state->appliesToEnvironment();
+        $this->assertTrue($enabled);
+        $this->assertTrue($applies);
         $expected = [
             MockStateTwo::class => new MockStateTwo(),
         ];
 
         $this->assertEquals($expected, SiteState::variants(true));
 
-        $this->assertEquals($state->isEnabled(), $state->appliesToEnvironment());
+        $enabled = $state->isEnabled();
+        $applies = $state->appliesToEnvironment();
+        $this->assertEquals($enabled, $state);
     }
 
     public function testState()
