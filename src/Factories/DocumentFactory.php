@@ -141,32 +141,32 @@ class DocumentFactory
      *
      * @param Document $doc
      * @param DataObject $object
-     * @param          $field
+     * @param array $options
      * @param null|int $boost
      */
-    protected function addField($doc, $object, $field, $boost): void
+    protected function addField($doc, $object, $options, $boost): void
     {
-        if (!$this->classIs($object, $field['origin'])) {
+        if (!$this->classIs($object, $options['origin'])) {
             return;
         }
 
-        $this->extend('onBeforeAddField', $field);
+        $this->extend('onBeforeAddField', $options);
 
         try {
-            $valuesForField = [DataResolver::identify($object, $field['field'])];
+            $valuesForField = [DataResolver::identify($object, $options['field'])];
         } catch (Exception $e) {
             $valuesForField = [];
         }
 
         $typeMap = Statics::getTypeMap();
-        $type = $typeMap[$field['type']] ?? $typeMap['*'];
+        $type = $typeMap[$options['type']] ?? $typeMap['*'];
 
         foreach ($valuesForField as $value) {
             if ($value === null) {
                 continue;
             }
-            $this->extend('onBeforeAddDoc', $field, $value);
-            $this->addToDoc($doc, $field, $type, $value, $boost);
+            $this->extend('onBeforeAddDoc', $options, $value);
+            $this->addToDoc($doc, $options, $type, $value, $boost);
         }
     }
 

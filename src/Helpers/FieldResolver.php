@@ -72,35 +72,20 @@ class FieldResolver
             $field = array_pop($lookups);
 
             foreach ($lookups as $lookup) {
-                $buildSources = $this->getNext($buildSources, $lookup);
+                $next = [];
+
+                // @todo remove repetition
+                foreach ($buildSources as $source => $baseOptions) {
+                    $next = $this->resolveRelation($source, $lookup, $next);
+                }
+
+                $buildSources = $next;
             }
         }
 
         $found = $this->getFieldOptions($field, $buildSources, $fullfield, $found);
 
         return $found;
-    }
-
-    /**
-     * Get the next object to iterate over and find the relation if needed
-     *
-     * @param array $buildSources
-     * @param $lookup
-     * @return array
-     * @throws Exception
-     */
-    protected function getNext(array $buildSources, $lookup): array
-    {
-        $next = [];
-
-        // @todo remove repetition
-        foreach ($buildSources as $source => $baseOptions) {
-            $next = $this->resolveRelation($source, $lookup, $next);
-        }
-
-        $buildSources = $next;
-
-        return $buildSources;
     }
 
     /**
