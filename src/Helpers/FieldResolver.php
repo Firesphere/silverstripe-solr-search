@@ -66,14 +66,7 @@ class FieldResolver
             $field = array_pop($lookups);
 
             foreach ($lookups as $lookup) {
-                $next = [];
-
-                // @todo remove repetition
-                foreach ($buildSources as $source => $baseOptions) {
-                    $next = $this->resolveRelation($source, $lookup, $next);
-                }
-
-                $buildSources = $next;
+                $buildSources = $this->getNext($buildSources, $lookup);
             }
         }
 
@@ -359,6 +352,28 @@ class FieldResolver
         foreach ($sources as $source) {
             $buildSources[$source]['base'] = $schemaHelper->baseDataClass($source);
         }
+
+        return $buildSources;
+    }
+
+    /**
+     * Get the next lookup item from the buildSources
+     *
+     * @param array $buildSources
+     * @param $lookup
+     * @return array
+     * @throws Exception
+     */
+    protected function getNext(array $buildSources, $lookup): array
+    {
+        $next = [];
+
+        // @todo remove repetition
+        foreach ($buildSources as $source => $baseOptions) {
+            $next = $this->resolveRelation($source, $lookup, $next);
+        }
+
+        $buildSources = $next;
 
         return $buildSources;
     }
