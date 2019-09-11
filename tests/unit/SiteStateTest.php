@@ -54,7 +54,7 @@ class SiteStateTest extends SapphireTest
 
         $enabled = $state->isEnabled();
         $applies = $state->appliesToEnvironment();
-        $this->assertEquals($enabled, $state);
+        $this->assertEquals($enabled, $applies);
     }
 
     public function testState()
