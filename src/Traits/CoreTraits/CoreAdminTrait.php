@@ -13,7 +13,6 @@ use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 
 /**
  * Trait CoreAdminTrait is the trait that helps with Admin operations.
-
  * Core operations, such as reload, load, create, unload etc. are supplied by this trait.
  *
  * @package Firesphere\SolrSearch\Traits

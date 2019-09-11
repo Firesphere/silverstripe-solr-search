@@ -130,11 +130,8 @@ class DocumentFactory
         foreach ($fields as $field) {
             $fieldData = $this->getFieldResolver()->resolveField($field);
             foreach ($fieldData as $dataField => $options) {
-                // Only one field per class, so let's take the fieldData. This will override previous additions
-                $this->addField($doc, $item, $options);
-                if (array_key_exists($field, $boostFields)) {
-                    $doc->setFieldBoost($dataField, $boostFields[$field]);
-                }
+                $boost = $field[$boostFields] ?? null;
+                $this->addField($doc, $item, $options, $boost);
             }
         }
     }
@@ -145,10 +142,9 @@ class DocumentFactory
      * @param Document $doc
      * @param DataObject $object
      * @param          $field
-     *
-     * @throws LogicException
+     * @param null|int $boost
      */
-    protected function addField($doc, $object, $field): void
+    protected function addField($doc, $object, $field, $boost): void
     {
         if (!$this->classIs($object, $field['origin'])) {
             return;
@@ -170,7 +166,7 @@ class DocumentFactory
                 continue;
             }
             $this->extend('onBeforeAddDoc', $field, $value);
-            $this->addToDoc($doc, $field, $type, $value);
+            $this->addToDoc($doc, $field, $type, $value, $boost);
         }
     }
 
@@ -214,8 +210,9 @@ class DocumentFactory
      * @param array $field
      * @param string $type
      * @param DBField|string $value
+     * @param null|int $boost
      */
-    protected function addToDoc($doc, $field, $type, $value): void
+    protected function addToDoc($doc, $field, $type, $value, $boost): void
     {
         /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
         if ($type === 'tdate' || $value instanceof DBDate) {
@@ -224,7 +221,7 @@ class DocumentFactory
 
         $name = getShortFieldName($field['name']);
 
-        $doc->addField($name, $value, null, Document::MODIFIER_SET);
+        $doc->addField($name, $value, $boost, Document::MODIFIER_SET);
     }
 
     /**

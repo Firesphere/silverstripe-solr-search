@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
@@ -69,7 +70,7 @@ class DataObjectExtension extends DataExtension
      *
      * @throws ValidationException
      * @throws GuzzleException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function onAfterWrite()
     {
@@ -91,7 +92,7 @@ class DataObjectExtension extends DataExtension
      * @param DataObject $owner
      * @throws ValidationException
      * @throws GuzzleException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function pushToSolr(DataObject $owner): void
     {
@@ -195,7 +196,7 @@ class DataObjectExtension extends DataExtension
      *
      * @throws ValidationException
      * @throws GuzzleException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function onAfterPublish()
     {

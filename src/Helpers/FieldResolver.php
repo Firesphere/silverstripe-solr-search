@@ -82,6 +82,28 @@ class FieldResolver
     }
 
     /**
+     * Get the next object to iterate over and find the relation if needed
+     *
+     * @param array $buildSources
+     * @param $lookup
+     * @return array
+     * @throws Exception
+     */
+    protected function getNext(array $buildSources, $lookup): array
+    {
+        $next = [];
+
+        // @todo remove repetition
+        foreach ($buildSources as $source => $baseOptions) {
+            $next = $this->resolveRelation($source, $lookup, $next);
+        }
+
+        $buildSources = $next;
+
+        return $buildSources;
+    }
+
+    /**
      * Resolve relations if possible
      *
      * @param string $source
@@ -338,27 +360,5 @@ class FieldResolver
         ];
 
         return $found;
-    }
-
-    /**
-     * Get the next object to iterate over and find the relation if needed
-     *
-     * @param array $buildSources
-     * @param $lookup
-     * @return array
-     * @throws Exception
-     */
-    protected function getNext(array $buildSources, $lookup): array
-    {
-        $next = [];
-
-        // @todo remove repetition
-        foreach ($buildSources as $source => $baseOptions) {
-            $next = $this->resolveRelation($source, $lookup, $next);
-        }
-
-        $buildSources = $next;
-
-        return $buildSources;
     }
 }

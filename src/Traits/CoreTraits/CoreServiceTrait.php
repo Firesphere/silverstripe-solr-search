@@ -33,12 +33,6 @@ trait CoreServiceTrait
     protected $admin;
 
     /**
-     * Ensure the getValidIndexes() method exists on all classes using this trait.
-     *
-     * @return mixed
-     */
-    abstract public function getValidIndexes();
-    /**
      * Check if we are in debug mode
      *
      * @return bool
@@ -97,6 +91,13 @@ trait CoreServiceTrait
     }
 
     /**
+     * Ensure the getValidIndexes() method exists on all classes using this trait.
+     *
+     * @return mixed
+     */
+    abstract public function getValidIndexes();
+
+    /**
      * Get the classes in hierarchy to see if it's valid
      *
      * @param $index
@@ -110,6 +111,7 @@ trait CoreServiceTrait
         foreach ($indexClasses as $class) {
             $classes = array_merge($classes, FieldResolver::getHierarchy($class, true));
         }
+
         return $classes;
     }
 
