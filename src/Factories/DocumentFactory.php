@@ -130,8 +130,8 @@ class DocumentFactory
         foreach ($fields as $field) {
             $fieldData = $this->getFieldResolver()->resolveField($field);
             foreach ($fieldData as $dataField => $options) {
-                $boost = $boostFields[$field] ?? null;
-                $this->addField($doc, $item, $options, $boost);
+                $options['boost'] = $boostFields[$field] ?? null;
+                $this->addField($doc, $item, $options);
             }
         }
     }
@@ -142,9 +142,8 @@ class DocumentFactory
      * @param Document $doc
      * @param DataObject $object
      * @param array $options
-     * @param null|int $boost
      */
-    protected function addField($doc, $object, $options, $boost): void
+    protected function addField($doc, $object, $options): void
     {
         if (!$this->classIs($object, $options['origin'])) {
             return;
@@ -166,7 +165,7 @@ class DocumentFactory
                 continue;
             }
             $this->extend('onBeforeAddDoc', $options, $value);
-            $this->addToDoc($doc, $options, $type, $value, $boost);
+            $this->addToDoc($doc, $options, $type, $value);
         }
     }
 
@@ -207,21 +206,20 @@ class DocumentFactory
      * Push field to a document
      *
      * @param Document $doc
-     * @param array $field
+     * @param array $options
      * @param string $type
      * @param DBField|string $value
-     * @param null|int $boost
      */
-    protected function addToDoc($doc, $field, $type, $value, $boost): void
+    protected function addToDoc($doc, $options, $type, $value): void
     {
         /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
         if ($type === 'tdate' || $value instanceof DBDate) {
             $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
         }
 
-        $name = getShortFieldName($field['name']);
+        $name = getShortFieldName($options['name']);
 
-        $doc->addField($name, $value, $boost, Document::MODIFIER_SET);
+        $doc->addField($name, $value, $options['boost'], Document::MODIFIER_SET);
     }
 
     /**
