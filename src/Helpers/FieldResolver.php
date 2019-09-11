@@ -72,14 +72,7 @@ class FieldResolver
             $field = array_pop($lookups);
 
             foreach ($lookups as $lookup) {
-                $next = [];
-
-                // @todo remove repetition
-                foreach ($buildSources as $source => $baseOptions) {
-                    $next = $this->resolveRelation($source, $lookup, $next);
-                }
-
-                $buildSources = $next;
+                $buildSources = $this->getNext($buildSources, $lookup);
             }
         }
 
@@ -264,9 +257,6 @@ class FieldResolver
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
-            if (!empty($this->found[$class . '_' . $fullfield])) {
-                return $this->found[$class . '_' . $fullfield];
-            }
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
 
@@ -285,9 +275,7 @@ class FieldResolver
                     $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
                 }
             }
-            $this->found[$class . '_' . $fullfield] = $found;
         }
-
 
         return $found;
     }
@@ -300,7 +288,7 @@ class FieldResolver
      * @param string $dataclass
      * @return string
      */
-    protected function getType($fields, $field, $dataclass)
+    protected function getType($fields, $field, $dataclass): string
     {
         if (!empty($fields[$field])) {
             return $fields[$field];
@@ -328,8 +316,14 @@ class FieldResolver
      * @param array $found
      * @return array
      */
-    private function getFoundOriginData($field, $fullField, $fieldOptions, $dataclass, $type, $found): array
-    {
+    private function getFoundOriginData(
+        $field,
+        $fullField,
+        $fieldOptions,
+        $dataclass,
+        $type,
+        $found
+    ): array {
         // Get the origin
         $origin = $fieldOptions['origin'] ?? $dataclass;
 
@@ -344,5 +338,27 @@ class FieldResolver
         ];
 
         return $found;
+    }
+
+    /**
+     * Get the next object to iterate over and find the relation if needed
+     *
+     * @param array $buildSources
+     * @param $lookup
+     * @return array
+     * @throws Exception
+     */
+    protected function getNext(array $buildSources, $lookup): array
+    {
+        $next = [];
+
+        // @todo remove repetition
+        foreach ($buildSources as $source => $baseOptions) {
+            $next = $this->resolveRelation($source, $lookup, $next);
+        }
+
+        $buildSources = $next;
+
+        return $buildSources;
     }
 }

@@ -23,6 +23,8 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Guzzle;
+use Solarium\Core\Client\Client as CoreClient;
+use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
 
 /**
@@ -212,11 +214,11 @@ class SolrCoreService
      * @param SS_List $items
      * @param string $type
      * @param BaseIndex $index
-     * @param \Solarium\Core\Client\Client $client
+     * @param CoreClient $client
      * @return mixed
      * @throws Exception
      */
-    protected function getUpdate($items, $type, BaseIndex $index, \Solarium\Core\Client\Client $client)
+    protected function getUpdate($items, $type, BaseIndex $index, CoreClient $client)
     {
         // get an update query instance
         $update = $client->createUpdate();
@@ -248,7 +250,7 @@ class SolrCoreService
      *
      * @param BaseIndex $index
      * @param SS_List $items
-     * @param \Solarium\QueryType\Update\Query\Query $update
+     * @param Query $update
      * @throws Exception
      */
     public function updateIndex($index, $items, $update): void
