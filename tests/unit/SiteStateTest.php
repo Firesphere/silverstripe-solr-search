@@ -37,16 +37,24 @@ class SiteStateTest extends SapphireTest
     public function testEnabledDisabled()
     {
         $state = new MockState();
-        $this->assertFalse($state->isEnabled());
+        $enabled = $state->isEnabled();
+        $applies = $state->appliesToEnvironment();
+        $this->assertFalse($enabled);
+        $this->assertFalse($applies);
         $state->setEnabled(true);
-        $this->assertTrue($state->isEnabled());
+        $enabled = $state->isEnabled();
+        $applies = $state->appliesToEnvironment();
+        $this->assertTrue($enabled);
+        $this->assertTrue($applies);
         $expected = [
             MockStateTwo::class => new MockStateTwo(),
         ];
 
         $this->assertEquals($expected, SiteState::variants(true));
 
-        $this->assertEquals($state->isEnabled(), $state->appliesToEnvironment());
+        $enabled = $state->isEnabled();
+        $applies = $state->appliesToEnvironment();
+        $this->assertEquals($enabled, $applies);
     }
 
     public function testState()
@@ -59,6 +67,9 @@ class SiteStateTest extends SapphireTest
         SiteState::withState('Sheep');
         $states = SiteState::currentStates();
         $this->assertEquals('Sheep', $states[MockStateTwo::class]);
+        SiteState::withState('default');
+        $states = SiteState::currentStates();
+        $this->assertEquals('Cow', $states[MockStateTwo::class]);
     }
 
     public function testIsApplicable()

@@ -456,6 +456,7 @@ class SolrCoreService
         foreach ($indexClasses as $class) {
             $classes = array_merge($classes, FieldResolver::getHierarchy($class, true));
         }
+
         return $classes;
     }
 
