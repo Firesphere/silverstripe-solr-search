@@ -74,12 +74,8 @@ class FieldResolverTest extends SapphireTest
         ];
 
         $result = $factory->resolveField('Content');
-        Debug::dump($result);
+
         $this->assertEquals($expected, $result);
-        $found = $factory->getFound();
-
-        $this->assertEquals($expected, $found[SiteTree::class . '_Content']);
-
         $index = new TestIndexTwo();
 
         $factory->setIndex($index);
