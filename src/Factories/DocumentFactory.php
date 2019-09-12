@@ -150,11 +150,7 @@ class DocumentFactory
 
         $this->extend('onBeforeAddField', $options);
 
-        try {
-            $valuesForField = [DataResolver::identify($object, $options['field'])];
-        } catch (Exception $e) {
-            $valuesForField = [];
-        }
+        $valuesForField = $this->getValuesForField($object, $options);
 
         $typeMap = Statics::getTypeMap();
         $type = $typeMap[$options['type']] ?? $typeMap['*'];
@@ -242,5 +238,24 @@ class DocumentFactory
         $this->debug = $debug;
 
         return $this;
+    }
+
+    /**
+     * Use the DataResolver to find the value(s) for a field.
+     * Returns an array of values, and if it's multiple, it becomes a long array
+     *
+     * @param $object
+     * @param $options
+     * @return array
+     */
+    protected function getValuesForField($object, $options): array
+    {
+        try {
+            $valuesForField = [DataResolver::identify($object, $options['field'])];
+        } catch (Exception $e) {
+            $valuesForField = [];
+        }
+
+        return $valuesForField;
     }
 }
