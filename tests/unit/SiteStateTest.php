@@ -25,7 +25,8 @@ class SiteStateTest extends SapphireTest
 
     public function testVariants()
     {
-        $this->assertEquals([], SiteState::variants());
+        $expected = [MockStateTwo::class => new MockStateTwo()];
+        $this->assertEquals($expected, SiteState::variants());
     }
 
     public function testHasExtension()
