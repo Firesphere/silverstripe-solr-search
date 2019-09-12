@@ -66,7 +66,7 @@ class MockState extends SiteState implements TestOnly, SiteStateInterface
      * @param BaseQuery $query
      * @return mixed
      */
-    public function updateQuery($query)
+    public function updateQuery(&$query)
     {
         // TODO: Implement updateQuery() method.
     }
