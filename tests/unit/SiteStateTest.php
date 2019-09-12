@@ -23,8 +23,9 @@ class SiteStateTest extends SapphireTest
         SiteState::setStates($default);
         $this->assertEquals($default, SiteState::getStates());
 
-        // This will break, but that's okay, I just need to know the output
         $this->assertEquals([MockStateTwo::class => 'Cow'], SiteState::currentStates());
+
+        $this->assertEquals([], SiteState::getDefaultStates());
     }
 
     public function testVariants()
