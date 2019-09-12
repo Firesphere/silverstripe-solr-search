@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\States;
 
 use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Interfaces\SiteStateInterface;
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
@@ -32,13 +33,15 @@ abstract class SiteState
 {
     use Configurable;
     use Injectable;
+
+    const DEFAULT_STATE = 'default';
     /**
      * States that can be applied
      *
      * @var array
      */
     public static $states = [
-        'default',
+        self::DEFAULT_STATE,
     ];
     /**
      * Variants of SiteState that can be activated
@@ -47,11 +50,15 @@ abstract class SiteState
      */
     public static $variants = [];
     /**
+     * @var array Default states
+     */
+    protected static $defaultStates = [];
+    /**
      * @var bool Is this State enabled
      */
     public $enabled = true;
     /**
-     * @var string Current state
+     * @var string current state
      */
     protected $state;
 
@@ -129,12 +136,11 @@ abstract class SiteState
      */
     public static function currentStates(): array
     {
-        $state = [];
         foreach (self::variants() as $variant => $instance) {
-            $state[$variant] = $instance->currentState();
+            self::$defaultStates[$variant] = $instance->currentState();
         }
 
-        return $state;
+        return self::$defaultStates;
     }
 
     /**
@@ -148,7 +154,7 @@ abstract class SiteState
     public static function variants($force = false): array
     {
         // Build up and cache a list of all search variants (subclasses of SearchVariant)
-        if (!empty(self::$variants) || $force) {
+        if (empty(self::$variants) || $force) {
             $classes = ClassInfo::subclassesFor(static::class);
 
             foreach ($classes as $variantclass) {
@@ -163,18 +169,18 @@ abstract class SiteState
      * Is this extension applied and instantiable
      *
      * @static
-     * @param $variantclass
+     * @param $variantClass
      * @return bool
      * @throws ReflectionException
      */
-    public static function isApplicable($variantclass): bool
+    public static function isApplicable($variantClass): bool
     {
-        $ref = new ReflectionClass($variantclass);
+        $ref = new ReflectionClass($variantClass);
         if ($ref->isInstantiable()) {
             /** @var SiteState $variant */
-            $variant = singleton($variantclass);
+            $variant = singleton($variantClass);
             if ($variant->appliesToEnvironment() && $variant->isEnabled()) {
-                self::$variants[$variantclass] = $variant;
+                self::$variants[$variantClass] = $variant;
 
                 return true;
             }
@@ -226,11 +232,48 @@ abstract class SiteState
          * @var SiteStateInterface $instance
          */
         foreach (self::variants() as $variant => $instance) {
-            if ($state === 'default') {
-                $instance->setDefaultState();
+            if ($state === self::DEFAULT_STATE) {
+                $instance->setDefaultState(self::$defaultStates[$variant]);
             } elseif ($instance->stateIsApplicable($state)) {
                 $instance->activateState($state);
             }
         }
+    }
+
+    /**
+     * Alter the query for each instance
+     *
+     * @param BaseQuery $query
+     * @throws ReflectionException
+     */
+    public static function alterQuery(&$query): void
+    {
+        /**
+         * @var string $variant
+         * @var SiteStateInterface $instance
+         */
+        foreach (self::variants(true) as $variant => $instance) {
+            $instance->updateQuery($query);
+        }
+    }
+
+    /**
+     * Get the states set as default
+     *
+     * @return array
+     */
+    public static function getDefaultStates(): array
+    {
+        return self::$defaultStates;
+    }
+
+    /**
+     * Set the default states
+     *
+     * @param array $defaultStates
+     */
+    public static function setDefaultStates(array $defaultStates): void
+    {
+        self::$defaultStates = $defaultStates;
     }
 }

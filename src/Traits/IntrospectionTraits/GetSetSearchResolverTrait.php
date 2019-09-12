@@ -19,10 +19,6 @@ trait GetSetSearchResolverTrait
      * @var BaseIndex Index to use
      */
     protected $index;
-    /**
-     * @var array Found items
-     */
-    protected $found = [];
 
     /**
      * Get the current index
@@ -45,15 +41,5 @@ trait GetSetSearchResolverTrait
         $this->index = $index;
 
         return $this;
-    }
-
-    /**
-     * Get whatever is found
-     *
-     * @return array
-     */
-    public function getFound(): array
-    {
-        return $this->found;
     }
 }

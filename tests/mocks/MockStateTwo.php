@@ -4,6 +4,7 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Interfaces\SiteStateInterface;
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\States\SiteState;
 use SilverStripe\Dev\TestOnly;
 
@@ -41,10 +42,22 @@ class MockStateTwo extends SiteState implements TestOnly, SiteStateInterface
     /**
      * Reset the SiteState to it's default state
      *
+     * @param null $state
      * @return mixed
      */
-    public function setDefaultState()
+    public function setDefaultState($state = null)
     {
         $this->state = 'Cow';
+    }
+
+    /**
+     * Method to alter the query. Can be no-op.
+     *
+     * @param BaseQuery $query
+     * @return mixed
+     */
+    public function updateQuery(&$query)
+    {
+        // TODO: Implement updateQuery() method.
     }
 }

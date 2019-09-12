@@ -10,6 +10,7 @@ use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\VirtualPage;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ErrorPage\ErrorPage;
 
@@ -73,11 +74,8 @@ class FieldResolverTest extends SapphireTest
         ];
 
         $result = $factory->resolveField('Content');
+
         $this->assertEquals($expected, $result);
-        $found = $factory->getFound();
-
-        $this->assertEquals($expected, $found[SiteTree::class . '_Content']);
-
         $index = new TestIndexTwo();
 
         $factory->setIndex($index);

@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\States\SiteState;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Versioned\Versioned;
+use Firesphere\SolrSearch\Tests\MockStateTwo;
 
 class SiteStateTest extends SapphireTest
 {
@@ -21,11 +22,16 @@ class SiteStateTest extends SapphireTest
         $this->assertEquals(['default', 'test', 'state1', 'state2'], SiteState::getStates());
         SiteState::setStates($default);
         $this->assertEquals($default, SiteState::getStates());
+
+        $this->assertEquals([MockStateTwo::class => 'Cow'], SiteState::currentStates());
+
+        $this->assertEquals([MockStateTwo::class => 'Cow'], SiteState::getDefaultStates());
     }
 
     public function testVariants()
     {
-        $this->assertEquals([], SiteState::variants());
+        $expected = [MockStateTwo::class => new MockStateTwo()];
+        $this->assertEquals($expected, SiteState::variants());
     }
 
     public function testHasExtension()

@@ -3,6 +3,8 @@
 
 namespace Firesphere\SolrSearch\Interfaces;
 
+use Firesphere\SolrSearch\Queries\BaseQuery;
+
 /**
  * Interface SiteStateInterface defines the methods every State altering must implement.
  *
@@ -24,9 +26,10 @@ interface SiteStateInterface
     /**
      * Reset the SiteState to it's default state
      *
+     * @param string|null $state
      * @return mixed
      */
-    public function setDefaultState();
+    public function setDefaultState($state = null);
 
     /**
      * Return the current state of the site
@@ -42,4 +45,12 @@ interface SiteStateInterface
      * @return mixed
      */
     public function activateState($state);
+
+    /**
+     * Method to alter the query. Can be no-op.
+     *
+     * @param BaseQuery $query
+     * @return mixed
+     */
+    public function updateQuery(&$query);
 }

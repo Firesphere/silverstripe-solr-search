@@ -76,6 +76,46 @@ class FieldResolver
     }
 
     /**
+     * Get the sources to build in to a Solr field
+     *
+     * @return array
+     */
+    protected function getBuildSources(): array
+    {
+        $sources = $this->index->getClasses();
+        $buildSources = [];
+
+        $schemaHelper = DataObject::getSchema();
+        foreach ($sources as $source) {
+            $buildSources[$source]['base'] = $schemaHelper->baseDataClass($source);
+        }
+
+        return $buildSources;
+    }
+
+    /**
+     * Get the next lookup item from the buildSources
+     *
+     * @param array $buildSources
+     * @param $lookup
+     * @return array
+     * @throws Exception
+     */
+    protected function getNext(array $buildSources, $lookup): array
+    {
+        $next = [];
+
+        // @todo remove repetition
+        foreach ($buildSources as $source => $baseOptions) {
+            $next = $this->resolveRelation($source, $lookup, $next);
+        }
+
+        $buildSources = $next;
+
+        return $buildSources;
+    }
+
+    /**
      * Resolve relations if possible
      *
      * @param string $source
@@ -251,9 +291,6 @@ class FieldResolver
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
-            if (!empty($this->found[$class . '_' . $fullfield])) {
-                return $this->found[$class . '_' . $fullfield];
-            }
             $class = $this->getSourceName($class);
             $dataclasses = self::getHierarchy($class);
 
@@ -272,7 +309,6 @@ class FieldResolver
                     $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
                 }
             }
-            $this->found[$class . '_' . $fullfield] = $found;
         }
 
         return $found;
@@ -336,45 +372,5 @@ class FieldResolver
         ];
 
         return $found;
-    }
-
-    /**
-     * Get the sources to build in to a Solr field
-     *
-     * @return array
-     */
-    protected function getBuildSources(): array
-    {
-        $sources = $this->index->getClasses();
-        $buildSources = [];
-
-        $schemaHelper = DataObject::getSchema();
-        foreach ($sources as $source) {
-            $buildSources[$source]['base'] = $schemaHelper->baseDataClass($source);
-        }
-
-        return $buildSources;
-    }
-
-    /**
-     * Get the next lookup item from the buildSources
-     *
-     * @param array $buildSources
-     * @param $lookup
-     * @return array
-     * @throws Exception
-     */
-    protected function getNext(array $buildSources, $lookup): array
-    {
-        $next = [];
-
-        // @todo remove repetition
-        foreach ($buildSources as $source => $baseOptions) {
-            $next = $this->resolveRelation($source, $lookup, $next);
-        }
-
-        $buildSources = $next;
-
-        return $buildSources;
     }
 }

@@ -12,6 +12,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use GuzzleHttp\Exception\GuzzleException;
@@ -202,6 +203,7 @@ abstract class BaseIndex
      */
     public function doSearch(BaseQuery $query)
     {
+        SiteState::alterQuery($query);
         // Build the actual query parameters
         $clientQuery = $this->buildSolrQuery($query);
 

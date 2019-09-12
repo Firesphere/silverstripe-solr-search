@@ -239,6 +239,7 @@ jobs:
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/Firesphere.github.io.git . -q ;; esac
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git compat -q ;; esac
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q ;; esac
+            case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-solr-fluent.git fluent -q ;; esac
       - run:
           name: Setup git
           command: |
@@ -248,7 +249,7 @@ jobs:
       - run:
           name: Generate docs
           command: |
-            case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src" -t solr ;; esac
+            case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src" -t solr ;; esac
       - run:
           name: Commit and upload
           command: |
