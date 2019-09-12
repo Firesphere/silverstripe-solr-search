@@ -21,7 +21,7 @@ class MockState extends SiteState implements TestOnly, SiteStateInterface
      *
      * @return mixed
      */
-    public function setDefaultStates()
+    public function setDefaultState($state = null)
     {
         $this->activateState('default');
     }
