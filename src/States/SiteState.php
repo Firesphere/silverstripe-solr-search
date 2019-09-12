@@ -53,9 +53,13 @@ abstract class SiteState
      */
     public $enabled = true;
     /**
-     * @var string Current state
+     * @var string current state
      */
     protected $state;
+    /**
+     * @var array Current states
+     */
+    protected static $defaultStates = [];
 
     /**
      * Get available states
@@ -131,12 +135,11 @@ abstract class SiteState
      */
     public static function currentStates(): array
     {
-        $state = [];
         foreach (self::variants() as $variant => $instance) {
-            $state[$variant] = $instance->currentState();
+            self::$defaultStates[$variant] = $instance->currentState();
         }
 
-        return $state;
+        return self::$defaultStates;
     }
 
     /**
@@ -229,10 +232,28 @@ abstract class SiteState
          */
         foreach (self::variants() as $variant => $instance) {
             if ($state === self::DEFAULT_STATE) {
-                $instance->setDefaultState();
+                $instance->setDefaultState(self::$defaultStates[$variant]);
             } elseif ($instance->stateIsApplicable($state)) {
                 $instance->activateState($state);
             }
         }
+    }
+
+    /**
+     * Get the states set as default
+     * @return array
+     */
+    public static function getDefaultStates(): array
+    {
+        return self::$defaultStates;
+    }
+
+    /**
+     * Set the default states
+     * @param array $defaultStates
+     */
+    public static function setDefaultStates(array $defaultStates): void
+    {
+        self::$defaultStates = $defaultStates;
     }
 }

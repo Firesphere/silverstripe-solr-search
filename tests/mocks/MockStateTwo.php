@@ -43,7 +43,7 @@ class MockStateTwo extends SiteState implements TestOnly, SiteStateInterface
      *
      * @return mixed
      */
-    public function setDefaultState()
+    public function setDefaultStates()
     {
         $this->state = 'Cow';
     }

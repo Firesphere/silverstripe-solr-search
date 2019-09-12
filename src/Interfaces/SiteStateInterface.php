@@ -24,9 +24,10 @@ interface SiteStateInterface
     /**
      * Reset the SiteState to it's default state
      *
+     * @param string|null $state
      * @return mixed
      */
-    public function setDefaultState();
+    public function setDefaultState($state = null);
 
     /**
      * Return the current state of the site
