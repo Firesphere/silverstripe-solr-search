@@ -21,6 +21,9 @@ class SiteStateTest extends SapphireTest
         $this->assertEquals(['default', 'test', 'state1', 'state2'], SiteState::getStates());
         SiteState::setStates($default);
         $this->assertEquals($default, SiteState::getStates());
+
+        // This will break, but that's okay, I just need to know the output
+        $this->assertEquals([], SiteState::currentStates());
     }
 
     public function testVariants()

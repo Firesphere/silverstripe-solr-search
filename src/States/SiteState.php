@@ -136,8 +136,10 @@ abstract class SiteState
      */
     public static function currentStates(): array
     {
-        foreach (self::variants() as $variant => $instance) {
-            self::$defaultStates[$variant] = $instance->currentState();
+        if (empty(self::$defaultStates)) {
+            foreach (self::variants() as $variant => $instance) {
+                self::$defaultStates[$variant] = $instance->currentState();
+            }
         }
 
         return self::$defaultStates;
