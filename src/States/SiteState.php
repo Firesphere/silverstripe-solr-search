@@ -5,6 +5,7 @@ namespace Firesphere\SolrSearch\States;
 
 use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Interfaces\SiteStateInterface;
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
@@ -49,6 +50,10 @@ abstract class SiteState
      */
     public static $variants = [];
     /**
+     * @var array Current states
+     */
+    protected static $defaultStates = [];
+    /**
      * @var bool Is this State enabled
      */
     public $enabled = true;
@@ -56,10 +61,6 @@ abstract class SiteState
      * @var string current state
      */
     protected $state;
-    /**
-     * @var array Current states
-     */
-    protected static $defaultStates = [];
 
     /**
      * Get available states
@@ -153,7 +154,7 @@ abstract class SiteState
     public static function variants($force = false): array
     {
         // Build up and cache a list of all search variants (subclasses of SearchVariant)
-        if (!empty(self::$variants) || $force) {
+        if (empty(self::$variants) || $force) {
             $classes = ClassInfo::subclassesFor(static::class);
 
             foreach ($classes as $variantclass) {
@@ -240,7 +241,25 @@ abstract class SiteState
     }
 
     /**
+     * Alter the query for each instance
+     *
+     * @param BaseQuery $query
+     * @throws ReflectionException
+     */
+    public static function alterQuery(&$query): void
+    {
+        /**
+         * @var string $variant
+         * @var SiteStateInterface $instance
+         */
+        foreach (self::variants(true) as $variant => $instance) {
+            $instance->updateQuery($query);
+        }
+    }
+
+    /**
      * Get the states set as default
+     *
      * @return array
      */
     public static function getDefaultStates(): array
@@ -250,6 +269,7 @@ abstract class SiteState
 
     /**
      * Set the default states
+     *
      * @param array $defaultStates
      */
     public static function setDefaultStates(array $defaultStates): void
