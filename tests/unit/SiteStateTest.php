@@ -25,7 +25,7 @@ class SiteStateTest extends SapphireTest
 
         $this->assertEquals([MockStateTwo::class => 'Cow'], SiteState::currentStates());
 
-        $this->assertEquals([], SiteState::getDefaultStates());
+        $this->assertEquals([MockStateTwo::class => 'Cow'], SiteState::getDefaultStates());
     }
 
     public function testVariants()
