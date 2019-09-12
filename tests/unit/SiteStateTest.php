@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\States\SiteState;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Versioned\Versioned;
+use Firesphere\SolrSearch\Tests\MockStateTwo;
 
 class SiteStateTest extends SapphireTest
 {
@@ -23,7 +24,7 @@ class SiteStateTest extends SapphireTest
         $this->assertEquals($default, SiteState::getStates());
 
         // This will break, but that's okay, I just need to know the output
-        $this->assertEquals([], SiteState::currentStates());
+        $this->assertEquals([MockStateTwo::class => 'Cow'], SiteState::currentStates());
     }
 
     public function testVariants()
