@@ -50,7 +50,7 @@ abstract class SiteState
      */
     public static $variants = [];
     /**
-     * @var array Current states
+     * @var array Default states
      */
     protected static $defaultStates = [];
     /**
