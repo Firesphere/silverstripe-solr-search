@@ -249,6 +249,7 @@ jobs:
       - run:
           name: Generate docs
           command: |
+            rm -rf solr
             case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src" -t solr ;; esac
       - run:
           name: Commit and upload
