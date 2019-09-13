@@ -139,6 +139,8 @@ trait CoreServiceTrait
     }
 
     /**
+     * Get the admin query
+     *
      * @return Query
      */
     public function getAdmin(): Query
@@ -147,6 +149,8 @@ trait CoreServiceTrait
     }
 
     /**
+     * Set a (custom) admin query object
+     *
      * @param Query $admin
      */
     public function setAdmin(Query $admin): void
