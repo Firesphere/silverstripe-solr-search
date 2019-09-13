@@ -227,7 +227,7 @@ jobs:
       - run:
           name: Install Graphviz
           command: |
-            case $CIRCLE_BRANCH in "master") apt-get update && apt-get install graphviz -y ;; esac
+            case $CIRCLE_BRANCH in "master") sudo apt-get update && apt-get install graphviz -y ;; esac
       - run:
           name: Setup SSH
           command: |
