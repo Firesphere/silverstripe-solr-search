@@ -219,7 +219,7 @@ jobs:
 
   docs:
     docker:
-      - image: ssmarco/php-solr:latest
+      - image: circleci/php:latest
     steps:
       - add_ssh_keys:
           fingerprints:
