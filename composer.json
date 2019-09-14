@@ -56,6 +56,10 @@
         "issues": "https://github.com/firesphere/silverstripe-solr-search/issues",
         "source": "https://github.com/firesphere/silverstripe-solr-search"
     },
+    "suggest": {
+        "firesphere/fluent-solr-search": "For Fluent support",
+        "firesphere/fts-compat": "Migration support from Fulltext Search module"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

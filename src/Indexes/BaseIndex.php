@@ -200,6 +200,7 @@ abstract class BaseIndex
      * @return SearchResult|ArrayData|mixed
      * @throws GuzzleException
      * @throws ValidationException
+     * @throws \ReflectionException
      */
     public function doSearch(BaseQuery $query)
     {
@@ -228,7 +229,10 @@ abstract class BaseIndex
         // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);
 
-        Controller::curr()->getRequest()->getSession()->set(self::SEARCH_HISTORY_KEY, $this->getHistory());
+        Controller::curr()
+            ->getRequest()
+            ->getSession()
+            ->set(self::SEARCH_HISTORY_KEY, $this->getHistory());
 
         return $searchResult;
     }
@@ -303,6 +307,7 @@ abstract class BaseIndex
      * @return SearchResult|mixed|ArrayData
      * @throws GuzzleException
      * @throws ValidationException
+     * @throws \ReflectionException
      */
     protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
     {
