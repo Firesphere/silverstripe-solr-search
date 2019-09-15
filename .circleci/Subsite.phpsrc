@@ -1,9 +1,0 @@
-<?php
-
-namespace SilverStripe\Subsites\Model;
-
-class Subsite
-{
-     public static $disable_subsite_filter = false;
-     public static function disable_subsite_filter($set){}
-}
