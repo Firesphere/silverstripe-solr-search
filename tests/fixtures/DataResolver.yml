@@ -56,13 +56,11 @@ Firesphere\SolrSearch\Tests\TestObject:
     ShowInSearch: 0
 Firesphere\SolrSearch\Tests\TestPage:
   pageOne:
-    SubsiteID: 0
     Title: Page One
     Content: This is page one content
     ShowInSearch: 1
     TestObject: =>Firesphere\SolrSearch\Tests\TestObject.objectOne
   pageTwo:
-    SubsiteID: 0
     Title: Page Two
     Content: This is page two content
     ShowInSearch: 1

@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\PartialUserforms\Tests\TestHelper;
-use Firesphere\SolrSearch\Compat\SubsitesExtension;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
@@ -26,7 +25,6 @@ class SolrIndexTaskTest extends SapphireTest
 
     protected static $required_extensions = [
         DataObject::class => [DataObjectExtension::class],
-        BaseIndex::class  => [SubsitesExtension::class],
     ];
 
     public function setUp()

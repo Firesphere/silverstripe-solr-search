@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
-use Firesphere\SolrSearch\Compat\SubsitesExtension;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
@@ -46,7 +45,6 @@ class BaseIndexTest extends SapphireTest
      */
     protected static $required_extensions = [
         DataObject::class => [DataObjectExtension::class],
-        BaseIndex::class  => [SubsitesExtension::class],
     ];
 
     /**
@@ -72,7 +70,6 @@ class BaseIndexTest extends SapphireTest
             'Title',
             'Content',
             'ParentID',
-            'SubsiteID',
             'Created',
         ];
 
@@ -228,7 +225,6 @@ class BaseIndexTest extends SapphireTest
             'Title',
             'Content',
             'ParentID',
-            'SubsiteID',
             'Created',
         ];
         $this->assertEquals($expected, array_values($this->index->getFieldsForIndexing()));
@@ -331,11 +327,6 @@ class BaseIndexTest extends SapphireTest
         foreach ($queryArray2 as $queryTerm) {
             $this->assertNotContains('~2~', $queryTerm);
         }
-    }
-
-    public function testGetFieldsForSubsites()
-    {
-        $this->assertContains('SubsiteID', $this->index->getFilterFields());
     }
 
     public function testSetFacets()
