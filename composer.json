@@ -58,7 +58,8 @@
     },
     "suggest": {
         "firesphere/fluent-solr-search": "For Fluent support",
-        "firesphere/fts-compat": "Migration support from Fulltext Search module"
+        "firesphere/fts-compat": "Migration support from Fulltext Search module",
+        "firesphere/subsite-solr-search": "Support for Subsites"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

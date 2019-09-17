@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-use Firesphere\SolrSearch\Compat\SubsitesExtension;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\FieldResolver;
@@ -29,7 +28,6 @@ class DocumentFactoryTest extends SapphireTest
 
     protected static $required_extensions = [
         DataObject::class => [DataObjectExtension::class],
-        BaseIndex::class  => [SubsitesExtension::class],
     ];
     /**
      * We can't use the constant here for unknown reasons
@@ -177,7 +175,7 @@ class DocumentFactoryTest extends SapphireTest
             $this->assertInstanceOf(Document::class, $doc);
             $fields = $doc->getFields();
             $this->assertArrayHasKey('SiteTree_Created', $fields);
-            unset($fields['SiteTree_Created'], $fields['SiteTree_SubsiteID']); // Unset the Created, it changes per run
+            unset($fields['SiteTree_Created']); // Unset the Created, it changes per run
             foreach (static::$expected_docs as $expectedDoc) {
                 if ($expectedDoc['id'] === $doc['ItemID']) {
                     // Make sure any anomalies are ignored, we care about the doc being found
