@@ -328,9 +328,11 @@ class FieldResolver
             return $fields[$field];
         }
 
+        /** @var DataObject $singleton */
         $singleton = singleton($dataclass);
 
         $type = $singleton->castingClass($field);
+
         if (!$type) {
             // @todo should this be null?
             $type = 'String';
