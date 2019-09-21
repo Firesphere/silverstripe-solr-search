@@ -76,12 +76,8 @@ class DataObjectExtension extends DataExtension
     {
         /** @var DataObject $owner */
         $owner = $this->owner;
-        if (Controller::curr()->getRequest()->getURL() &&
-            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false
-        ) {
-            return;
-        }
-        if (!$owner->hasExtension(Versioned::class)) {
+
+        if ($this->shouldPush() && !$owner->hasExtension(Versioned::class)) {
             $this->pushToSolr($owner);
         }
     }
@@ -200,9 +196,11 @@ class DataObjectExtension extends DataExtension
      */
     public function onAfterPublish()
     {
-        /** @var DataObject $owner */
-        $owner = $this->owner;
-        $this->pushToSolr($owner);
+        if ($this->shouldPush()) {
+            /** @var DataObject $owner */
+            $owner = $this->owner;
+            $this->pushToSolr($owner);
+        }
     }
 
     /**
@@ -281,6 +279,16 @@ class DataObjectExtension extends DataExtension
         Security::setCurrentUser($currMember);
 
         return $return;
+    }
+
+    /**
+     * Should this write be pushed to Solr
+     * @return bool
+     */
+    protected function shouldPush()
+    {
+        return !(Controller::curr()->getRequest()->getURL() &&
+            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false);
     }
 
     /**

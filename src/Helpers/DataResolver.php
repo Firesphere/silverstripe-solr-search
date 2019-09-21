@@ -41,7 +41,8 @@ class DataResolver
     public function __construct($component, $columns = [])
     {
         if (!is_array($columns)) {
-            $columns = array_filter(explode('.', $columns));
+            $columns = str_replace('.', '_', $columns);
+            $columns = array_filter(explode('_', $columns));
         }
         $this->columns = $columns;
         $this->component = $component;

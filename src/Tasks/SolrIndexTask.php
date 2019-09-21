@@ -250,8 +250,8 @@ class SolrIndexTask extends BuildTask
                 $group++;
                 continue;
             }
+            $this->getLogger()->info(sprintf('Indexed group %s of %s', $group, $groups));
             $group++;
-            $this->getLogger()->info(sprintf('Indexed group %s', $group));
         }
 
         return $groups;

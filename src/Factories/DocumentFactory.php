@@ -208,7 +208,7 @@ class DocumentFactory
     protected function getValuesForField($object, $options): array
     {
         try {
-            $valuesForField = [DataResolver::identify($object, $options['field'])];
+            $valuesForField = [DataResolver::identify($object, $options['fullfield'])];
         } catch (Exception $e) {
             $valuesForField = [];
         }
