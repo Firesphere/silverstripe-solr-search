@@ -66,7 +66,11 @@ class DataResolver
             if ($obj instanceof $type) {
                 $method = 'resolve' . $method;
 
-                return (new self($obj, $columns))->{$method}();
+                $self = new self($obj, $columns);
+                $result = $self->{$method}();
+                gc_collect_cycles();
+
+                return $result;
             }
         }
 

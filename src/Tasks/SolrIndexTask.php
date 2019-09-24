@@ -269,7 +269,7 @@ class SolrIndexTask extends BuildTask
     private function doReindex($group, $class, $batchLength, BaseIndex $index): void
     {
         foreach (SiteState::getStates() as $state) {
-            if ($state !== 'default') {
+            if ($state !== 'default' && !empty($state)) {
                 SiteState::withState($state);
             }
             $this->stateReindex($group, $class, $batchLength, $index);
