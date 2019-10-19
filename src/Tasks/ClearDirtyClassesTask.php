@@ -14,6 +14,7 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 
 /**
@@ -58,8 +59,6 @@ class ClearDirtyClassesTask extends BuildTask
         $dirtyObjectList = DirtyClass::get();
         /** @var SolrCoreService $service */
         $service = new SolrCoreService();
-        /** @var SolrLogger $solrLogger */
-        $solrLogger = new SolrLogger();
         foreach ($dirtyObjectList as $dirtyObject) {
             $dirtyClasses = $this->getDirtyClasses($dirtyObject);
             try {
@@ -70,13 +69,15 @@ class ClearDirtyClassesTask extends BuildTask
                 continue;
             }
         }
+        /** @var SolrLogger $solrLogger */
+        $solrLogger = new SolrLogger();
         $solrLogger->saveSolrLog('Index');
     }
 
     /**
      * Get the objects that need to be deleted or updated as a list
      *
-     * @param $dirtyObject
+     * @param DataObject $dirtyObject
      * @return ArrayList|DataList
      */
     private function getDirtyClasses($dirtyObject)
@@ -84,7 +85,7 @@ class ClearDirtyClassesTask extends BuildTask
         $dirtyClass = $dirtyObject->Class;
         $ids = json_decode($dirtyObject->IDs, true);
         $dirtyClasses = ArrayList::create();
-        if ($dirtyObject->Type === SolrCoreService::UPDATE_TYPE) {
+        if ($dirtyObject->Type === SolrCoreService::UPDATE_TYPE && count($ids)) {
             $dirtyClasses = $dirtyClass::get()->byIDs($ids);
         }
         if ($dirtyObject->Type === SolrCoreService::DELETE_TYPE) {
@@ -100,7 +101,7 @@ class ClearDirtyClassesTask extends BuildTask
      *
      * @param array $items
      * @param string $dirtyClass
-     * @param $dirtyClasses
+     * @param ArrayList $dirtyClasses
      */
     protected function createDeleteList($items, $dirtyClass, &$dirtyClasses)
     {

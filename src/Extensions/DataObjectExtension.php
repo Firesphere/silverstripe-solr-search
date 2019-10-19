@@ -49,20 +49,6 @@ class DataObjectExtension extends DataExtension
      * @var DataList
      */
     protected static $members;
-    /**
-     * Don't check these classes
-     *
-     * @var array
-     */
-    protected static $excludedClasses = [
-        DirtyClass::class,
-        ChangeSet::class,
-        ChangeSetItem::class,
-        SolrLog::class,
-        LoginAttempt::class,
-        Member::class,
-        SiteConfig::class,
-    ];
 
     /**
      * Push the item to solr if it is not versioned
