@@ -82,6 +82,7 @@ class ClearDirtyClassesTask extends BuildTask
      */
     private function getDirtyClasses($dirtyObject)
     {
+        /** @var DataObject $dirtyClass */
         $dirtyClass = $dirtyObject->Class;
         $ids = json_decode($dirtyObject->IDs, true);
         $dirtyClasses = ArrayList::create();

@@ -13,17 +13,20 @@ use GuzzleHttp\HandlerStack;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client as CoreClient;
+use Solarium\Plugin\BufferedAdd\BufferedAdd;
+use Solarium\Plugin\BufferedAdd\Event\Events;
+use Solarium\Plugin\BufferedAdd\Event\PreFlush as PreFlushEvent;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
 
@@ -152,7 +155,7 @@ class SolrCoreService
 
         foreach ($indexes as $indexString) {
             /** @var BaseIndex $index */
-            $index = Injector::inst()->get($indexString);
+            $index = Injector::inst()->get($indexString, false);
             $classes = $index->getClasses();
             $inArray = array_intersect($classes, $hierarchy);
             // No point in sending a delete|update|create for something that's not in the index
@@ -190,7 +193,7 @@ class SolrCoreService
      * Execute the manipulation of solr documents
      *
      * @param SS_List $items
-     * @param $type
+     * @param string $type
      * @param BaseIndex $index
      * @return Result
      * @throws Exception
@@ -199,11 +202,7 @@ class SolrCoreService
     {
         $client = $index->getClient();
 
-        $update = $this->getUpdate($items, $type, $index, $client);
-        // commit immediately when in dev mode
-        if (Director::isDev()) {
-            $update->addCommit();
-        }
+        $update = $this->doUpdate($items, $type, $index, $client);
 
         return $client->update($update);
     }
@@ -215,32 +214,36 @@ class SolrCoreService
      * @param string $type
      * @param BaseIndex $index
      * @param CoreClient $client
-     * @return mixed
+     * @return Query
      * @throws Exception
      */
-    protected function getUpdate($items, $type, BaseIndex $index, CoreClient $client)
+    protected function doUpdate($items, $type, BaseIndex $index, CoreClient $client)
     {
-        // get an update query instance
         $update = $client->createUpdate();
-
         switch ($type) {
             case static::DELETE_TYPE:
                 // By pushing to a single array, we have less memory usage and no duplicates
                 // This is faster, and more efficient, because we only do one DB query
+                // get an update query instance
                 $delete = $items->map('ID', 'ClassName')->toArray();
-                array_walk($delete, static function (&$item, $key) {
-                    $item = sprintf('%s-%s', $item, $key);
-                });
+                array_walk(
+                    $delete,
+                    static function (&$item, $key) {
+                        $item = sprintf('%s-%s', $item, $key);
+                    }
+                );
                 $update->addDeleteByIds(array_values($delete));
-                // Remove the deletion array from memory
                 break;
             case static::DELETE_TYPE_ALL:
+                // get an update query instance
                 $update->addDeleteQuery('*:*');
                 break;
             case static::UPDATE_TYPE:
             case static::CREATE_TYPE:
-                $this->updateIndex($index, $items, $update);
+                $this->updateIndex($index, $items);
         }
+
+        $update->addCommit();
 
         return $update;
     }
@@ -250,17 +253,21 @@ class SolrCoreService
      *
      * @param BaseIndex $index
      * @param SS_List $items
-     * @param Query $update
      * @throws Exception
      */
-    public function updateIndex($index, $items, $update): void
+    public function updateIndex($index, $items): void
     {
+        $client = $index->getClient();
+        /** @var BufferedAdd $bufferAdd */
+        $bufferAdd = $client->getPlugin('bufferedadd');
+        $update = $client->createUpdate();
         $fields = $index->getFieldsForIndexing();
         $factory = $this->getFactory($items);
-        $docs = $factory->buildItems($fields, $index, $update);
-        if (count($docs)) {
-            $update->addDocuments($docs);
+        if ($this->isInDebugMode()) {
+            $this->debugEvent($index);
         }
+        $factory->buildItems($fields, $index, $update, $bufferAdd);
+        $bufferAdd->flush();
     }
 
     /**
@@ -271,12 +278,30 @@ class SolrCoreService
      */
     protected function getFactory($items): DocumentFactory
     {
-        $factory = Injector::inst()->get(DocumentFactory::class);
+        $factory = Injector::inst()->get(DocumentFactory::class, false);
         $factory->setItems($items);
         $factory->setClass($items->first()->ClassName);
         $factory->setDebug($this->isInDebugMode());
 
         return $factory;
+    }
+
+    /**
+     * @param BaseIndex $index
+     */
+    protected function debugEvent($index): void
+    {
+        $index->getClient()->getEventDispatcher()->addListener(
+            Events::PRE_FLUSH,
+            function (PreFlushEvent $event) use ($index) {
+                $ids = [];
+                foreach ($event->getBuffer() as $doc) {
+                    $ids[] = $doc->getFields()['ObjectID'];
+                }
+                $debugString = sprintf('Adding docs to %s%s', $index->getIndexName(), PHP_EOL);
+                Debug::message(sprintf('%s[%s]', $debugString, implode(',', $ids)), false);
+            }
+        );
     }
 
     /**
