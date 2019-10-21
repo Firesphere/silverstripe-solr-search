@@ -80,7 +80,7 @@ class SolrIndexTask extends BuildTask
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
         Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
-        $this->setService(Injector::inst()->get(SolrCoreService::class));
+        $this->setService(Injector::inst()->get(SolrCoreService::class, false));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
         $this->setDebug(Director::isDev() || Director::is_cli());
         $currentStates = SiteState::currentStates();
@@ -126,7 +126,7 @@ class SolrIndexTask extends BuildTask
     public function run($request)
     {
         $startTime = time();
-        list($vars, $group, $isGroup) = $this->taskSetup($request);
+        list($vars, $group) = $this->taskSetup($request);
         $groups = 0;
         $indexes = $this->service->getValidIndexes($request->getVar('index'));
 
@@ -142,7 +142,7 @@ class SolrIndexTask extends BuildTask
 
             $this->clearIndex($vars, $index);
 
-            $groups = $this->indexClassForIndex($classes, $isGroup, $index, $group);
+            $groups = $this->indexClassForIndex($classes, $index, $group);
         }
         $this->getLogger()->info(
             sprintf('It took me %d seconds to do all the indexing%s', (time() - $startTime), PHP_EOL)
@@ -164,12 +164,11 @@ class SolrIndexTask extends BuildTask
     {
         $vars = $request->getVars();
         $this->debug = $this->debug || isset($vars['debug']);
-        $group = $vars['group'] ?? 0;
+        $group = $vars['group'] ?? false;
         $start = $vars['start'] ?? 0;
-        $group = ($start > $group) ? $start : $group;
-        $isGroup = isset($vars['group']);
+        $group = ($group !== false && $start > $group) ? $start : $group;
 
-        return [$vars, $group, $isGroup];
+        return [$vars, $group];
     }
 
     /**
@@ -206,19 +205,18 @@ class SolrIndexTask extends BuildTask
     /**
      * Index the classes for a specific index
      *
-     * @param $classes
-     * @param $isGroup
+     * @param array $classes
      * @param BaseIndex $index
-     * @param $group
-     * @return int
+     * @param int|bool $group
+     * @return int|bool
      * @throws Exception
      * @throws GuzzleException
      */
-    protected function indexClassForIndex($classes, $isGroup, BaseIndex $index, $group): int
+    protected function indexClassForIndex($classes, BaseIndex $index, $group): int
     {
         $groups = 0;
         foreach ($classes as $class) {
-            $groups = $this->indexClass($isGroup, $class, $index, $group);
+            $groups = $this->indexClass($class, $index, $group);
         }
 
         return $groups;
@@ -227,52 +225,42 @@ class SolrIndexTask extends BuildTask
     /**
      * Index a single class for a given index. {@link static::indexClassForIndex()}
      *
-     * @param bool $isGroup
      * @param string $class
      * @param BaseIndex $index
-     * @param int $group
-     * @return int
+     * @param int|bool $group
+     * @return int|bool
      * @throws GuzzleException
      * @throws ValidationException
      */
-    private function indexClass($isGroup, $class, BaseIndex $index, int $group): int
+    private function indexClass($class, BaseIndex $index, int $group): int
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()), []);
 
-        $batchLength = DocumentFactory::config()->get('batchLength');
-        $groups = (int)ceil($class::get()->count() / $batchLength);
-        $groups = $isGroup ? $group : $groups;
-        while ($group <= $groups) { // Run from oldest to newest
-            try {
-                $this->doReindex($group, $class, $batchLength, $index);
-            } catch (Exception $error) {
-                $this->logException($index->getIndexName(), $group, $error);
-                $group++;
-                continue;
-            }
-            $this->getLogger()->info(sprintf('Indexed group %s of %s', $group, $groups));
-            $group++;
+        try {
+            $this->doReindex($group, $class, $index);
+        } catch (Exception $error) {
+            $this->logException($index->getIndexName(), $group, $error);
         }
 
-        return $groups;
+        return $group;
     }
 
     /**
      * Reindex the given group, for each state
      *
-     * @param int $group
+     * @param int|bool $group
      * @param string $class
-     * @param int $batchLength
      * @param BaseIndex $index
+     * @throws ReflectionException
      * @throws Exception
      */
-    private function doReindex($group, $class, $batchLength, BaseIndex $index): void
+    private function doReindex($group, $class, BaseIndex $index): void
     {
         foreach (SiteState::getStates() as $state) {
             if ($state !== 'default' && !empty($state)) {
                 SiteState::withState($state);
             }
-            $this->stateReindex($group, $class, $batchLength, $index);
+            $this->stateReindex($group, $class, $index);
         }
 
         SiteState::withState(SiteState::DEFAULT_STATE);
@@ -281,20 +269,22 @@ class SolrIndexTask extends BuildTask
     /**
      * Index a group of a class for a specific state and index
      *
-     * @param $group
-     * @param $class
-     * @param $batchLength
+     * @param int|bool $group
+     * @param string $class
      * @param BaseIndex $index
      * @throws Exception
      */
-    private function stateReindex($group, $class, $batchLength, BaseIndex $index): void
+    private function stateReindex($group, $class, BaseIndex $index): void
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
         $items = DataObject::get($baseClass)
-            ->sort('ID ASC')
-            ->limit($batchLength, ($group * $batchLength));
+            ->sort('ID ASC');
+        if ($group !== false) {
+            $batchLength = DocumentFactory::config()->get('batchLength');
+            $items = $items->limit($batchLength, ($group * $batchLength));
+        }
         if ($items->count()) {
             $this->updateIndex($index, $items);
         }
@@ -309,12 +299,8 @@ class SolrIndexTask extends BuildTask
      */
     private function updateIndex(BaseIndex $index, $items): void
     {
-        $client = $index->getClient();
-        $update = $client->createUpdate();
         $this->service->setInDebugMode($this->debug);
-        $this->service->updateIndex($index, $items, $update);
-        $update->addCommit();
-        $client->update($update);
+        $this->service->updateIndex($index, $items);
     }
 
     /**
