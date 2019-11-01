@@ -124,6 +124,8 @@ class FieldResolver
      * @param array $next
      * @param array $options
      * @return array
+     * @throws ReflectionException
+     * @throws Exception
      */
     protected function resolveRelation($source, $lookup, array $next, array &$options): array
     {
@@ -202,6 +204,7 @@ class FieldResolver
      * @param $class
      * @param $includeSubclasses
      * @return array
+     * @throws ReflectionException
      * @todo clean this up to be more compatible with PHP features
      */
     protected static function getHierarchyClasses($class, $includeSubclasses): array
