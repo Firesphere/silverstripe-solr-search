@@ -395,14 +395,14 @@ class FieldResolver
     /**
      * Figure out the relational data for the given source etc.
      *
-     * @param $source
+     * @param array $source
      * @param array $next
      * @param array $options
-     * @param array $class
-     * @param $dataClass
+     * @param array|string|null $class
+     * @param string|null $dataClass
      * @return array
      */
-    protected function handleRelationData($source, array $next, array &$options, array $class, $dataClass)
+    protected function handleRelationData($source, array $next, array &$options, $class, $dataClass)
     {
         if (is_string($class) && $class) {
             if (!isset($options['origin'])) {
