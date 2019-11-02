@@ -60,7 +60,6 @@ class FieldResolver
         $buildSources = $this->getBuildSources();
 
         $found = [];
-        $options = [];
 
         if (strpos($field, '.') !== false) {
             $lookups = explode('.', $field);
