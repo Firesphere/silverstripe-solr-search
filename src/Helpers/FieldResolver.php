@@ -395,7 +395,7 @@ class FieldResolver
     /**
      * Figure out the relational data for the given source etc.
      *
-     * @param array $source
+     * @param string $source
      * @param array $next
      * @param array $options
      * @param array|string|null $class
