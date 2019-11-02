@@ -77,9 +77,9 @@ trait CoreAdminTrait
     /**
      * Check the status of a core
      *
-     * @deprecated backward compatibility stub
      * @param string $core
      * @return StatusResult|null
+     * @deprecated backward compatibility stub
      */
     public function coreIsActive($core)
     {

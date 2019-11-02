@@ -107,7 +107,7 @@ class FieldResolver
 
         // @todo remove repetition
         foreach ($buildSources as $source => $baseOptions) {
-            $next = $this->resolveRelation($source, $lookup, $next);
+            $next = $this->resolveRelation($source, $lookup, $next, $baseOptions);
         }
 
         $buildSources = $next;
@@ -121,20 +121,22 @@ class FieldResolver
      * @param string $source
      * @param $lookup
      * @param array $next
+     * @param array $options
      * @return array
+     * @throws ReflectionException
      * @throws Exception
      */
-    protected function resolveRelation($source, $lookup, array $next): array
+    protected function resolveRelation($source, $lookup, array $next, array &$options): array
     {
         $source = $this->getSourceName($source);
 
         foreach (self::getHierarchy($source) as $dataClass) {
             $schema = DataObject::getSchema();
-            $options = ['multi_valued' => false];
+            $options['multi_valued'] = false;
 
             $class = $this->getRelationData($lookup, $schema, $dataClass, $options);
 
-            list($options, $next) = $this->getNextOption($next, $class, $options, $dataClass);
+            list($options, $next) = $this->handleRelationData($source, $next, $options, $class, $dataClass);
         }
 
         return $next;
@@ -271,17 +273,20 @@ class FieldResolver
     }
 
     /**
+     * Figure out the relational data for the given source etc.
+     *
+     * @param string $source
      * @param array $next
-     * @param array|string $class
      * @param array $options
-     * @param string $dataClass
+     * @param array|string|null $class
+     * @param string|null $dataClass
      * @return array
      */
-    protected function getNextOption(array $next, $class, array $options, $dataClass): array
+    protected function handleRelationData($source, array $next, array &$options, $class, $dataClass)
     {
         if (is_string($class) && $class) {
             if (!isset($options['origin'])) {
-                $options['origin'] = $dataClass;
+                $options['origin'] = $source;
             }
 
             // we add suffix here to prevent the relation to be overwritten by other instances
@@ -289,7 +294,7 @@ class FieldResolver
             $next[$class . '|xkcd|' . $dataClass] = $options;
         }
 
-        return [$options, $next];
+        return array($options, $next);
     }
 
     /**
@@ -388,5 +393,27 @@ class FieldResolver
         ];
 
         return $found;
+    }
+
+    /**
+     * @param array $next
+     * @param array|string $class
+     * @param array $options
+     * @param string $dataClass
+     * @return array
+     */
+    protected function getNextOption(array $next, $class, array $options, $dataClass): array
+    {
+        if (is_string($class) && $class) {
+            if (!isset($options['origin'])) {
+                $options['origin'] = $dataClass;
+            }
+
+            // we add suffix here to prevent the relation to be overwritten by other instances
+            // all sources lookups must clean the source name before reading it via getSourceName()
+            $next[$class . '|xkcd|' . $dataClass] = $options;
+        }
+
+        return [$options, $next];
     }
 }

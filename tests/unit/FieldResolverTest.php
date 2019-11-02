@@ -81,12 +81,12 @@ class FieldResolverTest extends SapphireTest
         $factory->setIndex($index);
 
         $expected = [
-            TestObject::class . '_TestObject_TestRelation_Title' =>
+            SiteTree::class . '_TestObject_TestRelation_Title' =>
                 [
-                    'name'         => TestObject::class . '_TestObject_TestRelation_Title',
+                    'name'         => SiteTree::class . '_TestObject_TestRelation_Title',
                     'field'        => 'Title',
                     'fullfield'    => 'TestObject_TestRelation_Title',
-                    'origin'       => TestObject::class,
+                    'origin'       => SiteTree::class,
                     'class'        => TestRelationObject::class,
                     'type'         => 'Varchar',
                     'multi_valued' => true,
