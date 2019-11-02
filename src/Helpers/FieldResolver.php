@@ -378,8 +378,7 @@ class FieldResolver
         $dataclass,
         $type,
         $found
-    ): array
-    {
+    ): array {
         // Get the origin
         $origin = $fieldOptions['origin'] ?? $dataclass;
 

@@ -154,8 +154,7 @@ class DocumentFactory
         array $boostFields,
         array $fieldData,
         $field
-    ): void
-    {
+    ): void {
         foreach ($fieldData as $dataField => $options) {
             if (!$this->classIs($item, $options['origin'])) {
                 continue;
