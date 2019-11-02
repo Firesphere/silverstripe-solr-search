@@ -273,17 +273,20 @@ class FieldResolver
     }
 
     /**
+     * Figure out the relational data for the given source etc.
+     *
+     * @param string $source
      * @param array $next
-     * @param array|string $class
      * @param array $options
-     * @param string $dataClass
+     * @param array|string|null $class
+     * @param string|null $dataClass
      * @return array
      */
-    protected function getNextOption(array $next, $class, array $options, $dataClass): array
+    protected function handleRelationData($source, array $next, array &$options, $class, $dataClass)
     {
         if (is_string($class) && $class) {
             if (!isset($options['origin'])) {
-                $options['origin'] = $dataClass;
+                $options['origin'] = $source;
             }
 
             // we add suffix here to prevent the relation to be overwritten by other instances
@@ -291,7 +294,7 @@ class FieldResolver
             $next[$class . '|xkcd|' . $dataClass] = $options;
         }
 
-        return [$options, $next];
+        return array($options, $next);
     }
 
     /**
@@ -375,7 +378,8 @@ class FieldResolver
         $dataclass,
         $type,
         $found
-    ): array {
+    ): array
+    {
         // Get the origin
         $origin = $fieldOptions['origin'] ?? $dataclass;
 
@@ -393,26 +397,24 @@ class FieldResolver
     }
 
     /**
-     * Figure out the relational data for the given source etc.
-     *
-     * @param string $source
      * @param array $next
+     * @param array|string $class
      * @param array $options
-     * @param array|string|null $class
-     * @param string|null $dataClass
+     * @param string $dataClass
      * @return array
      */
-    protected function handleRelationData($source, array $next, array &$options, $class, $dataClass)
+    protected function getNextOption(array $next, $class, array $options, $dataClass): array
     {
         if (is_string($class) && $class) {
             if (!isset($options['origin'])) {
-                $options['origin'] = $source;
+                $options['origin'] = $dataClass;
             }
 
             // we add suffix here to prevent the relation to be overwritten by other instances
             // all sources lookups must clean the source name before reading it via getSourceName()
             $next[$class . '|xkcd|' . $dataClass] = $options;
         }
-        return array($options, $next);
+
+        return [$options, $next];
     }
 }

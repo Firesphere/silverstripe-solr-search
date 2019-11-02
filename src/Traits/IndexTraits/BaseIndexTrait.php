@@ -254,9 +254,9 @@ trait BaseIndexTrait
     /**
      * Add a Fulltext Field
      *
-     * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
      * @param bool $includeSubclasses Compatibility mode, not actually used
      * @throws ReflectionException
+     * @deprecated Please use addAllFulltextFields(). IncludeSubClasses is not used anymore
      */
     public function addFulltextFields($includeSubclasses = true)
     {

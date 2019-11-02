@@ -31,7 +31,8 @@ class SearchForm extends Form
         FieldList $fields = null,
         FieldList $actions = null,
         Validator $validator = null
-    ) {
+    )
+    {
         parent::__construct($controller, $name, $fields, $actions, $validator);
 
         $this->setFormMethod('GET');
