@@ -81,7 +81,7 @@ class FieldResolverTest extends SapphireTest
         $factory->setIndex($index);
 
         $expected = [
-            TestObject::class . '_TestObject_TestRelation_Title' =>
+            SiteTree::class . '_TestObject_TestRelation_Title' =>
                 [
                     'name'         => TestObject::class . '_TestObject_TestRelation_Title',
                     'field'        => 'Title',
