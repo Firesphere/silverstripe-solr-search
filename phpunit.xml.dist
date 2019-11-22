@@ -17,6 +17,7 @@
     </groups>
     <php>
         <get name="flush" value="1" />
+        <get name="unittest" value="1" />
         <ini name="memory_limit" value="1G" />
     </php>
 </phpunit>

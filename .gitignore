@@ -2,3 +2,5 @@
 /app
 /.php_cs.cache
 /resources
+.idea
+.DS_Store

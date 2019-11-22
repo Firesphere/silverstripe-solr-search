@@ -17,7 +17,6 @@ use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use LogicException;
-use ReflectionException;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -167,6 +166,7 @@ abstract class BaseIndex
             Deprecation::notice('5', 'It is adviced to use a config YML for most cases');
         }
 
+
         $this->initFromConfig();
     }
 
@@ -200,7 +200,7 @@ abstract class BaseIndex
      * @return SearchResult|ArrayData|mixed
      * @throws GuzzleException
      * @throws ValidationException
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function doSearch(BaseQuery $query)
     {
@@ -212,28 +212,29 @@ abstract class BaseIndex
 
         try {
             $result = $this->client->select($clientQuery);
-            $this->rawQuery = $result;
-
-            // Handle the after search first. This gets a raw search result
-            $this->extend('onAfterSearch', $result);
-            $searchResult = new SearchResult($result, $query, $this);
-            // Return yourself but with a spellcheck
-            if ($this->doRetry($query, $result, $searchResult)) {
-                return $this->spellcheckRetry($query, $searchResult);
-            }
-
-            // And then handle the search results, which is a useable object for SilverStripe
-            $this->extend('updateSearchResults', $searchResult);
-
-            Controller::curr() // @todo make this useful. It's not doing it's job properly
-            ->getRequest() // @todo Also, it's convoluted and pointless
-            ->getSession()
-                ->set(self::SEARCH_HISTORY_KEY, $this->getHistory());
-
-            return $searchResult;
         } catch (Exception $e) {
-            (new SolrLogger())->saveSolrLog();
+            $logger = new SolrLogger();
+            $logger->saveSolrLog('Query');
         }
+
+        $this->rawQuery = $result;
+
+        // Handle the after search first. This gets a raw search result
+        $this->extend('onAfterSearch', $result);
+        $searchResult = new SearchResult($result, $query, $this);
+        if ($this->doRetry($query, $result, $searchResult)) {
+            return $this->spellcheckRetry($query, $searchResult);
+        }
+
+        // And then handle the search results, which is a useable object for SilverStripe
+        $this->extend('updateSearchResults', $searchResult);
+
+        Controller::curr()
+            ->getRequest()
+            ->getSession()
+            ->set(self::SEARCH_HISTORY_KEY, $this->getHistory());
+
+        return $searchResult;
     }
 
     /**
@@ -262,7 +263,6 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @param Query $clientQuery
      * @return QueryComponentFactory|mixed
-     * @todo Building a factory is like factoring a factory.
      */
     protected function buildFactory(BaseQuery $query, Query $clientQuery)
     {
@@ -307,7 +307,7 @@ abstract class BaseIndex
      * @return SearchResult|mixed|ArrayData
      * @throws GuzzleException
      * @throws ValidationException
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
     {
@@ -316,7 +316,6 @@ abstract class BaseIndex
         // Remove the fuzzyness from the collated check
         $term = preg_replace('/~\d+/', '', $spellChecked);
         $terms[0]['text'] = $term;
-        // Reset the terms and continue to retry
         $query->setTerms($terms);
         $this->retry = true;
 
@@ -370,6 +369,7 @@ abstract class BaseIndex
             $schema
         );
 
+
         $synonyms = $this->getSynonyms();
 
         // Upload synonyms
@@ -400,8 +400,6 @@ abstract class BaseIndex
 
         return sprintf('%s%s', $synonyms, $siteConfigSynonyms);
     }
-
-    // @todo these getters should probably go in to a trait
 
     /**
      * Get the final, generated terms

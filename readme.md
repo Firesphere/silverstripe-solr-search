@@ -47,7 +47,7 @@ This will install Solr 8.x as a service on your (virtual) machine
 ## Supports
 
 Solr4 backward compatibility is available, default support is
-Solr6 or higher
+Solr8
 
 # Test setup
 
@@ -83,6 +83,12 @@ class MyIndex extends BaseIndex
 Happy searching after that... once this is done
 
 More details can be found in the docs.
+
+# Errors
+
+It is known that the final index throws a MySQL error.
+This is expected at the moment, and sadly, unavoidable so far.
+If you have a solution, we would love to hear from you!
 
 # Cow?
 

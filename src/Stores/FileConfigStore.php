@@ -33,7 +33,7 @@ class FileConfigStore implements ConfigStore
             throw new RuntimeException('No valid config defined', 1);
         }
         // A relative folder should be rewritten to a writeable folder for the system
-        if (Director::is_relative_url($config['path'])) {
+        if (strpos($config['path'], '/') !== 0) {
             $config['path'] = Director::baseFolder() . '/' . $config['path'];
         }
 
