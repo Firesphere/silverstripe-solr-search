@@ -25,6 +25,7 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -216,7 +217,10 @@ abstract class BaseIndex
         } catch (Exception $e) {
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
+//            throw new Exception($e);
         }
+
+        Debug::dump($e);
 
         $this->rawQuery = $result;
 
