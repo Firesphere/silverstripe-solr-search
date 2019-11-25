@@ -220,7 +220,7 @@ abstract class BaseIndex
 //            throw new Exception($e);
         }
 
-        Debug::dump($e);
+        Debug::dump($e->getMessage());
 
         $this->rawQuery = $result;
 
