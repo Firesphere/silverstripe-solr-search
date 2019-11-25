@@ -28,3 +28,8 @@ Hold your horses, this is a beta stage project, more storage options to come!
 ### I would like a feature to be added!
 
 I would like an issue to be created
+
+### Dealing with errors
+
+Especially when using facets, you should not redeclare fields to be filterable as well. If you run in to an error 
+saying you have duplicate fields, check your configuration that e.g. FilterFields does not have an overlap with FacetFields, etc.

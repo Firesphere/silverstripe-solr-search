@@ -15,7 +15,6 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ViewableData;
 use Solarium\Core\Client\Client;
-use Solarium\Plugin\BufferedAdd\BufferedAdd;
 use Solarium\QueryType\Update\Query\Document;
 
 class DocumentFactoryTest extends SapphireTest
@@ -165,13 +164,26 @@ class DocumentFactoryTest extends SapphireTest
         $fields = $index->getFieldsForIndexing();
         $client = new Client([]);
         $update = $client->createUpdate();
-        /** @var BufferedAdd $buffer */
-        $buffer = $client->getPlugin('bufferedadd');
         $factory->setClass(SiteTree::class);
         $factory->setItems(Page::get());
-        $this->assertEquals(SiteTree::class, $factory->getClass());
-        $factory->buildItems($fields, $index, $update, $buffer);
+        $docs = $factory->buildItems($fields, $index, $update);
+        $this->assertCount(SiteTree::get()->count(), $docs);
+        $this->assertInternalType('array', $docs);
         $this->assertInstanceOf(BaseIndex::class, $factory->getFieldResolver()->getIndex());
+        /** @var Document $doc */
+        foreach ($docs as $i => $doc) {
+            $this->assertInstanceOf(Document::class, $doc);
+            $fields = $doc->getFields();
+            $this->assertArrayHasKey('SiteTree_Created', $fields);
+            unset($fields['SiteTree_Created']); // Unset the Created, it changes per run
+            foreach (static::$expected_docs as $expectedDoc) {
+                if ($expectedDoc['id'] === $doc['ItemID']) {
+                    // Make sure any anomalies are ignored, we care about the doc being found
+                    // Not about the anomalies that don't show up :)
+                    $this->assertEquals($expectedDoc, $fields);
+                }
+            }
+        }
     }
 
     public function testSanitiseField()

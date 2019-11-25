@@ -19,7 +19,6 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBField;
-use Solarium\Plugin\BufferedAdd\BufferedAdd;
 use Solarium\QueryType\Update\Query\Document;
 use Solarium\QueryType\Update\Query\Query;
 
@@ -68,45 +67,43 @@ class DocumentFactory
      * @param array $fields
      * @param BaseIndex $index
      * @param Query $update
-     * @param BufferedAdd $bufferAdd
+     * @return array
      * @throws Exception
      */
-    public function buildItems($fields, $index, $update, $bufferAdd): void
+    public function buildItems($fields, $index, $update): array
     {
+        $class = $this->getClass();
         $this->getFieldResolver()->setIndex($index);
         $boostFields = $index->getBoostedFields();
-        $passes = [
-            'update' => $update,
-            'buffer' => $bufferAdd,
-        ];
+        $docs = [];
         foreach ($this->getItems() as $item) {
-            // Hard check against it being 0, if it's null, we should add the item
-            if ($item->ShowInSearch === 0 || $item->ShowInSearch === false) {
+            // Don't index items that should not show in search explicitly.
+            // Just a "not" is insufficient, as it could be null or false (both meaning, not set)
+            if ($item->ShowInSearch === 0) {
                 continue;
             }
-            $this->addToBuffer($fields, $passes, $item, $boostFields);
+            /** @var Document $doc */
+            $doc = $update->createDocument();
+            $this->addDefaultFields($doc, $item);
+
+            $this->buildFields($fields, $doc, $item, $boostFields);
+            $item->destroy();
+
+            $docs[] = $doc;
         }
-    }
 
-    /**
-     * @param array $fields
-     * @param array|Query[]|BufferedAdd[] $passes
-     * @param DataObject $item
-     * @param array $boostFields
-     * @throws Exception
-     */
-    protected function addToBuffer(array $fields, array $passes, DataObject $item, array $boostFields): void
-    {
-        $update = $passes['update'];
-        $bufferAdd = $passes['buffer'];
-        /** @var Document $doc */
-        $doc = $update->createDocument();
-        $this->addDefaultFields($doc, $item);
+        if ($this->debug) {
+            $debugString = sprintf(
+                'Indexing %s on %s (%s items)%s',
+                $class,
+                $index->getIndexName(),
+                $this->getItems()->count(),
+                PHP_EOL
+            );
+            $this->getLogger()->info($debugString);
+        }
 
-        $this->buildFields($fields, $doc, $item, $boostFields);
-        $item->destroy();
-
-        $bufferAdd->addDocument($doc);
+        return $docs;
     }
 
     /**
@@ -137,31 +134,39 @@ class DocumentFactory
     {
         foreach ($fields as $field) {
             $fieldData = $this->getFieldResolver()->resolveField($field);
-            $this->buildFieldData($doc, $item, $boostFields, $fieldData, $field);
+            foreach ($fieldData as $dataField => $options) {
+                $options['boost'] = $boostFields[$field] ?? null;
+                $this->addField($doc, $item, $options);
+            }
         }
     }
 
     /**
+     * Add a single field to the Solr index
+     *
      * @param Document $doc
-     * @param DataObject $item
-     * @param array $boostFields
-     * @param array $fieldData
-     * @param $field
+     * @param DataObject $object
+     * @param array $options
      */
-    protected function buildFieldData(
-        Document $doc,
-        DataObject $item,
-        array $boostFields,
-        array $fieldData,
-        $field
-    ): void {
-        foreach ($fieldData as $dataField => $options) {
-            if (!$this->classIs($item, $options['origin'])) {
+    protected function addField($doc, $object, $options): void
+    {
+        if (!$this->classIs($object, $options['origin'])) {
+            return;
+        }
+
+        $this->extend('onBeforeAddField', $options);
+
+        $valuesForField = $this->getValuesForField($object, $options);
+
+        $typeMap = Statics::getTypeMap();
+        $type = $typeMap[$options['type']] ?? $typeMap['*'];
+
+        foreach ($valuesForField as $value) {
+            if ($value === null) {
                 continue;
             }
-
-            $options['boost'] = $boostFields[$field] ?? null;
-            $this->addField($doc, $item, $options);
+            $this->extend('onBeforeAddDoc', $options, $value);
+            $this->addToDoc($doc, $options, $type, $value);
         }
     }
 
@@ -196,31 +201,6 @@ class DocumentFactory
     protected function classEquals($class, $base): bool
     {
         return $class === $base || ($class instanceof $base);
-    }
-
-    /**
-     * Add a single field to the Solr index
-     *
-     * @param Document $doc
-     * @param DataObject $object
-     * @param array $options
-     */
-    protected function addField($doc, $object, $options): void
-    {
-        $this->extend('onBeforeAddField', $options);
-
-        $valuesForField = $this->getValuesForField($object, $options);
-
-        $typeMap = Statics::getTypeMap();
-        $type = $typeMap[$options['type']] ?? $typeMap['*'];
-
-        foreach ($valuesForField as $value) {
-            if ($value === null) {
-                continue;
-            }
-            $this->extend('onBeforeAddDoc', $options, $value);
-            $this->addToDoc($doc, $options, $type, $value);
-        }
     }
 
     /**

@@ -6,6 +6,7 @@ namespace Firesphere\SolrSearch\Extensions;
 use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
@@ -18,8 +19,12 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
+use SilverStripe\Security\LoginAttempt;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\Versioned\ChangeSet;
+use SilverStripe\Versioned\ChangeSetItem;
 use SilverStripe\Versioned\Versioned;
 
 /**
@@ -61,17 +66,6 @@ class DataObjectExtension extends DataExtension
         if ($this->shouldPush() && !$owner->hasExtension(Versioned::class)) {
             $this->pushToSolr($owner);
         }
-    }
-
-    /**
-     * Should this write be pushed to Solr
-     *
-     * @return bool
-     */
-    protected function shouldPush()
-    {
-        return !(Controller::curr()->getRequest()->getURL() &&
-            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false);
     }
 
     /**
@@ -271,6 +265,16 @@ class DataObjectExtension extends DataExtension
         Security::setCurrentUser($currMember);
 
         return $return;
+    }
+
+    /**
+     * Should this write be pushed to Solr
+     * @return bool
+     */
+    protected function shouldPush()
+    {
+        return !(Controller::curr()->getRequest()->getURL() &&
+            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false);
     }
 
     /**

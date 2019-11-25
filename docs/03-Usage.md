@@ -27,6 +27,7 @@ Firesphere\SolrSearch\Services\SolrCoreService:
   store:
     mode: 'file'
     path: '.solr'
+  cores: 2
 
 ```
 
@@ -41,6 +42,26 @@ store:
   path: '/my_post_endpoint'
   uri: 'https://mydomain.com'
 ```
+
+#### Defining cores
+
+If your server has multiple cores available, you can define the amount of cores in the config.
+During indexing, this means that each core gets to do an indexing of a group.
+The advantage is that it takes all cores available, speeding up the indexing process by the amount of cores available.
+
+Because the amount of cores can not be determined programmatically, due to access control, you will have to define the amount of cores available manually.
+
+
+**NOTE**
+
+Given the current situation in server-land, the default amount of cores is 2. This should work fine for
+most situations, even if you only have one core available. If you have more cores, you can make this
+number larger, of course.
+
+**NOTE**
+
+Using all cores your system has, will make your website pretty slow during indexing! It is adviced to keep
+at least one core free for handling page visits, while you're running an index.
 
 ### Using init()
 
@@ -100,6 +121,6 @@ If available, you can access your Solr instance at `http://mydomain.com:8983`
 
 
 ----------
-\* Although not required, it's highly reccomended
+\* Although not required, it's highly recomended
 
 \*\* The second option of an array can be omitted and directly given the boost value

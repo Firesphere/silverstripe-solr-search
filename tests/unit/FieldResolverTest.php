@@ -56,6 +56,7 @@ class FieldResolverTest extends SapphireTest
 
     public function testGetFieldIntrospection()
     {
+//        $this->markTestSkipped('Currently broken, needs investigation as to why');
         $index = new CircleCITestIndex();
 
         $factory = new FieldResolver();

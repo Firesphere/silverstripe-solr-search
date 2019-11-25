@@ -9,6 +9,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use SilverStripe\Dev\Debug;
+use SilverStripe\ORM\DB;
 use SilverStripe\ORM\ValidationException;
 
 /**
@@ -99,14 +100,7 @@ class SolrLogger
                 'Index'     => $error['core'] ?? 'x:Unknown',
                 'Level'     => $error['level'],
             ];
-            if (!SolrLog::get()->filter($filter)->exists()) {
-                $logData = [
-                    'Message' => $error['message'],
-                    'Type'    => $type,
-                ];
-                $log = array_merge($filter, $logData);
-                SolrLog::create($log)->write();
-            }
+            $this->findOrCreateLog($type, $filter, $error);
         }
     }
 
@@ -131,5 +125,25 @@ class SolrLogger
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * @param $type
+     * @param array $filter
+     * @param $error
+     */
+    private function findOrCreateLog($type, array $filter, $error): void
+    {
+        if (!SolrLog::get()->filter($filter)->exists()) {
+            $logData = [
+                'Message' => $error['message'],
+                'Type'    => $type,
+            ];
+            $log = array_merge($filter, $logData);
+            $conn = DB::get_conn();
+            if ($conn) {
+                SolrLog::create($log)->write();
+            }
+        }
     }
 }

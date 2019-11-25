@@ -136,7 +136,15 @@ class FieldResolver
 
             $class = $this->getRelationData($lookup, $schema, $dataClass, $options);
 
-            list($options, $next) = $this->handleRelationData($source, $next, $options, $class, $dataClass);
+            if (is_string($class) && $class) {
+                if (!isset($options['origin'])) {
+                    $options['origin'] = $source;
+                }
+
+                // we add suffix here to prevent the relation to be overwritten by other instances
+                // all sources lookups must clean the source name before reading it via getSourceName()
+                $next[$class . '|xkcd|' . $dataClass] = $options;
+            }
         }
 
         return $next;
@@ -270,31 +278,6 @@ class FieldResolver
         }
 
         return null;
-    }
-
-    /**
-     * Figure out the relational data for the given source etc.
-     *
-     * @param string $source
-     * @param array $next
-     * @param array $options
-     * @param array|string|null $class
-     * @param string|null $dataClass
-     * @return array
-     */
-    protected function handleRelationData($source, array $next, array &$options, $class, $dataClass)
-    {
-        if (is_string($class) && $class) {
-            if (!isset($options['origin'])) {
-                $options['origin'] = $source;
-            }
-
-            // we add suffix here to prevent the relation to be overwritten by other instances
-            // all sources lookups must clean the source name before reading it via getSourceName()
-            $next[$class . '|xkcd|' . $dataClass] = $options;
-        }
-
-        return array($options, $next);
     }
 
     /**
