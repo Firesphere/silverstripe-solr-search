@@ -400,6 +400,8 @@ abstract class BaseIndex
             'synonyms.txt',
             $synonyms
         );
+
+        return $synonyms;
     }
 
     /**
