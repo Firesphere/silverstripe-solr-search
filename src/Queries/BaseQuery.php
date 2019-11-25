@@ -323,7 +323,7 @@ class BaseQuery
      * @param bool $followSpellcheck
      * @return BaseQuery
      */
-    public function setFollowSpellcheck(bool $followSpellcheck): BaseQuery
+    public function setFollowSpellcheck(bool $followSpellcheck): self
     {
         $this->followSpellcheck = $followSpellcheck;
 

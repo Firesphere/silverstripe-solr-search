@@ -39,8 +39,7 @@ trait QueryComponentFacetTrait
         $facets = $this->clientQuery->getFacetSet();
         // Facets should be set from the index configuration
         foreach ($this->index->getFacetFields() as $class => $config) {
-            $shortClass = getShortFieldName($class);
-            $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
+            $field = str_replace('.', '_', $config['Field']);
             /** @var Field $facet */
             $facet = $facets->createFacetField('facet-' . $config['Title']);
             $facet->setField($field);

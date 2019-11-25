@@ -206,15 +206,15 @@ class SearchResult
         // Get all the items in the set and push them in to the list
         $items = $this->getMatches();
         /** @var PaginatedList $paginated */
-        $paginated = PaginatedList::create($items, $request);
+        $paginated = PaginatedList::create($items->limit($this->query->getRows()), $request);
         // Do not limit the pagination, it's done at Solr level
-        $paginated->setLimitItems(false);
-        // Override the count that's set from the item count
-        $paginated->setTotalItems($this->getTotalItems());
-        // Set the start to the current page from start.
-        $paginated->setPageStart($this->query->getStart());
-        // The amount of items per page to display
-        $paginated->setPageLength($this->query->getRows());
+        $paginated->setLimitItems(false)
+            // Override the count that's set from the item count
+            ->setTotalItems($this->getTotalItems())
+            // Set the start to the current page from start.
+            ->setPageStart($this->query->getStart())
+            // The amount of items per page to display
+            ->setPageLength($this->query->getRows());
 
         return $paginated;
     }
@@ -231,6 +231,7 @@ class SearchResult
         $items = [];
         $idField = SolrCoreService::ID_FIELD;
         $classIDField = SolrCoreService::CLASS_ID_FIELD;
+        $length = $this->query->getRows();
         foreach ($matches as $match) {
             $item = $this->isDataObject($match, $classIDField);
             if ($item !== false) {
@@ -241,7 +242,7 @@ class SearchResult
             unset($match);
         }
 
-        return ArrayList::create($items);
+        return ArrayList::create($items)->limit($length);
     }
 
     /**
