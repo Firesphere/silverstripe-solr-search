@@ -181,7 +181,7 @@ class BaseIndexTest extends SapphireTest
     public function testGetSynonyms()
     {
         $store = new FileConfigStore(['path' => '.solr']);
-        $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms($store, ));
+        $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms($store));
 
         $this->assertEmpty(trim($this->index->getSynonyms($store, false)));
     }
