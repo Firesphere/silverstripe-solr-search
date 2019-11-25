@@ -139,7 +139,7 @@ class BaseIndexTest extends SapphireTest
         $facets = $index->getFacetFields();
         $this->assertEquals([
             'Title' => 'Parent',
-            'Field' => 'SiteTree_ParentID',
+            'Field' => 'ParentID',
         ], $facets[SiteTree::class]);
         $query = new BaseQuery();
         $query->addTerm('Test');
@@ -157,7 +157,7 @@ class BaseIndexTest extends SapphireTest
         $query->addFacetFilter('Parent', $id);
         $result = $index->buildSolrQuery($query);
         $filterQuery = $result->getFilterQuery('facet-Parent');
-        $this->assertEquals('SiteTree_ParentID:' . $id, $filterQuery->getQuery());
+        $this->assertEquals('ParentID:' . $id, $filterQuery->getQuery());
         $query->setHighlight(['Test']);
         $result = $index->doSearch($query);
         $this->assertInstanceOf(Highlighting::class, $result->getHighlight());

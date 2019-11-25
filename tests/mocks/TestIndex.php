@@ -7,7 +7,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\TestOnly;
 
-class TestIndex extends BaseIndex implements TestOnly
+class TestIndex extends BaseIndex
 {
     protected $facetFields = [
         SiteTree::class => [
