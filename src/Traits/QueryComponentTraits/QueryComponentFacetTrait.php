@@ -60,8 +60,7 @@ trait QueryComponentFacetTrait
             ) {
                 // @todo add unit tests for this bit. It's crucial but untested
                 $filter = is_array($filter) ? $filter : [$filter];
-                $shortClass = getShortFieldName($class);
-                $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
+                $field = str_replace('.', '_', $config['Field']);
                 $criteria = Criteria::where($field)->in($filter);
                 $this->clientQuery
                     ->createFilterQuery('facet-' . $config['Title'])

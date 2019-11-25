@@ -12,7 +12,7 @@ class TestIndex extends BaseIndex implements TestOnly
     protected $facetFields = [
         SiteTree::class => [
             'Title' => 'Parent',
-            'Field' => 'ParentID',
+            'Field' => 'SiteTree_ParentID',
         ],
     ];
 

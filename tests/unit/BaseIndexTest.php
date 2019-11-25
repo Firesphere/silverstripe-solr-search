@@ -139,7 +139,7 @@ class BaseIndexTest extends SapphireTest
         $facets = $index->getFacetFields();
         $this->assertEquals([
             'Title' => 'Parent',
-            'Field' => 'ParentID',
+            'Field' => 'SiteTree_ParentID',
         ], $facets[SiteTree::class]);
         $query = new BaseQuery();
         $query->addTerm('Test');

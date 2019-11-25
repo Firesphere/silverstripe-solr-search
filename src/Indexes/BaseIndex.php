@@ -218,9 +218,9 @@ abstract class BaseIndex
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
 //            throw new Exception($e);
+            Debug::dump($e->getMessage());
         }
 
-        Debug::dump($e->getMessage());
 
         $this->rawQuery = $result;
 
@@ -388,9 +388,9 @@ abstract class BaseIndex
      * Add synonyms. Public to be extendable
      *
      * @param bool $defaults Include UK to US synonyms
-     * @return null
+     * @return string
      */
-    public function getSynonyms($store, $defaults = true)
+    public function getSynonyms($store, $defaults = true): string
     {
         $synonyms = Synonyms::getSynonymsAsString($defaults);
         $syn = SearchSynonym::get();
