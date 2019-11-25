@@ -3,7 +3,9 @@
 namespace Firesphere\SolrSearch\Admins;
 
 use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Models\SolrLog;
+use Firesphere\SolrSearch\Models\Synonyms;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\View\Requirements;
 
@@ -22,6 +24,7 @@ class SearchAdmin extends ModelAdmin
      * @var array
      */
     private static $managed_models = [
+        SearchSynonym::class,
         SolrLog::class,
         DirtyClass::class,
     ];

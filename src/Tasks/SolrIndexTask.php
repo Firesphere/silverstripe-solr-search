@@ -376,7 +376,7 @@ class SolrIndexTask extends BuildTask
             $pids[$i] = $pid;
             $start = $group + $i;
             if (!$pid && $start <= $groups) {
-                $this->doReindex($start, $class, $index, true);
+                $this->doReindex($group + $i, $class, $index, true);
             }
         }
 

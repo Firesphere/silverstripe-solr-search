@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SchemaService;
@@ -369,15 +370,7 @@ abstract class BaseIndex
             $schema
         );
 
-
-        $synonyms = $this->getSynonyms();
-
-        // Upload synonyms
-        $store->uploadString(
-            $this->getIndexName(),
-            'synonyms.txt',
-            $synonyms
-        );
+        $this->getSynonyms($store);
 
         // Upload additional files
         foreach (glob($this->schemaService->getExtrasPath() . '/*') as $file) {
@@ -391,14 +384,22 @@ abstract class BaseIndex
      * Add synonyms. Public to be extendable
      *
      * @param bool $defaults Include UK to US synonyms
-     * @return string
+     * @return null
      */
-    public function getSynonyms($defaults = true): string
+    public function getSynonyms($store, $defaults = true)
     {
         $synonyms = Synonyms::getSynonymsAsString($defaults);
-        $siteConfigSynonyms = SiteConfig::current_site_config()->getField('SearchSynonyms');
+        $syn = SearchSynonym::get();
+        foreach ($syn as $synonym) {
+            $synonyms .= "\n" . $synonym->Keyword . ',' . $synonym->Synonym;
+        }
 
-        return sprintf('%s%s', $synonyms, $siteConfigSynonyms);
+        // Upload synonyms
+        $store->uploadString(
+            $this->getIndexName(),
+            'synonyms.txt',
+            $synonyms
+        );
     }
 
     /**
