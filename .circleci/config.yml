@@ -243,13 +243,13 @@ jobs:
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-subsite-solr.git subsite -q ;; esac
       - restore_cache:
           keys:
-            - silverstripe-search-yarn-{{ checksum "yarn.lock" }}
+            - silverstripe-search-yarn
             # fallback to using the latest cache if no exact match is found
             - silverstripe-search-yarn-
       - run:
           name: Yarn
           command: |
-            yarn install
+            yarn install -g markdown-folder-to-html
       - save_cache:
           key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
           paths:
@@ -265,7 +265,7 @@ jobs:
           command: |
             rm -rf solr
             case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr ;; esac
-            yarn docs
+            markdown-folder-to-html solr-search/docs
       - run:
           name: Commit and upload
           command: |
