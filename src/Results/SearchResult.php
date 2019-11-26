@@ -208,13 +208,13 @@ class SearchResult
         /** @var PaginatedList $paginated */
         $paginated = PaginatedList::create($items, $request);
         // Do not limit the pagination, it's done at Solr level
-        $paginated->setLimitItems(false);
-        // Override the count that's set from the item count
-        $paginated->setTotalItems($this->getTotalItems());
-        // Set the start to the current page from start.
-        $paginated->setPageStart($this->query->getStart());
-        // The amount of items per page to display
-        $paginated->setPageLength($this->query->getRows());
+        $paginated->setLimitItems(true)
+            // Override the count that's set from the item count
+            ->setTotalItems($this->getTotalItems())
+            // Set the start to the current page from start.
+            ->setPageStart($this->query->getStart())
+            // The amount of items per page to display
+            ->setPageLength($this->query->getRows());
 
         return $paginated;
     }
@@ -241,7 +241,7 @@ class SearchResult
             unset($match);
         }
 
-        return ArrayList::create($items);
+        return ArrayList::create($items)->limit($this->query->getRows());
     }
 
     /**

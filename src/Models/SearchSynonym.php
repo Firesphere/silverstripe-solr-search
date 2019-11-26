@@ -29,7 +29,12 @@ class SearchSynonym extends DataObject
     {
         $fields = parent::getCMSFields();
 
-        $fields->dataFieldByName('Synonym')->setDescription(_t(__CLASS__ . '.SYNONYM', 'Create synonyms for a given keyword, add as many synonyms comma separated.'));
+        $fields->dataFieldByName('Synonym')->setDescription(
+            _t(
+                __CLASS__ . '.SYNONYM',
+                'Create synonyms for a given keyword, add as many synonyms comma separated.'
+            )
+        );
 
         return $fields;
     }
