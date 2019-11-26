@@ -267,7 +267,7 @@ jobs:
             case $CIRCLE_BRANCH in "master") rm -rf solr ;;esac
             case $CIRCLE_BRANCH in "master") rm -rf solr-api ;; esac
             case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr-api ;; esac
-            cp -r search/docs .
+            cp -r ./search/docs .
             yarn docs
             rm -rf docs
             mv docs solr-docs
@@ -275,7 +275,8 @@ jobs:
       - run:
           name: Commit and upload
           command: |
-            case $CIRCLE_BRANCH in "master") git add solr ;; esac
+            case $CIRCLE_BRANCH in "master") git add solr-api ;; esac
+            case $CIRCLE_BRANCH in "master") git add solr-docs ;; esac
             case $CIRCLE_BRANCH in "master") git commit -m "API doc update for Solr from CircleCI update" ;; esac
             case $CIRCLE_BRANCH in "master") git push ;; esac
 workflows:
