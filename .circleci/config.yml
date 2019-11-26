@@ -231,8 +231,8 @@ jobs:
       - run:
           name: Setup SSH if its master
           command: |
-            case $CIRCLE_BRANCH in "master") touch ~/.ssh/known_hosts ;; esac
-            case $CIRCLE_BRANCH in "master") ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts ;; esac
+            touch ~/.ssh/known_hosts
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - run:
           name: Install repositories
           command: |
