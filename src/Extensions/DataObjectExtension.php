@@ -76,7 +76,7 @@ class DataObjectExtension extends DataExtension
      * @throws GuzzleException
      * @throws ReflectionException
      */
-    protected function pushToSolr(DataObject $owner): void
+    protected function pushToSolr(DataObject $owner)
     {
         $service = new SolrCoreService();
         if (!$service->isValidClass($owner->ClassName)) {
@@ -94,11 +94,11 @@ class DataObjectExtension extends DataExtension
             // If we don't get an exception, mark the item as clean
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
-            Versioned::set_reading_mode($mode);
         } catch (Exception $error) {
             Versioned::set_reading_mode($mode);
             $this->registerException($ids, $record, $error);
         }
+        Versioned::set_reading_mode($mode);
     }
 
     /**
@@ -248,6 +248,7 @@ class DataObjectExtension extends DataExtension
 
         if ($owner->canView(null)) {
             self::$canViewClasses[$owner->ClassName] = ['1-null'];
+            Security::setCurrentUser($currMember);
 
             // Anyone can view
             return ['1-null'];
