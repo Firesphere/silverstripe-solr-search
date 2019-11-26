@@ -225,9 +225,9 @@ jobs:
       - run:
           name: Install Graphviz and yarn
           command: |
-            case $CIRCLE_BRANCH in "master") curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - ;; esac
-            case $CIRCLE_BRANCH in "master") echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list ;; esac
-            case $CIRCLE_BRANCH in "master") sudo apt update && sudo apt install graphviz yarn -y ;; esac
+            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt update && sudo apt install graphviz yarn -y
       - run:
           name: Setup SSH
           command: |
