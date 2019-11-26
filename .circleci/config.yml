@@ -249,7 +249,7 @@ jobs:
       - run:
           name: Yarn
           command: |
-            yarn install -g markdown-folder-to-html
+            yarn global add markdown-folder-to-html
       - save_cache:
           key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
           paths:
