@@ -377,26 +377,4 @@ class FieldResolver
 
         return $found;
     }
-
-    /**
-     * @param array $next
-     * @param array|string $class
-     * @param array $options
-     * @param string $dataClass
-     * @return array
-     */
-    protected function getNextOption(array $next, $class, array $options, $dataClass): array
-    {
-        if (is_string($class) && $class) {
-            if (!isset($options['origin'])) {
-                $options['origin'] = $dataClass;
-            }
-
-            // we add suffix here to prevent the relation to be overwritten by other instances
-            // all sources lookups must clean the source name before reading it via getSourceName()
-            $next[$class . '|xkcd|' . $dataClass] = $options;
-        }
-
-        return [$options, $next];
-    }
 }

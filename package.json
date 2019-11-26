@@ -6,14 +6,16 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "laravel-mix": "^4.1.2",
+    "markdown-folder-to-html": "^2.3.0",
+    "sass": "^1.22.10",
     "sass-loader": "^7.3.1",
     "vue-template-compiler": "^2.6.10",
-    "webpack-bundle-analyzer": "^3.4.1",
-    "sass": "^1.22.10"
+    "webpack-bundle-analyzer": "^3.4.1"
   },
   "scripts": {
     "build": "NODE_ENV=development ./node_modules/.bin/webpack-cli --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "yarn build --watch",
-    "package": "NODE_ENV=production ./node_modules/.bin/webpack-cli --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "package": "NODE_ENV=production ./node_modules/.bin/webpack-cli --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "docs": "markdown-folder-to-html"
   }
 }

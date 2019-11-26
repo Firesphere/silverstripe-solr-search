@@ -14,7 +14,10 @@ Full documentation in the docs folder
 https://solarium.readthedocs.io
 
 ## API Docs:
-https://firesphere.github.io/solr/
+https://firesphere.github.io/solr-api/
+
+## Usage docs:
+https://firesphere.github.io/solr-docs/
 
 # Installing Solr locally
 
