@@ -7,6 +7,12 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\ORM\DataObject;
 
+/**
+ * Class \Firesphere\SolrSearch\Models\SearchSynonym
+ *
+ * @property string $Keyword
+ * @property string $Synonym
+ */
 class SearchSynonym extends DataObject
 {
     private static $table_name = 'SearchSynonym';
