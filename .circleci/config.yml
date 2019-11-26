@@ -266,6 +266,7 @@ jobs:
           command: |
             rm -rf solr
             rm -rf solr-api
+            rm -rf solr-docs
             php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr-api
             cp -r ./search/docs .
             yarn docs
