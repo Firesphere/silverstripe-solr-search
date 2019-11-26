@@ -384,7 +384,7 @@ abstract class BaseIndex
      * Add synonyms. Public to be extendable
      *
      * @param bool $defaults Include UK to US synonyms
-     * @return null
+     * @return string
      */
     public function getSynonyms($store = null, $defaults = true)
     {
