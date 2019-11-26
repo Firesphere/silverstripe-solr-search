@@ -386,7 +386,7 @@ abstract class BaseIndex
      * @param bool $defaults Include UK to US synonyms
      * @return null
      */
-    public function getSynonyms($store, $defaults = true)
+    public function getSynonyms($store = null, $defaults = true)
     {
         $synonyms = Synonyms::getSynonymsAsString($defaults);
         $syn = SearchSynonym::get();
@@ -395,11 +395,15 @@ abstract class BaseIndex
         }
 
         // Upload synonyms
-        $store->uploadString(
-            $this->getIndexName(),
-            'synonyms.txt',
-            $synonyms
-        );
+        if ($store) {
+            $store->uploadString(
+                $this->getIndexName(),
+                'synonyms.txt',
+                $synonyms
+            );
+        }
+
+        return $synonyms;
     }
 
     /**
