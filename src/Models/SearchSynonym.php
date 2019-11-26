@@ -16,22 +16,22 @@ use SilverStripe\ORM\DataObject;
 class SearchSynonym extends DataObject
 {
     /**
-     * @var string
+     * @var string Table name
      */
     private static $table_name = 'SearchSynonym';
 
     /**
-     * @var string
+     * @var string Singular name
      */
     private static $singular_name = 'Search synonym';
 
     /**
-     * @var string
+     * @var string Plural name
      */
     private static $plural_name = 'Search synonyms';
 
     /**
-     * @var array
+     * @var array DB Fields
      */
     private static $db = [
         'Keyword' => 'Varchar(255)',
@@ -39,7 +39,7 @@ class SearchSynonym extends DataObject
     ];
 
     /**
-     * @var array
+     * @var array Summary fields
      */
     private static $summary_fields = [
         'Keyword',
@@ -47,6 +47,8 @@ class SearchSynonym extends DataObject
     ];
 
     /**
+     * Get the required CMS Fields for this synonym
+     *
      * @return FieldList
      */
     public function getCMSFields()

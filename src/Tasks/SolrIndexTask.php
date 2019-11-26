@@ -73,6 +73,11 @@ class SolrIndexTask extends BuildTask
     protected $service;
 
     /**
+     * @var int
+     */
+    protected $batchLength = 1;
+
+    /**
      * SolrIndexTask constructor. Sets up the document factory
      *
      * @throws ReflectionException
@@ -239,8 +244,8 @@ class SolrIndexTask extends BuildTask
     private function indexClass($isGroup, $class, BaseIndex $index, int $group): int
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
-        $batchLength = DocumentFactory::config()->get('batchLength');
-        $groups = (int)ceil($class::get()->count() / $batchLength);
+        $this->batchLength = DocumentFactory::config()->get('batchLength');
+        $groups = (int)ceil($class::get()->count() / $this->batchLength);
         $cores = SolrCoreService::config()->get('cores') ?: 1;
         $groups = $isGroup ? ($group + $cores - 1) : $groups;
         $this->getLogger()->info(sprintf('Total groups %s', $groups));
@@ -296,19 +301,17 @@ class SolrIndexTask extends BuildTask
      *
      * @param $group
      * @param $class
-     * @param $batchLength
      * @param BaseIndex $index
      * @throws Exception
      */
     private function stateReindex($group, $class, BaseIndex $index): void
     {
-        $batchLength = DocumentFactory::config()->get('batchLength');
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
         $items = DataObject::get($baseClass)
             ->sort('ID ASC')
-            ->limit($batchLength, ($group * $batchLength));
+            ->limit($this->batchLength, ($group * $this->batchLength));
         if ($items->count()) {
             $this->updateIndex($index, $items);
         }

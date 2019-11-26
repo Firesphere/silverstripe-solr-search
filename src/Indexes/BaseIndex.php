@@ -383,6 +383,7 @@ abstract class BaseIndex
     /**
      * Add synonyms. Public to be extendable
      *
+     * @param ConfigStore $store Store to use to write synonyms
      * @param bool $defaults Include UK to US synonyms
      * @return string
      */

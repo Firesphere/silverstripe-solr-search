@@ -172,7 +172,7 @@ class SolrCoreService
      * @param null|string $index
      * @return array
      */
-    public function getValidIndexes($index = null): ?array
+    public function getValidIndexes($index = null): array
     {
         if ($index && !in_array($index, $this->validIndexes, true)) {
             throw new LogicException('Incorrect index ' . $index);

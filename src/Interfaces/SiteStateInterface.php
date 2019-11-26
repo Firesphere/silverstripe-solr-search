@@ -36,7 +36,7 @@ interface SiteStateInterface
      *
      * @return string|null
      */
-    public function currentState(): ?string;
+    public function currentState();
 
     /**
      * Activate a given state. This should only be done if the state is applicable
