@@ -249,7 +249,8 @@ jobs:
       - run:
           name: Yarn
           command: |
-            yarn global add markdown-folder-to-html
+            echo "{"scripts": {"docs": "markdown-folder-to-html ./solr-search/docs"}}" > package.json
+            yarn add markdown-folder-to-html
       - save_cache:
           key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
           paths:
@@ -265,7 +266,7 @@ jobs:
           command: |
             rm -rf solr
             case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr ;; esac
-            markdown-folder-to-html solr-search/docs
+            yarn docs
       - run:
           name: Commit and upload
           command: |
