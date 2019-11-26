@@ -223,9 +223,11 @@ jobs:
           fingerprints:
             - "18:12:44:3c:09:ac:67:45:f3:b8:6c:bd:df:77:97:f3"
       - run:
-          name: Install Graphviz
+          name: Install Graphviz and yarn
           command: |
-            case $CIRCLE_BRANCH in "master") sudo apt-get update && sudo apt-get install graphviz -y ;; esac
+            case $CIRCLE_BRANCH in "master") curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - ;; esac
+            case $CIRCLE_BRANCH in "master") echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list ;; esac
+            case $CIRCLE_BRANCH in "master") sudo apt update && sudo apt install graphviz yarn -y ;; esac
       - run:
           name: Setup SSH
           command: |
@@ -239,6 +241,19 @@ jobs:
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q ;; esac
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-fluent-solr.git fluent -q ;; esac
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-subsite-solr.git subsite -q ;; esac
+      - restore_cache:
+          keys:
+            - silverstripe-search-yarn-{{ checksum "package.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - silverstripe-search-yarn-
+      - run:
+          name: Yarn
+          command: |
+            yarn install
+      - save_cache:
+          key: silverstripe-search-yarn-{{ checksum "package.lock" }}
+          paths:
+            - node_modules
       - run:
           name: Setup git
           command: |
@@ -250,6 +265,7 @@ jobs:
           command: |
             rm -rf solr
             case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr ;; esac
+            yarn docs
       - run:
           name: Commit and upload
           command: |
