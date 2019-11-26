@@ -242,8 +242,8 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
         $batchLength = DocumentFactory::config()->get('batchLength');
         $groups = (int)ceil($class::get()->count() / $batchLength);
-        $groups = $isGroup ? $group : $groups;
         $cores = SolrCoreService::config()->get('cores') ?: 1;
+        $groups = $isGroup ? ($group + $cores - 1) : $groups;
         $this->getLogger()->info(sprintf('Total groups %s', $groups));
         do { // Run from oldest to newest
             try {
@@ -271,8 +271,8 @@ class SolrIndexTask extends BuildTask
      *
      * @param int $group
      * @param string $class
-     * @param int $batchLength
      * @param BaseIndex $index
+     * @param bool $pcntl
      * @throws Exception
      */
     private function doReindex($group, $class, BaseIndex $index, $pcntl = false)
@@ -355,6 +355,9 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * For each core, spawn a child process that will handle a separate group.
+     * This speeds up indexing through CLI massively.
+     *
      * @param string $class
      * @param BaseIndex $index
      * @param int $group

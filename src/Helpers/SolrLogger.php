@@ -128,6 +128,8 @@ class SolrLogger
     }
 
     /**
+     * Attempt to find, otherwise create, a log object
+     *
      * @param $type
      * @param array $filter
      * @param $error
