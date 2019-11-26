@@ -229,7 +229,7 @@ jobs:
             echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
             sudo apt update && sudo apt install graphviz yarn -y
       - run:
-          name: Setup SSH if its master
+          name: Setup SSH access to github
           command: |
             touch ~/.ssh/known_hosts
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
@@ -270,7 +270,7 @@ jobs:
             cp -r ./search/docs .
             yarn docs
             rm -rf docs
-            mv docs solr-docs
+            mv _docs solr-docs
       - run: ls -anh search
       - run:
           name: Commit and upload if it's master
