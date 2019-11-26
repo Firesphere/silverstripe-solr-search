@@ -271,7 +271,6 @@ jobs:
             yarn docs
             rm -rf docs
             mv _docs solr-docs
-      - run: ls -anh search
       - run:
           name: Commit and upload if it's master
           command: |
