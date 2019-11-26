@@ -276,10 +276,6 @@ class SolrIndexTask extends BuildTask
      */
     private function doReindex($group, $class, BaseIndex $index, $pcntl = false)
     {
-        if ($pcntl) {
-            $config = DB::getConfig();
-            DB::connect($config);
-        }
         foreach (SiteState::getStates() as $state) {
             if ($state !== 'default' && !empty($state)) {
                 SiteState::withState($state);
@@ -369,14 +365,16 @@ class SolrIndexTask extends BuildTask
     private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
     {
         $pids = [];
-        $start = $group;
         for ($i = 0; $i < $cores; $i++) {
+            $start = $group;
             $pid = pcntl_fork();
             // PID needs to be pushed before anything else, for some reason
             $pids[$i] = $pid;
             $start = $group + $i;
+            $config = DB::getConfig();
+            DB::connect($config);
             if (!$pid && $start <= $groups) {
-                $this->doReindex($group + $i, $class, $index, true);
+                $this->doReindex($start, $class, $index, true);
             }
         }
 
