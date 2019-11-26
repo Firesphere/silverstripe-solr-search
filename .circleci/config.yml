@@ -249,7 +249,7 @@ jobs:
       - run:
           name: Yarn
           command: |
-            echo '{"scripts": {"docs": "markdown-folder-to-html ./solr-search/docs"}}' > package.json
+            echo '{"scripts": {"docs": "markdown-folder-to-html ./search/docs"}}' > package.json
             yarn add markdown-folder-to-html
       - save_cache:
           key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
@@ -267,6 +267,7 @@ jobs:
             case $CIRCLE_BRANCH in "master") rm -rf solr-api ;; esac
             case $CIRCLE_BRANCH in "master") php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr-api ;; esac
             yarn docs
+      - run: ls -anh search
       - run:
           name: Commit and upload
           command: |
