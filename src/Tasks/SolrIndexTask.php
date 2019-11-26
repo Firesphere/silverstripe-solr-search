@@ -125,7 +125,6 @@ class SolrIndexTask extends BuildTask
      * @return int|bool
      * @throws Exception
      * @throws GuzzleException
-     * @todo defer to background because it may run out of memory
      */
     public function run($request)
     {
