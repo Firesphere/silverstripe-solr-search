@@ -18,6 +18,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -248,8 +249,8 @@ class SolrIndexTask extends BuildTask
             try {
                 // The unittest param is from phpunit.xml.dist, meant to bypass the exit(0) call
                 if (function_exists('pcntl_fork') &&
-                    !Controller::curr()->getRequest()->getVar('unittest')) {
-                    // for each core, start a grouped indexing
+                    !Controller::curr()->getRequest()->getVar('unittest')
+                ) {
                     $group = $this->spawnChildren($class, $index, $group, $cores, $groups);
                 } else {
                     $this->doReindex($group, $class, $index);
@@ -364,24 +365,27 @@ class SolrIndexTask extends BuildTask
      */
     private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
     {
+        $start = $group;
         $pids = [];
+        // for each core, start a grouped indexing
         for ($i = 0; $i < $cores; $i++) {
-            $start = $group;
-            $pid = pcntl_fork();
-            // PID needs to be pushed before anything else, for some reason
-            $pids[$i] = $pid;
-            $start = $group + $i;
-            $config = DB::getConfig();
-            DB::connect($config);
-            if (!$pid && $start <= $groups) {
-                $this->doReindex($start, $class, $index, true);
+            $start =  $group + $i;
+            if ($start < $groups) {
+                $pid = pcntl_fork();
+                // PID needs to be pushed before anything else, for some reason
+                $pids[$i] = $pid;
+                $config = DB::getConfig();
+                DB::connect($config);
+                if (!$pid) {
+                    $this->doReindex($start, $class, $index, true);
+                }
             }
         }
-
         // Wait for each child to finish
-        foreach ($pids as $pid) {
-            if ($pid) {
-                pcntl_waitpid($pid, $status);
+        foreach ($pids as $key => $pid) {
+            pcntl_waitpid($pid, $status);
+            if ($status === 0) {
+                unset($pids[$key]);
             }
         }
 
