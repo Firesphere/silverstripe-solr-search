@@ -243,7 +243,7 @@ jobs:
             case $CIRCLE_BRANCH in "master") git clone git@github.com:Firesphere/silverstripe-subsite-solr.git subsite -q ;; esac
       - restore_cache:
           keys:
-            - silverstripe-search-yarn-{{ checksum "package.lock" }}
+            - silverstripe-search-yarn-{{ checksum "yarn.lock" }}
             # fallback to using the latest cache if no exact match is found
             - silverstripe-search-yarn-
       - run:
@@ -251,7 +251,7 @@ jobs:
           command: |
             yarn install
       - save_cache:
-          key: silverstripe-search-yarn-{{ checksum "package.lock" }}
+          key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
       - run:
