@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.x
+
+- Documentation updates
+- Bump the version to leave bugs behind
+
+## 0.8.x
+
+- Use multi-threaded indexing
+- Fix error with buffer adding
+- Initial Synonym support
+
 ## 0.7.5 Notable updates
 
 - Added `Add[X]Fields()`
