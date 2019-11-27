@@ -870,6 +870,19 @@
         </arr>
     </requestHandler>
 
+
+    <requestHandler name="/suggest" class="solr.SearchHandler" startup="lazy">
+        <lst name="defaults">
+            <str name="suggest.dictionary">Suggester</str>
+            <str name="suggest">true</str>
+            <str name="suggest.count">10</str>
+        </lst>
+        <arr name="components">
+            <str>suggest</str>
+        </arr>
+    </requestHandler>
+
+
     <!-- A request handler that returns indented JSON by default -->
     <requestHandler name="/query" class="solr.SearchHandler">
         <lst name="defaults">
@@ -1671,6 +1684,18 @@
             </boundaryScanner>
         </highlighting>
     </searchComponent>
+
+
+    <searchComponent name="suggest" class="solr.SuggestComponent">
+        <lst name="suggester">
+            <str name="name">Suggester</str>
+            <str name="field">_text</str>
+            <str name="suggestAnalyzerFieldType">string</str>
+            <str name="buildOnStartup">true</str>
+            <str name="buildOnCommit">true</str>
+        </lst>
+    </searchComponent>
+
 
     <!-- Update Processors
 
