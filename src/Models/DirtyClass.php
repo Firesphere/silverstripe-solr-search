@@ -24,6 +24,14 @@ class DirtyClass extends DataObject
      */
     private static $table_name = 'DirtyClass';
     /**
+     * @var string Singular name
+     */
+    private static $singular_name = 'Dirty class';
+    /**
+     * @var string Plural name
+     */
+    private static $plural_name = 'Dirty classes';
+    /**
      * @var array Database fields
      */
     private static $db = [
