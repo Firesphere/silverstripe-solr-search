@@ -91,7 +91,7 @@ class DataObjectExtension extends DataExtension
             Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
             $service->setInDebugMode(false);
             $type = SolrCoreService::UPDATE_TYPE;
-            // If the object should show in search, remove it
+            // If the object should not show in search, remove it
             if ($owner->ShowInSearch === 0) {
                 $type = SolrCoreService::DELETE_TYPE;
             }
