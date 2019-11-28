@@ -10,6 +10,13 @@ en:
       one: 'A Dirty Class'
       other: '{count} Dirty Classs'
     SINGULARNAME: 'Dirty Class'
+  Firesphere\SolrSearch\Models\SearchSynonym:
+    PLURALNAME: 'Search synonyms'
+    PLURALS:
+      one: 'A Search synonym'
+      other: '{count} Search synonyms'
+    SINGULARNAME: 'Search synonym'
+    SYNONYM: 'Create synonyms for a given keyword, add as many synonyms comma separated.'
   Firesphere\SolrSearch\Models\SolrLog:
     PERMISSION_DELETE_DESCRIPTION: 'Delete Solr logs'
     PERMISSION_DELETE_HELP: 'Permission required to delete existing Solr logs.'

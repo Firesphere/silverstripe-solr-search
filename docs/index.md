@@ -6,5 +6,6 @@
 05. [CMS Usage](05-CMS-Usage.md)
 06. [Fulltext Search compatibility](06-Fulltext-Search-Compatibility.md)
 07. [Debugging](07-Debugging.md)
-08. [About](08-About.md)
+08. [Suggestions](08-Suggestions.md)
+10. [About](10-About.md)
 11. [FAQ](11-FAQ.md)
