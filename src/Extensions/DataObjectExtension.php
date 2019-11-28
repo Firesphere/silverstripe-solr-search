@@ -90,7 +90,12 @@ class DataObjectExtension extends DataExtension
         try {
             Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
             $service->setInDebugMode(false);
-            $service->updateItems(ArrayList::create([$owner]), SolrCoreService::UPDATE_TYPE);
+            $type = SolrCoreService::UPDATE_TYPE;
+            // If the object should show in search, remove it
+            if ($owner->ShowInSearch === 0) {
+                $type = SolrCoreService::DELETE_TYPE;
+            }
+            $service->updateItems(ArrayList::create([$owner]),$type);
             // If we don't get an exception, mark the item as clean
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
