@@ -32,9 +32,9 @@
  PERFORMANCE NOTE: this schema includes many optional features and should not
  be used for benchmarking.  To improve performance one could
   - set stored="false" for all fields possible (esp large fields) when you
-    only need to search on the field but don't need to return the original
+    only need to search on the field but don"t need to return the original
     value.
-  - set indexed="false" if you don't need to search on the field, but only
+  - set indexed="false" if you don"t need to search on the field, but only
     return the field as a result of searching on other indexed fields.
   - remove all unneeded copyField statements
   - for best index size and searching performance, set "index" to false
@@ -50,25 +50,25 @@
     $Types
     <fields>
         <%-- Default fields, needed for all items --%>
-        <field name='$IDField' type='string' indexed='true' stored='true' required='true'/>
-        <field name='$ClassID' type='tint' indexed='true' stored='true' required='true'/>
-        <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
-        <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-        <field name='ViewStatus' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
+        <field name="$IDField" type="string" indexed="true" stored="true" required="true"/>
+        <field name="$ClassID" type="tint" indexed="true" stored="true" required="true"/>
+        <field name="ClassName" type="string" indexed="true" stored="true" required="true"/>
+        <field name="ClassHierarchy" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="ViewStatus" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
         <!-- Copyfields -->
         <% loop $CopyFields %>
-            <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
+            <field name="$Field" type="stemfield" indexed="true" stored="true" multiValued="true"/>
         <% end_loop %>
         <!-- End Copyfields -->
         <!-- Fulltext fields -->
         <% loop $FulltextFieldDefinitions %>
-            <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
+            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
         <% end_loop %>
         <!-- End Fulltext fields -->
 
         <!-- Filter/Facet fields -->
         <% loop $FilterFieldDefinitions %>
-            <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
+            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
         <% end_loop %>
         <!-- End Filter/Facet fields -->
 
@@ -76,7 +76,7 @@
     </fields>
 
     <% loop $CopyFieldDefinitions %>
-        <copyField source='$Field' dest='$Destination'/>
+        <copyField source="$Field" dest="$Destination"/>
     <% end_loop %>
 
     <uniqueKey>$IDField</uniqueKey>

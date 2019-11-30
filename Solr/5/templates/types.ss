@@ -153,8 +153,22 @@
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="false"/>
         <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
+    <analyzer type="index">
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
+    </analyzer>
 </fieldType>
-
+<fieldType name="stemfield" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
+    <analyzer type="index">
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+    </analyzer>
+</fieldType>
 <!-- A copy of text that has the HTMLStripCharFilterFactory as the first index analyzer, so that html can be provided -->
 <fieldType name="htmltext" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
     <analyzer type="index">
@@ -165,6 +179,7 @@
                 catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+        <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
     <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
