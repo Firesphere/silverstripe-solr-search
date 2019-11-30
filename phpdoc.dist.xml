@@ -15,7 +15,7 @@
         <target>output</target>
     </transformer>
     <transformations>
-        <template name="responsive-twig" />
+        <template name="clean" />
     </transformations>
     <files>
         <directory>src</directory>
