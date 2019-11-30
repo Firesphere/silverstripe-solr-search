@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Firesphere Solr Search user/dev documentation</title>
     <style>
         /*! ADAPTED
       Typeplate : Starter Kit
@@ -403,6 +404,7 @@
                 /* left col width "#menu" */
                 left: 0;
             }
+
             #menu {
                 left: 250px;
             }
@@ -439,6 +441,7 @@
         h6[id] {
             position: relative;
         }
+
         .heading-anchor-permalink {
             /* Position the permalink to the left of the title */
             position: absolute;
@@ -448,6 +451,7 @@
             /* Make it only visible on heading hover, see below */
             opacity: 0;
         }
+
         h1[id]:hover .heading-anchor-permalink,
         h2[id]:hover .heading-anchor-permalink,
         h3[id]:hover .heading-anchor-permalink,
@@ -457,8 +461,8 @@
             opacity: 0.5;
         }
     </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8"/>
 </head>
 
 <body>
@@ -475,12 +479,28 @@
         <!--CONTENT-->
     </article>
 </div>
-<script>
-    // Load contents.json if you need it
+<script type="text/javascript">
+    var _paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+        var u = "https://piwik.casa-laguna.net/";
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '13']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'matomo.js';
+        s.parentNode.insertBefore(g, s);
+    })();
 </script>
+<noscript><p><img src="https://piwik.casa-laguna.net/matomo.php?idsite=13&amp;rec=1" style="border:0;" alt=""/></p>
+</noscript>
 <script>
     // FROM http://purecss.io/js/ui.js
-    (function(window, document) {
+    (function (window, document) {
         var layout = document.getElementById("layout"),
             menu = document.getElementById("menu"),
             menuLink = document.getElementById("menuLink");
@@ -504,7 +524,7 @@
             element.className = classes.join(" ");
         }
 
-        menuLink.onclick = function(e) {
+        menuLink.onclick = function (e) {
             var active = "active";
 
             e.preventDefault();
@@ -515,7 +535,7 @@
     })(this, this.document);
 </script>
 <script>
-    (function() {
+    (function () {
         var codeTags = document.querySelectorAll('code[class^="language-"]');
         for (var tag of codeTags) {
             tag.className = tag.className.replace("language-", "prettyprint lang-");
