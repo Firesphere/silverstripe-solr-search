@@ -245,10 +245,10 @@ class SolrIndexTask extends BuildTask
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
         $this->batchLength = DocumentFactory::config()->get('batchLength');
-        $groups = (int)ceil($class::get()->count() / $this->batchLength);
+        $totalGroups = (int)ceil($class::get()->count() / $this->batchLength);
         $cores = SolrCoreService::config()->get('cores') ?: 1;
-        $groups = $isGroup ? ($group + $cores - 1) : $groups;
-        $this->getLogger()->info(sprintf('Total groups %s', $groups));
+        $groups = $isGroup ? ($group + $cores - 1) : $totalGroups;
+        $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest
             try {
                 // The unittest param is from phpunit.xml.dist, meant to bypass the exit(0) call
@@ -267,7 +267,7 @@ class SolrIndexTask extends BuildTask
             $group++;
         } while ($group <= $groups);
 
-        return $groups;
+        return $totalGroups;
     }
 
     /**

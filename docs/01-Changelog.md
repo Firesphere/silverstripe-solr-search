@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0 beta
+
+- Fixes to the CMS Index Job
+- Fix issue #140 User not reset correctly
+- Fix issue #143 Not showing in search wasn't cleaned out correctly
+- Improved documentation
+
 ## 0.9.x
 
 - Documentation updates
