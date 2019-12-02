@@ -267,6 +267,7 @@ abstract class BaseIndex
     protected function buildFactory(BaseQuery $query, Query $clientQuery)
     {
         $factory = $this->queryFactory;
+
         $helper = $clientQuery->getHelper();
 
         $factory->setQuery($query);

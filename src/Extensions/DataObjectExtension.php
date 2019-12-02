@@ -238,7 +238,7 @@ class DataObjectExtension extends DataExtension
         $owner = $this->owner;
         // Return immediately if the owner has ShowInSearch not being `null`
         if ($owner->ShowInSearch === false || $owner->ShowInSearch === 0) {
-            return ['0-0'];
+            return [];
         }
 
         return self::$canViewClasses[$owner->ClassName] ?? $this->getMemberPermissions($owner);
@@ -256,26 +256,6 @@ class DataObjectExtension extends DataExtension
         $currMember = Security::getCurrentUser();
         Security::setCurrentUser(null);
 
-        // Check if the object is public. If so, early return
-        $isPublic = $this->isPublic($owner, $currMember);
-        if ($isPublic !== false) {
-            return $isPublic;
-
-        }
-
-        // Otherwise, return it's private
-        return $this->isPrivate($owner, $currMember);
-    }
-
-    /**
-     * Check if the object is publicly accessible. If so, return early
-     *
-     * @param DataObject $owner
-     * @param Member|null $currMember
-     * @return array|bool
-     */
-    private function isPublic($owner, $currMember)
-    {
         if ($owner->canView(null)) {
             self::$canViewClasses[$owner->ClassName] = ['1-null'];
             Security::setCurrentUser($currMember);
@@ -283,20 +263,6 @@ class DataObjectExtension extends DataExtension
             // Anyone can view
             return ['1-null'];
         }
-
-        return false;
-
-    }
-
-    /**
-     * Check if the member has view permissions on the object
-     *
-     * @param DataObject $owner
-     * @param Member $currMember
-     * @return array
-     */
-    protected function isPrivate($owner, $currMember): array
-    {
         // Return a default '0-0' to basically say "noboday can view"
         $return = ['0-0'];
         foreach (self::getMembers() as $member) {
