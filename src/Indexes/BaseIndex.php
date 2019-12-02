@@ -251,7 +251,7 @@ abstract class BaseIndex
         $clientQuery = $factory->buildQuery();
         $this->queryTerms = $factory->getQueryArray();
 
-        $queryData = implode(' ', $this->getQueryTerms());
+        $queryData = implode(' ', $this->queryTerms);
         $clientQuery->setQuery($queryData);
 
         return $clientQuery;
@@ -266,8 +266,7 @@ abstract class BaseIndex
      */
     protected function buildFactory(BaseQuery $query, Query $clientQuery)
     {
-        $factory = $this->getQueryFactory();
-
+        $factory = $this->queryFactory;
         $helper = $clientQuery->getHelper();
 
         $factory->setQuery($query);
