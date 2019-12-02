@@ -27,7 +27,7 @@ class DataObjectExtensionTest extends SapphireTest
 
         $this->assertEquals(['1-null'], $extension->getViewStatus());
         $page->ShowInSearch = false;
-        $this->assertEmpty($extension->getViewStatus());
+        $this->assertEquals(['0-0'], $extension->getViewStatus());
 
         $member = (new DefaultAdminService())->findOrCreateDefaultAdmin();
         $groups = $member->Groups();
