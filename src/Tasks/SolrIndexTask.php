@@ -18,7 +18,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -271,6 +270,47 @@ class SolrIndexTask extends BuildTask
     }
 
     /**
+     * For each core, spawn a child process that will handle a separate group.
+     * This speeds up indexing through CLI massively.
+     *
+     * @param string $class
+     * @param BaseIndex $index
+     * @param int $group
+     * @param int $cores
+     * @param int $groups
+     * @return int
+     * @throws Exception
+     */
+    private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
+    {
+        $start = $group;
+        $pids = [];
+        // for each core, start a grouped indexing
+        for ($i = 0; $i < $cores; $i++) {
+            $start = $group + $i;
+            if ($start < $groups) {
+                $pid = pcntl_fork();
+                // PID needs to be pushed before anything else, for some reason
+                $pids[$i] = $pid;
+                $config = DB::getConfig();
+                DB::connect($config);
+                if (!$pid) {
+                    $this->doReindex($start, $class, $index, true);
+                }
+            }
+        }
+        // Wait for each child to finish
+        foreach ($pids as $key => $pid) {
+            pcntl_waitpid($pid, $status);
+            if ($status === 0) {
+                unset($pids[$key]);
+            }
+        }
+
+        return $start;
+    }
+
+    /**
      * Reindex the given group, for each state
      *
      * @param int $group
@@ -354,46 +394,5 @@ class SolrIndexTask extends BuildTask
             $group
         );
         SolrLogger::logMessage('ERROR', $msg, $index);
-    }
-
-    /**
-     * For each core, spawn a child process that will handle a separate group.
-     * This speeds up indexing through CLI massively.
-     *
-     * @param string $class
-     * @param BaseIndex $index
-     * @param int $group
-     * @param int $cores
-     * @param int $groups
-     * @return int
-     * @throws Exception
-     */
-    private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
-    {
-        $start = $group;
-        $pids = [];
-        // for each core, start a grouped indexing
-        for ($i = 0; $i < $cores; $i++) {
-            $start =  $group + $i;
-            if ($start < $groups) {
-                $pid = pcntl_fork();
-                // PID needs to be pushed before anything else, for some reason
-                $pids[$i] = $pid;
-                $config = DB::getConfig();
-                DB::connect($config);
-                if (!$pid) {
-                    $this->doReindex($start, $class, $index, true);
-                }
-            }
-        }
-        // Wait for each child to finish
-        foreach ($pids as $key => $pid) {
-            pcntl_waitpid($pid, $status);
-            if ($status === 0) {
-                unset($pids[$key]);
-            }
-        }
-
-        return $start;
     }
 }

@@ -34,7 +34,7 @@ class SolrConfigureTask extends BuildTask
     protected static $storeModes = [
         'file' => FileConfigStore::class,
         'post' => PostConfigStore::class,
-//        'webdav' => WebdavConfigStore::class,
+        //        'webdav' => WebdavConfigStore::class,
     ];
     /**
      * @var string URLSegment
