@@ -246,7 +246,7 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
         $this->batchLength = DocumentFactory::config()->get('batchLength');
         $totalGroups = (int)ceil($class::get()->count() / $this->batchLength);
-        $cores = SolrCoreService::config()->get('cores') ?: 1;
+        $cores = SolrCoreService::config()->get('cpucores') ?: 1;
         $groups = $isGroup ? ($group + $cores - 1) : $totalGroups;
         $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest

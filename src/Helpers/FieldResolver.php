@@ -33,16 +33,17 @@ class FieldResolver
      * @param string $class Name of the class to test
      * @param array|string $instanceOf Class ancestry it should be in
      * @return bool
-     * @todo remove in favour of DataObjectSchema
      * @static
      */
     public static function isSubclassOf($class, $instanceOf): bool
     {
         $ancestry = self::$ancestry[$class] ?? self::$ancestry[$class] = ClassInfo::ancestry($class);
 
-        return is_array($instanceOf) ?
-            (bool)array_intersect($instanceOf, $ancestry) :
-            array_key_exists($instanceOf, $ancestry);
+        if (is_array($instanceOf)) {
+            return (bool)array_intersect($instanceOf, $ancestry);
+        }
+
+        return array_key_exists($instanceOf, $ancestry);
     }
 
     /**
@@ -208,8 +209,12 @@ class FieldResolver
      */
     protected static function getHierarchyClasses($class, $includeSubclasses): array
     {
-        $classes = array_values(ClassInfo::ancestry($class));
-        $classes = self::getSubClasses($class, $includeSubclasses, $classes);
+        if (!isset(self::$ancestry[$class])) {
+            self::$ancestry[$class] = array_values(ClassInfo::ancestry($class));
+        }
+        $ancestry = self::$ancestry[$class];
+
+        $classes = self::getSubClasses($class, $includeSubclasses, $ancestry);
 
         $classes = array_unique($classes);
         $classes = self::excludeDataObjectIDx($classes);

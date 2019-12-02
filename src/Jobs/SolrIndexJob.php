@@ -142,7 +142,7 @@ class SolrIndexJob extends AbstractQueuedJob
      */
     protected function getNextSteps(): array
     {
-        $cores = SolrCoreService::config()->get('cores') ?: 1;
+        $cores = SolrCoreService::config()->get('cpucores') ?: 1;
         $currentStep = $this->currentStep + $cores; // Add the amount of cores
         $totalSteps = $this->totalSteps;
         // No more steps to execute on this class, let's go to the next class
