@@ -306,6 +306,10 @@ class SolrIndexTask extends BuildTask
                 unset($pids[$key]);
             }
         }
+        $commit = $index->getClient()->createUpdate();
+        $commit->addCommit();
+
+        $index->getClient()->update($commit);
 
         return $start;
     }
@@ -370,7 +374,6 @@ class SolrIndexTask extends BuildTask
         $update = $client->createUpdate();
         $this->service->setInDebugMode($this->debug);
         $this->service->updateIndex($index, $items, $update);
-        $update->addCommit();
         $client->update($update);
     }
 
