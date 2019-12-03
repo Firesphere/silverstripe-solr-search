@@ -65,6 +65,7 @@ class SolrLogTest extends SapphireTest
     protected function setUp()
     {
         $this->log = SolrLog::create();
+
         return parent::setUp();
     }
 }
