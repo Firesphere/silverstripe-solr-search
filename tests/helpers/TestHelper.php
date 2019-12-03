@@ -2,6 +2,8 @@
 
 namespace Firesphere\PartialUserforms\Tests;
 
+use ReflectionClass;
+use ReflectionException;
 use SilverStripe\Dev\TestOnly;
 
 /**
@@ -18,11 +20,11 @@ class TestHelper implements TestOnly
      * @param string $methodName
      * @param array $parameters
      * @return mixed
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function invokeMethod(&$object, $methodName, array $parameters = [])
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 

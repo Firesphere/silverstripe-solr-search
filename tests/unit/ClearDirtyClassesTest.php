@@ -7,6 +7,7 @@ use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\ClearDirtyClassesTask;
 use Page;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 
@@ -14,7 +15,7 @@ class ClearDirtyClassesTest extends SapphireTest
 {
     public function testRun()
     {
-        $request = new NullHTTPRequest();
+        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['unittest' => 1]);
         $task = new ClearDirtyClassesTask();
         $page = Page::create(['Title' => 'UpdatePageTest']);
         $id = $page->write();

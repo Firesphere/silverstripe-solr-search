@@ -7,6 +7,7 @@ use CircleCITestIndex;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
@@ -19,6 +20,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -124,8 +126,8 @@ class BaseIndexTest extends SapphireTest
     {
         /** @var Page $parent */
         $parent = $this->objFromFixture(Page::class, 'homepage');
-        $id = $parent->write();
         $parent->publishRecursive();
+        $id = $parent->ID;
         $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $id, 'ShowInSearch' => true]);
         $page1->write();
         $page1->publishRecursive();
@@ -134,7 +136,7 @@ class BaseIndexTest extends SapphireTest
         $page2->publishRecursive();
         $task = new SolrIndexTask();
         $index = new TestIndex();
-        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]);
+        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class, 'unittest' => 1]);
         $task->run($request);
         $facets = $index->getFacetFields();
         $this->assertEquals([
@@ -148,12 +150,7 @@ class BaseIndexTest extends SapphireTest
         $result = $index->doSearch($query);
         $this->assertContains('Test', $index->getHistory());
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
-        $facets = $result->getFacets();
         /** @var ArrayList $parents */
-        $parents = $facets->Parent;
-        $this->assertEquals('Home', $parents->first()->Title);
-        $this->assertEquals(2, $parents->first()->FacetCount);
-        $this->assertCount(1, $parents);
         $query->addFacetFilter('Parent', $id);
         $result = $index->buildSolrQuery($query);
         $filterQuery = $result->getFilterQuery('facet-Parent');
@@ -184,6 +181,12 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms($store));
 
         $this->assertEmpty(trim($this->index->getSynonyms($store, false)));
+
+        $synonym = SearchSynonym::create(['Keyword' => 'Test', 'Synonym' => 'testing,trying']);
+
+        $synonym->write();
+
+        $this->assertContains('Test,testing,trying', $this->index->getSynonyms($store));
     }
 
     public function testIndexName()

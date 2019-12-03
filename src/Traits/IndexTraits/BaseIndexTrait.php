@@ -345,8 +345,8 @@ trait BaseIndexTrait
     {
         $this->facetFields[$field] = $options;
 
-        if (!in_array($field, $this->getFilterFields(), true)) {
-            $this->addFilterField($field);
+        if (!in_array($options['Field'], $this->getFilterFields(), true)) {
+            $this->addFilterField($options['Field']);
         }
 
         return $this;

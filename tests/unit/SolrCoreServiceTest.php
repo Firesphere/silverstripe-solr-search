@@ -15,16 +15,14 @@ use GuzzleHttp\Psr7\Response;
 use Page;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
-use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
-use Firesphere\SolrSearch\Tests\TestPage;
 use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\VirtualPage;
@@ -189,7 +187,8 @@ class SolrCoreServiceTest extends SapphireTest
         $task->run(new NullHTTPRequest());
         /** @var SolrIndexTask $task */
         $task = Injector::inst()->get(SolrIndexTask::class);
-        $task->run(new NullHTTPRequest());
+        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['unittest' => 1]);
+        $task->run($request);
         parent::tearDown();
     }
 }
