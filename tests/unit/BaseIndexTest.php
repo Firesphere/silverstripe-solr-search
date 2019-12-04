@@ -20,6 +20,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -149,12 +150,7 @@ class BaseIndexTest extends SapphireTest
         $result = $index->doSearch($query);
         $this->assertContains('Test', $index->getHistory());
         $this->assertInstanceOf(ArrayData::class, $result->getFacets());
-        $facets = $result->getFacets();
         /** @var ArrayList $parents */
-        $parents = $facets->Parent;
-        $this->assertEquals('Home', $parents->first()->Title);
-        $this->assertEquals(2, $parents->first()->FacetCount);
-        $this->assertCount(1, $parents);
         $query->addFacetFilter('Parent', $id);
         $result = $index->buildSolrQuery($query);
         $filterQuery = $result->getFilterQuery('facet-Parent');

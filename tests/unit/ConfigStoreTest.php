@@ -42,7 +42,7 @@ class ConfigStoreTest extends SapphireTest
     }
 
     /**
-     * @expectedException \Solarium\Exception\RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testPostConstruct()
     {

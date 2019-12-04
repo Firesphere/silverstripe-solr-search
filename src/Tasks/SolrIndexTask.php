@@ -18,7 +18,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -245,10 +244,10 @@ class SolrIndexTask extends BuildTask
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $index->getIndexName()));
         $this->batchLength = DocumentFactory::config()->get('batchLength');
-        $groups = (int)ceil($class::get()->count() / $this->batchLength);
-        $cores = SolrCoreService::config()->get('cores') ?: 1;
-        $groups = $isGroup ? ($group + $cores - 1) : $groups;
-        $this->getLogger()->info(sprintf('Total groups %s', $groups));
+        $totalGroups = (int)ceil($class::get()->count() / $this->batchLength);
+        $cores = SolrCoreService::config()->get('cpucores') ?: 1;
+        $groups = $isGroup ? ($group + $cores - 1) : $totalGroups;
+        $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest
             try {
                 // The unittest param is from phpunit.xml.dist, meant to bypass the exit(0) call
@@ -267,7 +266,52 @@ class SolrIndexTask extends BuildTask
             $group++;
         } while ($group <= $groups);
 
-        return $groups;
+        return $totalGroups;
+    }
+
+    /**
+     * For each core, spawn a child process that will handle a separate group.
+     * This speeds up indexing through CLI massively.
+     *
+     * @param string $class
+     * @param BaseIndex $index
+     * @param int $group
+     * @param int $cores
+     * @param int $groups
+     * @return int
+     * @throws Exception
+     */
+    private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
+    {
+        $start = $group;
+        $pids = [];
+        // for each core, start a grouped indexing
+        for ($i = 0; $i < $cores; $i++) {
+            $start = $group + $i;
+            if ($start < $groups) {
+                $pid = pcntl_fork();
+                // PID needs to be pushed before anything else, for some reason
+                $pids[$i] = $pid;
+                $config = DB::getConfig();
+                DB::connect($config);
+                if (!$pid) {
+                    $this->doReindex($start, $class, $index, true);
+                }
+            }
+        }
+        // Wait for each child to finish
+        foreach ($pids as $key => $pid) {
+            pcntl_waitpid($pid, $status);
+            if ($status === 0) {
+                unset($pids[$key]);
+            }
+        }
+        $commit = $index->getClient()->createUpdate();
+        $commit->addCommit();
+
+        $index->getClient()->update($commit);
+
+        return $start;
     }
 
     /**
@@ -330,7 +374,6 @@ class SolrIndexTask extends BuildTask
         $update = $client->createUpdate();
         $this->service->setInDebugMode($this->debug);
         $this->service->updateIndex($index, $items, $update);
-        $update->addCommit();
         $client->update($update);
     }
 
@@ -354,46 +397,5 @@ class SolrIndexTask extends BuildTask
             $group
         );
         SolrLogger::logMessage('ERROR', $msg, $index);
-    }
-
-    /**
-     * For each core, spawn a child process that will handle a separate group.
-     * This speeds up indexing through CLI massively.
-     *
-     * @param string $class
-     * @param BaseIndex $index
-     * @param int $group
-     * @param int $cores
-     * @param int $groups
-     * @return int
-     * @throws Exception
-     */
-    private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
-    {
-        $start = $group;
-        $pids = [];
-        // for each core, start a grouped indexing
-        for ($i = 0; $i < $cores; $i++) {
-            $start =  $group + $i;
-            if ($start < $groups) {
-                $pid = pcntl_fork();
-                // PID needs to be pushed before anything else, for some reason
-                $pids[$i] = $pid;
-                $config = DB::getConfig();
-                DB::connect($config);
-                if (!$pid) {
-                    $this->doReindex($start, $class, $index, true);
-                }
-            }
-        }
-        // Wait for each child to finish
-        foreach ($pids as $key => $pid) {
-            pcntl_waitpid($pid, $status);
-            if ($status === 0) {
-                unset($pids[$key]);
-            }
-        }
-
-        return $start;
     }
 }

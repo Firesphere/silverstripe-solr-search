@@ -27,7 +27,7 @@ Firesphere\SolrSearch\Services\SolrCoreService:
   store:
     mode: 'file'
     path: '.solr'
-  cores: 2
+  cpucores: 2
 
 ```
 
@@ -43,9 +43,9 @@ store:
   uri: 'https://mydomain.com'
 ```
 
-#### Defining cores
+#### Defining amount of CPU cores
 
-If your server has multiple cores available, you can define the amount of cores in the config.
+If your server has multiple CPU cores available, you can define the amount of cores in the config.
 During indexing, this means that each core gets to do an indexing of a group.
 The advantage is that it takes all cores available, speeding up the indexing process by the amount of cores available.
 

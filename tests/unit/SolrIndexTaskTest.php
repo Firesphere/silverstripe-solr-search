@@ -5,7 +5,6 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
-use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\HTTPRequest;
@@ -38,8 +37,9 @@ class SolrIndexTaskTest extends SapphireTest
     public function testRun()
     {
         $getVars = [
-            'group' => 0,
-            'index' => 'CircleCITestIndex',
+            'group'    => 0,
+            'index'    => 'CircleCITestIndex',
+            'unittest' => 1
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 
@@ -51,9 +51,10 @@ class SolrIndexTaskTest extends SapphireTest
         $this->assertEquals(0, $result);
 
         $getVars = [
-            'group' => 0,
-            'index' => 'CircleCITestIndex',
-            'clear' => 1,
+            'group'    => 0,
+            'index'    => 'CircleCITestIndex',
+            'clear'    => 1,
+            'unittest' => 1
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 
@@ -61,8 +62,9 @@ class SolrIndexTaskTest extends SapphireTest
 
         $this->assertEquals(0, $result);
         $getVars = [
-            'start' => 0,
-            'index' => 'CircleCITestIndex',
+            'start'    => 0,
+            'index'    => 'CircleCITestIndex',
+            'unittest' => 1
         ];
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 

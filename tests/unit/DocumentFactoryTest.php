@@ -167,9 +167,23 @@ class DocumentFactoryTest extends SapphireTest
         $factory->setClass(SiteTree::class);
         $factory->setItems(Page::get());
         $docs = $factory->buildItems($fields, $index, $update);
-        $this->assertCount(SiteTree::get()->count(), $docs);
         $this->assertInternalType('array', $docs);
         $this->assertInstanceOf(BaseIndex::class, $factory->getFieldResolver()->getIndex());
+        $this->compareExpectedDocs($docs);
+        Page::create(['Title' => 'Blep', 'ShowInSearch' => false])->write();
+        $fields = $index->getFieldsForIndexing();
+        $docs = $factory->buildItems($fields, $index, $update);
+        $this->compareExpectedDocs($docs);
+    }
+
+    /**
+     * @param array $docs
+     * @return void
+     */
+    protected function compareExpectedDocs(array $docs): void
+    {
+        // Show in search after run one is all, after run 2 it's the same, as the new page is false
+        $this->assertCount(SiteTree::get()->exclude(['ShowInSearch' => false])->count(), $docs);
         /** @var Document $doc */
         foreach ($docs as $i => $doc) {
             $this->assertInstanceOf(Document::class, $doc);

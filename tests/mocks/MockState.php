@@ -28,16 +28,6 @@ class MockState extends SiteState implements TestOnly, SiteStateInterface
     }
 
     /**
-     * Return the current state of the site
-     *
-     * @return string
-     */
-    public function currentState(): string
-    {
-        return 'default';
-    }
-
-    /**
      * Activate a given state. This should only be done if the state is applicable
      *
      * @param string $state
@@ -46,6 +36,16 @@ class MockState extends SiteState implements TestOnly, SiteStateInterface
     public function activateState($state)
     {
         $this->state = $state;
+    }
+
+    /**
+     * Return the current state of the site
+     *
+     * @return string
+     */
+    public function currentState(): string
+    {
+        return 'default';
     }
 
     /**

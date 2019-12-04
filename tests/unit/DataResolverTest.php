@@ -2,7 +2,6 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
-use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\DataResolver;
 use Page;
@@ -54,7 +53,7 @@ class DataResolverTest extends SapphireTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Class: stdClass is not supported.
      */
     public function testUnsupportedObjectException()
@@ -71,7 +70,7 @@ class DataResolverTest extends SapphireTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Cannot identify, "UnknownColumn" from class "TestPage"
      */
     public function testCannotIdentifyExceptionForDataObject()
@@ -81,7 +80,7 @@ class DataResolverTest extends SapphireTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Cannot identify, "UnknownColumn" from class "ArrayData"
      */
     public function testCannotIdentifyExceptionForArrayData()
@@ -102,7 +101,7 @@ class DataResolverTest extends SapphireTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage Cannot identify, "Timestamp" from class "DBDatetime"
      */
     public function testCannotIdentifyExceptionForDBField()

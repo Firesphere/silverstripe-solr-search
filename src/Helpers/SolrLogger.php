@@ -105,6 +105,28 @@ class SolrLogger
     }
 
     /**
+     * Attempt to find, otherwise create, a log object
+     *
+     * @param $type
+     * @param array $filter
+     * @param $error
+     */
+    private function findOrCreateLog($type, array $filter, $error): void
+    {
+        if (!SolrLog::get()->filter($filter)->exists()) {
+            $logData = [
+                'Message' => $error['message'],
+                'Type'    => $type,
+            ];
+            $log = array_merge($filter, $logData);
+            $conn = DB::get_conn();
+            if ($conn) {
+                SolrLog::create($log)->write();
+            }
+        }
+    }
+
+    /**
      * Return the Guzzle Client
      *
      * @return Client
@@ -125,27 +147,5 @@ class SolrLogger
         $this->client = $client;
 
         return $this;
-    }
-
-    /**
-     * Attempt to find, otherwise create, a log object
-     *
-     * @param $type
-     * @param array $filter
-     * @param $error
-     */
-    private function findOrCreateLog($type, array $filter, $error): void
-    {
-        if (!SolrLog::get()->filter($filter)->exists()) {
-            $logData = [
-                'Message' => $error['message'],
-                'Type'    => $type,
-            ];
-            $log = array_merge($filter, $logData);
-            $conn = DB::get_conn();
-            if ($conn) {
-                SolrLog::create($log)->write();
-            }
-        }
     }
 }

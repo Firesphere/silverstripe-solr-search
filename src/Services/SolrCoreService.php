@@ -201,9 +201,6 @@ class SolrCoreService
 
         $update = $this->getUpdate($items, $type, $index, $client);
         // commit immediately when in dev mode
-        if (Director::isDev()) {
-            $update->addCommit();
-        }
 
         return $client->update($update);
     }
