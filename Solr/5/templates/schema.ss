@@ -34,7 +34,7 @@
   - set stored="false" for all fields possible (esp large fields) when you
     only need to search on the field but don't need to return the original
     value.
-  - set indexed="false" if you don"t need to search on the field, but only
+  - set indexed="false" if you don't need to search on the field, but only
     return the field as a result of searching on other indexed fields.
   - remove all unneeded copyField statements
   - for best index size and searching performance, set "index" to false
