@@ -32,7 +32,7 @@
  PERFORMANCE NOTE: this schema includes many optional features and should not
  be used for benchmarking.  To improve performance one could
   - set stored="false" for all fields possible (esp large fields) when you
-    only need to search on the field but don"t need to return the original
+    only need to search on the field but don't need to return the original
     value.
   - set indexed="false" if you don"t need to search on the field, but only
     return the field as a result of searching on other indexed fields.
