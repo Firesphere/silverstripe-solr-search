@@ -319,22 +319,19 @@ class BaseIndexTest extends SapphireTest
     {
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hrme', [], 0, 2);
+        $query->addTerm('Hrme', [], 0);
         $query->setSpellcheck(false);
         $index->doSearch($query);
         $queryArray = $index->getQueryTerms();
 
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hrme', [], 0, 2);
+        $query->addTerm('Hrme', [], 0);
         $query->setFollowSpellcheck(true);
         $query->setSpellcheck(true);
         $index->doSearch($query);
         $queryArray2 = $index->getQueryTerms();
         $this->assertNotEquals($queryArray, $queryArray2);
-        foreach ($queryArray2 as $queryTerm) {
-            $this->assertNotContains('~2~', $queryTerm);
-        }
     }
 
     public function testSetFacets()
