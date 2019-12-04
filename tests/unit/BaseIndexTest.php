@@ -319,14 +319,14 @@ class BaseIndexTest extends SapphireTest
     {
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hame', [], 0, 2);
+        $query->addTerm('Hrme', [], 0, 2);
         $query->setSpellcheck(false);
         $index->doSearch($query);
         $queryArray = $index->getQueryTerms();
 
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hame', [], 0, 2);
+        $query->addTerm('Hrme', [], 0, 2);
         $query->setFollowSpellcheck(true);
         $query->setSpellcheck(true);
         $index->doSearch($query);
