@@ -7,6 +7,7 @@ use CircleCITestIndex;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
@@ -124,8 +125,8 @@ class BaseIndexTest extends SapphireTest
     {
         /** @var Page $parent */
         $parent = $this->objFromFixture(Page::class, 'homepage');
-        $id = $parent->write();
         $parent->publishRecursive();
+        $id = $parent->ID;
         $page1 = Page::create(['Title' => 'Test 1', 'ParentID' => $id, 'ShowInSearch' => true]);
         $page1->write();
         $page1->publishRecursive();
@@ -134,7 +135,7 @@ class BaseIndexTest extends SapphireTest
         $page2->publishRecursive();
         $task = new SolrIndexTask();
         $index = new TestIndex();
-        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class]);
+        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', ['index' => TestIndex::class, 'unittest' => 1]);
         $task->run($request);
         $facets = $index->getFacetFields();
         $this->assertEquals([
@@ -184,6 +185,12 @@ class BaseIndexTest extends SapphireTest
         $this->assertEquals(Synonyms::getSynonymsAsString(), $this->index->getSynonyms($store));
 
         $this->assertEmpty(trim($this->index->getSynonyms($store, false)));
+
+        $synonym = SearchSynonym::create(['Keyword' => 'Test', 'Synonym' => 'testing,trying']);
+
+        $synonym->write();
+
+        $this->assertContains('Test,testing,trying', $this->index->getSynonyms($store));
     }
 
     public function testIndexName()
@@ -209,7 +216,7 @@ class BaseIndexTest extends SapphireTest
 
         $xml = file_get_contents(Director::baseFolder() . '/.solr/TestIndex/conf/schema.xml');
         $this->assertContains(
-            '<field name=\'SiteTree_Title\' type=\'string\' indexed=\'true\' stored=\'true\' multiValued=\'false\'/>',
+            '<field name="SiteTree_Title" type="string" indexed="true" stored="true" multiValued="false"/>',
             $xml
         );
 
@@ -299,7 +306,7 @@ class BaseIndexTest extends SapphireTest
 
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hame', [], 0, 2);
+        $query->addTerm('Hrme', [], 0, 2);
         $query->setSpellcheck(true);
         $result = $index->doSearch($query);
 
