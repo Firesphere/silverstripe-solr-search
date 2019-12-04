@@ -26,6 +26,7 @@ use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
@@ -216,6 +217,7 @@ abstract class BaseIndex
         } catch (Exception $e) {
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
+            $result = ArrayList::create();
         }
 
         $this->rawQuery = $result;
