@@ -402,11 +402,12 @@ class BaseIndexTest extends SapphireTest
      */
     public function testNotices()
     {
+        $settings = Deprecation::dump_settings();
         Deprecation::notification_version(6);
 
         new TestIndexFour();
 
-        Deprecation::notification_version(4);
+        Deprecation::restore_settings($settings);
     }
 
     protected function setUp()

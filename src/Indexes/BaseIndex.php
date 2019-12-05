@@ -163,7 +163,7 @@ abstract class BaseIndex
 
         if (!empty($this->getClasses())) {
             if (!$this->usedAllFields) {
-                Deprecation::notice('5', 'It is adviced to use a config YML for most cases');
+                Deprecation::notice('5', 'It is advised to use a config YML for most cases');
             }
 
             return;
