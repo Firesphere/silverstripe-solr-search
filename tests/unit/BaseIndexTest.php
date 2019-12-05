@@ -23,6 +23,7 @@ use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -393,6 +394,16 @@ class BaseIndexTest extends SapphireTest
     public function testInitExceptionNoKey()
     {
         Config::modify()->set(SolrCoreService::class, 'TestIndexFour', []);
+        new TestIndexFour();
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testNotices()
+    {
+        Deprecation::notification_version(6);
+
         new TestIndexFour();
     }
 
