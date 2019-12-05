@@ -402,13 +402,14 @@ class BaseIndexTest extends SapphireTest
      */
     public function testNotices()
     {
+//        $this->markTestSkipped('Deprecation does not properly reset, causing issues for other tests');
         $settings = Deprecation::dump_settings();
-        Deprecation::notification_version(6);
+        Deprecation::notification_version(6.0);
 
         new TestIndexFour();
 
         Deprecation::restore_settings($settings);
-        Deprecation::notification_version(0);
+        Deprecation::notification_version(1.0);
     }
 
     protected function setUp()
