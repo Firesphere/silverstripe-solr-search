@@ -25,6 +25,7 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\View\ArrayData;
@@ -158,8 +159,6 @@ abstract class BaseIndex
     {
         if (!self::config()->get($this->getIndexName())) {
             Deprecation::notice('5', 'Please set an index name and use a config yml');
-
-            return;
         }
 
         if (!empty($this->getClasses()) && !$this->usedAllFields) {
@@ -177,7 +176,7 @@ abstract class BaseIndex
     {
         $config = self::config()->get($this->getIndexName());
 
-        if (!array_key_exists('Classes', $config)) {
+        if ($config && !array_key_exists('Classes', $config)) {
             throw new LogicException('No classes to index found!');
         }
 
