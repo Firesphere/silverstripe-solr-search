@@ -20,3 +20,9 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
       Firesphere\SolrSearch\Tests\TestObject:
         Field: ID
         Title: TestObject
+Firesphere\SolrSearch\Services\SolrCoreService:
+  indexes:
+    - CircleCITestIndex
+    - Firesphere\SolrSearch\Tests\TestIndex
+    - Firesphere\SolrSearch\Tests\TestIndexTwo
+    - Firesphere\SolrSearch\Tests\TestIndexThree

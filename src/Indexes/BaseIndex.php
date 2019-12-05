@@ -25,6 +25,7 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\ValidationException;
@@ -157,29 +158,30 @@ abstract class BaseIndex
      */
     public function init()
     {
-        if (!self::config()->get($this->getIndexName())) {
+        $config = self::config()->get($this->getIndexName());
+        if (!$config) {
             Deprecation::notice('5', 'Please set an index name and use a config yml');
+        }
+
+        if (!empty($this->getClasses())) {
+            if (!$this->usedAllFields) {
+                Deprecation::notice('5', 'It is advised to use a config YML for most cases');
+            }
 
             return;
         }
 
-        if (!empty($this->getClasses()) && !$this->usedAllFields) {
-            Deprecation::notice('5', 'It is adviced to use a config YML for most cases');
-        }
-
-
-        $this->initFromConfig();
+        $this->initFromConfig($config);
     }
 
     /**
      * Generate the config from yml if possible
+     * @param array|null $config
      */
-    protected function initFromConfig(): void
+    protected function initFromConfig($config): void
     {
-        $config = self::config()->get($this->getIndexName());
-
-        if (!array_key_exists('Classes', $config)) {
-            throw new LogicException('No classes to index found!');
+        if (!$config || !array_key_exists('Classes', $config)) {
+            throw new LogicException('No classes or config to index found!');
         }
 
         $this->setClasses($config['Classes']);

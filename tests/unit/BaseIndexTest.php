@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
@@ -19,8 +20,10 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -29,6 +32,7 @@ use SilverStripe\Security\DefaultAdminService;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\Core\Client\Client;
+use tests\mocks\TestIndexFour;
 
 class BaseIndexTest extends SapphireTest
 {
@@ -371,6 +375,40 @@ class BaseIndexTest extends SapphireTest
 
         $this->assertContains('TestField', $this->index->getFulltextFields());
         $this->assertContains('TestField', $this->index->getSortFields());
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testInitException()
+    {
+        new TestIndexFour();
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testInitExceptionNoKey()
+    {
+        Config::modify()->set(SolrCoreService::class, 'TestIndexFour', []);
+        new TestIndexFour();
+    }
+
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testNotices()
+    {
+        $this->markTestSkipped('Deprecation does not properly reset, causing issues for other tests');
+        Deprecation::set_enabled(true);
+        $settings = Deprecation::dump_settings();
+        Deprecation::notification_version(6.0);
+
+        new TestIndexFour();
+
+        Deprecation::restore_settings($settings);
+        Deprecation::notification_version(1.0);
+        Deprecation::set_enabled(false);
     }
 
     protected function setUp()
