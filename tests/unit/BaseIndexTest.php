@@ -29,6 +29,7 @@ use SilverStripe\Security\DefaultAdminService;
 use SilverStripe\View\ArrayData;
 use Solarium\Component\Result\Highlighting\Highlighting;
 use Solarium\Core\Client\Client;
+use tests\mocks\TestIndexFour;
 
 class BaseIndexTest extends SapphireTest
 {
@@ -374,6 +375,14 @@ class BaseIndexTest extends SapphireTest
 
         $this->assertContains('TestField', $this->index->getFulltextFields());
         $this->assertContains('TestField', $this->index->getSortFields());
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testInitException()
+    {
+        new TestIndexFour();
     }
 
     protected function setUp()
