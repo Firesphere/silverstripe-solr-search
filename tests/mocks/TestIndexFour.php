@@ -3,7 +3,6 @@
 
 namespace tests\mocks;
 
-
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use SilverStripe\Dev\TestOnly;
 

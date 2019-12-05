@@ -18,6 +18,7 @@ use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use LogicException;
+use ReflectionException;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -25,7 +26,6 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\ValidationException;
@@ -203,7 +203,7 @@ abstract class BaseIndex
      * @return SearchResult|ArrayData|mixed
      * @throws GuzzleException
      * @throws ValidationException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function doSearch(BaseQuery $query)
     {
@@ -311,7 +311,7 @@ abstract class BaseIndex
      * @return SearchResult|mixed|ArrayData
      * @throws GuzzleException
      * @throws ValidationException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function spellcheckRetry(BaseQuery $query, SearchResult $searchResult)
     {

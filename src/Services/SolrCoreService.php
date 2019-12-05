@@ -13,7 +13,6 @@ use GuzzleHttp\HandlerStack;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
@@ -200,6 +199,7 @@ class SolrCoreService
         $client = $index->getClient();
 
         $update = $this->getUpdate($items, $type, $index, $client);
+
         // commit immediately when in dev mode
 
         return $client->update($update);
