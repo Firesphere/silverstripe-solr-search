@@ -397,6 +397,18 @@ class BaseIndexTest extends SapphireTest
         new TestIndexFour();
     }
 
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testNotices()
+    {
+        Deprecation::notification_version(6);
+
+        new TestIndexFour();
+
+        Deprecation::notification_version(4);
+    }
+
     protected function setUp()
     {
         $task = new SolrConfigureTask();
