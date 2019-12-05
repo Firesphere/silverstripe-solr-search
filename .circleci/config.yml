@@ -63,6 +63,15 @@ jobs:
             cp .circleci/TestIndexTwo.yml app/_config/search.yml
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
+          name: Permission changes
+          command: |
+            usermod -a -G www-data solr
+            groups solr
+            usermod -a -G solr www-data
+            groups www-data
+            chown -R solr:www-data /var/www/html
+            chmod -R u+rwxs,g+rwxs /var/www/html
+      - run:
           name: Run Solr Configure
           command: |
             service apache2 restart
@@ -84,15 +93,6 @@ jobs:
             RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":3')
             if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
             echo "Solr has successfully indexed documents"
-      - run:
-          name: Permission changes and testing
-          command: |
-            usermod -a -G www-data solr
-            groups solr
-            usermod -a -G solr www-data
-            groups www-data
-            chown -R solr:www-data /var/www/html
-            chmod -R u+rwxs,g+rwxs /var/www/html
       - run:
           name: Setup Code Climate and Scrutinizer test-reporter
           command: |
@@ -190,7 +190,10 @@ jobs:
           command: |
             cd localsolr/server;java -jar start.jar
           background: true
-      - run: vendor/bin/sake dev/build flush=all skipannotation=true
+      - run:
+          name: PHP Unit tests
+          command: |
+            vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Run Solr Configure
           command: |
