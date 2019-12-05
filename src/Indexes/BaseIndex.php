@@ -179,8 +179,8 @@ abstract class BaseIndex
     {
         $config = self::config()->get($this->getIndexName());
 
-        if (!$config && !array_key_exists('Classes', $config)) {
-            throw new LogicException('No classes to index found!');
+        if (!$config || !array_key_exists('Classes', $config)) {
+            throw new LogicException('No classes or config to index found!');
         }
 
         $this->setClasses($config['Classes']);

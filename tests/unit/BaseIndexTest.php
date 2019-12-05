@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
@@ -19,6 +20,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
@@ -382,6 +384,15 @@ class BaseIndexTest extends SapphireTest
      */
     public function testInitException()
     {
+        new TestIndexFour();
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testInitExceptionNoKey()
+    {
+        Config::modify()->set(SolrCoreService::class, 'TestIndexFour', []);
         new TestIndexFour();
     }
 
