@@ -397,16 +397,6 @@ class BaseIndexTest extends SapphireTest
         new TestIndexFour();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testNotices()
-    {
-        Deprecation::notification_version(6);
-
-        new TestIndexFour();
-    }
-
     protected function setUp()
     {
         $task = new SolrConfigureTask();
