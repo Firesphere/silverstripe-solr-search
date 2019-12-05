@@ -212,7 +212,7 @@ class BaseIndexTest extends SapphireTest
 
         $xml = file_get_contents(Director::baseFolder() . '/.solr/TestIndex/conf/schema.xml');
         $this->assertContains(
-            '<field name=\'SiteTree_Title\' type=\'string\' indexed=\'true\' stored=\'true\' multiValued=\'false\'/>',
+            '<field name="SiteTree_Title" type="string" indexed="true" stored="true" multiValued="false"/>',
             $xml
         );
 
@@ -302,7 +302,7 @@ class BaseIndexTest extends SapphireTest
 
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hame', [], 0, 2);
+        $query->addTerm('Hrme', [], 0);
         $query->setSpellcheck(true);
         $result = $index->doSearch($query);
 
@@ -315,22 +315,19 @@ class BaseIndexTest extends SapphireTest
     {
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hame', [], 0, 2);
+        $query->addTerm('Hrme', [], 0);
         $query->setSpellcheck(false);
         $index->doSearch($query);
         $queryArray = $index->getQueryTerms();
 
         $index = new CircleCITestIndex();
         $query = new BaseQuery();
-        $query->addTerm('Hame', [], 0, 2);
+        $query->addTerm('Hrme', [], 0);
         $query->setFollowSpellcheck(true);
         $query->setSpellcheck(true);
         $index->doSearch($query);
         $queryArray2 = $index->getQueryTerms();
         $this->assertNotEquals($queryArray, $queryArray2);
-        foreach ($queryArray2 as $queryTerm) {
-            $this->assertNotContains('~2~', $queryTerm);
-        }
     }
 
     public function testSetFacets()

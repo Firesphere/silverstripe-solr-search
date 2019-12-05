@@ -47,36 +47,37 @@
 -->
 
 <schema name="$IndexName" version="1.5">
-    $Types
+    <types>
+        $Types
+    </types>
     <fields>
         <%-- Default fields, needed for all items --%>
-        <field name='$IDField' type='string' indexed='true' stored='true' required='true'/>
-        <field name='$ClassID' type='tint' indexed='true' stored='true' required='true'/>
-        <field name='ClassName' type='string' indexed='true' stored='true' required='true'/>
-        <field name='ClassHierarchy' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
-        <field name='ViewStatus' type='string' indexed='true' stored='true' required='true' multiValued='true'/>
+        <field name="$IDField" type="string" indexed="true" stored="true" required="true"/>
+        <field name="$ClassID" type="tint" indexed="true" stored="true" required="true"/>
+        <field name="ClassName" type="string" indexed="true" stored="true" required="true"/>
+        <field name="ClassHierarchy" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="ViewStatus" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
         <!-- Copyfields -->
         <% loop $CopyFields %>
-            <field name='$Field' type='htmltext' indexed='true' stored='true' multiValued='true'/>
+            <field name="$Field" type="stemfield" indexed="true" stored="true" multiValued="true"/>
         <% end_loop %>
         <!-- End Copyfields -->
         <!-- Fulltext fields -->
         <% loop $FulltextFieldDefinitions %>
-            <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
+            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
         <% end_loop %>
         <!-- End Fulltext fields -->
 
         <!-- Filter/Facet fields -->
         <% loop $FilterFieldDefinitions %>
-            <field name='$Field' type='$Type' indexed='$Indexed' stored='$Stored' multiValued='$MultiValued'/>
+            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
         <% end_loop %>
         <!-- End Filter/Facet fields -->
-
-        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
     </fields>
 
     <% loop $CopyFieldDefinitions %>
-        <copyField source='$Field' dest='$Destination'/>
+        <copyField source="$Field" dest="$Destination"/>
     <% end_loop %>
 
     <uniqueKey>$IDField</uniqueKey>
