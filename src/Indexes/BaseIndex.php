@@ -161,8 +161,10 @@ abstract class BaseIndex
             Deprecation::notice('5', 'Please set an index name and use a config yml');
         }
 
-        if (!empty($this->getClasses()) && !$this->usedAllFields) {
-            Deprecation::notice('5', 'It is adviced to use a config YML for most cases');
+        if (!empty($this->getClasses())) {
+            if (!$this->usedAllFields) {
+                Deprecation::notice('5', 'It is adviced to use a config YML for most cases');
+            }
 
             return;
         }
@@ -177,7 +179,7 @@ abstract class BaseIndex
     {
         $config = self::config()->get($this->getIndexName());
 
-        if ($config && !array_key_exists('Classes', $config)) {
+        if (!$config && !array_key_exists('Classes', $config)) {
             throw new LogicException('No classes to index found!');
         }
 
