@@ -113,7 +113,29 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
 
 #### Moving from init to YML
 
-The compatibility module has an extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+The [compatibility module](06-Fulltext-Search-Compatibility.md) has an extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+
+## Another way to set the config in PHP
+
+You could also use PHP, just like it was, to set the config. For readability however, it's better to use statics for Facets:
+```php
+    protected $facetFields = [
+        RelatedObject::class   => [
+            'Field' => 'RelatedObjectID',
+            'Title' => 'RelationOne'
+        ],
+        OtherRelatedObject::class => [
+            'Field' => 'OtherRelatedObjectID',
+            'Title' => 'RelationTwo'
+        ]
+    ];
+```
+
+This will generate a facet field in Solr, assuming this relation exists on `SiteTree` or `Page`.
+
+The relation would look like `SiteTree_RelatedObjectID`, where `RelatedObject` the name of the relation reflects.
+
+The Title is used to group all facets by their Title, in the template, this is accessible by looping `$Result.FacetSet.TitleOfTheFacet`
 
 ## Accessing Solr
 

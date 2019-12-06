@@ -25,9 +25,9 @@ class DataObjectExtensionTest extends SapphireTest
         $extension = new DataObjectExtension();
         $extension->setOwner($page);
 
-        $this->assertEquals(['1-null'], $extension->getViewStatus());
+        $this->assertEquals(['null'], $extension->getViewStatus());
         $page->ShowInSearch = false;
-        $this->assertEquals([], $extension->getViewStatus());
+        $this->assertEquals(['false'], $extension->getViewStatus());
 
         $member = (new DefaultAdminService())->findOrCreateDefaultAdmin();
         $groups = $member->Groups();
@@ -39,33 +39,36 @@ class DataObjectExtensionTest extends SapphireTest
         }
         $page->write();
         $extension->setOwner($page);
-        DataObjectExtension::$canViewClasses = [];
-        $this->assertContains('1-' . $group->Members()->first()->ID, $extension->getViewStatus());
+        DataObjectExtension::$cachedClasses = [];
+        $this->assertContains($group->Code, $extension->getViewStatus());
+        $page->CanViewType = 'LoggedInUsers';
+        $extension->setOwner($page);
+        $page->write();
+        $this->assertEquals(['false', 'LoggedIn'], $extension->getViewStatus());
         $page->delete();
 
         $item = new TestObject();
         $extension = new DataObjectExtension();
         $extension->setOwner($item);
 
-        $this->assertEquals(['1-null'], $extension->getViewStatus());
-        // TestObject has a ShowInSearch :)
-        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertEquals(['null'], $extension->getViewStatus());
+
         $item = new TestRelationObject();
         $extension = new DataObjectExtension();
         $extension->setOwner($item);
 
-        $this->assertEquals(['1-null'], $extension->getViewStatus());
+        $this->assertEquals(['null'], $extension->getViewStatus());
         // TestObject has a ShowInSearch :)
-        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
+        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$cachedClasses);
 
         $object = new CanViewObject();
         $extension = new DataObjectExtension();
         $extension->setOwner($object);
 
-        $this->assertNotContains('1-null', $extension->getViewStatus());
-        $this->assertContains('1-' . $member->ID, $extension->getViewStatus());
-        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$canViewClasses);
-        $this->assertEquals($extension->getViewStatus(), DataObjectExtension::$canViewClasses[CanViewObject::class]);
+        $this->assertNotContains('false', $extension->getViewStatus());
+        $this->assertContains('null', $extension->getViewStatus());
+        $this->assertArrayHasKey($item->ClassName, DataObjectExtension::$cachedClasses);
+        $this->assertEquals($extension->getViewStatus(), DataObjectExtension::$cachedClasses[CanViewObject::class]);
     }
 
     public function testOnAfterDelete()
