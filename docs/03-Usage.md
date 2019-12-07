@@ -145,7 +145,7 @@ path to the facet. e.g. if you want to have facets on `RelationObject->RelationT
 
 Although it can be a `has_many` just as well, and it would be `Relation.ID`, it is not advised, as it creates a lot of overhead.
 
-It would and should work though. If you want to do it that way, there's no stopping you, it's just not advised.
+It would and should work though. If you want to do it that way, there's no stopping you, it's just not advised. 
 
 ## Accessing Solr
 
