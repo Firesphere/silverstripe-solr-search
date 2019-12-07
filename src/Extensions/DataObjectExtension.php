@@ -15,9 +15,12 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\InheritedPermissionsExtension;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\Versioned;
 
@@ -39,6 +42,10 @@ class DataObjectExtension extends DataExtension
      * @var SiteConfig Current siteconfig
      */
     protected static $siteConfig;
+    /**
+     * @var ArrayList|Member[] List of all the members in the system
+     */
+    protected static $memberList;
 
     /**
      * Push the item to solr if it is not versioned
@@ -285,4 +292,39 @@ class DataObjectExtension extends DataExtension
 
         return $return;
     }
+
+    /**
+     * Get permissions for viewing per member
+     * @todo fix the implementation
+     * @param DataObject $owner
+     * @return array
+     *
+    protected function getMemberViewPermissions(DataObject $owner)
+    {
+        if (!static::$memberList) {
+            static::$memberList = ArrayList::create(Member::get()->toArray());
+        }
+
+        $currentUser = Security::getCurrentUser();
+        Security::setCurrentUser(null);
+
+        if ($owner->canView(null)) {
+            Security::setCurrentUser($currentUser);
+            return ['null'];
+        }
+
+        $return = ['false'];
+        foreach (static::$memberList as $member) {
+            if ($owner->canView($member)) {
+                $return[] = $member->ID;
+            }
+        }
+
+        if (!$owner->hasExtension(InheritedPermissionsExtension::class)) {
+            static::$cachedClasses[$owner->ClassName] = $return;
+        }
+
+        return $return;
+    }
+    /**/
 }

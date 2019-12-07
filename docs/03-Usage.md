@@ -78,7 +78,7 @@ Available methods are:
 | addSortField | Field to sort by | No | `$this->addSortField('Created');` |
 | addCopyField | Add a special copy field, besides the default _text | No | `$this->addCopyField('myCopy', ['Fields', 'To', 'Copy']);` |
 | addStoredField | Add a field to be stored specifically | No | `$this->addStoredField('LastEdited');` |
-| addFacetField | Field to build faceting on | No | `$this->addFacetField(SiteTree::class, ['Title' => 'FacetObject', 'Field' => 'FacetObjectID']);` |
+| addFacetField | Field to build faceting on | No | `$this->addFacetField(SiteTree::class, ['BaseClass' => SiteTree::class, 'Title' => 'FacetObject', 'Field' => 'FacetObjectID']);` |
  
 
 ### Using YML
@@ -106,6 +106,7 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
     DefaultField: _text
     FacetFields:
       Firesphere\SolrSearch\Tests\TestObject:
+        BaseClass: SilverStripe\CMS\Model\SiteTree
         Field: ID
         Title: TestObject
 
@@ -121,12 +122,14 @@ You could also use PHP, just like it was, to set the config. For readability how
 ```php
     protected $facetFields = [
         RelatedObject::class   => [
-            'Field' => 'RelatedObjectID',
-            'Title' => 'RelationOne'
+            'BaseClass' => SiteTree::class,
+            'Field'     => 'RelatedObjectID',
+            'Title'     => 'RelationOne'
         ],
         OtherRelatedObject::class => [
-            'Field' => 'OtherRelatedObjectID',
-            'Title' => 'RelationTwo'
+            'BaseClass' => SiteTree::class,
+            'Field'     => 'OtherRelatedObjectID',
+            'Title'     => 'RelationTwo'
         ]
     ];
 ```
