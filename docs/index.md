@@ -8,6 +8,7 @@
 07. [Debugging](07-Debugging.md)
 08. [Suggestions](08-Suggestions.md)
 09. [Elemental](09-Elemental.md)
+10. [View permissions](10-View-Permissions.md)
 13. [Changelog](13-Changelog.md)
 14. [About](14-About.md)
 15. [FAQ](15-FAQ.md)

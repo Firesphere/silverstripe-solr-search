@@ -60,11 +60,13 @@ class BaseIndexTest extends SapphireTest
 
     public function testConstruct()
     {
+        ob_start();
         $this->assertInstanceOf(Client::class, $this->index->getClient());
         $this->assertCount(1, $this->index->getClasses());
         $this->assertCount(2, $this->index->getFulltextFields());
         $this->assertContains(SiteTree::class, $this->index->getClasses());
         $this->assertEquals([], $this->index->getHistory());
+        ob_end_clean();
     }
 
     public function testInit()

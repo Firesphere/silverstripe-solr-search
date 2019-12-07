@@ -9,6 +9,7 @@
 - Fix stemming issues not properly stemming.
 - Fix test errors.
 - Fix `schema.xml` construction.
+- [Change of Permission indexing from User based to Group based](10-View-Permissions.md)
 
 ## 0.9.x
 

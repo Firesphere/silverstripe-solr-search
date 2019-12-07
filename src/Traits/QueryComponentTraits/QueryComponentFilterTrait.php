@@ -5,7 +5,8 @@ namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Minimalcode\Search\Criteria;
-use SilverStripe\Security\Member;
+use SilverStripe\ORM\DataList;
+use SilverStripe\Security\Group;
 use SilverStripe\Security\Security;
 use Solarium\QueryType\Select\Query\Query;
 
@@ -45,11 +46,17 @@ trait QueryComponentFilterTrait
     protected function buildViewFilter(): void
     {
         // Filter by what the user is allowed to see
-        $viewIDs = ['1-null']; // null is always an option as that means publicly visible
-        /** @var Member $currentUser */
-        $currentUser = Security::getCurrentUser();
-        if ($currentUser && $currentUser->exists()) {
-            $viewIDs[] = '1-' . $currentUser->ID;
+        $viewIDs = ['null']; // null is always an option as that means publicly visible
+        $member = Security::getCurrentUser();
+        if ($member && $member->exists()) {
+            // Member is logged in, thus allowed to see these
+            $viewIDs[] = 'LoggedIn';
+
+            /** @var DataList|Group[] $groups */
+            $groups = Security::getCurrentUser()->Groups();
+            if ($groups->count()) {
+                $viewIDs = array_merge($viewIDs, $groups->column('Code'));
+            }
         }
         /** Add canView criteria. These are based on {@link DataObjectExtension::ViewStatus()} */
         $query = Criteria::where('ViewStatus')->in($viewIDs);

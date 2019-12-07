@@ -113,7 +113,39 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
 
 #### Moving from init to YML
 
-The compatibility module has an extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+The [compatibility module](06-Fulltext-Search-Compatibility.md) has an extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+
+## Another way to set the config in PHP
+
+You could also use PHP, just like it was, to set the config. For readability however, it's better to use statics for Facets:
+```php
+    protected $facetFields = [
+        RelatedObject::class   => [
+            'Field' => 'RelatedObjectID',
+            'Title' => 'RelationOne'
+        ],
+        OtherRelatedObject::class => [
+            'Field' => 'OtherRelatedObjectID',
+            'Title' => 'RelationTwo'
+        ]
+    ];
+```
+
+This will generate a facet field in Solr, assuming this relation exists on `SiteTree` or `Page`.
+
+The relation would look like `SiteTree_RelatedObjectID`, where `RelatedObject` the name of the relation reflects.
+
+The Title is used to group all facets by their Title, in the template, this is accessible by looping `$Result.FacetSet.TitleOfTheFacet`
+
+### Important notice
+
+Note, that Facets are relational. For faceting on a relation, omit the origin class (e.g. `SiteTree`), but supply the full relational
+path to the facet. e.g. if you want to have facets on `RelationObject->RelationThing()->Relation()->ID`, the Facet declaration should be
+`RelationObject.RelationThing.RelationID`. It should always end with an ID that is a `has_one` relation.
+
+Although it can be a `has_many` just as well, and it would be `Relation.ID`, it is not advised, as it creates a lot of overhead.
+
+It would and should work though. If you want to do it that way, there's no stopping you, it's just not advised. 
 
 ## Accessing Solr
 

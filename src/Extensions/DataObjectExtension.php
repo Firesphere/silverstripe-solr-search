@@ -15,11 +15,10 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Security;
+use SilverStripe\Security\InheritedPermissionsExtension;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\Versioned;
 
 /**
@@ -33,17 +32,13 @@ use SilverStripe\Versioned\Versioned;
 class DataObjectExtension extends DataExtension
 {
     /**
-     * canView cache
-     *
      * @var array
      */
-    public static $canViewClasses = [];
+    public static $cachedClasses;
     /**
-     * Member cache
-     *
-     * @var DataList
+     * @var SiteConfig
      */
-    protected static $members;
+    protected static $siteConfig;
 
     /**
      * Push the item to solr if it is not versioned
@@ -213,7 +208,7 @@ class DataObjectExtension extends DataExtension
         $record = $this->getDirtyClass($owner, SolrCoreService::DELETE_TYPE);
 
         $ids = json_decode($record->IDs, 1) ?: [];
-        parent::onAfterDelete();
+
         try {
             (new SolrCoreService())->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
             // If successful, remove it from the array
@@ -231,64 +226,63 @@ class DataObjectExtension extends DataExtension
      */
     public function getViewStatus(): array
     {
-        // Return empty if it's not allowed to show in search
-        // The setting needs to be explicitly false, to avoid any possible collision
-        // with objects not having the setting, thus being `null`
+        // return as early as possible
         /** @var DataObject|SiteTree $owner */
         $owner = $this->owner;
+        if (isset(static::$cachedClasses[$owner->ClassName])) {
+            return static::$cachedClasses[$owner->ClassName];
+        }
+
+        // Make sure the siteconfig is loaded
+        if (!static::$siteConfig) {
+            static::$siteConfig = SiteConfig::current_site_config();
+        }
+        // Return false if it's not allowed to show in search
+        // The setting needs to be explicitly false, to avoid any possible collision
+        // with objects not having the setting, thus being `null`
         // Return immediately if the owner has ShowInSearch not being `null`
         if ($owner->ShowInSearch === false || $owner->ShowInSearch === 0) {
-            return [];
+            return ['false'];
         }
 
-        return self::$canViewClasses[$owner->ClassName] ?? $this->getMemberPermissions($owner);
+        $permissions = $this->getGroupViewPermissions($owner);
+
+        if (!$owner->hasExtension(InheritedPermissionsExtension::class)) {
+            static::$cachedClasses[$owner->ClassName] = $permissions;
+        }
+
+        return $permissions;
     }
 
     /**
-     * Get the view permissions for each member in the system
+     * Determine the view permissions based on group settings
      *
-     * @param DataObject|SiteTree $owner
+     * @param DataObject|SiteTree|SiteConfig $owner
      * @return array
      */
-    protected function getMemberPermissions($owner): array
+    protected function getGroupViewPermissions($owner): array
     {
-        // Log out the current user to avoid collisions in permissions
-        $currMember = Security::getCurrentUser();
-        Security::setCurrentUser(null);
-
-        if ($owner->canView(null)) {
-            self::$canViewClasses[$owner->ClassName] = ['1-null'];
-            Security::setCurrentUser($currMember);
-
-            // Anyone can view
-            return ['1-null'];
+        // Switches are not ideal, but it's a lot more readable this way!
+        switch ($owner->CanViewType) {
+            case 'LoggedInUsers':
+                $return = ['false', 'LoggedIn'];
+                break;
+            case 'OnlyTheseUsers':
+                $return = ['false'];
+                $return = array_merge($return, $owner->ViewerGroups()->column('Code'));
+                break;
+            case 'Inherit':
+                $parent = !$owner->ParentID ? static::$siteConfig : $owner->Parent();
+                $return = $this->getGroupViewPermissions($parent);
+                break;
+            case 'Anyone': // View is either not implemented, or it's "Anyone"
+                $return = ['null'];
+                break;
+            default:
+                // Default to "Anyone can view"
+                $return = ['null'];
         }
-        // Return a default '0-0' to basically say "noboday can view"
-        $return = ['0-0'];
-        foreach (self::getMembers() as $member) {
-            $return[] = sprintf('%s-%s', (int)$owner->canView($member), (int)$member->ID);
-        }
-
-        if (!$owner->hasField('ShowInSearch')) {
-            self::$canViewClasses[$owner->ClassName] = $return;
-        }
-
-        Security::setCurrentUser($currMember);
 
         return $return;
-    }
-
-    /**
-     * Get the static list of members
-     *
-     * @return DataList
-     */
-    protected static function getMembers()
-    {
-        if (empty(self::$members)) {
-            self::$members = Member::get();
-        }
-
-        return self::$members;
     }
 }

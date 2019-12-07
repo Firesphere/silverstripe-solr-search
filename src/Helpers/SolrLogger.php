@@ -8,6 +8,10 @@ use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\ValidationException;
@@ -73,7 +77,12 @@ class SolrLogger
 
         $err = ($lastError === null) ? 'Unknown' : $lastError->getLastErrorLine();
         $message .= 'Last known error:' . PHP_EOL . $err;
-        Debug::dump($message);
+        /** @var LoggerInterface $logger */
+        $logger = Injector::inst()->get(LoggerInterface::class);
+        $logger->alert($message);
+        if (Director::is_cli() || Controller::curr()->getRequest()->getVar('unittest')) {
+            Debug::dump($message);
+        }
     }
 
     /**
@@ -110,19 +119,26 @@ class SolrLogger
      * @param $type
      * @param array $filter
      * @param $error
+     * @throws ValidationException
      */
     private function findOrCreateLog($type, array $filter, $error): void
     {
+        // Not covered in tests. It's only here to make sure the connection isn't closed by a child process
+        $conn = DB::is_active();
+        if (!$conn) {
+            $config = DB::getConfig();
+            DB::connect($config);
+        }
         if (!SolrLog::get()->filter($filter)->exists()) {
             $logData = [
                 'Message' => $error['message'],
                 'Type'    => $type,
             ];
             $log = array_merge($filter, $logData);
-            $conn = DB::get_conn();
-            if ($conn) {
-                SolrLog::create($log)->write();
-            }
+            SolrLog::create($log)->write();
+            /** @var LoggerInterface $logger */
+            $logger = Injector::inst()->get(LoggerInterface::class);
+            $logger->alert($error['message']);
         }
     }
 
