@@ -72,6 +72,8 @@ class SolrIndexTask extends BuildTask
     protected $service;
 
     /**
+     * Default batch length
+     *
      * @var int
      */
     protected $batchLength = 1;

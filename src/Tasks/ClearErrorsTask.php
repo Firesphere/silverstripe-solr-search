@@ -6,6 +6,13 @@ namespace Firesphere\SolrSearch\Tasks;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 
+/**
+ * Class ClearErrorsTask
+ *
+ * Clear out errors from the database to declutter the CMS.
+ *
+ * @package Firesphere\SolrSearch\Tasks
+ */
 class ClearErrorsTask extends BuildTask
 {
     /**
@@ -22,6 +29,7 @@ class ClearErrorsTask extends BuildTask
     protected $description = 'Remove all errors in the database that are related to Solr indexing/configuring etc.';
 
     /**
+     * Run the truncate of the SolrLog table
      * @inheritDoc
      */
     public function run($request)

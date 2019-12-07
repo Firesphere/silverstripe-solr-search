@@ -32,11 +32,11 @@ use SilverStripe\Versioned\Versioned;
 class DataObjectExtension extends DataExtension
 {
     /**
-     * @var array
+     * @var array Cached permission list
      */
     public static $cachedClasses;
     /**
-     * @var SiteConfig
+     * @var SiteConfig Current siteconfig
      */
     protected static $siteConfig;
 

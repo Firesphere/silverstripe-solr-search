@@ -8,7 +8,9 @@ use SilverStripe\ORM\DataObject;
 
 /**
  * Class \Firesphere\SolrSearch\Models\SearchSynonym
+ * Manageable synonyms in the CMS
  *
+ * @package Firesphere\SolrSerach\Models
  * @property string $Keyword
  * @property string $Synonym
  */
