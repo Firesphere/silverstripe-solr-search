@@ -137,6 +137,16 @@ The relation would look like `SiteTree_RelatedObjectID`, where `RelatedObject` t
 
 The Title is used to group all facets by their Title, in the template, this is accessible by looping `$Result.FacetSet.TitleOfTheFacet`
 
+### Important notice
+
+Note, that Facets are relational. For faceting on a relation, omit the origin class (e.g. `SiteTree`), but supply the full relational
+path to the facet. e.g. if you want to have facets on `RelationObject->RelationThing()->Relation()->ID`, the Facet declaration should be
+`RelationObject.RelationThing.RelationID`. It should always end with an ID that is a `has_one` relation.
+
+Although it can be a `has_many` just as well, and it would be `Relation.ID`, it is not advised, as it creates a lot of overhead.
+
+It would and should work though. If you want to do it that way, there's no stopping you, it's just not advised.
+
 ## Accessing Solr
 
 If available, you can access your Solr instance at `http://mydomain.com:8983`
