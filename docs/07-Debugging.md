@@ -17,6 +17,14 @@ These error logs are deletable only in dev mode or by administrators.
 
 The logs can be found at `admin/searchadmin/Firesphere-SolrSearch-Models-SolrLog` for checking what is wrong.
 
+## Clearing out the logs
+
+As an admin, you should have access to `dev/tasks`, where an option to truncate the log database is available at
+`dev/tasks/SolrClearErrorsTask`. Use this with caution though, as it will truncate the errors logged and no data remains
+at all.
+
+It is strongly advised to only clear out the logs if they have all been reviewed and you are sure nothing serious is wrong.
+
 ## x:Unknown indexes
 
 Because Solr 5 and lower don't return the actual core that threw the error, logging will say `x:Unknown`. This does not mean

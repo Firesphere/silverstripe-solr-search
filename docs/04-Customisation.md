@@ -17,3 +17,5 @@ Available extension points:
 | `onBeforeSearch` | Before executing the search, update the query | `BaseIndex` |
 | `onAfterSearch` | Manipulate the results | `BaseIndex` |
 | `updateSearchResults` | Manipulate the returned result object | `BaseIndex` |
+
+
