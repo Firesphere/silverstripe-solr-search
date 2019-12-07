@@ -30,6 +30,7 @@ class MyIndex extends BaseIndex
     {
         return 'this-is-my-index';
     }
+}
 ```
 - Run `vendor/bin/sake dev/tasks/SolrConfigureTask` to configure the core
 - Run `vendor/bin/sake dev/tasks/SolrIndexTask` to add documents to your index

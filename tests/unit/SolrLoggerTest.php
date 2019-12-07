@@ -5,9 +5,11 @@ namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\SolrLog;
+use Firesphere\SolrSearch\Tasks\ClearErrorsTask;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 
 class SolrLoggerTest extends SapphireTest
@@ -41,6 +43,12 @@ class SolrLoggerTest extends SapphireTest
         $logger->saveSolrLog('Query');
 
         $this->assertCount(9, SolrLog::get());
+
+        $task = new ClearErrorsTask();
+        $request = new NullHTTPRequest();
+        $task->run($request);
+
+        $this->assertCount(0, SolrLog::get());
     }
 
     public function testLogMessage()

@@ -218,7 +218,7 @@ abstract class BaseIndex
         } catch (Exception $e) {
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
-            $result = ArrayList::create();
+            // @todo find a way to notify the user that something went wrong with the search
         }
 
         $this->rawQuery = $result;
