@@ -3,7 +3,6 @@
 
 namespace Firesphere\SolrSearch\Tasks;
 
-
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 
