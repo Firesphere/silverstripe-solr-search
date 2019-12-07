@@ -22,7 +22,6 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
@@ -146,8 +145,9 @@ class BaseIndexTest extends SapphireTest
         $task->run($request);
         $facets = $index->getFacetFields();
         $this->assertEquals([
-            'Title' => 'Parent',
-            'Field' => 'ParentID',
+            'BaseClass' => SiteTree::class,
+            'Title'     => 'Parent',
+            'Field'     => 'ParentID',
         ], $facets[SiteTree::class]);
         $query = new BaseQuery();
         $query->addTerm('Test');
@@ -338,16 +338,19 @@ class BaseIndexTest extends SapphireTest
 
     public function testSetFacets()
     {
-        $this->index->addFacetField(Page::class, ['Title' => 'Title', 'Field' => 'Content']);
+        $this->index->addFacetField(Page::class,
+            ['BaseClass' => Page::class, 'Title' => 'Title', 'Field' => 'Content']);
 
         $expected = [
             SiteTree::class => [
-                'Title' => 'Parent',
-                'Field' => 'ParentID',
+                'BaseClass' => SiteTree::class,
+                'Title'     => 'Parent',
+                'Field'     => 'ParentID',
             ],
             Page::class     => [
-                'Title' => 'Title',
-                'Field' => 'Content',
+                'BaseClass' => Page::class,
+                'Title'     => 'Title',
+                'Field'     => 'Content',
             ],
         ];
         $this->assertEquals($expected, $this->index->getFacetFields());

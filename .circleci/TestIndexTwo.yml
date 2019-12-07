@@ -18,6 +18,7 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
     DefaultField: _text
     FacetFields:
       Firesphere\SolrSearch\Tests\TestObject:
+        BaseClass: SilverStripe\CMS\Model\SiteTree
         Field: ID
         Title: TestObject
 Firesphere\SolrSearch\Services\SolrCoreService:

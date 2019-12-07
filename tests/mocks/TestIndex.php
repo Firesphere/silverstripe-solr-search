@@ -11,8 +11,9 @@ class TestIndex extends BaseIndex implements TestOnly
 {
     protected $facetFields = [
         SiteTree::class => [
-            'Title' => 'Parent',
-            'Field' => 'ParentID',
+            'BaseClass' => SiteTree::class,
+            'Title'     => 'Parent',
+            'Field'     => 'ParentID',
         ],
     ];
 
@@ -25,8 +26,9 @@ class TestIndex extends BaseIndex implements TestOnly
         $this->addFilterField('Created');
         $this->addSortField('Created');
         $this->addFacetField(SiteTree::class, [
-            'Title' => 'Parent',
-            'Field' => 'ParentID',
+            'BaseClass' => SiteTree::class,
+            'Title'     => 'Parent',
+            'Field'     => 'ParentID',
         ]);
     }
 
