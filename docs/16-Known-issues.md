@@ -32,3 +32,8 @@ Change the permissions on `YourCoreName/conf` to be `777`.
 This should, in theory, resolve your permission errors.
 
 These errors are _not_ related to this module, but on how Vagrant is set up on Linux.
+
+## Solr and Vagrant issues, pt. 2
+
+It's also known that Solr won't properly reload cores on Vagrant VM's. This is outside
+of control for this module, it is advised to restart Solr before and after a config change.
