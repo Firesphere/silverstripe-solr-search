@@ -15,6 +15,6 @@ class TestIndexThree extends BaseIndex implements TestOnly
 
     public function getIndexName()
     {
-        return 'TestIndex-3';
+        return 'TestIndexThree';
     }
 }

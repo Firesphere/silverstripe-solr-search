@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Jobs\SolrConfigureJob;
 use Page;
@@ -37,7 +38,7 @@ class SolrConfigureJobTest extends SapphireTest
             $solrResponse = file_get_contents('http://127.0.0.1:8983/solr/CircleCITestIndex/admin/ping');
             $response = json_decode($solrResponse);
             $this->assertEquals('OK', $response->status);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Debug::dump('Running old solr version. Not testing');
         }
     }

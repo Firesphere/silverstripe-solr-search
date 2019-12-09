@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Exception;
 use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Psr\Log\LoggerInterface;
@@ -23,7 +24,7 @@ class SolrConfigureTaskTest extends SapphireTest
     public function testLogException()
     {
         ob_start();
-        $exception = new \Exception('Test exception');
+        $exception = new Exception('Test exception');
         $task = new SolrConfigureTask();
         TestHelper::invokeMethod($task, 'logException', ['CircleCITestIndex', $exception]);
 

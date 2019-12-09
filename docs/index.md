@@ -13,3 +13,4 @@
 14. [About](14-About.md)
 15. [FAQ](15-FAQ.md)
 16. [Known issues](16-Known-issues.md)
+17. [Code statistics](17-code-stats.md)

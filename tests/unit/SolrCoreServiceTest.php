@@ -118,10 +118,11 @@ class SolrCoreServiceTest extends SapphireTest
 
     public function testGetSolrVersion()
     {
-        if ($this->service->getSolrVersion() !== 5) {
+        if ($this->service->getSolrVersion() !== 7) {
+            // This is a bit a weird hack, but we only test against 7 and 4, so we expect 4
             $this->assertEquals(4, $this->service->getSolrVersion());
         } else {
-            $this->assertEquals(5, $this->service->getSolrVersion());
+            $this->assertEquals(7, $this->service->getSolrVersion());
         }
         $version4 = [
             'responseHeader' =>
@@ -142,6 +143,26 @@ class SolrCoreServiceTest extends SapphireTest
         $handler = HandlerStack::create($mock);
 
         $this->assertEquals(4, $this->service->getSolrVersion($handler));
+
+        $version5 = [
+            'responseHeader' =>
+                [
+                    'status' => 0,
+                    'QTime'  => 10,
+                ],
+            'mode'           => 'std',
+            'solr_home'      => '/var/solr/data',
+            'lucene'         =>
+                [
+                    'solr-spec-version' => '5.6.7',
+                ],
+        ];
+        $mock = new MockHandler([
+            new Response(200, ['X-Foo' => 'Bar'], json_encode($version5)),
+        ]);
+        $handler = HandlerStack::create($mock);
+
+        $this->assertEquals(5, $this->service->getSolrVersion($handler));
     }
 
     public function testValidClasses()

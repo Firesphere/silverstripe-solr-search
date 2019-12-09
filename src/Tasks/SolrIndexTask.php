@@ -7,6 +7,7 @@ use Exception;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
@@ -282,6 +283,7 @@ class SolrIndexTask extends BuildTask
      * @param int $groups
      * @return int
      * @throws Exception
+     * @throws GuzzleException
      */
     private function spawnChildren($class, BaseIndex $index, int $group, int $cores, int $groups): int
     {
@@ -297,7 +299,17 @@ class SolrIndexTask extends BuildTask
                 $config = DB::getConfig();
                 DB::connect($config);
                 if (!$pid) {
-                    $this->doReindex($start, $class, $index, true);
+                    try {
+                        $this->doReindex($start, $class, $index, true);
+                    } catch (Exception $e) {
+                        SolrLogger::logMessage('ERROR', $e, $index->getIndexName());
+                        throw new Exception(
+                            sprintf(
+                                'Something went wrong while indexing %s, see the logs for details',
+                                $start
+                            )
+                        );
+                    }
                 }
             }
         }
