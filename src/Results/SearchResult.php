@@ -208,7 +208,7 @@ class SearchResult
         /** @var PaginatedList $paginated */
         $paginated = PaginatedList::create($items, $request);
         // Do not limit the pagination, it's done at Solr level
-        $paginated->setLimitItems(true)
+        $paginated->setLimitItems(false)
             // Override the count that's set from the item count
             ->setTotalItems($this->getTotalItems())
             // Set the start to the current page from start.
