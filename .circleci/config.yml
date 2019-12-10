@@ -258,6 +258,7 @@ jobs:
           key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - vendor
       - run:
           name: Setup git
           command: |
