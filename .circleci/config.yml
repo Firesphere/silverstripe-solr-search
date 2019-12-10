@@ -264,6 +264,7 @@ jobs:
             git config --global user.name "CircleCI"
             git config --global user.email circleci@casa-laguna.net
             git config --global push.default simple
+            composer require phploc/phploc
       - run:
           name: Generate docs
           command: |
