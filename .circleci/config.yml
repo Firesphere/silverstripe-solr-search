@@ -244,12 +244,15 @@ jobs:
             git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q
             git clone git@github.com:Firesphere/silverstripe-fluent-solr.git fluent -q
             git clone git@github.com:Firesphere/silverstripe-subsite-solr.git subsite -q
-            composer require phploc/phploc
       - restore_cache:
           keys:
             - silverstripe-search-yarn
             # fallback to using the latest cache if no exact match is found
             - silverstripe-search-yarn-
+      - run:
+          name: Composer
+          command: |
+            composer require phploc/phploc
       - run:
           name: Yarn
           command: |
