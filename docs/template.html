@@ -266,6 +266,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             font-size: 0.9em;
+            overflow-x: hidden;
         }
 
         a,
@@ -460,6 +461,13 @@
         h6[id]:hover .heading-anchor-permalink {
             opacity: 0.5;
         }
+        .sticky-bottom {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            margin: 0;
+            padding: 0 0 0 10px;
+        }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8"/>
@@ -474,7 +482,7 @@
     </a>
     <nav id="menu">
         <!--NAV-->
-        <a href="https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search"><img src="https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg" /></a>
+        <a class="sticky-bottom" href="https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search"><img src="https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg" /></a>
     </nav>
     <article id="main" class="content">
         <!--CONTENT-->
