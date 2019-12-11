@@ -75,3 +75,6 @@ If it is related to the module, and not related to actual permissions or other s
 
 Please note that we may charge you for investigating and helping solve your issues. This module is FOSS, but
 our time is not unlimited and we may feel an issue is not worth the effort unless we get paid for our time.
+
+
+[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)
