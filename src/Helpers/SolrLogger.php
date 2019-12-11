@@ -80,7 +80,7 @@ class SolrLogger
         /** @var LoggerInterface $logger */
         $logger = Injector::inst()->get(LoggerInterface::class);
         $logger->alert($message);
-        if (Director::is_cli() || Controller::curr()->getRequest()->getVar('unittest')) {
+        if ($type === 'ERROR' && (Director::is_cli() || Controller::curr()->getRequest()->getVar('unittest'))) {
             Debug::dump($message);
         }
     }
@@ -136,9 +136,11 @@ class SolrLogger
             ];
             $log = array_merge($filter, $logData);
             SolrLog::create($log)->write();
-            /** @var LoggerInterface $logger */
-            $logger = Injector::inst()->get(LoggerInterface::class);
-            $logger->alert($error['message']);
+            if ($type === 'ERROR') {
+                /** @var LoggerInterface $logger */
+                $logger = Injector::inst()->get(LoggerInterface::class);
+                $logger->error($error['message']);
+            }
         }
     }
 

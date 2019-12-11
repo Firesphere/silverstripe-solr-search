@@ -40,3 +40,6 @@ If you run in to trouble updating, add the following to `/etc/apt/apt.conf`:
 ## Vagrant machines
 
 See [Known issues](16-Known-issues.md) for known issues with Vagrant
+
+
+[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

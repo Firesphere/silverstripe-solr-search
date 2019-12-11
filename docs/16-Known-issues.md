@@ -37,3 +37,41 @@ These errors are _not_ related to this module, but on how Vagrant is set up on L
 
 It's also known that Solr won't properly reload cores on Vagrant VM's. This is outside
 of control for this module, it is advised to restart Solr before and after a config change.
+
+## Solr is running as the wrong user
+
+For yet unknown reasons, even after following the Solr installation guide, it may happen
+that Solr runs as the wrong user.
+
+If this happens, the best course of action is to stop Solr and start it with the correct user:
+`cd /opt/solr-8.3.1 && sudo -u solr ./bin/solr start`
+
+Where `8.3.1` should reflect your current Solr version. Or, if you've allowed Solr to create
+symlinks, the path could be `/opt/solr`.
+
+## My config is written to the wrong folder (`.solr`)
+
+This is probably due to an older version of this module, that had this bug. Please upgrade.
+
+## I can't get it to work on Live or UAT
+
+We're very sorry, but deployments of Solr differ so much per deployment, that we can't
+give any solid advice.
+
+The best answer right now is following these steps:
+- Install Solr as described in [Install Solr](02-Solr.md)
+- Make sure the `data` folder is executable fully by Solr (`rxd` on Linux)
+- Make sure the `data/conf` folder is writeable by your PHP and the webserver (Apache2/Nginx/Caddy/Lighttpd etc.)
+- Run a local test of the live environment, ensuring all configs are good to go
+- If there are still errors, please contact your own sysadmin team first. They are most likely to be able to
+resolve the problem
+
+### To no avail, no solution worked
+
+If it is related to the module, and not related to actual permissions or other server set-up issues, and you
+ can not make a public issue, you can contact us at
+ 
+`solr[@]casa-laguna[.]net`
+
+Please note that we may charge you for investigating and helping solve your issues. This module is FOSS, but
+our time is not unlimited and we may feel an issue is not worth the effort unless we get paid for our time.

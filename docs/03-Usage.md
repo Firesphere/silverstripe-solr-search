@@ -2,8 +2,22 @@
 
 ## Getting started
 
-First, create an index extending the `BaseIndex` class. This will require a `getIndexName` method
+You first _need_ to create an index extending the `Firesphere\SolrSearch\Indexes\BaseIndex` class, or if you are using the compatibility
+module, the `SilverStripe\FullTextSearch\Solr\SolrIndex` class.
+
+If you are extending the base Index, it will require a `getIndexName` method
 which is used to determine the name of the index to query Solr.
+
+Although the compatibility module provides a core naming scheme, it is still highly recommended
+to implement your own method.
+
+**IMPORTANT**
+
+The usage of `YML` as a replacement for the core configuration, is _not_ a replacement
+for creating your own Index extending either of the Base Indexes.
+
+`YML` is purely used for the configuration of the index Classes.
+
 
 ## Configuration
 
@@ -30,6 +44,8 @@ Firesphere\SolrSearch\Services\SolrCoreService:
   cpucores: 2
 
 ```
+
+Note, if you are using defaults (localhost), it is not necessary to add this to your configuration.
 
 The config is used to connect to Solr. This will tell the module where the Solr instance for this index lives and how to connect.
 
@@ -72,9 +88,10 @@ Available methods are:
 | Method | Purpose | Required | Usage |
 |-|-|-|-|
 | addClass | Add classes to index | Yes | `$this->addClass(SiteTree::class);` |
-| addFulltextField | Add fields to index | No* | `$this->addFulltextField('Content');` |
+| addFulltextField | Add fields to index | No<sup>1</sup> | `$this->addFulltextField('Content');` |
+| addAllFulltextField | Add all text fields to index | No | `$this->addAllFulltextFields();` |
 | addFilterField | Add fields to use for filtering | No | `$this->addFilterField('ID');` |
-| addBoostedField | Fields to boost by on Query time | No | `$this->addBoostedField('Title', ([]/2), 2);`** |
+| addBoostedField | Fields to boost by on Query time | No | `$this->addBoostedField('Title', ([]/2), 2);`<sup>2</sup> |
 | addSortField | Field to sort by | No | `$this->addSortField('Created');` |
 | addCopyField | Add a special copy field, besides the default _text | No | `$this->addCopyField('myCopy', ['Fields', 'To', 'Copy']);` |
 | addStoredField | Add a field to be stored specifically | No | `$this->addStoredField('LastEdited');` |
@@ -112,13 +129,18 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
 
 ```
 
+#### MySearchIndex
+
+This name should match the name you provided in your Index extending the `BaseIndex` you are instructed
+to create in the first step of this document.
+
 #### Moving from init to YML
 
 The [compatibility module](06-Fulltext-Search-Compatibility.md) has an extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
 
 ## Another way to set the config in PHP
 
-You could also use PHP, just like it was, to set the config. For readability however, it's better to use statics for Facets:
+You could also use PHP, just like it was, to set the config. For readability however, it's better to use variables for Facets:
 ```php
     protected $facetFields = [
         RelatedObject::class   => [
@@ -154,8 +176,26 @@ It would and should work though. If you want to do it that way, there's no stopp
 
 If available, you can access your Solr instance at `http://mydomain.com:8983`
 
+## Excluding unwanted indexes
+
+To exclude unwanted indexes, it is possible declare a list of _wanted_ indexes in the `YML`
+
+```yaml
+Firesphere\SolrSearch\Services\SolrCoreService:
+  indexes:
+    - CircleCITestIndex
+    - Firesphere\SolrSearch\Tests\TestIndex
+    - Firesphere\SolrSearch\Tests\TestIndexTwo
+    - Firesphere\SolrSearch\Tests\TestIndexThree
+```
+
+Looking at the `tests` folder, there is a `TestIndexFour`. This index is not loaded unless explicitly asked.
 
 ----------
-\* Although not required, it's highly recomended
+<sup>1</sup> Although not required, it's highly recomended
 
-\*\* The second option of an array can be omitted and directly given the boost value
+<sup>2</sup> The second option of an array can be omitted and directly given the boost value
+
+
+[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)
+
