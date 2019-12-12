@@ -67,11 +67,6 @@ trait BaseIndexTrait
      */
     protected $usedAllFields = false;
     /**
-     * @var array Search history for the current user
-     */
-    protected $history = [];
-
-    /**
      * Return the copy fields
      *
      * @return array
@@ -440,29 +435,6 @@ trait BaseIndexTrait
     public function setStoredFields(array $storedFields): self
     {
         $this->storedFields = $storedFields;
-
-        return $this;
-    }
-
-    /**
-     * Get the search history for the current user on this index
-     *
-     * @return array
-     */
-    public function getHistory(): array
-    {
-        return $this->history;
-    }
-
-    /**
-     * Set the search history for the current user on this index
-     *
-     * @param array $history
-     * @return self
-     */
-    public function setHistory(array $history): self
-    {
-        $this->history = $history;
 
         return $this;
     }

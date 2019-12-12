@@ -233,10 +233,8 @@ class QueryComponentFactory
 
         $boostTerms = $this->getBoostTerms();
 
-        $history = $this->index->getHistory();
         foreach ($terms as $search) {
             $term = $search['text'];
-            $history[] = $search['text'];
             $term = $this->escapeSearch($term, $this->helper);
             $postfix = $this->isFuzzy($search);
             // We can add the same term multiple times with different boosts
@@ -249,7 +247,6 @@ class QueryComponentFactory
                 $boostTerms = $this->buildQueryBoost($search, $term, $boostTerms);
             }
         }
-        $this->index->setHistory(array_unique($history));
         // Clean up the boost terms, remove doubles
         $this->setBoostTerms(array_values(array_unique($boostTerms)));
     }

@@ -6,14 +6,14 @@ Did you do a build?
 
 `https://yourdomain.com/dev/build?flush=all`
 
-It is known that the final index might throw a MySQL error.
+It is known that the final index might throw a MySQL Exception.
 This is expected at the moment, and sadly, unavoidable so far.
 If you have a solution, we would love to hear from you!
 
 
 ## Linux hosts with Vagrant
 
-There is a known issue between Linux hosts using Vagrant. Solr does not have
+There is a known issue with Linux hosts using Vagrant. Solr does not have
 the correct write permissions, and Apache does not have the correct write permissions either.
 
 This can be resolved by setting the folder of your Solr Core to `/var/solr/data`.

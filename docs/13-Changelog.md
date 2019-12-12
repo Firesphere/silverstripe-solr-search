@@ -10,6 +10,8 @@
 - Fix test errors.
 - Fix `schema.xml` construction.
 - [Change of Permission indexing from User based to Group based](10-View-Permissions.md)
+- Improved documentation
+- Removed history, moving to a later phase to include in a sub-module
 
 ## 0.9.x
 

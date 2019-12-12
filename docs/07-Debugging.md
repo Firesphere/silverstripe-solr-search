@@ -1,8 +1,8 @@
 # Debugging
 
 To debug the executed query, the `BaseIndex` has a method available to show you all the components of the executed query as an array. To get this data, execute the following after you have done your search:
-`$index->getRawQuery()->getData()`
-`$index->getQueryTerms()`
+- `$index->getQueryTerms()` To get the query terms
+- 
 
 These two methods supply more information about the executed query.
 

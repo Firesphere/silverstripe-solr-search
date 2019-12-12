@@ -50,10 +50,6 @@ abstract class BaseIndex
     use Injectable;
     use GetterSetterTrait;
     use BaseIndexTrait;
-    /**
-     * Session key for the query history
-     */
-    const SEARCH_HISTORY_KEY = 'query_history';
 
     /**
      * Field types that can be added
@@ -112,8 +108,6 @@ abstract class BaseIndex
         $config['endpoint'] = $this->getConfig($config['endpoint']);
         $this->client = new Client($config);
         $this->client->setAdapter(new Guzzle());
-        $session = Controller::curr()->getRequest()->getSession();
-        $this->history = $session->get(self::SEARCH_HISTORY_KEY) ?: [];
 
         // Set up the schema service, only used in the generation of the schema
         $schemaService = Injector::inst()->get(SchemaService::class, false);

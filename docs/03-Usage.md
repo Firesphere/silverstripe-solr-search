@@ -13,8 +13,8 @@ to implement your own method.
 
 **IMPORTANT**
 
-The usage of `YML` as a replacement for the core configuration, is _not_ a replacement
-for creating your own Index extending either of the Base Indexes.
+The usage of `YML` as a replacement for the core configuration, it  is not a replacement 
+for creating your own Index extending either of the Base Indexes, it is a compliment to it.
 
 `YML` is purely used for the configuration of the index Classes.
 
@@ -59,18 +59,19 @@ store:
   uri: 'https://mydomain.com'
 ```
 
-#### Defining amount of CPU cores
+#### Defining the number of CPU cores
 
-If your server has multiple CPU cores available, you can define the amount of cores in the config.
+If your server has multiple CPU cores available, you can define the number of cores in the config.
 During indexing, this means that each core gets to do an indexing of a group.
-The advantage is that it takes all cores available, speeding up the indexing process by the amount of cores available.
+The advantage is that it takes all cores available, speeding up the indexing process by the number of cores available.
 
-Because the amount of cores can not be determined programmatically, due to access control, you will have to define the amount of cores available manually.
+Because the number of cores can not be determined programmatically, due to access control, you will have to define 
+the number of cores available manually.
 
 
 **NOTE**
 
-Given the current situation in server-land, the default amount of cores is 2. This should work fine for
+Given the current situation in server-land, the default number of cores is 2. This should work fine for
 most situations, even if you only have one core available. If you have more cores, you can make this
 number larger, of course.
 
@@ -136,7 +137,7 @@ to create in the first step of this document.
 
 #### Moving from init to YML
 
-The [compatibility module](06-Fulltext-Search-Compatibility.md) has an extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+The [compatibility module](06-Fulltext-Search-Compatibility.md) has an optional extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
 
 ## Another way to set the config in PHP
 
