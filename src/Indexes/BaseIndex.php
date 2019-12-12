@@ -227,11 +227,6 @@ abstract class BaseIndex
         // And then handle the search results, which is a useable object for SilverStripe
         $this->extend('updateSearchResults', $searchResult);
 
-        Controller::curr()
-            ->getRequest()
-            ->getSession()
-            ->set(self::SEARCH_HISTORY_KEY, $this->getHistory());
-
         return $searchResult;
     }
 
