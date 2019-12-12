@@ -32,6 +32,8 @@ use SilverStripe\ORM\ValidationException;
 use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
+use Solarium\Core\Client\Response;
+use Solarium\Exception\RuntimeException;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -67,12 +69,6 @@ abstract class BaseIndex
         'FacetFields',
         'StoredFields',
     ];
-    /**
-     * The raw query result
-     *
-     * @var Result
-     */
-    protected $rawQuery;
     /**
      * {@link SchemaService}
      *
@@ -212,10 +208,7 @@ abstract class BaseIndex
         } catch (Exception $e) {
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
-            // @todo find a way to notify the user that something went wrong with the search
         }
-
-        $this->rawQuery = $result;
 
         // Handle the after search first. This gets a raw search result
         $this->extend('onAfterSearch', $result);

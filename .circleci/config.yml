@@ -250,6 +250,10 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - silverstripe-search-yarn-
       - run:
+          name: Composer
+          command: |
+            composer require phploc/phploc
+      - run:
           name: Yarn
           command: |
             echo '{"scripts": {"docs": "markdown-folder-to-html"}}' > package.json
@@ -258,13 +262,13 @@ jobs:
           key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - vendor
       - run:
           name: Setup git
           command: |
             git config --global user.name "CircleCI"
             git config --global user.email circleci@casa-laguna.net
             git config --global push.default simple
-            composer require phploc/phploc
       - run:
           name: Generate docs
           command: |
@@ -273,6 +277,9 @@ jobs:
             rm -rf solr-docs
             php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr-api
             cp -r ./search/docs .
+            echo "\`\`\`" > docs/17-codebase-stats.md
+            vendor/bin/phploc >> docs/17-codebase-stats.md
+            echo "\`\`\`" >> docs/17-codebase-stats.md
             yarn docs
             rm -rf docs
             mv _docs solr-docs

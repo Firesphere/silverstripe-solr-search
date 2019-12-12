@@ -299,8 +299,16 @@ class SolrCoreService
         $result = $client->get('solr/admin/info/system?wt=json');
         $result = json_decode($result->getBody(), 1);
 
-        $version = version_compare('5.0.0', $result['lucene']['solr-spec-version']);
+        $return = 7;
+        // Older than 5, newer than 7, a few new features added, only check if the version is still 7
+        if (version_compare('6.9.9', $result['lucene']['solr-spec-version']) >= 0) {
+            $return = 5;
+        }
+        // Old version 4
+        if (version_compare('4.9.9', $result['lucene']['solr-spec-version']) >= 0) {
+            $return = 4;
+        }
 
-        return ($version > 0) ? 4 : 5;
+        return $return;
     }
 }

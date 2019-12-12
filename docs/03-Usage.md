@@ -139,6 +139,10 @@ to create in the first step of this document.
 
 The [compatibility module](06-Fulltext-Search-Compatibility.md) has an optional extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
 
+## Grouped indexing
+
+Note, grouped indexing is `0` based. Thus, if there are 150 groups to index, the final group to index will be 149 instead of 150.
+
 ## Another way to set the config in PHP
 
 You could also use PHP, just like it was, to set the config. For readability however, it's better to use variables for Facets:

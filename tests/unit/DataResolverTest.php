@@ -2,8 +2,10 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Exception;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Helpers\DataResolver;
+use LogicException;
 use Page;
 use SilverStripe\Control\HTTPRequestBuilder;
 use SilverStripe\Core\Config\Config;

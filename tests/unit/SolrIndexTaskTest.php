@@ -3,6 +3,7 @@
 
 namespace Firesphere\SolrSearch\Tests;
 
+use Exception;
 use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
@@ -88,7 +89,7 @@ class SolrIndexTaskTest extends SapphireTest
     public function testLogException()
     {
         ob_start();
-        $exception = new \Exception('Test exception');
+        $exception = new Exception('Test exception');
         $task = new SolrIndexTask();
         TestHelper::invokeMethod($task, 'logException', ['CircleCITestIndex', 2, $exception]);
 

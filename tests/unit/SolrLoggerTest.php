@@ -44,9 +44,11 @@ class SolrLoggerTest extends SapphireTest
 
         $this->assertCount(9, SolrLog::get());
 
+        ob_start();
         $task = new ClearErrorsTask();
         $request = new NullHTTPRequest();
         $task->run($request);
+        ob_end_flush();
 
         $this->assertCount(0, SolrLog::get());
     }

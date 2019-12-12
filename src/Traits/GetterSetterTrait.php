@@ -32,7 +32,8 @@ trait GetterSetterTrait
     /**
      * Format:
      * SiteTree::class   => [
-     *      'Field' => 'SiteTree_ChannelID',
+     *      'BaseClass' => SiteTree::class,
+     *      'Field' => 'ChannelID',
      *      'Title' => 'Channel'
      * ],
      *
