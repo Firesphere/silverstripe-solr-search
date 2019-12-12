@@ -80,7 +80,7 @@ class SolrLogger
         /** @var LoggerInterface $logger */
         $logger = Injector::inst()->get(LoggerInterface::class);
         $logger->alert($message);
-        if ($type === 'ERROR' && (Director::is_cli() || Controller::curr()->getRequest()->getVar('unittest'))) {
+        if (Director::is_cli() || Controller::curr()->getRequest()->getVar('unittest')) {
             Debug::dump($message);
         }
     }
