@@ -33,6 +33,7 @@ use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
 use Solarium\Core\Client\Response;
+use Solarium\Exception\RuntimeException;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -207,7 +208,6 @@ abstract class BaseIndex
         } catch (Exception $e) {
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
-            $result = new Result($clientQuery, new Response('{}', []));
         }
 
         // Handle the after search first. This gets a raw search result
