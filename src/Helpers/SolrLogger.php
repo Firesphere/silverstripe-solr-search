@@ -136,7 +136,7 @@ class SolrLogger
             ];
             $log = array_merge($filter, $logData);
             SolrLog::create($log)->write();
-            if ($type === 'ERROR') {
+            if (Director::is_cli() || Controller::curr()->getRequest()->getVar('unittest')) {
                 /** @var LoggerInterface $logger */
                 $logger = Injector::inst()->get(LoggerInterface::class);
                 $logger->error($error['message']);
