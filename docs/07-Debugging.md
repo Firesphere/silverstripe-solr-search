@@ -6,7 +6,9 @@ as an array. To get this data, execute the following after you have done your se
 
 The Index also has a method to get the Query Factory and read data from there.
 You can find the output of the factory by getting
-- `$index->getQueryFactory`. See the [API documentation](https://firesphere.github.io/solr-api) on how to address each part of the factory.
+- `$index->getQueryFactory()`. See the [API documentation](https://firesphere.github.io/solr-api/classes/Firesphere.SolrSearch.Factories.QueryComponentFactory.html) on how to address each part of the factory.
+
+Through the use of an `Extension` on `BaseIndex` you can get the Factory through the method `onBeforeSearch`
 
 These two methods supply more information about the executed query.
 
