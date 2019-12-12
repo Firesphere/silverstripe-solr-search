@@ -58,6 +58,7 @@
         "source": "https://github.com/firesphere/silverstripe-solr-search"
     },
     "suggest": {
+        "ext-pcntl": "Support for multi-core indexing",
         "firesphere/fluent-solr-search": "For Fluent support",
         "firesphere/fts-compat": "Migration support from Fulltext Search module",
         "firesphere/subsite-solr-search": "Support for Subsites"
