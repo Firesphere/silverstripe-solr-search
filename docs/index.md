@@ -13,6 +13,3 @@
 14. [About](14-About.md)
 15. [FAQ](15-FAQ.md)
 16. [Known issues](16-Known-issues.md)
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

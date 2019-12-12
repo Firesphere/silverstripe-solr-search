@@ -36,6 +36,3 @@ class MyIndex extends BaseIndex
 - Run `vendor/bin/sake dev/tasks/SolrIndexTask` to add documents to your index
 
 Happy searching after that... once this is done
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

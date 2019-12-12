@@ -52,6 +52,3 @@ I would like an issue to be created
 
 Especially when using facets, you should not redeclare fields to be filterable as well. If you run in to an error 
 saying you have duplicate fields, check your configuration that e.g. FilterFields does not have an overlap with FacetFields, etc.
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

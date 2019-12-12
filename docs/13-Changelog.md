@@ -44,6 +44,3 @@
 - Support elevation.
 - Simplified API.
 - Fulltext Search compatibility.
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

@@ -5,6 +5,3 @@ This solr search module is aimed at a more modern, modular approach to searching
 It is maintained by:
 * Simon `Firesphere` Erkelens
 * Marco `Sheepy` Hermo
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

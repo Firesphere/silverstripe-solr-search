@@ -196,7 +196,3 @@ Looking at the `tests` folder, there is a `TestIndexFour`. This index is not loa
 <sup>1</sup> Although not required, it's highly recomended
 
 <sup>2</sup> The second option of an array can be omitted and directly given the boost value
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)
-

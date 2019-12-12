@@ -43,6 +43,3 @@ By default, SilverStripe sorts by ID, causing the oldest errors to show first. A
 
 The gridfield is colour coded for the type of error. This can be disabled by overriding the GridFieldExtension class and removing
 any classes that are unwished for.
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

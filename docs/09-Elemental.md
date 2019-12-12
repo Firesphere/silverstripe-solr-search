@@ -29,6 +29,3 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
 ```
 
 This will index Elements with their title and rendered content. 
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

@@ -88,6 +88,3 @@ Which you can then use in your javascript to populate a dropdown.
 ## Security note
 
 As the query is passed straight in to Solr, there is no option of database SQL injection.
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

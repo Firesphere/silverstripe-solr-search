@@ -14,6 +14,3 @@ permission implementations instead.
 
 The reason for not using custom `Member` based permission checks, is because when a site has a lot of members, indexing
 and the granular approach would become incredibly complex and long. Possibly causing errors during indexing.
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)

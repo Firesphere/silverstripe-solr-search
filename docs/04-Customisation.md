@@ -17,6 +17,3 @@ Available extension points:
 | `onBeforeSearch` | Before executing the search, update the query | `BaseIndex` |
 | `onAfterSearch` | Manipulate the results | `BaseIndex` |
 | `updateSearchResults` | Manipulate the returned result object | `BaseIndex` |
-
-
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)
