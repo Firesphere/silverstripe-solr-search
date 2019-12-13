@@ -43,7 +43,6 @@ After updating the group permissions, be sure to log out and back in again.
 It's also known that Solr won't properly reload cores on Vagrant VM's. This is outside
 of control for this module, it is advised to restart Solr before and after a config change.
 
-<<<<<<< HEAD
 ## Solr is running as the wrong user
 
 For yet unknown reasons, even after following the Solr installation guide, it may happen
