@@ -79,7 +79,7 @@ We're very sorry, but deployments of Solr differ so much per deployment, that we
 give any solid advice.
 
 The best answer right now is following these steps:
-- Install Solr as described in [Install Solr](02-Solr.md)
+- Install Solr as described in [Install Solr](../02-Solr.md)
 - Make sure the `data` folder is executable fully by Solr (`rxd` on Linux)
 - Make sure the `data/conf` folder is writeable by your PHP and the webserver (Apache2/Nginx/Caddy/Lighttpd etc.)
 - Run a local test of the live environment, ensuring all configs are good to go

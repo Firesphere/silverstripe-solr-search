@@ -39,4 +39,4 @@ If you run in to trouble updating, add the following to `/etc/apt/apt.conf`:
 
 ## Vagrant machines
 
-See [Known issues](16-Known-issues.md) for known issues with Vagrant
+See [Known issues](Help/03-Known-issues.md) for known issues with Vagrant
