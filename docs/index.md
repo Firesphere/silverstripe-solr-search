@@ -14,7 +14,7 @@
     04. [Member based permissions](Submodules/04-Member-based-permissions.md)
     05. [Elemental](Submodules/05-Elemental.md)
 10. Contributing
-    01. [Code of Conduct](Contributing/01-code-of-conduct.md)
+    01. [Code of Conduct](Contributing/01-Code-of-Conduct.md)
     02. [Contributing](Contributing/02-Contributing.md) 
 11. Help
     01. [Changelog](Help/01-Changelog.md)

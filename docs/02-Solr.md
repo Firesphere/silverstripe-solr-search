@@ -35,7 +35,7 @@ apt-get install -t jessie-backports openjdk-8-jre
 ```
 
 If you run in to trouble updating, add the following to `/etc/apt/apt.conf`:
-`Acquire::Check-Valid-Until "false";`
+- `Acquire::Check-Valid-Until "false";`
 
 ## Vagrant machines
 
