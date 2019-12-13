@@ -11,7 +11,8 @@
     01. [Fulltext Search compatibility](Submodules/01-Fulltext-Search-Compatibility.md)
     02. [Subsites](Submodules/02-Subsites.md)
     03. [Fluent](Submodules/03-Fluent.md)
-    04. [Elemental](Submodules/04-Elemental.md)
+    04. [Member based permissions](Submodules/04-Member-based-permissions.md)
+    05. [Elemental](Submodules/05-Elemental.md)
 10. Contributing
     01. [Code of Conduct](Contributing/01-code-of-conduct.md)
     02. [Contributing](Contributing/02-Contributing.md) 
