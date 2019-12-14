@@ -277,9 +277,9 @@ jobs:
             rm -rf solr-docs
             php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr-api
             cp -r ./search/docs .
-            echo "\`\`\`" > docs/12-About/3-codebase-stats.md
-            vendor/bin/phploc search/src/ >> docs/12-About/03-codebase-stats.md
-            echo "\`\`\`" >> docs/12-About/03-codebase-stats.md
+            echo "\`\`\`" > docs/12-About/3-Codebase-stats.md
+            vendor/bin/phploc search/src/ >> docs/12-About/03-Codebase-stats.md
+            echo "\`\`\`" >> docs/12-About/03-Codebase-stats.md
             yarn docs
             rm -rf docs
             mv _docs solr-docs

@@ -22,4 +22,4 @@
     03. [Known issues](11-Help/03-Known-issues.md)
 12. About
     01. [About](12-About/01-About.md)
-    02. [Code statistics](12-About/03-codebase-stats.md)
+    02. [Code statistics](12-About/03-Codebase-stats.md)
