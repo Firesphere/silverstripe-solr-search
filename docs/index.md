@@ -32,4 +32,4 @@
     
 # GitStore
 
-[Please see the GitStore FAQ section](11-Help/02-FAQ.md#GitStore)
+[Please see the GitStore FAQ section](11-Help/02-FAQ.html#gitstore)
