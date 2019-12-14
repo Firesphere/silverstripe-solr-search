@@ -30,6 +30,6 @@
 
 - None so far 😿
     
-# GitStore
+# [GitStore](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
 
 [Please see the GitStore FAQ section](11-Help/02-FAQ.html#gitstore)
