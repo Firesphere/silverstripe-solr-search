@@ -1,68 +1,68 @@
 {
-    "name": "firesphere/solr-search",
-    "description": "Search a SilverStripe site with Solr",
-    "type": "silverstripe-vendormodule",
-    "license": "BSD-3-Clause",
-    "keywords": [
-        "silverstripe",
-        "search",
-        "solr",
-        "configuration",
-        "solarium"
-    ],
-    "authors": [
-        {
-            "name": "Simon `Firesphere` Erkelens",
-            "email": "simonerkelens@silverstripe.com"
-        },
-        {
-            "name": "Marco `Sheepy` Hermo",
-            "email": "marco@silverstripe.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.1",
-        "ext-json": "*",
-        "silverstripe/framework": "^4",
-        "symbiote/silverstripe-queuedjobs": "^4",
-        "solarium/solarium": "^5.0",
-        "minimalcode/search": "^1.0",
-        "guzzlehttp/guzzle": "^6.3"
+  "name": "firesphere/solr-search",
+  "description": "Search a SilverStripe site with Solr",
+  "type": "silverstripe-vendormodule",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "silverstripe",
+    "search",
+    "solr",
+    "configuration",
+    "solarium"
+  ],
+  "authors": [
+    {
+      "name": "Simon `Firesphere` Erkelens",
+      "email": "simonerkelens@silverstripe.com"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^5.7",
-        "scriptfusion/phpunit-immediate-exception-printer": "^1",
-        "squizlabs/php_codesniffer": "^3.0"
+    {
+      "name": "Marco `Sheepy` Hermo",
+      "email": "marco@silverstripe.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "ext-json": "*",
+    "silverstripe/framework": "^4",
+    "symbiote/silverstripe-queuedjobs": "^4",
+    "solarium/solarium": "^5.0",
+    "minimalcode/search": "^1.0",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7",
+    "scriptfusion/phpunit-immediate-exception-printer": "^1",
+    "squizlabs/php_codesniffer": "^3.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev",
+      "1.0": "1.0.x-dev"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev",
-            "1.0": "1.0.x-dev"
-        },
-        "expose": [
-            "client/dist"
-        ]
-    },
-    "autoload": {
-        "psr-4": {
-            "Firesphere\\SolrSearch\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Firesphere\\SolrSearch\\Tests\\": "tests"
-        }
-    },
-    "support": {
-        "issues": "https://github.com/firesphere/silverstripe-solr-search/issues",
-        "source": "https://github.com/firesphere/silverstripe-solr-search"
-    },
-    "suggest": {
-        "ext-pcntl": "Support for multi-core indexing",
-        "firesphere/fluent-solr-search": "For Fluent support",
-        "firesphere/fts-compat": "Migration support from Fulltext Search module",
-        "firesphere/subsite-solr-search": "Support for Subsites"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "expose": [
+      "client/dist"
+    ]
+  },
+  "autoload": {
+    "psr-4": {
+      "Firesphere\\SolrSearch\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Firesphere\\SolrSearch\\Tests\\": "tests"
+    }
+  },
+  "support": {
+    "issues": "https://github.com/firesphere/silverstripe-solr-search/issues",
+    "source": "https://github.com/firesphere/silverstripe-solr-search"
+  },
+  "suggest": {
+    "ext-pcntl": "Support for multi-core indexing",
+    "firesphere/fluent-solr-search": "For Fluent support",
+    "firesphere/fts-compat": "Migration support from Fulltext Search module",
+    "firesphere/subsite-solr-search": "Support for Subsites"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

@@ -6,7 +6,9 @@ namespace Firesphere\SolrSearch\Tests;
 use Exception;
 use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
+use PhpCsFixer\Config;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -35,6 +37,25 @@ class SolrIndexTaskTest extends SapphireTest
         parent::setUp();
     }
 
+    public function testGettersSetters()
+    {
+        /** @var SolrIndexTask $task */
+        $task = Injector::inst()->get(SolrIndexTask::class);
+        $cores = SolrCoreService::config()->get('cpucores') ?: 1;
+        $index = new TestIndex();
+        $this->assertEquals($cores, $task->getCores());
+
+        $task->setCores(10);
+
+        $this->assertEquals(10, $task->getCores());
+
+        $task->setCores($cores);
+
+        $task->setIndex($index);
+
+        $this->assertInstanceOf(TestIndex::class, $task->getIndex());
+    }
+
     public function testRun()
     {
         $getVars = [
@@ -45,7 +66,7 @@ class SolrIndexTaskTest extends SapphireTest
         $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
 
         /** @var SolrIndexTask $task */
-        $task = Injector::inst()->get(SolrIndexTask::class);
+        $task = Injector::inst()->get(SolrIndexTask::class, true);
 
         $result = $task->run($request);
 
@@ -72,6 +93,29 @@ class SolrIndexTaskTest extends SapphireTest
         $result = $task->run($request);
 
         $this->assertEquals(0, $result);
+    }
+
+    /**
+     * This test is specifically to test that the task will run fine with PCNTL.
+     * In the index task, there's a check if the 'unittest' flag is set, to throw an exception.
+     * It's a workaround for `exit()` which kills the entire PHPUnit process, no matter the PCNTL state.
+     *
+     * @expectedException \Exception
+     */
+    public function testRunPCNTL()
+    {
+        $this->markTestSkipped('PCNTL Is not available on CircleCI yet');
+        $getVars = [
+            'group'    => 0,
+            'index'    => 'CircleCITestIndex',
+            'unittest' => 'pcntl'
+        ];
+        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
+
+        /** @var SolrIndexTask $task */
+        $task = Injector::inst()->get(SolrIndexTask::class, true);
+
+        $task->run($request);
     }
 
     public function testGetLogger()

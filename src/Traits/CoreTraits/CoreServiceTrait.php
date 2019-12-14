@@ -100,8 +100,8 @@ trait CoreServiceTrait
     /**
      * Get the classes in hierarchy to see if it's valid
      *
-     * @param $index
-     * @param array $classes
+     * @param string $index Index to check classes for
+     * @param array $classes Classes to get hierarchy for
      * @return array
      * @throws ReflectionException
      */

@@ -94,3 +94,10 @@ If it is related to the module, and not related to actual permissions or other s
 
 Please note that we may charge you for investigating and helping solve your issues. This module is FOSS, but
 our time is not unlimited and we may feel an issue is not worth the effort unless we get paid for our time.
+
+## Some groups give an error about `P` or `G`
+
+Yes, a headscratcher! Re-run that specific group `SolrIndexTask group={Group Number}` and all should be fine.
+
+Sometimes, for unknown reason, the `POST` or `GET` part of the request string is included in the XML that is 
+sent to Solr. We've not yet found a reason for how/why this is happening.
