@@ -22,4 +22,6 @@
     03. [Known issues](11-Help/03-Known-issues.md)
 12. About
     01. [About](12-About/01-About.md)
-    02. [Code statistics](12-About/03-Codebase-stats.md)
+    02. [Coverage](12-About/02-Coverage.md)
+    03. [Code statistics](12-About/03-Codebase-stats.md)
+    04. [Plans](12-About/04-Plans.md)
