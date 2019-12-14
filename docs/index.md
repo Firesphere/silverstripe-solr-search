@@ -25,3 +25,11 @@
     02. [Coverage](12-About/02-Coverage.md)
     03. [Code statistics](12-About/03-Codebase-stats.md)
     04. [Plans](12-About/04-Plans.md)
+    
+# Sponsors
+
+- None so far 😿
+    
+# GitStore
+
+[Please see the GitStore FAQ section](11-Help/02-FAQ.md#GitStore)

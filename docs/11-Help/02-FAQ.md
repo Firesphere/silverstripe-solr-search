@@ -52,3 +52,23 @@ I would like an issue to be created
 
 Especially when using facets, you should not redeclare fields to be filterable as well. If you run in to an error 
 saying you have duplicate fields, check your configuration that e.g. FilterFields does not have an overlap with FacetFields, etc.
+
+# GitStore
+
+As you may know, Open Source Software is written by volunteers. We volunteer our time, to work
+on software a lot.
+
+But, by doing such, we do not have time for other things to relax. Which causes friction.
+
+If you can afford it, we would appreciate it a lot if you would sponsor us through GitStore.
+
+## But your software is free and open
+
+Yes, but that does not mean it doesn't cost us time to respond to issues, look at pull requests
+or even support you with problems outside of the module. (A common one is Solr and Linux permission failures).
+
+We do not mind helping you. But we have put a lot of time and effort in to writing software
+that is useful to you, the community. We ask you, could you give something back? It is not mandatory,
+of course.
+
+We will add you to the list of sponsors, if you decide to pay for this work.
