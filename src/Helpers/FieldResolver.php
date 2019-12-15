@@ -341,7 +341,6 @@ class FieldResolver
         $type = $singleton->castingClass($field);
 
         if (!$type) {
-            // @todo should this be null?
             $type = 'String';
         }
 

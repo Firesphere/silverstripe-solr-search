@@ -1,4 +1,9 @@
 # Solr Search
+
+Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
+
+## Table of Contents
+
 01. [Installation](01-Installation.md)
 02. [Solr](02-Solr.md)
 03. [Usage](03-Usage.md)

@@ -59,7 +59,7 @@ trait QueryComponentFacetTrait
             if (array_key_exists($config['Title'], $filterFacets) &&
                 $filter = array_filter($filterFacets[$config['Title']], 'strlen')
             ) {
-                // @todo add unit tests for this bit. It's crucial but untested
+                // @todo add unit tests for this bit. It's crucial but not tested properly
                 $filter = is_array($filter) ? $filter : [$filter];
                 $shortClass = getShortFieldName($config['BaseClass']);
                 $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);

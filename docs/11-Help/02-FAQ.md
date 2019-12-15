@@ -30,7 +30,7 @@ Hold your horses, this is a beta stage project, more storage options to come!
 Most likely, you're running a vagrant or docker machine? And even more likely
 running it on Linux.
 
-The solution is to create a symlink in `/var/solr/data/{your-policy-name/` to `/var/www/{yoursite}/.solr/.conf`, so the
+The solution is to create a symlink in `/var/solr/data/{your-policy-name/` to `/var/www/{yoursite}/.solr/conf`, so the
 `conf` folder points to your locally writable folder for Vagrant.
 
 In your search.yml, add the following as the location of your FileStore config:

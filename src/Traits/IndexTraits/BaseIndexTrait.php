@@ -66,6 +66,7 @@ trait BaseIndexTrait
      * @var bool
      */
     protected $usedAllFields = false;
+
     /**
      * Return the copy fields
      *

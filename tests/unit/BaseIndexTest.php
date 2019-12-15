@@ -336,8 +336,10 @@ class BaseIndexTest extends SapphireTest
 
     public function testSetFacets()
     {
-        $this->index->addFacetField(Page::class,
-            ['BaseClass' => Page::class, 'Title' => 'Title', 'Field' => 'Content']);
+        $this->index->addFacetField(
+            Page::class,
+            ['BaseClass' => Page::class, 'Title' => 'Title', 'Field' => 'Content']
+        );
 
         $expected = [
             SiteTree::class => [
