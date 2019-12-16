@@ -56,9 +56,8 @@ trait QueryComponentFacetTrait
     {
         $filterFacets = $this->query->getFacetFilter();
         foreach ($this->index->getFacetFields() as $class => $config) {
-            if (array_key_exists($config['Title'], $filterFacets) &&
-                $filter = array_filter($filterFacets[$config['Title']], 'strlen')
-            ) {
+            if (isset($filterFacets[$config['Title']])) {
+                $filter = $filterFacets[$config['Title']];
                 // @todo add unit tests for this bit. It's crucial but not tested properly
                 $filter = is_array($filter) ? $filter : [$filter];
                 $shortClass = getShortFieldName($config['BaseClass']);
