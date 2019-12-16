@@ -201,20 +201,23 @@ class FieldResolver
     /**
      * Get the hierarchy for a class
      *
-     * @param $class
-     * @param $includeSubclasses
+     * @param string $class Class to get the hierarchy for
+     * @param bool $includeSubclasses Include classes extending this baseclass
      * @return array
      * @throws ReflectionException
      * @todo clean this up to be more compatible with PHP features
      */
     protected static function getHierarchyClasses($class, $includeSubclasses): array
     {
+        $classes = [];
         if (!isset(self::$ancestry[$class])) {
             self::$ancestry[$class] = array_values(ClassInfo::ancestry($class));
         }
         $ancestry = self::$ancestry[$class];
 
-        $classes = self::getSubClasses($class, $includeSubclasses, $ancestry);
+        if ($includeSubclasses) {
+            $classes = self::getSubClasses($class, $includeSubclasses, $ancestry);
+        }
 
         $classes = array_unique($classes);
         $classes = self::excludeDataObjectIDx($classes);

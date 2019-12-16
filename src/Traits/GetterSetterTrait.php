@@ -58,16 +58,13 @@ trait GetterSetterTrait
      * Add a class to index or query
      * $options is not used anymore, added for backward compatibility
      *
-     * @param $class
+     * @param string|array $class
      * @param array $options unused
      * @return $this
      */
     public function addClass($class, $options = []): self
     {
-        if (count($options)) {
-            Deprecation::notice('5.0', 'Options are not used anymore');
-        }
-        $this->class[] = $class;
+        $this->class[] = [$class => $options];
 
         return $this;
     }

@@ -107,6 +107,8 @@ class SolrIndexTask extends BuildTask
             $this->setIndex($index);
 
             $indexClasses = $this->index->getClasses();
+
+            $indexClasses = $this->getClassNames($indexClasses);
             $classes = $this->getClasses($vars, $indexClasses);
             if (!count($classes)) {
                 continue;
@@ -121,6 +123,25 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Time taken: %s minutes', (time() - $start) / 60));
 
         return $groups;
+    }
+
+    /**
+     * Get the actual classes to index, to avoid array-to-string issues etc.
+     * @param array $classes
+     * @return array
+     */
+    protected function getClassNames($classes)
+    {
+        $return = [];
+        foreach ($classes as $i => $classOptions) {
+            if (is_array($classOptions)) {
+                $return[] = array_key_first($classes[$i]);
+            } else {
+                $return[] = $classOptions;
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -245,9 +266,11 @@ class SolrIndexTask extends BuildTask
 
     private function hasPCNTL()
     {
-        return function_exists('pcntl_fork') &&
-            (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl') ||
-            !Controller::curr()->getRequest()->getVar('unittest');
+        return (function_exists('pcntl_fork') &&
+            Director::is_cli() &&
+            (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl' ||
+                !Controller::curr()->getRequest()->getVar('unittest'))
+        );
     }
 
     /**
@@ -367,7 +390,7 @@ class SolrIndexTask extends BuildTask
      * Index a group of a class for a specific state and index
      *
      * @param string $group Group to index
-     * @param string $class Class to index
+     * @param string|array $class Class to index
      * @throws Exception
      */
     private function stateReindex($group, $class): void
@@ -378,6 +401,13 @@ class SolrIndexTask extends BuildTask
         $items = DataObject::get($baseClass)
             ->sort('ID ASC')
             ->limit($this->getBatchLength(), ($group * $this->getBatchLength()));
+        $classes = $this->getIndex()->getClasses();
+        $baseIndexKey = array_search($classes, $class);
+        if (!empty($baseClass[$baseIndexKey][$class]['includeSubClasses']) &&
+            (bool)$baseClass[$baseIndexKey][$class]['includeSubClasses'] === true
+        ) {
+            $items = $items->filter(['Classname' => $class]);
+        }
         if ($items->count()) {
             $this->updateIndex($items);
         }
