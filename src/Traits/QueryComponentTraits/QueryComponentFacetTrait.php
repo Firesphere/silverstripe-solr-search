@@ -58,8 +58,8 @@ trait QueryComponentFacetTrait
         foreach ($this->index->getFacetFields() as $class => $config) {
             if (isset($filterFacets[$config['Title']])) {
                 $filter = $filterFacets[$config['Title']];
-                // @todo add unit tests for this bit. It's crucial but not tested properly
                 $filter = is_array($filter) ? $filter : [$filter];
+                // Fields are "short named" for convenience
                 $shortClass = getShortFieldName($config['BaseClass']);
                 $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
                 $criteria = Criteria::where($field)->in($filter);
