@@ -235,7 +235,7 @@ class QueryComponentFactory
 
         foreach ($terms as $search) {
             $term = $search['text'];
-            $term = $this->escapeSearch($term, $this->helper);
+            $term = $this->escapeSearch($term);
             $postfix = $this->isFuzzy($search);
             // We can add the same term multiple times with different boosts
             // Not ideal, but it might happen, so let's add the term itself only once
@@ -258,17 +258,23 @@ class QueryComponentFactory
      * @param Helper $helper
      * @return string
      */
-    public function escapeSearch($searchTerm, Helper $helper): string
+    public function escapeSearch($searchTerm): string
     {
         $term = [];
         // Escape special characters where needed. Except for quoted parts, those should be phrased
         preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
         foreach ($parts[0] as $part) {
             // As we split the parts, everything with two quotes is a phrase
+            // We need however, to strip out double quoting
+            $part = str_replace('""', '"', $part);
             if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
+                // Strip all double quotes out for the phrase.
+                // @todo make this less clunky
+                // @todo add useful tests for this
+                $phrase = str_replace('"', '', $part);
+                $term[] = sprintf('"%s"', $this->helper->escapePhrase($phrase));
             } else {
-                $term[] = $helper->escapeTerm($part);
+                $term[] = $this->helper->escapeTerm($part);
             }
         }
 
