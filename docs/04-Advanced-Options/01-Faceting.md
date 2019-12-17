@@ -25,7 +25,9 @@ To use them, this example should get you started:
     $query = Injector::inst()->get(BaseQuery::class);
     $facetedFields = $index->getFacetFields();
     foreach ($facetedFields as $className => $field) {
+        // Title of your field, as defined in the FacetFields
         if (!empty($data[$field['Title']])) {
+            // Add a facet filter with its title and the value from the request data
             $query->addFacetFilter($field['Title'], $data[$field['Title']]);
         }
     }
