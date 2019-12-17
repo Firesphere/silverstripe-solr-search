@@ -137,7 +137,7 @@ to create in the first step of this document.
 
 #### Moving from init to YML
 
-The [compatibility module](09-Submodules/01-Fulltext-Search-Compatibility.md) has an optional extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+The [compatibility module](10-Submodules/01-Fulltext-Search-Compatibility.md) has an optional extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
 
 ## Grouped indexing
 
@@ -196,6 +196,75 @@ Firesphere\SolrSearch\Services\SolrCoreService:
 
 Looking at the `tests` folder, there is a `TestIndexFour`. This index is not loaded unless explicitly asked.
 
+# Executing a search
+
+To search, here's an example using all the features, and set the resulting outcome from the search
+on the current `Controller` to be useable in the templates.
+
+```php
+class SearchController extends PageController
+{
+    /**
+     * @param array $data Data from the submission
+     * @param SearchForm $form Submitted search form
+     * @return $this
+     */
+    public function searchMyContent($data, $form)
+    {
+        $searchVars = $this->getRequest()->getVars();
+        if (!empty($searchVars)) {
+            $this->setQuery($searchVars);
+            /** @var BaseIndex $index */
+            $index = Injector::inst()->get(MyIndex::class);
+    
+            // Start building the query, by adding the query term
+            $query = new BaseQuery();
+            $query->addTerm($searchVars['Query']);
+    
+            // Set the facets
+            $query->setFacetsMinCount(1);
+            $facetedFields = $index->getFacetFields();
+            foreach ($facetedFields as $className => $field) {
+                if (!empty($data[$field['Title']])) {
+                    $query->addFacetFilter($field['Title'], $data[$field['Title']]);
+                }
+            }
+    
+            // Set the startpoint of the results
+            $offset = $this->getRequest()->getVar('start') ?: 0;
+            $query->setStart($offset);
+    
+            // Assuming "Order" is your query parameter that defines the sort order
+            $sort = isset($data['Order']) ? strtolower($data['Order']) : 'asc';
+    
+            // Set the sorting. This can be an array of multiple sorts
+            $params['sort'] = MySortableClass::class . '_Created ' . $sort;
+            $query->setSort($params);
+    
+            // Execute the search
+            $result = $index->doSearch($query);
+    
+            // Set the query, possibly to be used to display it back to the user
+            $this->setQuery($searchVars);
+            // Set the total items found
+            $this->setTotal($result->Matches->totalItems);
+            // Set the results on the Controller
+            $this->setResults($result->Matches);
+            // If there is some spellchecking, set it to be used in the template
+            $this->setSpellcheck($result->Spellcheck);
+            // Set the list of facets
+            $this->setFacets($result->Facets);
+        }
+    
+        return $this;
+    }
+}
+```
+
+**NOTE**
+
+This is so called "pseudo code", it may not exactly work, but serves as example.
+ 
 ----------
 <sup>1</sup> Although not required, it's highly recomended
 

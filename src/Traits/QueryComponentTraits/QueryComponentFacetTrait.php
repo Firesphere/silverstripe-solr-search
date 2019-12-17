@@ -56,11 +56,10 @@ trait QueryComponentFacetTrait
     {
         $filterFacets = $this->query->getFacetFilter();
         foreach ($this->index->getFacetFields() as $class => $config) {
-            if (array_key_exists($config['Title'], $filterFacets) &&
-                $filter = array_filter($filterFacets[$config['Title']], 'strlen')
-            ) {
-                // @todo add unit tests for this bit. It's crucial but not tested properly
+            if (isset($filterFacets[$config['Title']])) {
+                $filter = $filterFacets[$config['Title']];
                 $filter = is_array($filter) ? $filter : [$filter];
+                // Fields are "short named" for convenience
                 $shortClass = getShortFieldName($config['BaseClass']);
                 $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
                 $criteria = Criteria::where($field)->in($filter);
