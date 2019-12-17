@@ -255,7 +255,6 @@ class QueryComponentFactory
      * Escape the search query
      *
      * @param string $searchTerm
-     * @param Helper $helper
      * @return string
      */
     public function escapeSearch($searchTerm): string
@@ -266,13 +265,12 @@ class QueryComponentFactory
         foreach ($parts[0] as $part) {
             // As we split the parts, everything with two quotes is a phrase
             // We need however, to strip out double quoting
-            $part = str_replace('""', '"', $part);
             if (substr_count($part, '"') === 2) {
                 // Strip all double quotes out for the phrase.
                 // @todo make this less clunky
                 // @todo add useful tests for this
-                $phrase = str_replace('"', '', $part);
-                $term[] = sprintf('"%s"', $this->helper->escapePhrase($phrase));
+                $part = str_replace('"', '', $part);
+                $term[] = $this->helper->escapePhrase($part);
             } else {
                 $term[] = $this->helper->escapeTerm($part);
             }

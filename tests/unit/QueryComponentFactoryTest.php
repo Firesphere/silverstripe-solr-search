@@ -69,7 +69,7 @@ class QueryComponentFactoryTest extends SapphireTest
         $helper = $this->factory->getIndex()->getClient()->createSelect()->getHelper();
         $this->factory->setHelper($helper);
         $escaped = $this->factory->escapeSearch($term);
-        $this->assertEquals('""test me"" help', $escaped);
+        $this->assertEquals('"test me" help', $escaped);
 
         $term = 'help me';
 
