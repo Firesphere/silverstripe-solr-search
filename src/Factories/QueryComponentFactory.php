@@ -265,8 +265,10 @@ class QueryComponentFactory
         preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
         foreach ($parts[0] as $part) {
             // As we split the parts, everything with two quotes is a phrase
+            // We need however, to strip out double quoting that's caused earlier
+            // @todo create a quoted search test
             if (substr_count($part, '"') === 2) {
-                $term[] = $helper->escapePhrase($part);
+                $term[] = $helper->escapePhrase(str_replace('""', '"', $part));
             } else {
                 $term[] = $helper->escapeTerm($part);
             }
