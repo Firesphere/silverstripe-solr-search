@@ -18,7 +18,6 @@ for creating your own Index extending either of the Base Indexes, it is a compli
 
 `YML` is purely used for the configuration of the index Classes.
 
-
 ## Configuration
 
 Configuring Solr is done via YML:
@@ -58,6 +57,15 @@ store:
   path: '/my_post_endpoint'
   uri: 'https://mydomain.com'
 ```
+
+##### ShowInSearch
+
+`ShowInSearch` is handled within the module. When it is set to false, the object is _removed_ from the Solr core.
+
+Custom addition of `ShowInSearch` as a filterable or indexable field will therefore cause unexpected behaviour.
+
+The reason for removing `ShowInSearch = false|0` from the indexing process, is to streamline the amount of items in Solr.
+There is no effective need for items to be in the search, if they're not supposed to show up.
 
 #### Defining the number of CPU cores
 
