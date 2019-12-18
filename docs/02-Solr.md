@@ -30,9 +30,9 @@ Taken from https://lucene.apache.org/solr/guide/7_7/taking-solr-to-production.ht
 
 Update to match the required version. You can find the latest version here: https://www-us.apache.org/dist/lucene/solr/
 ```bash
-wget http://www.apache.org/dyn/closer.lua/lucene/solr/8.3.0/solr-8.3.0.tgz # find your local URL manually
-tar xvf solr-8.3.0.tgz solr-8.3.0/bin/install_solr_service.sh --strip-components=2
-sudo bash ./install_solr_service.sh solr-8.3.0.tgz
+wget http://www.apache.org/dyn/closer.lua/lucene/solr/8.3.1/solr-8.3.1.tgz # find your local URL manually
+tar xvf solr-8.3.1.tgz solr-8.3.1/bin/install_solr_service.sh --strip-components=2
+sudo bash ./install_solr_service.sh solr-8.3.1.tgz
 ```
 
 This will install Solr 8.x as a service on your (virtual) machine
