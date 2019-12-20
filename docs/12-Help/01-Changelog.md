@@ -12,6 +12,8 @@
 - [Change of Permission indexing from User based to Group based](../09-View-Permissions.md).
 - Improved documentation.
 - Removed history, moving to a later phase to include in a sub-module.
+- Fix issues encountered for Dirty classes and Indexing
+- Improved `PCNTL` detection for the CMS run of the Indexing job
 
 ## 0.9.x
 
