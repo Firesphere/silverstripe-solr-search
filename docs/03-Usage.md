@@ -60,27 +60,42 @@ store:
 
 ##### ShowInSearch
 
-`ShowInSearch` is handled by the module itself, so there is no need to configure it within your YML/PHP index definition. When a content author sets this field to 0 via the CMS, then the related Page or File object is actually _removed_ from the applicable Solr core during the next run of the `SolrIndexJob` (which should be configured to run automatically).
+`ShowInSearch` is handled by the module itself, so there is no need to configure it within your YML/PHP index definition. 
+When a content author sets this field to 0 via the CMS, then the related Page or File object is actually _removed_ from the applicable Solr 
+core immediately through the `onAfterPublish` or `onAfterWrite` method, or during the next run of the `SolrIndexJob`.
 
-Therefore, custom addition of `ShowInSearch` as a filterable or indexable field in YML for example, is likely to cause unexpected behaviour.
+Therefore, custom addition of `ShowInSearch` as a filterable or indexable field in YML for example, 
+is likely to cause unexpected behaviour.
 
-The reason for removing `ShowInSearch = false|0` from the indexing process, is to streamline the number of items stored in Solr's indexes. There is no effective need for items to be in the search, if they're not supposed to be displayed.
+The reason for removing `ShowInSearch = false|0` from the indexing process, 
+is to streamline the number of items stored in Solr's indexes. 
+There is no effective need for items to be in the search, if they're not supposed to 
+be displayed.
 
-#### Defining the number of CPU cores
+##### Dirty classes
 
-If your server has multiple CPU cores available, you can define the number of cores in the config.
+If a change fails to update, a `DirtyClass` is created, recording the need for updating
+said object. It is recommended to automatically run the `ClearDirtyClasses` task every few hours
+depending on the expected amount of changes daily and the importance of changes.
+
+Given the expected time of the dirty classes to be cleaned out is quite low, it's suggested to run
+this task every 5 or 10 minutes.
+
+#### Defining the amount of CPU cores
+
+If your server has multiple CPU cores available, you can define the amount of cores in the config.
 During indexing, this means that each core gets to do an indexing of a group.
-The advantage is that it takes all cores available, speeding up the indexing process by the number of cores available.
+The advantage is that it takes all cores available, speeding up the indexing process by the amount of cores available.
 
-Because the number of cores can not be determined programmatically, due to access control, you will have to define 
-the number of cores available manually.
+Because the amount of cores can not be determined programmatically, due to access control, you will have to define 
+the amount of cores available manually.
 
 
 **NOTE**
 
-Given the current situation in server-land, the default number of cores is 2. This should work fine for
+Given the current situation in server-land, the default amount of cores is 2. This should work fine for
 most situations, even if you only have one core available. If you have more cores, you can make this
-number larger, of course.
+amount larger, of course.
 
 **NOTE**
 
