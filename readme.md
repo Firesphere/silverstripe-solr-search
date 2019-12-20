@@ -32,7 +32,7 @@ Solr8
 
 `composer require firesphere/solr-search`
 
-More details can be found in the [docs](https://firesphere.github.io/solr-docs/02-Installation.html).
+More details can be found in the [docs](https://firesphere.github.io/solr-docs/01-Installation.html).
 
 # Cow?
 
