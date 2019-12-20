@@ -111,8 +111,8 @@ class ClearDirtyClassesTask extends BuildTask
     {
         /** @var ArrayList $deletions */
         foreach ($items as $item) {
-            $dirtItem = $dirtyClass::create(['ClassName' => $dirtyClass, 'ID' => $item]);
-            $dirtyClasses->push($dirtItem);
+            $dirtyItem = $dirtyClass::create(['ClassName' => $dirtyClass, 'ID' => $item]);
+            $dirtyClasses->push($dirtyItem);
         }
     }
 }
