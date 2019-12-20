@@ -58,7 +58,7 @@ store:
   uri: 'https://mydomain.com'
 ```
 
-##### ShowInSearch
+#### ShowInSearch
 
 `ShowInSearch` is handled by the module itself, so there is no need to configure it within your YML/PHP index definition. 
 When a content author sets this field to 0 via the CMS, then the related Page or File object is actually _removed_ from the applicable Solr 
@@ -72,7 +72,7 @@ is to streamline the number of items stored in Solr's indexes.
 There is no effective need for items to be in the search, if they're not supposed to 
 be displayed.
 
-##### Dirty classes
+#### Dirty classes
 
 If a change fails to update, a `DirtyClass` is created, recording the need for updating
 said object. It is recommended to automatically run the `ClearDirtyClasses` task every few hours
