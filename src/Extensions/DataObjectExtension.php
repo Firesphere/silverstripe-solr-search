@@ -93,11 +93,11 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs, 1) ?: [];
         $mode = Versioned::get_reading_mode();
         try {
-            Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
+            Versioned::set_reading_mode(Versioned::LIVE);
             $service->setInDebugMode(false);
             $type = SolrCoreService::UPDATE_TYPE;
             // If the object should not show in search, remove it
-            if ($owner->ShowInSearch === 0) {
+            if ($owner->ShowInSearch !== null && (bool)$owner->ShowInSearch === false) {
                 $type = SolrCoreService::DELETE_TYPE;
             }
             $service->updateItems(ArrayList::create([$owner]), $type);

@@ -61,6 +61,9 @@ class ClearDirtyClassesTask extends BuildTask
         $service = new SolrCoreService();
         foreach ($dirtyObjectList as $dirtyObject) {
             $dirtyClasses = $this->getDirtyClasses($dirtyObject);
+            if (!$dirtyClasses->count()) {
+                continue;
+            }
             try {
                 $service->updateItems($dirtyClasses, $dirtyObject->Type);
                 $dirtyObject->delete();
@@ -108,7 +111,7 @@ class ClearDirtyClassesTask extends BuildTask
     {
         /** @var ArrayList $deletions */
         foreach ($items as $item) {
-            $dirtItem = $dirtyClass::create(['ID' => $item]);
+            $dirtItem = $dirtyClass::create(['ClassName' => $dirtyClass, 'ID' => $item]);
             $dirtyClasses->push($dirtItem);
         }
     }

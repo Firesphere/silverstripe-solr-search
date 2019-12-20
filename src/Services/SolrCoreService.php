@@ -199,7 +199,6 @@ class SolrCoreService
         $client = $index->getClient();
 
         $update = $this->getUpdate($items, $type, $index, $client);
-
         // commit immediately when in dev mode
 
         return $client->update($update);
@@ -238,6 +237,7 @@ class SolrCoreService
             case static::CREATE_TYPE:
                 $this->updateIndex($index, $items, $update);
         }
+        $update->addCommit();
 
         return $update;
     }
