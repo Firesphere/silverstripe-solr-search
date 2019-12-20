@@ -6,6 +6,7 @@ use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Extensions\GridFieldExtension;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Models\SolrLog;
+use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Page;
@@ -127,6 +128,30 @@ class DataObjectExtensionTest extends SapphireTest
         Controller::curr()->getRequest()->setUrl('dev/build');
         $this->assertNull((new DataObjectExtension())->onAfterWrite());
         Controller::curr()->getRequest()->setUrl($url);
+    }
+
+    public function testDoNotShowInSearch()
+    {
+        $page = Page::create(['Title' => 'ShowInSearch Now']);
+        $page->write();
+        $page->publishRecursive();
+
+        $query = new BaseQuery();
+        $query->addTerm('ShowInSearch Now');
+
+        $count = (new TestIndex())->doSearch($query);
+
+        $counted = $count->getMatches()->count();
+
+        $page->ShowInSearch = false;
+        $page->write();
+        $page->publishRecursive();
+
+        $count = (new TestIndex())->doSearch($query);
+
+        $counted2 = $count->getMatches()->count();
+
+        $this->assertNotEquals($counted, $counted2);
     }
 
     protected function setUp()
