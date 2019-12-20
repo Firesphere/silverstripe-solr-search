@@ -245,9 +245,10 @@ class SolrIndexTask extends BuildTask
 
     private function hasPCNTL()
     {
-        return function_exists('pcntl_fork') &&
-            (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl') ||
-            !Controller::curr()->getRequest()->getVar('unittest');
+        return Director::is_cli() &&
+            function_exists('pcntl_fork') &&
+            (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl' ||
+            !Controller::curr()->getRequest()->getVar('unittest'));
     }
 
     /**
