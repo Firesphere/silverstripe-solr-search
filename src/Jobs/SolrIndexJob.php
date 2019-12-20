@@ -8,6 +8,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
+use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use stdClass;
@@ -143,10 +144,14 @@ class SolrIndexJob extends AbstractQueuedJob
     protected function getNextSteps(): array
     {
         $cores = SolrCoreService::config()->get('cpucores') ?: 1;
+        // Force a single count for when the job is not run from CLI
+        if (!Director::is_cli()) {
+            $cores = 1;
+        }
         $currentStep = $this->currentStep + $cores; // Add the amount of cores
         $totalSteps = $this->totalSteps;
         // No more steps to execute on this class, let's go to the next class
-        if ($this->currentStep >= $this->totalSteps) {
+        if ($currentStep >= $totalSteps) {
             array_shift($this->classToIndex);
             // Reset the current step, a complete new set of data is coming
             $currentStep = 0;

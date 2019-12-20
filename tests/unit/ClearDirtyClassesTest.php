@@ -41,5 +41,9 @@ class ClearDirtyClassesTest extends SapphireTest
         $this->assertNull(DirtyClass::get()->byID($dirtyClass));
 
         $page->delete();
+
+        DirtyClass::get()->removeAll();
+
+        $this->assertNull($task->run($request));
     }
 }
