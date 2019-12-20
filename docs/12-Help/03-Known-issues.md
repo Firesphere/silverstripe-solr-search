@@ -11,9 +11,9 @@ This is expected at the moment, and sadly, unavoidable so far.
 If you have a solution, we would love to hear from you!
 
 
-## Linux hosts with Vagrant
+## Linux hosts
 
-There is a known issue with Linux hosts using Vagrant. Solr does not have
+There is a known issue with Linux hosts. Solr does not have
 the correct write permissions, and Apache does not have the correct write permissions either.
 
 This can be resolved by setting the folder of your Solr Core to `/var/solr/data`.
@@ -38,7 +38,7 @@ These errors are _not_ related to this module, but on how Vagrant is set up on L
 The name of your apache user could be different, so make sure you get it right.
 After updating the group permissions, be sure to log out and back in again.
 
-## Solr and Vagrant issues, pt. 2
+## Solr and Vagrant issues
 
 It's also known that Solr won't properly reload cores on Vagrant VM's. This is outside
 of control for this module, it is advised to restart Solr before and after a config change.
