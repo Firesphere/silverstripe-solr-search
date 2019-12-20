@@ -60,12 +60,11 @@ store:
 
 ##### ShowInSearch
 
-`ShowInSearch` is handled within the module. When it is set to false, the object is _removed_ from the Solr core.
+`ShowInSearch` is handled by the module itself, so there is no need to configure it within your YML/PHP index definition. When a content author sets this field to 0 via the CMS, then the related Page or File object is actually _removed_ from the applicable Solr core during the next run of the `SolrIndexJob` (which should be configured to run automatically).
 
-Custom addition of `ShowInSearch` as a filterable or indexable field will therefore cause unexpected behaviour.
+Therefore, custom addition of `ShowInSearch` as a filterable or indexable field in YML for example, is likely to cause unexpected behaviour.
 
-The reason for removing `ShowInSearch = false|0` from the indexing process, is to streamline the amount of items in Solr.
-There is no effective need for items to be in the search, if they're not supposed to show up.
+The reason for removing `ShowInSearch = false|0` from the indexing process, is to streamline the number of items stored in Solr's indexes. There is no effective need for items to be in the search, if they're not supposed to be displayed.
 
 #### Defining the number of CPU cores
 
