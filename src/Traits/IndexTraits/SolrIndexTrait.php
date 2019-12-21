@@ -68,6 +68,8 @@ trait SolrIndexTrait
     }
 
     /**
+     * Get the Index class.
+     *
      * @return BaseIndex
      */
     public function getIndex(): BaseIndex
@@ -76,6 +78,8 @@ trait SolrIndexTrait
     }
 
     /**
+     * Set the index class
+     *
      * @param BaseIndex $index
      */
     public function setIndex(BaseIndex $index): void
@@ -84,6 +88,8 @@ trait SolrIndexTrait
     }
 
     /**
+     * Get the amount of CPU Cores configured
+     *
      * @return int
      */
     public function getCores(): int
@@ -92,6 +98,8 @@ trait SolrIndexTrait
     }
 
     /**
+     * Set the amount of CPU Cores to use
+     *
      * @param int $cores
      */
     public function setCores(int $cores): void
@@ -100,6 +108,8 @@ trait SolrIndexTrait
     }
 
     /**
+     * Get the length of a single batch
+     *
      * @return int
      */
     public function getBatchLength(): int
@@ -108,6 +118,8 @@ trait SolrIndexTrait
     }
 
     /**
+     * Set the length of a single batch
+     *
      * @param int $batchLength
      */
     public function setBatchLength(int $batchLength): void
