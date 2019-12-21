@@ -16,24 +16,25 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
 07. [Debugging](07-Debugging.md)
 08. [Suggestions](08-Suggestions.md)
 09. [View permissions](09-View-Permissions.md)
-10. Submodules
-    01. [Fulltext Search compatibility](10-Submodules/01-Fulltext-Search-Compatibility.md)
-    02. [Subsites](10-Submodules/02-Subsites.md)
-    03. [Fluent](10-Submodules/03-Fluent.md)
-    04. [Member based permissions](10-Submodules/04-Member-based-permissions.md)
-    05. [Elemental](10-Submodules/05-Elemental.md)
-11. Contributing
-    01. [Code of Conduct](11-Contributing/01-Code-of-Conduct.md)
-    02. [Contributing](11-Contributing/02-Contributing.md) 
-12. Help
-    01. [Changelog](12-Help/01-Changelog.md)
-    02. [FAQ](12-Help/02-FAQ.md)
-    03. [Known issues](12-Help/03-Known-issues.md)
-13. About
-    01. [About](13-About/01-About.md)
-    02. [Coverage](13-About/02-Coverage.md)
-    03. [Code statistics](13-About/03-Codebase-stats.md)
-    04. [Plans](13-About/04-Plans.md)
+10. [Dirty classes](10-Dirty-classes.md)
+11. Submodules
+    01. [Fulltext Search compatibility](11-Submodules/01-Fulltext-Search-Compatibility.md)
+    02. [Subsites](11-Submodules/02-Subsites.md)
+    03. [Fluent](11-Submodules/03-Fluent.md)
+    04. [Member based permissions](11-Submodules/04-Member-based-permissions.md)
+    05. [Elemental](11-Submodules/05-Elemental.md)
+12. Contributing
+    01. [Code of Conduct](12-Contributing/01-Code-of-Conduct.md)
+    02. [Contributing](12-Contributing/02-Contributing.md) 
+13. Help
+    01. [Changelog](13-Help/01-Changelog.md)
+    02. [FAQ](13-Help/02-FAQ.md)
+    03. [Known issues](13-Help/03-Known-issues.md)
+14. About
+    01. [About](14-About/01-About.md)
+    02. [Coverage](14-About/02-Coverage.md)
+    03. [Code statistics](14-About/03-Codebase-stats.md)
+    04. [Plans](14-About/04-Plans.md)
     
 # Sponsors
 
@@ -41,4 +42,4 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
     
 # [GitStore](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
 
-[Please see the GitStore FAQ section](12-Help/02-FAQ.html#gitstore)
+[Please see the GitStore FAQ section](13-Help/02-FAQ.html#gitstore)

@@ -39,4 +39,4 @@ This will install Solr 8.x as a service on your (virtual) machine
 
 ## Vagrant machines
 
-See [Known issues](12-Help/03-Known-issues.md) for known issues with Vagrant
+See [Known issues](13-Help/03-Known-issues.md) for known issues with Vagrant
