@@ -1,0 +1,8 @@
+/tests export-ignore
+/docs export-ignore
+/.scrutinizer.yml export-ignore
+/codecov.yml export-ignore
+/phpdoc.dist.xml export-ignore
+/phpunit.xml.dist export-ignore
+/phpcs.xml.dist export-ignore
+/.circleci export-ignore
