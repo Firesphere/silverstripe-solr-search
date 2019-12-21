@@ -208,9 +208,6 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest
             try {
-                // The unittest param is from phpunit.xml.dist, meant to bypass the exit(0) call
-                // The pcntl check is for unit tests, but CircleCI does not support PCNTL (yet)
-                // @todo fix CircleCI to support PCNTL
                 if ($this->hasPCNTL()) {
                     $group = $this->spawnChildren($class, $group, $groups);
                 } else {
@@ -243,12 +240,19 @@ class SolrIndexTask extends BuildTask
         return [$totalGroups, $groups];
     }
 
+    /**
+     * Check if PCNTL is available and/or useable.
+     * The unittest param is from phpunit.xml.dist, meant to bypass the exit(0) call
+     * The pcntl parameter check is for unit tests, but PHPUnit does not support PCNTL (yet)
+     *
+     * @return bool
+     */
     private function hasPCNTL()
     {
         return Director::is_cli() &&
             function_exists('pcntl_fork') &&
             (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl' ||
-            !Controller::curr()->getRequest()->getVar('unittest'));
+                !Controller::curr()->getRequest()->getVar('unittest'));
     }
 
     /**
