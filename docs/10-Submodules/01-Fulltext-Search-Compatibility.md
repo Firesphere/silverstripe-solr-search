@@ -18,6 +18,17 @@ $index = new MyIndexClass();
 $index->initToYml();
 ```
 
+## Stubs
+
+| Method | Stub for | Calls | Purpose |
+|-|-|-|-|
+| `FulltextSearchExtension::search()` | `doSearch()` | `BaseIndex::doSearch()` | Prevent errors from calling the old method |
+| `FulltextSearchExtension::updateSearchResults()` | None | Return an `ArrayData::class` instead of a `SearchResult::class` |
+| `SearchQuery::addSearchTerm()` | `addTerm()` | `BaseQuery::addTerm()` | Stub for old `addSearchTerm` method |
+| `SearchQuery::setLimit()` | `setRows()` | `BaseQuery::setRows()` | Help prevent errors moving from `Limit` to `Rows` | 
+| `SearchQuery::getLimit()` | `getRows()` | `BaseQuery::setRows()` | Help prevent errors moving from `Limit` to `Rows` |
+| `Solr::configure_server()` | Configuration | None | Old way of configuring support |
+| `SolrIndex::getIndexName()` | New naming convention | None | Prevent errors moving from the old automated naming to the required naming |
 
 ----------
 

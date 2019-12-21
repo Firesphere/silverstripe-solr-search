@@ -127,6 +127,7 @@ class DataObjectExtensionTest extends SapphireTest
         $url = Controller::curr()->getRequest()->getURL();
         Controller::curr()->getRequest()->setUrl('dev/build');
         $this->assertNull((new DataObjectExtension())->onAfterWrite());
+        $this->assertNull((new DataObjectExtension())->onAfterPublish());
         Controller::curr()->getRequest()->setUrl($url);
     }
 

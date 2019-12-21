@@ -236,6 +236,7 @@ class SolrCoreService
             case static::UPDATE_TYPE:
             case static::CREATE_TYPE:
                 $this->updateIndex($index, $items, $update);
+                break;
         }
         $update->addCommit();
 
