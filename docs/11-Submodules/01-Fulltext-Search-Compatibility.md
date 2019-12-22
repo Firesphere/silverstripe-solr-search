@@ -32,7 +32,7 @@ $index->initToYml();
 
 #### Note
 
-When upgrading your Solr instance from Solr4 to Solr7+, a full index will be needed regardless.
+When upgrading your Solr instance from Solr4 to Solr5+, a full index will be needed regardless.
 
 ----------
 
