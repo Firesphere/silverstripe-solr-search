@@ -8,7 +8,6 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\ClearDirtyClassesTask;
 use Page;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 
 class ClearDirtyClassesTest extends SapphireTest

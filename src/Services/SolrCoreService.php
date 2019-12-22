@@ -199,6 +199,7 @@ class SolrCoreService
         $client = $index->getClient();
 
         $update = $this->getUpdate($items, $type, $index, $client);
+
         // commit immediately when in dev mode
 
         return $client->update($update);

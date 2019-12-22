@@ -7,7 +7,6 @@ use Firesphere\SolrSearch\States\SiteState;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Versioned\Versioned;
-use Firesphere\SolrSearch\Tests\MockStateTwo;
 
 class SiteStateTest extends SapphireTest
 {

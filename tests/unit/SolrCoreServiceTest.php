@@ -14,18 +14,18 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Page;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\ORM\ArrayList;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
-use SilverStripe\ErrorPage\ErrorPage;
-use SilverStripe\CMS\Model\RedirectorPage;
-use SilverStripe\CMS\Model\VirtualPage;
 
 class SolrCoreServiceTest extends SapphireTest
 {
