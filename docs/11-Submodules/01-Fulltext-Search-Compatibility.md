@@ -30,6 +30,10 @@ $index->initToYml();
 | `Solr::configure_server()` | Configuration | None | Old way of configuring support |
 | `SolrIndex::getIndexName()` | New naming convention | None | Prevent errors moving from the old automated naming to the required naming |
 
+#### Note
+
+When upgrading your Solr instance from Solr4 to Solr7+, a full index will be needed regardless.
+
 ----------
 
 \* From here on called "FTS"
