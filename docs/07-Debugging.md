@@ -33,7 +33,7 @@ It is strongly advised to only clear out the logs if they have all been reviewed
 ## x:Unknown indexes
 
 Because Solr 5 and lower don't return the actual core that threw the error, logging will say `x:Unknown`. This does not mean
-the log is not there, it simply means the core that threw the error isn't known by the server.
+the log is not there, it means the core that threw the error isn't known by the server.
 
 ## Sorting
 
