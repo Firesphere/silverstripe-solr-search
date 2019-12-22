@@ -35,7 +35,7 @@ This is the whole user manual for your code. It will be included in the autogene
 
 This is probably the most important thing to bear in mind. A great design principle for software libraries is 
 to start with a real-world use case, and try to implement it using the feature you have in mind. 
-No issues or PRs will be accepted into script without an accompanying use case (See the project board). 
+No issues or PRs will be accepted into this module without an accompanying use case (See the project board). 
 And I hold myself to that rule just as much as anybody else.
 
 What do I mean by "use case"? I mean a real problem that you or someone else actually has, that could be solved using the feature. 
