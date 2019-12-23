@@ -244,6 +244,7 @@ jobs:
             git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q
             git clone git@github.com:Firesphere/silverstripe-fluent-solr.git fluent -q
             git clone git@github.com:Firesphere/silverstripe-subsite-solr.git subsite -q
+            git clone git@github.com:Firesphere/silverstripe-solr-member-permissions.git member-permissions -q
       - restore_cache:
           keys:
             - silverstripe-search-yarn
@@ -275,7 +276,7 @@ jobs:
             rm -rf solr
             rm -rf solr-api
             rm -rf solr-docs
-            php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src" -t solr-api
+            php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src","member-permissions" -t solr-api
             cp -r ./search/docs .
             echo "\`\`\`" >> docs/14-About/03-Codebase-stats.md
             vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase-stats.md
