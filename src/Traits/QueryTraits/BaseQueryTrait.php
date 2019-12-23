@@ -76,7 +76,7 @@ trait BaseQueryTrait
      * Adds filters to filter on by value
      *
      * @param string $field
-     * @param string $value
+     * @param string|array $value
      * @return $this
      */
     public function addFilter($field, $value): self
@@ -104,8 +104,8 @@ trait BaseQueryTrait
     /**
      * Exclude fields from the search action
      *
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param string|array $value
      * @return $this
      */
     public function addExclude($field, $value): self
@@ -120,7 +120,7 @@ trait BaseQueryTrait
      * Add faceting
      *
      * @param string $field
-     * @param string $value
+     * @param string|array $value
      * @return $this
      */
     public function addFacetFilter($field, $value): self
