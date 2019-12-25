@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0 Release Candidate
+
+- No notable changes as not tagged yet. `beta 5` is the latest
+
 ## 1.0 beta
 
 - Fixes to the CMS Index Job.
@@ -14,6 +18,20 @@
 - Removed history, moving to a later phase to include in a sub-module.
 - Fix issues encountered for Dirty classes and Indexing
 - Improved `PCNTL` detection for the CMS run of the Indexing job
+- Added member level module for per-member permission checks
+- Fixed up multiple issues around the indexing on `ShowInSearch`
+    - Update to the docs to clarify the use of `ShowInSearch`
+- Updated submodule documentation
+- Improved debugging documentation
+- Improved Linux based hosts Solr/Apache permission documentation
+
+**Thanks**
+
+[Remy](https://github.com/rvxd)
+
+[Elliot](https://github.com/elliot-sawyer)
+
+[Russ](https://github.com/phptek)
 
 ## 0.9.x
 
