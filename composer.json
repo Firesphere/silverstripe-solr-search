@@ -59,9 +59,10 @@
   },
   "suggest": {
     "ext-pcntl": "Support for multi-core indexing",
-    "firesphere/fluent-solr-search": "For Fluent support",
     "firesphere/fts-compat": "Migration support from Fulltext Search module",
-    "firesphere/subsite-solr-search": "Support for Subsites"
+    "firesphere/fluent-solr-search": "For Fluent support",
+    "firesphere/subsite-solr-search": "Support for Subsites",
+    "firesphere/solr-member-permissions": "Fine grained per-member permission checks"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

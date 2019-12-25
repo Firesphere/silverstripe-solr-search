@@ -278,9 +278,21 @@ jobs:
             rm -rf solr-docs
             php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src","member-permissions/src" -t solr-api
             cp -r ./search/docs .
-            echo "\`\`\`" >> docs/14-About/03-Codebase-stats.md
-            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase-stats.md
-            echo "\`\`\`" >> docs/14-About/03-Codebase-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
+            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/01-Main-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
+            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/02-Compatibility-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
+            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/03-Member-permission-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
+            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/04-Fluent-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
+            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/05-Subsites-stats.md
+            echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
             yarn docs
             rm -rf docs
             mv _docs solr-docs
