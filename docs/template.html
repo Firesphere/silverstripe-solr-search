@@ -495,6 +495,8 @@
 <noscript><p><img src="https://piwik.casa-laguna.net/matomo.php?idsite=13&amp;rec=1" style="border:0;" alt=""/></p>
 </noscript>
 <script>
+    var offset = document.getElementsByClassName('active')[0].offsetTop;
+    document.getElementById('menu').scrollTop = offset;
     var _paq = window._paq || [];
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
