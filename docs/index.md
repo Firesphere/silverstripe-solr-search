@@ -32,14 +32,13 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
     03. [Known issues](13-Help/03-Known-issues.md)
 14. About
     01. [About](14-About/01-About.md)
-    02. [Coverage](14-About/02-Coverage.md)
+    02. [Plans](14-About/02-Plans.md)
     03. Code Statistics for each (sub-)module
         01. [Base code statistics](14-About/03-Codebase/01-Main-stats.md)
-        01. [Compatibility code statistics](14-About/03-Codebase/02-Compatibility-stats.md)
-        01. [Member permissions code statistics](14-About/03-Codebase/03-Member-permission-stats.md)
-        01. [Fluent code statistics](14-About/03-Codebase/04-Fluent-stats.md)
-        01. [Subsite code statistics](14-About/03-Codebase/05-Subsites-stats.md)
-    04. [Plans](14-About/04-Plans.md)
+        02. [Compatibility code statistics](14-About/03-Codebase/02-Compatibility-stats.md)
+        03. [Member permissions code statistics](14-About/03-Codebase/03-Member-permission-stats.md)
+        04. [Fluent code statistics](14-About/03-Codebase/04-Fluent-stats.md)
+        05. [Subsite code statistics](14-About/03-Codebase/05-Subsites-stats.md)
     
 # Sponsors
 
