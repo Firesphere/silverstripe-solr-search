@@ -130,7 +130,7 @@ Be considerate, and be willing to listen and make changes.
 ## This may take a while
 
 Don't be impatient. We've all had the experience of sending in our beautifully-crafted PR and then waiting, waiting, waiting. 
-Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am we invisible?
+Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am I invisible?
 
 In fact, doing a _proper_ and serious code review is a time-consuming business. It's not just a case of skim-reading the diffs. 
 The reviewer will need to check out your branch, run the tests, think carefully about what you've done, 
