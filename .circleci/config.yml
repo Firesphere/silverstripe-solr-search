@@ -271,28 +271,42 @@ jobs:
             git config --global user.email circleci@casa-laguna.net
             git config --global push.default simple
       - run:
-          name: Generate docs
+          name: Clear out old docs
           command: |
             rm -rf solr
             rm -rf solr-api
             rm -rf solr-docs
+      - run:
+          name: PHP API Docs
+          command: |
             php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src","member-permissions/src" -t solr-api
+      - run:
+          name: Generate statistic docs
+          command: |
             cp -r ./search/docs .
+            echo "Main module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
             vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/01-Main-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
+            echo "Compatibility module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
             vendor/bin/phploc compat/src/ >> docs/14-About/03-Codebase/02-Compatibility-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
+            echo "Permission module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
             vendor/bin/phploc member-permissions/src/ >> docs/14-About/03-Codebase/03-Member-permission-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
+            echo "Fluent module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
             vendor/bin/phploc fluent/src/ >> docs/14-About/03-Codebase/04-Fluent-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
+            echo "Subsites module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
             vendor/bin/phploc subsite/src/ >> docs/14-About/03-Codebase/05-Subsites-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
+      - run:
+          name: Markdown to HTML
+          command: |
             yarn docs
             rm -rf docs
             mv _docs solr-docs
