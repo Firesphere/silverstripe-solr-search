@@ -75,7 +75,7 @@ Here's a handy checklist for making sure your PR will be accepted as quickly as 
 
  - [ ] Have you opened an issue to discuss the feature and agree its general design?
  - [ ] Do you have a use case and, ideally, an example program using the feature?
- - [ ] Do you have tests covering 90%+ of the feature code (and, of course passing)
+ - [ ] Do you have tests covering 90%+ of the feature code (and, of course passing)\*
  - [ ] Have you written complete and accurate doc comments?
  - [ ] Have you updated the README and its table of contents?
  - [ ] You rock. Thanks a lot.
@@ -144,3 +144,8 @@ asking if the reviewer's been able to look at it and whether there's anything yo
 Comments like 'Y U NO MERGE' are unlikely to elicit a positive response.
 
 Thanks again for helping out!
+
+---
+
+\*: We understand that if you throw exceptions, proper tests can not always be written for those cases.
+Thus, it's okay to omit exceptions in most cases.
