@@ -14,6 +14,8 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 /**
  * Class SolrConfigureJob
  *
+ * Generate, upload and activate a Solr Core through {@link SolrConfigureTask}
+ *
  * @package Firesphere\SolrSearch\Jobs
  */
 class SolrConfigureJob extends AbstractQueuedJob
