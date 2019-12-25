@@ -38,9 +38,9 @@ This is the whole user manual for your code. It will be included in the autogene
 This is probably the most important thing to bear in mind. A great design principle for software libraries is 
 to start with a real-world use case, and try to implement it using the feature you have in mind. 
 No issues or PRs will be accepted into script without an accompanying use case (See the project board). 
-And I hold myself to that rule just as much as anybody else.
+And we hold ourselves to that rule just as much as anybody else.
 
-What do I mean by "use case"? I mean a real problem that you or someone else actually has, that could be solved using the feature. 
+What do we mean by "use case"? we mean a real problem that you or someone else actually has, that could be solved using the feature. 
 For example, you might think it's a very cool idea to add a Frobnicate() method to this module. 
 Maybe it is, but what's it for? Where would this be used in the real world? Can you give an example of a 
 problem that could be solved by a program using Frobnicate()? If so, what would the program look like?
@@ -85,7 +85,7 @@ If so, fix them! But if you can foresee a question from a code reviewer, comment
 
 # The code review process
 
-If you've completed all these steps, I _will_ invest significant time and energy in giving your PR a detailed code review. 
+If you've completed all these steps, we _will_ invest significant time and energy in giving your PR a detailed code review. 
 This is a powerful and beneficial process which can not only improve the code, but can also help you learn to be a better 
 engineer and a better Go programmer—and the same goes for me!
 
@@ -98,7 +98,7 @@ catch mistakes, and add improvements.
 You shouldn't be disappointed if you don't get a simple 'LGTM' and an instant merge. 
 If this is what you're used to, then your team isn't really doing code review to its full potential. 
 Instead, the more comments you get, the more seriously it means I'm taking your work. Where appropriate, 
-I'll say what I liked as well as what I'd like to see improved.
+I'll say what we liked as well as what I'd like to see improved.
 
 ## Dealing with comments
 
@@ -123,7 +123,7 @@ Be considerate, and be willing to listen and make changes.
 ## This may take a while
 
 Don't be impatient. We've all had the experience of sending in our beautifully-crafted PR and then waiting, waiting, waiting. 
-Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am I invisible?
+Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am we invisible?
 
 In fact, doing a _proper_ and serious code review is a time-consuming business. It's not just a case of skim-reading the diffs. 
 The reviewer will need to check out your branch, run the tests, think carefully about what you've done, 
