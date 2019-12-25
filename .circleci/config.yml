@@ -282,16 +282,16 @@ jobs:
             vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/01-Main-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
-            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/02-Compatibility-stats.md
+            vendor/bin/phploc compat/src/ >> docs/14-About/03-Codebase/02-Compatibility-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
-            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/03-Member-permission-stats.md
+            vendor/bin/phploc member-permissions/src/ >> docs/14-About/03-Codebase/03-Member-permission-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
-            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/04-Fluent-stats.md
+            vendor/bin/phploc fluent/src/ >> docs/14-About/03-Codebase/04-Fluent-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
-            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/05-Subsites-stats.md
+            vendor/bin/phploc subsite/src/ >> docs/14-About/03-Codebase/05-Subsites-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
             yarn docs
             rm -rf docs
