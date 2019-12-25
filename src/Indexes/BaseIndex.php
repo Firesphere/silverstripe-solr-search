@@ -190,6 +190,7 @@ abstract class BaseIndex
      * @throws GuzzleException
      * @throws ValidationException
      * @throws ReflectionException
+     * @throws Exception
      */
     public function doSearch(BaseQuery $query)
     {
@@ -204,6 +205,7 @@ abstract class BaseIndex
         } catch (Exception $e) {
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
+            throw $e;
         }
 
         // Handle the after search first. This gets a raw search result
