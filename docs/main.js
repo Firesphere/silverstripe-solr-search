@@ -12,7 +12,7 @@ _paq.push(['enableLinkTracking']);
   g.type = 'text/javascript';
   g.async = true;
   g.defer = true;
-  g.src = 'https://firesphere.github.io/solr-docs/matomo.js';
+  g.src = u + 'matomo.js';
   s.parentNode.insertBefore(g, s);
 })();
 // FROM http://purecss.io/js/ui.js
