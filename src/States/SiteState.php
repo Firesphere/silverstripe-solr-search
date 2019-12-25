@@ -23,7 +23,7 @@ use SilverStripe\ORM\DataObject;
  * "States" set the state of the site to a required setting for each available state.
  *
  * States SHOULD add their own states through an extension, otherwise it won't be called.
- * {@link FluentExtension::onBeforeInit()}
+ * {@link FluentIndexExtension::onBeforeInit()}
  *
  * States, options, etc. are simplified for a more streamlined approach
  *
