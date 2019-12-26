@@ -6,6 +6,11 @@
 
 ## 1.0 beta
 
+## Boxing day is a great day to share something cheap.
+
+During the beta period, the following issues have been resolved and needed features fixed. 
+During the Release Candidate period, no new features will be accepted in to the main branch, only bugfixes.
+
 - Fixes to the CMS Index Job.
 - Fix issue #140 User not reset correctly.
 - Fix issue #143 Not showing in search wasn't cleaned out correctly.
@@ -24,6 +29,8 @@
 - Updated submodule documentation
 - Improved debugging documentation
 - Improved Linux based hosts Solr/Apache permission documentation
+- Throw correct error when Solr has an issue #183 
+- Created submodule for member specific indexing
 
 **Thanks**
 

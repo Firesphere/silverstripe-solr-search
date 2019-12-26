@@ -119,6 +119,7 @@ class DocumentFactory
         $doc->addField('ClassName', $item->ClassName);
         $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
         $doc->addField('ViewStatus', $item->getViewStatus());
+        $this->extend('updateDefaultFields', $doc, $item);
     }
 
     /**
