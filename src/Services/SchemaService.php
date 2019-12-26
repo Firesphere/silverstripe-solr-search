@@ -181,7 +181,8 @@ class SchemaService extends ViewableData
     {
         $return = ArrayList::create();
         $originalStore = $this->store;
-        $this->setStore(Director::isDev() ? true : false);
+        // Always store every field in dev mode
+        $this->setStore(Director::isDev() ? true : $this->store);
         $fields = $this->index->getFilterFields();
         foreach ($this->index->getFacetFields() as $facetField) {
             $fields[] = $facetField['Field'];
