@@ -253,7 +253,7 @@ jobs:
       - run:
           name: Composer
           command: |
-            composer require phploc/phploc
+            composer require phploc/phploc squizlabs/php_codesniffer
       - run:
           name: Yarn
           command: |
