@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Trait DocumentFactoryTrait|Firesphere\SolrSearch\Traits\DocumentFactoryTrait A set of getters and setters to clean up
+ * the actual {@link \Firesphere\SolrSearch\Factories\DocumentFactory} from clutter
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

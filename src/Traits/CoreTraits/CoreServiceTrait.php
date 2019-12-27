@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Trait CoreServiceTrait|Firesphere\SolrSearch\Traits\CoreServiceTraits to have simple methods that don't really need to be in core.
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

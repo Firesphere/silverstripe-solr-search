@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Trait SolrIndexTrait|Firesphere\SolrSearch\Traits\SolrIndexTrait Used to extract methods from the {@link \Firesphere\SolrSearch\Tasks\SolrIndexTask}
+ * to make the code more readable
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 
