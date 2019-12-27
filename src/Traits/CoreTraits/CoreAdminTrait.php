@@ -83,18 +83,6 @@ trait CoreAdminTrait
     }
 
     /**
-     * Check the status of a core
-     *
-     * @param string $core
-     * @return StatusResult|null
-     * @deprecated backward compatibility stub
-     */
-    public function coreIsActive($core)
-    {
-        return $this->coreStatus($core);
-    }
-
-    /**
      * Get the core status
      *
      * @param string $core

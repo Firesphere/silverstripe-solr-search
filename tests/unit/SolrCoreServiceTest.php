@@ -91,10 +91,6 @@ class SolrCoreServiceTest extends SapphireTest
     public function testCoreStatus()
     {
         $status = $this->service->coreStatus(CircleCITestIndex::class);
-        $deprecatedStatus = $this->service->coreIsActive(CircleCITestIndex::class);
-        $this->assertEquals($status->getVersion(), $deprecatedStatus->getVersion());
-        $this->assertEquals($status->getNumberOfDocuments(), $deprecatedStatus->getNumberOfDocuments());
-        $this->assertEquals($status->getCoreName(), $deprecatedStatus->getCoreName());
 
         $this->assertEquals('CircleCITestIndex', $status->getCoreName());
     }
