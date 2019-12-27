@@ -240,11 +240,11 @@ jobs:
           name: Install repositories
           command: |
             git clone git@github.com:Firesphere/Firesphere.github.io.git . -q
-            git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git compat -q
-            git clone git@github.com:Firesphere/silverstripe-solr-search.git search -q
-            git clone git@github.com:Firesphere/silverstripe-fluent-solr.git fluent -q
-            git clone git@github.com:Firesphere/silverstripe-subsite-solr.git subsite -q
-            git clone git@github.com:Firesphere/silverstripe-solr-member-permissions.git member-permissions -q
+            git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git Compatibility -q
+            git clone git@github.com:Firesphere/silverstripe-solr-search.git Core -q
+            git clone git@github.com:Firesphere/silverstripe-fluent-solr.git Fluent -q
+            git clone git@github.com:Firesphere/silverstripe-subsite-solr.git Subsites -q
+            git clone git@github.com:Firesphere/silverstripe-solr-member-permissions.git Member-Permissions -q
       - restore_cache:
           keys:
             - silverstripe-search-yarn
@@ -279,30 +279,30 @@ jobs:
       - run:
           name: PHP API Docs
           command: |
-            php phpdoc.phar -d "compat/src","search/src","fluent/src","subsite/src","member-permissions/src" -t solr-api
+            php phpdoc.phar -d "Compatibility/src","Core/src","Fluent/src","Subsites/src","Member-Permissions/src" -t solr-api
       - run:
           name: Generate statistic docs
           command: |
             cp -r ./search/docs .
             echo "Main module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
-            vendor/bin/phploc search/src/ >> docs/14-About/03-Codebase/01-Main-stats.md
+            vendor/bin/phploc Core/src/ >> docs/14-About/03-Codebase/01-Main-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
             echo "Compatibility module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
-            vendor/bin/phploc compat/src/ >> docs/14-About/03-Codebase/02-Compatibility-stats.md
+            vendor/bin/phploc Compatibility/src/ >> docs/14-About/03-Codebase/02-Compatibility-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/02-Compatibility-stats.md
             echo "Permission module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
-            vendor/bin/phploc member-permissions/src/ >> docs/14-About/03-Codebase/03-Member-permission-stats.md
+            vendor/bin/phploc Member-Permissions/src/ >> docs/14-About/03-Codebase/03-Member-permission-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/03-Member-permission-stats.md
             echo "Fluent module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
-            vendor/bin/phploc fluent/src/ >> docs/14-About/03-Codebase/04-Fluent-stats.md
+            vendor/bin/phploc Fluent/src/ >> docs/14-About/03-Codebase/04-Fluent-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/04-Fluent-stats.md
             echo "Subsites module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
-            vendor/bin/phploc subsite/src/ >> docs/14-About/03-Codebase/05-Subsites-stats.md
+            vendor/bin/phploc Subsites/src/ >> docs/14-About/03-Codebase/05-Subsites-stats.md
             echo "\`\`\`" >> docs/14-About/03-Codebase/05-Subsites-stats.md
       - run:
           name: Markdown to HTML
