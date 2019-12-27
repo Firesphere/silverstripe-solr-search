@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Trait LoggerTrait|Firesphere\SolrSearch\Traits\LoggerTrait Trait to help getting and setting the logger
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

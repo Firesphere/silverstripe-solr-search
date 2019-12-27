@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Class SolrIndexTask|Firesphere\SolrSearch\Tasks\SolrIndexTask Index Solr cores
+ *
+ * @package Firesphere\SolrSearch\Tasks
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Tasks;
 

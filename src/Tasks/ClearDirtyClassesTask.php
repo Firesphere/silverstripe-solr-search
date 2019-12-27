@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Class ClearDirtyClasses|Firesphere\SolrSearch\Tasks\ClearDirtyClasses Clear out classes that were not
+ * succesfully updated or deleted in Solr.
+ *
+ * Any classes that failed to index properly or be removed properly need to be cleaned out regularly
+ * This task takes care of doing this. It can be run directly via /dev/tasks, or via a queued job
+ *
+ * @package Firesphere\SolrSearch\Tasks
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Tasks;
 
