@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class QueryComponentFactory|Firesphere\SolrSearch\Factories\QueryComponentFactory Build a Query component
+ *
+ * @package Firesphere\SolrSearch\Factories
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Factories;
 

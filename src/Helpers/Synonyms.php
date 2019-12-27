@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class Synonyms|Firesphere\SolrSearch\Helpers\Synonyms Get the default UK-US synonyms helper
+ *
+ * @package Firesphere\SolrSearch\Helpers
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Helpers;
 

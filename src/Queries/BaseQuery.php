@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class BaseQuery|Firesphere\SolrSearch\Queries\BaseQuery Base of a Solr Query
+ *
+ * @package Firesphere\SolrSearch\Queries
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Queries;
 

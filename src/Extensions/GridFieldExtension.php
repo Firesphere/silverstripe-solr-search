@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class GridFieldExtension|Firesphere\SolrSearch\Extensions\GridFieldExtension Add colours to the GridField
+ *
+ * @package Firesphere\SolrSearch\Extensions
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Extensions;
 

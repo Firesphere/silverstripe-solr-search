@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class BaseIndex|Firesphere\SolrSearch\Indexes\BaseIndex is the base for indexing items
+ *
+ * @package Firesphere\SolrSearch\Indexes
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Indexes;
 

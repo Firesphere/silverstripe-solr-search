@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * class ClearDirtyClassesJob|Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob Clear out the dirty classes by pushing
+ * them again to solr
+ *
+ * @package Firesphere\SolrSearch\Jobs
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Jobs;
 

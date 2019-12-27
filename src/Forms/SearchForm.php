@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SearchForm|Firesphere\SolrSearch\Forms basic search form
+ *
+ * @package Firesphere\SolrSearch\Factories
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Forms;
 

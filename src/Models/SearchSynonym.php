@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SearchSynonym|Firesphere\SolrSearch\Models\SearchSynonym Object for handling synonyms from the CMS
+ *
+ * @package Firesphere\SolrSearch\Models
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Models;
 
@@ -10,7 +16,7 @@ use SilverStripe\ORM\DataObject;
  * Class \Firesphere\SolrSearch\Models\SearchSynonym
  * Manageable synonyms in the CMS
  *
- * @package Firesphere\SolrSerach\Models
+ * @package Firesphere\SolrSearch\Models
  * @property string $Keyword
  * @property string $Synonym
  */

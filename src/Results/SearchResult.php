@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SearchResult|Firesphere\SolrSearch\Results\SearchResult Result of a query
+ *
+ * @package Firesphere\SolrSearch\Results
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Results;
 

@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SchemaService|Firesphere\SolrSearch\Services\SchemaService Base service for generating a schema
+ *
+ * @package Firesphere\SolrSearch\Services
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Services;
 

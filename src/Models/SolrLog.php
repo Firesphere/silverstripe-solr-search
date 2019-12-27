@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SolrLog|Firesphere\SolrSearch\Models\SolrLog Solr logging to be read from the CMS
+ *
+ * @package Firesphere\SolrSearch\Models
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Models;
 

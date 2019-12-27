@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class PostConfigStore|Firesphere\SolrSearch\Stores\PostConfigStore Post storage configuration for a core
+ *
+ * @package Firesphere\SolrSearch\Stores
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Stores;
 

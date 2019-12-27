@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * class DataObjectExtension|Firesphere\SolrSearch\Extensions\DataObjectExtension Adds checking if changes should be
+ * pushed to Solr
+ *
+ * @package Firesphere\SolrSearch\Extensions
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Extensions;
 

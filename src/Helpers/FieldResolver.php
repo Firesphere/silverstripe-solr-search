@@ -1,4 +1,11 @@
 <?php
+/**
+ * class FieldResolver|Firesphere\SolrSearch\Helpers\FieldResolver Identify fields or relations in a DataObject
+ *
+ * @package Firesphere\SolrSearch\Helpers
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Helpers;
 

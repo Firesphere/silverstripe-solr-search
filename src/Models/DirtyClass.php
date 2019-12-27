@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class DirtyClass|Firesphere\SolrSearch\Models\DirtyClass Store Dirty classes for re-indexing
+ *
+ * @package Firesphere\SolrSearch\Models
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Models;
 

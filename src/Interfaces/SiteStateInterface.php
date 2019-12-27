@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * class SiteStateInterface|Firesphere\SolrSearch\Interfaces\SiteStateInterface Interface for managing the
+ * state of a site
+ *
+ * @package Firesphere\SolrSearch\Interfaces
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Interfaces;
 

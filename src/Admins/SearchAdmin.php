@@ -1,4 +1,11 @@
 <?php
+/**
+ * class SearchAdmin|Firesphere\SolrSearch\Admins\SearchAdmin Base admin for Synonyms, logs and dirty classes
+ *
+ * @package Firesphere\SolrSearch\Admins
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Admins;
 

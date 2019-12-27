@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SolrConfigureJob|Firesphere\SolrSearch\Jobs\SolrConfigureJob Configure cores from the CMS
+ *
+ * @package Firesphere\SolrSearch\Jobs
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Jobs;
 

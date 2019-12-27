@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * class ConfigStore|Firesphere\SolrSearch\Interfaces\ConfigStore Interface for managing the
+ * store configuration of a core
+ *
+ * @package Firesphere\SolrSearch\Interfaces
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Interfaces;
 

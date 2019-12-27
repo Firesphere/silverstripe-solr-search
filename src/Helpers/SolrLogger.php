@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * class SolrLogger|Firesphere\SolrSearch\Helpers\SolrLogger Log errors to the Database
+ *
+ * @package Firesphere\SolrSearch\Helpers
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Helpers;
 

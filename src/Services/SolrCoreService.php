@@ -1,4 +1,11 @@
 <?php
+/**
+ * class SolrCoreService|Firesphere\SolrSearch\Services\SolrCoreService Base service for communicating with the core
+ *
+ * @package Firesphere\SolrSearch\Services
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Services;
 

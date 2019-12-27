@@ -1,4 +1,12 @@
 <?php
+/**
+ * class SiteState|Firesphere\SolrSearch\States\SiteState Base implementation of SiteState to be used by e.g.
+ * the Fluent extension
+ *
+ * @package Firesphere\SolrSearch\States
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 
 namespace Firesphere\SolrSearch\States;
