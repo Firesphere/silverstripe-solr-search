@@ -156,7 +156,7 @@ class DataObjectExtension extends DataExtension
      * Register the exception of the attempted index for later clean-up use
      *
      * @param array $ids
-     * @param $record
+     * @param DirtyClass $record
      * @param Exception $error
      * @throws ValidationException
      * @throws GuzzleException
@@ -215,7 +215,8 @@ class DataObjectExtension extends DataExtension
         $ids = json_decode($record->IDs, 1) ?: [];
 
         try {
-            (new SolrCoreService())->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
+            (new SolrCoreService())
+                ->updateItems(ArrayList::create([$owner]), SolrCoreService::DELETE_TYPE);
             // If successful, remove it from the array
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
