@@ -283,7 +283,7 @@ jobs:
       - run:
           name: Generate statistic docs
           command: |
-            cp -r ./search/docs .
+            cp -r ./Core/docs .
             echo "Main module"
             echo "\`\`\`" >> docs/14-About/03-Codebase/01-Main-stats.md
             vendor/bin/phploc Core/src/ >> docs/14-About/03-Codebase/01-Main-stats.md
