@@ -5,3 +5,5 @@ This solr search module is aimed at a more modern, modular approach to searching
 It is maintained by:
 * Simon `Firesphere` Erkelens
 * Marco `Sheepy` Hermo
+
+Contact us at solr[@]casa-laguna[.]net
