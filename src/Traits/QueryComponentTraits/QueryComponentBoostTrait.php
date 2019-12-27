@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Trait QueryComponentBoostTrait|Firesphere\SolrSearch\Traits\QueryComponentBoostTrait Trait to set boosting on fields
+ * for the {@link \Firesphere\SolrSearch\Factories\QueryComponentFactory}
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

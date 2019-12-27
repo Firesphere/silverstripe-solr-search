@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Trait GetSetSearchResolverTrait|Firesphere\SolrSearch\Traits\GetSetSearchResolverTrait Used to extract methods from
+ * the {@link \Firesphere\SolrSearch\Helpers\FieldResolver} to make the code more readable
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

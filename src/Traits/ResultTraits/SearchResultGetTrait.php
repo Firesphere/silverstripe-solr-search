@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Trait SearchResultGetTrait|Firesphere\SolrSearch\Traits\SearchResultGetTrait Getters for {@link \Firesphere\SolrSearch\Results\SearchResult}
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

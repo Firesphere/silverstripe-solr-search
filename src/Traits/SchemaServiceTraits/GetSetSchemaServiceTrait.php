@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Trait GetSetSchemaServiceTrait|Firesphere\SolrSearch\Traits\GetSetSchemaServiceTrait Getters and setters
+ * for {@link \Firesphere\SolrSearch\Services\SchemaService}
+ *
+ * @package Firesphere\SolrSearch\Traits
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 namespace Firesphere\SolrSearch\Traits;
 

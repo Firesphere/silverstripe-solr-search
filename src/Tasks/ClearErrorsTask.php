@@ -1,6 +1,7 @@
 <?php
 /**
- * Class ClearErrorsTask|Firesphere\SolrSearch\Tasks\ClearErrorsTask Clear out errors from the database to declutter the CMS.
+ * Class ClearErrorsTask|Firesphere\SolrSearch\Tasks\ClearErrorsTask Clear out errors from the database to
+ * declutter the CMS.
  *
  * @package Firesphere\SolrSearch\Tasks
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
