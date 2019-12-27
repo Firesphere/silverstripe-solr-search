@@ -317,6 +317,20 @@ jobs:
             case $CIRCLE_BRANCH in "master") git add solr-docs ;; esac
             case $CIRCLE_BRANCH in "master") git commit -m "API doc update for Solr from CircleCI update" ;; esac
             case $CIRCLE_BRANCH in "master") git push ;; esac
+      - run:
+          name: Check the CS status of all modules
+          command: |
+            echo "Core"
+            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Core/src
+            echo "Fluent"
+            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Fluent/src
+            echo "Subsites"
+            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Subsites/src
+            echo "Compatibility"
+            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Compotibility/src
+            echo "Permissions"
+            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Member-Permissions/src
+
 workflows:
   version: 2
   dobuild:
