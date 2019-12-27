@@ -1,7 +1,7 @@
 <?php
 /**
- * Trait SolrIndexTrait|Firesphere\SolrSearch\Traits\SolrIndexTrait Used to extract methods from the {@link \Firesphere\SolrSearch\Tasks\SolrIndexTask}
- * to make the code more readable
+ * Trait SolrIndexTrait|Firesphere\SolrSearch\Traits\SolrIndexTrait Used to extract methods from the
+ * {@link \Firesphere\SolrSearch\Tasks\SolrIndexTask} to make the code more readable
  *
  * @package Firesphere\SolrSearch\Traits
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo

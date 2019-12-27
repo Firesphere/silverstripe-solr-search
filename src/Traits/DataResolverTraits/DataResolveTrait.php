@@ -1,7 +1,7 @@
 <?php
 /**
- * Trait DataResolveTrait|Firesphere\SolrSearch\Traits\DataResolveTrait Used to extract methods from the {@link \Firesphere\SolrSearch\Helpers\DataResolver}
- * to make the code more readable
+ * Trait DataResolveTrait|Firesphere\SolrSearch\Traits\DataResolveTrait Used to extract methods from
+ * the {@link \Firesphere\SolrSearch\Helpers\DataResolver} to make the code more readable
  *
  * @package Firesphere\SolrSearch\Traits
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
