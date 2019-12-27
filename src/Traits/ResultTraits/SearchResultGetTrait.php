@@ -1,6 +1,7 @@
 <?php
 /**
- * Trait SearchResultGetTrait|Firesphere\SolrSearch\Traits\SearchResultGetTrait Getters for {@link \Firesphere\SolrSearch\Results\SearchResult}
+ * Trait SearchResultGetTrait|Firesphere\SolrSearch\Traits\SearchResultGetTrait Getters for
+ * {@link \Firesphere\SolrSearch\Results\SearchResult}
  *
  * @package Firesphere\SolrSearch\Traits
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
