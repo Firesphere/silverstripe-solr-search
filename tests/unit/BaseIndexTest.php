@@ -107,11 +107,6 @@ class BaseIndexTest extends SapphireTest
             $this->assertContains($field, $fulltextFields);
         }
 
-        $this->index->addFulltextFields();
-
-        $fulltextFields2 = $this->index->getFulltextFields();
-        $this->assertEquals($fulltextFields, $fulltextFields2);
-
         $this->index->addAllDateFields();
 
         // Created is not supposed to be in here for unknown reasons
