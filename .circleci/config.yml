@@ -327,7 +327,7 @@ jobs:
             echo "Subsites"
             vendor/bin/phpcs --standard=Core/phpcs.xml.dist Subsites/src
             echo "Compatibility"
-            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Compotibility/src
+            vendor/bin/phpcs --standard=Core/phpcs.xml.dist Compatibility/src
             echo "Permissions"
             vendor/bin/phpcs --standard=Core/phpcs.xml.dist Member-Permissions/src
 
