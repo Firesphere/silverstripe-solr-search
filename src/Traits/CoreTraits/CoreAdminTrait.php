@@ -56,11 +56,13 @@ trait CoreAdminTrait
             $response = $this->client->coreAdmin($this->admin);
 
             return $response->getWasSuccessful();
-        } catch (Exception $e) {
+        } catch (Exception $error) {
+            // @codeCoverageIgnoreStart
             $solrLogger = new SolrLogger();
             $solrLogger->saveSolrLog('Config');
 
             throw new Exception($e);
+            // @codeCoverageIgnoreEnd
         }
     }
 

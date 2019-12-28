@@ -222,8 +222,10 @@ class DocumentFactory
     {
         try {
             $valuesForField = [DataResolver::identify($object, $options['fullfield'])];
-        } catch (Exception $e) {
+        } catch (Exception $error) {
+            // @codeCoverageIgnoreStart
             $valuesForField = [];
+            // @codeCoverageIgnoreEnd
         }
 
         return $valuesForField;

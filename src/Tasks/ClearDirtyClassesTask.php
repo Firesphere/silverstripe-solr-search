@@ -78,8 +78,10 @@ class ClearDirtyClassesTask extends BuildTask
                 $service->updateItems($dirtyClasses, $dirtyObject->Type);
                 $dirtyObject->delete();
             } catch (Exception $exception) {
+                // @codeCoverageIgnoreStart
                 $this->getLogger()->error($exception->getMessage());
                 continue;
+                // @codeCoverageIgnoreEnd
             }
         }
         /** @var SolrLogger $solrLogger */

@@ -221,9 +221,11 @@ class SolrIndexTask extends BuildTask
                 }
                 $group++;
             } catch (Exception $error) {
+                // @codeCoverageIgnoreStart
                 $this->logException($this->index->getIndexName(), $group, $error);
                 $group++;
                 continue;
+                // @codeCoverageIgnoreEnd
             }
         } while ($group <= $groups);
 
@@ -335,7 +337,8 @@ class SolrIndexTask extends BuildTask
         if (!$pid) {
             try {
                 $this->doReindex($start, $class, $pid);
-            } catch (Exception $e) {
+            } catch (Exception $error) {
+                // @codeCoverageIgnoreStart
                 SolrLogger::logMessage('ERROR', $e, $this->index->getIndexName());
                 $msg = sprintf(
                     'Something went wrong while indexing %s on %s, see the logs for details',
@@ -343,6 +346,7 @@ class SolrIndexTask extends BuildTask
                     $this->index->getIndexName()
                 );
                 throw new Exception($msg);
+                // @codeCoverageIgnoreEnd
             }
         }
     }
@@ -368,7 +372,7 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Indexed group %s', $group));
 
         if (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl') {
-            throw new Exception('Catch exception for unittests');
+            throw new Exception('`Catch exception for unittests');
         } elseif ($pcntl !== false) {
             exit(0);
         }

@@ -83,10 +83,12 @@ class SolrConfigureTask extends BuildTask
             try {
                 $this->configureIndex($index);
             } catch (Exception $error) {
+                // @codeCoverageIgnoreStart
                 $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
                 $this->getLogger()->error($error); // in browser mode, it might not always show
                 // Continue to the next index
                 continue;
+                // @codeCoverageIgnoreEnd
             }
             $this->extend('onAfterConfigureIndex', $index);
         }
@@ -132,8 +134,10 @@ class SolrConfigureTask extends BuildTask
             $service->$method($index, $configStore);
             $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
         } catch (Exception $error) {
+            // @codeCoverageIgnoreStart
             $this->logException($index, $error);
             throw new RuntimeException($error);
+            // @codeCoverageIgnoreEnd
         }
     }
 

@@ -112,8 +112,10 @@ class DataObjectExtension extends DataExtension
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
         } catch (Exception $error) {
+            // @codeCoverageIgnoreStart
             Versioned::set_reading_mode($mode);
             $this->registerException($ids, $record, $error);
+            // @codeCoverageIgnoreEnd
         }
         Versioned::set_reading_mode($mode);
     }
@@ -228,7 +230,9 @@ class DataObjectExtension extends DataExtension
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
         } catch (Exception $error) {
+            // @codeCoverageIgnoreStart
             $this->registerException($ids, $record, $error);
+            // @codeCoverageIgnoreEnd
         }
     }
 

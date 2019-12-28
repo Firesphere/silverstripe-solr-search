@@ -208,10 +208,12 @@ abstract class BaseIndex
 
         try {
             $result = $this->client->select($clientQuery);
-        } catch (Exception $e) {
+        } catch (Exception $error) {
+            // @codeCoverageIgnoreStart
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
             throw $e;
+            // @codeCoverageIgnoreEnd
         }
 
         // Handle the after search first. This gets a raw search result
