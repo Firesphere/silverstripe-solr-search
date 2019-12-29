@@ -61,7 +61,7 @@ trait CoreAdminTrait
             $solrLogger = new SolrLogger();
             $solrLogger->saveSolrLog('Config');
 
-            throw new Exception($e);
+            throw new Exception($error);
             // @codeCoverageIgnoreEnd
         }
     }

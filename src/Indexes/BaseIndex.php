@@ -212,7 +212,7 @@ abstract class BaseIndex
             // @codeCoverageIgnoreStart
             $logger = new SolrLogger();
             $logger->saveSolrLog('Query');
-            throw $e;
+            throw $error;
             // @codeCoverageIgnoreEnd
         }
 

@@ -339,7 +339,7 @@ class SolrIndexTask extends BuildTask
                 $this->doReindex($start, $class, $pid);
             } catch (Exception $error) {
                 // @codeCoverageIgnoreStart
-                SolrLogger::logMessage('ERROR', $e, $this->index->getIndexName());
+                SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
                 $msg = sprintf(
                     'Something went wrong while indexing %s on %s, see the logs for details',
                     $start,
