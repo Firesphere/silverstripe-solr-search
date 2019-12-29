@@ -14,6 +14,7 @@ use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Tests\DataObjectExtensionTest;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -164,6 +165,7 @@ class DataObjectExtension extends DataExtension
     /**
      * Register the exception of the attempted index for later clean-up use
      *
+     * @codeCoverageIgnore This is actually tested through reflection. See {@link DataObjectExtensionTest}
      * @param array $ids
      * @param DirtyClass $record
      * @param Exception $error
