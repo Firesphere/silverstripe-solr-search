@@ -267,6 +267,7 @@ class SolrIndexTask extends BuildTask
      * For each core, spawn a child process that will handle a separate group.
      * This speeds up indexing through CLI massively.
      *
+     * @codeCoverageIgnore Can't be tested because PCNTL is not available
      * @param string $class Class to index
      * @param int $group Group to index
      * @param int $groups Total amount of groups
@@ -304,6 +305,7 @@ class SolrIndexTask extends BuildTask
     /**
      * Create a fork and run the child
      *
+     * @codeCoverageIgnore Can't be tested because PCNTL is not available
      * @param string $class Class to index
      * @param array $pids Array of all the child Process IDs
      * @param int $coreNumber Core number
@@ -325,6 +327,7 @@ class SolrIndexTask extends BuildTask
     /**
      * Ren a single child index operation
      *
+     * @codeCoverageIgnore Can't be tested because PCNTL is not available
      * @param string $class Class to index
      * @param int $pid PID of the child
      * @param int $start Position to start
@@ -371,11 +374,13 @@ class SolrIndexTask extends BuildTask
         SiteState::withState(SiteState::DEFAULT_STATE);
         $this->getLogger()->info(sprintf('Indexed group %s', $group));
 
+        // @codeCoverageIgnoreStart
         if (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl') {
-            throw new Exception('`Catch exception for unittests');
+            throw new Exception('Catch exception for unittests');
         } elseif ($pcntl !== false) {
             exit(0);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
