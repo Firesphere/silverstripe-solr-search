@@ -176,6 +176,7 @@ class SolrConfigureTask extends BuildTask
     /**
      * Log an exception error
      *
+     * @codeCoverageIgnore Can't be tested because of accessibility and the actual throw of exception
      * @param $index
      * @param Exception $error
      * @throws GuzzleException
