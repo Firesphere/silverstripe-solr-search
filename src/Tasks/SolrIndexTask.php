@@ -418,6 +418,7 @@ class SolrIndexTask extends BuildTask
      * Log an exception if it happens. Most are catched, these logs are for the developers
      * to identify problems and fix them.
      *
+     * @codeCoverageIgnore This is actually tested through reflection
      * @param string $index Index that is currently running
      * @param int $group Group currently attempted to index
      * @param Exception $exception Exception that's been thrown
