@@ -214,9 +214,11 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest
             try {
+                // @codeCoverageIgnoreStart
                 if ($this->hasPCNTL()) {
                     $group = $this->spawnChildren($class, $group, $groups);
                 } else {
+                    // @codeCoverageIgnoreEnd
                     $this->doReindex($group, $class);
                 }
                 $group++;
