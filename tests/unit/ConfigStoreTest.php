@@ -44,6 +44,17 @@ class ConfigStoreTest extends SapphireTest
     /**
      * @expectedException \RuntimeException
      */
+    public function testFileConfigPath()
+    {
+        $config = ['path' => '/sys'];
+        $store = new FileConfigStore($config);
+
+        $store->getTargetDir('CircleCITestIndex');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testPostConstruct()
     {
         new PostConfigStore([]);

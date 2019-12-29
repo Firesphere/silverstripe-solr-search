@@ -27,7 +27,6 @@ use SilverStripe\ORM\ValidationException;
  *
  * Log information from Solr to the CMS for reference
  *
- * @todo implement {@link LoggerInterface}
  * @package Firesphere\SolrSearch\Helpers
  */
 class SolrLogger

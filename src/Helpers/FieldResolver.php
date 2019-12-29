@@ -177,19 +177,18 @@ class FieldResolver
      *
      * @static
      * @param string $class - The class to query
-     * @param bool $includeSubclasses - True to return subclasses as well as super classes
      * @param bool $dataOnly - True to only return classes that have tables
      * @return array - Integer keys, String values as classes sorted by depth (most super first)
      * @throws ReflectionException
      */
-    public static function getHierarchy($class, $includeSubclasses = true, $dataOnly = false): array
+    public static function getHierarchy($class, $dataOnly = false): array
     {
         // Generate the unique key for this class and it's call type
         // It's a short-lived cache key for the duration of the request
-        $cacheKey = sprintf('%s-%s-%s', $class, $includeSubclasses ? 'sc' : 'an', $dataOnly ? 'do' : 'al');
+        $cacheKey = sprintf('%s-sc-%s', $class, $dataOnly ? 'do' : 'al');
 
         if (!isset(self::$hierarchy[$cacheKey])) {
-            $classes = self::getHierarchyClasses($class, $includeSubclasses);
+            $classes = self::getHierarchyClasses($class);
 
             if ($dataOnly) {
                 $classes = array_filter($classes, static function ($class) {
@@ -209,19 +208,18 @@ class FieldResolver
      * Get the hierarchy for a class
      *
      * @param $class
-     * @param $includeSubclasses
      * @return array
      * @throws ReflectionException
      * @todo clean this up to be more compatible with PHP features
      */
-    protected static function getHierarchyClasses($class, $includeSubclasses): array
+    protected static function getHierarchyClasses($class): array
     {
         if (!isset(self::$ancestry[$class])) {
             self::$ancestry[$class] = array_values(ClassInfo::ancestry($class));
         }
         $ancestry = self::$ancestry[$class];
 
-        $classes = self::getSubClasses($class, $includeSubclasses, $ancestry);
+        $classes = self::getSubClasses($class, $ancestry);
 
         $classes = array_unique($classes);
         $classes = self::excludeDataObjectIDx($classes);
@@ -234,17 +232,14 @@ class FieldResolver
      * Should be replaced with PHP native methods
      *
      * @param $class
-     * @param $includeSubclasses
      * @param array $classes
      * @return array
      * @throws ReflectionException
      */
-    private static function getSubClasses($class, $includeSubclasses, array $classes): array
+    private static function getSubClasses($class, array $classes): array
     {
-        if ($includeSubclasses) {
-            $subClasses = ClassInfo::subclassesFor($class);
-            $classes = array_merge($classes, array_values($subClasses));
-        }
+        $subClasses = ClassInfo::subclassesFor($class);
+        $classes = array_merge($classes, array_values($subClasses));
 
         return $classes;
     }
@@ -305,24 +300,7 @@ class FieldResolver
     protected function getFieldOptions($field, array $sources, $fullfield, array $found): array
     {
         foreach ($sources as $class => $fieldOptions) {
-            $class = $this->getSourceName($class);
-            $dataclasses = self::getHierarchy($class);
-
-            $fields = DataObject::getSchema()->databaseFields($class);
-            while ($dataclass = array_shift($dataclasses)) {
-                $type = $this->getType($fields, $field, $dataclass);
-
-                if ($type) {
-                    // Don't search through child classes of a class we matched on.
-                    $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
-                    // Trim arguments off the type string
-                    if (preg_match('/^(\w+)\(/', $type, $match)) {
-                        $type = $match[1];
-                    }
-
-                    $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
-                }
-            }
+            $found = $this->findOrigin($field, $fullfield, $found, $class, $fieldOptions);
         }
 
         return $found;
@@ -385,6 +363,61 @@ class FieldResolver
             'type'         => $type,
             'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
         ];
+
+        return $found;
+    }
+
+    /**
+     * @param $field
+     * @param $fullfield
+     * @param array $found
+     * @param $class
+     * @param $fieldOptions
+     * @return array
+     * @throws ReflectionException
+     */
+    protected function findOrigin($field, $fullfield, array $found, $class, $fieldOptions): array
+    {
+        $class = $this->getSourceName($class);
+        $dataclasses = self::getHierarchy($class);
+
+        $fields = DataObject::getSchema()->databaseFields($class);
+        while ($dataclass = array_shift($dataclasses)) {
+            $type = $this->getType($fields, $field, $dataclass);
+
+            if ($type) {
+                // Don't search through child classes of a class we matched on.
+                $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
+                $found = $this->getOriginForType($field, $fullfield, $found, $fieldOptions, $dataclass, $type);
+            }
+        }
+
+        return $found;
+    }
+
+    /**
+     * @param $field
+     * @param $fullfield
+     * @param array $found
+     * @param $fieldOptions
+     * @param $dataclass
+     * @param string $type
+     * @return array
+     */
+    protected function getOriginForType(
+        $field,
+        $fullfield,
+        array $found,
+        $fieldOptions,
+        $dataclass,
+        string $type
+    ): array {
+        // Trim arguments off the type string
+        if (preg_match('/^(\w+)\(/', $type, $match)) {
+            $type = $match[1];
+        }
+
+        $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
 
         return $found;
     }

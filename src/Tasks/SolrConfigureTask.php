@@ -19,7 +19,6 @@ use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
-use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
@@ -84,8 +83,9 @@ class SolrConfigureTask extends BuildTask
                 $this->configureIndex($index);
             } catch (Exception $error) {
                 // @codeCoverageIgnoreStart
+                $this->logException($index, $error);
                 $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
-                $this->getLogger()->error($error); // in browser mode, it might not always show
+                $this->getLogger()->error($error->getMessage()); // in browser mode, it might not always show
                 // Continue to the next index
                 continue;
                 // @codeCoverageIgnoreEnd
@@ -130,15 +130,8 @@ class SolrConfigureTask extends BuildTask
         if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
             $method = 'coreReload';
         }
-        try {
-            $service->$method($index, $configStore);
-            $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
-        } catch (Exception $error) {
-            // @codeCoverageIgnoreStart
-            $this->logException($index, $error);
-            throw new RuntimeException($error);
-            // @codeCoverageIgnoreEnd
-        }
+        $service->$method($index, $configStore);
+        $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
     }
 
     /**

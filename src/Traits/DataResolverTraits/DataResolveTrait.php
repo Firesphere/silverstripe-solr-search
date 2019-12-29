@@ -196,7 +196,6 @@ trait DataResolveTrait
         $data = $this->component->{$this->columnName};
         $dbObject = $this->component->dbObject($this->columnName);
         if ($dbObject) {
-            // @todo do we need to set the value?
             $dbObject->setValue($data);
 
             return self::identify($dbObject, $this->columns);

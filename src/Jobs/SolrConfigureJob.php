@@ -34,7 +34,7 @@ class SolrConfigureJob extends AbstractQueuedJob
      */
     public function getTitle(): string
     {
-        return 'Configure new or re-configure existing Solr cores';
+        return _t(__CLASS__ . '.TITLE', 'Configure new or re-configure existing Solr cores');
     }
 
     /**

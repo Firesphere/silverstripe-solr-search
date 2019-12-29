@@ -45,12 +45,11 @@ class FieldResolverTest extends SapphireTest
             VirtualPage::class,
         ];
 
-        $test = FieldResolver::getHierarchy(Page::class, true, false);
+        $test = FieldResolver::getHierarchy(Page::class, false);
         $this->assertEquals($expected, $test);
-        $test2 = FieldResolver::getHierarchy(Page::class, false, true);
-        $this->assertEquals([SiteTree::class], $test2);
-        $test3 = FieldResolver::getHierarchy(Page::class, false, false);
-        $this->assertEquals([SiteTree::class, Page::class], $test3);
+        $test2 = FieldResolver::getHierarchy(Page::class, true);
+        unset($expected[1]); // Page::class does not have data fields
+        $this->assertEquals(array_values($expected), $test2);
     }
 
     public function testGetFieldIntrospection()
