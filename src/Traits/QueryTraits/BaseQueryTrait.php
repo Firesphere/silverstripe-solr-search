@@ -10,9 +10,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-use Minimalcode\Search\Criteria;
 use ReflectionException;
-
 use SilverStripe\Core\ClassInfo;
 
 /**

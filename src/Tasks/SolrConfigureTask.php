@@ -158,26 +158,6 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
-     * Log an exception error
-     *
-     * @codeCoverageIgnore Can't be tested because of accessibility and the actual throw of exception
-     * @param $index
-     * @param Exception $error
-     * @throws GuzzleException
-     * @throws ValidationException
-     */
-    private function logException($index, Exception $error): void
-    {
-        $this->getLogger()->error($error);
-        $msg = sprintf(
-            'Error loading core %s,' . PHP_EOL .
-            'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL,
-            $index
-        );
-        SolrLogger::logMessage('ERROR', $msg, $index);
-    }
-
-    /**
      * @param $index
      * @param SolrCoreService $service
      * @return string
@@ -196,5 +176,25 @@ class SolrConfigureTask extends BuildTask
         }
 
         return $method;
+    }
+
+    /**
+     * Log an exception error
+     *
+     * @codeCoverageIgnore Can't be tested because of accessibility and the actual throw of exception
+     * @param $index
+     * @param Exception $error
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    private function logException($index, Exception $error): void
+    {
+        $this->getLogger()->error($error);
+        $msg = sprintf(
+            'Error loading core %s,' . PHP_EOL .
+            'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL,
+            $index
+        );
+        SolrLogger::logMessage('ERROR', $msg, $index);
     }
 }
