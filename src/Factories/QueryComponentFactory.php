@@ -275,7 +275,6 @@ class QueryComponentFactory
             if (substr_count($part, '"') === 2) {
                 // Strip all double quotes out for the phrase.
                 // @todo make this less clunky
-                // @todo add useful tests for this
                 $part = str_replace('"', '', $part);
                 $term[] = $this->helper->escapePhrase($part);
             } else {
