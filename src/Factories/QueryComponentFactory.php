@@ -51,6 +51,7 @@ class QueryComponentFactory
         'Terms',
         'ViewFilter',
         'ClassFilter',
+        'ExcludeSubclassFilter',
         'Filters',
         'Excludes',
         'Facets',

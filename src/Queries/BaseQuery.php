@@ -79,6 +79,10 @@ class BaseQuery
      * @var array
      */
     protected $highlight = [];
+    /**
+     * @var array Classes to exclude through hierarchy
+     */
+    protected $excludedSubClasses = [];
 
     /**
      * Get the offset to start
@@ -365,6 +369,25 @@ class BaseQuery
     public function setFacetFilter(array $facetFilter): self
     {
         $this->facetFilter = $facetFilter;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludedSubClasses(): array
+    {
+        return $this->excludedSubClasses;
+    }
+
+    /**
+     * @param array $excludedSubClasses
+     * @return BaseQuery
+     */
+    public function setExcludedSubClasses(array $excludedSubClasses): self
+    {
+        $this->excludedSubClasses = $excludedSubClasses;
 
         return $this;
     }

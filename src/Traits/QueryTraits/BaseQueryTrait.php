@@ -11,6 +11,8 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Minimalcode\Search\Criteria;
+use ReflectionException;
+
 use SilverStripe\Core\ClassInfo;
 
 /**
@@ -51,6 +53,10 @@ trait BaseQueryTrait
      * @var array Fields to exclude
      */
     protected $exclude = [];
+    /**
+     * @var array Classes to exclude through hierarchy
+     */
+    protected $excludedSubClasses = [];
 
     /**
      * Each boosted query needs a separate addition!
@@ -127,18 +133,21 @@ trait BaseQueryTrait
     }
 
     /**
-     * @param string $class
-     * @throws \ReflectionException
+     * Add the subclasses of the given class to exclude.
+     * It's all merged in to a single array, for easier generation of the filter.
      *
-    public function excludeSubclasses($class)
+     * @param string $class
+     * @return $this
+     * @throws ReflectionException
+     */
+    public function addExcludedSubclasses($class): self
     {
-        $criteria = Criteria::where('ClassName')
-            ->is($class)
-            ->not()
-            ->in(ClassInfo::subclassesFor($class));
-        // This is WIP. Needs to work with the actual Query
+        $subClasses = ClassInfo::subclassesFor($class, false);
+        $excluded = $this->getExcludedSubClasses();
+        $this->excludedSubClasses = array_merge($excluded, $subClasses);
+
+        return $this;
     }
-     /**/
 
     /**
      * Add faceting

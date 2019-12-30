@@ -81,7 +81,22 @@ trait QueryComponentFilterTrait
         if (count($this->query->getClasses())) {
             $classes = $this->query->getClasses();
             $criteria = Criteria::where('ClassHierarchy')->in($classes);
-            $this->clientQuery->createFilterQuery('classes')
+            $this->clientQuery->createFilterQuery('ClassHierarchy')
+                ->setQuery($criteria->getQuery());
+        }
+    }
+
+    /**
+     * Build the exclusion query for the Excluded Subclasses
+     */
+    protected function buildExcludeSubclassFilter(): void
+    {
+        if (count($this->query->getExcludedSubClasses())) {
+            $subclasses = $this->query->getExcludedSubClasses();
+            $criteria = Criteria::where('ClassHierarchy')
+                ->not()
+                ->in($subclasses);
+            $this->clientQuery->createFilterQuery('exclude-ClassHierarchy')
                 ->setQuery($criteria->getQuery());
         }
     }
