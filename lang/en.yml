@@ -3,13 +3,15 @@ en:
     MENUTITLE: Search
   Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob:
     CLEARSOLRDIRTY: 'Clear out dirty objects in Solr'
+  Firesphere\SolrSearch\Jobs\SolrConfigureJob:
+    TITLE: 'Configure new or re-configure existing Solr cores'
   Firesphere\SolrSearch\Models\DirtyClass:
     DIRTYIDS: 'Dirty IDs'
-    PLURALNAME: 'Dirty Classs'
+    PLURALNAME: 'Dirty classes'
     PLURALS:
-      one: 'A Dirty Class'
-      other: '{count} Dirty Classs'
-    SINGULARNAME: 'Dirty Class'
+      one: 'A Dirty class'
+      other: '{count} Dirty classes'
+    SINGULARNAME: 'Dirty class'
   Firesphere\SolrSearch\Models\SearchSynonym:
     PLURALNAME: 'Search synonyms'
     PLURALS:
@@ -27,5 +29,7 @@ en:
       one: 'A Solr Log'
       other: '{count} Solr Logs'
     SINGULARNAME: 'Solr Log'
+  Firesphere\SolrSearch\Tasks\ClearErrorsTask:
+    CLEARLOG: 'Emptying logs for table SolrLog.WARNING: Any logs that are not inspected will be gone soon.'
   Permissions:
     LOGS_CATEGORIES: 'Solr logs permissions'

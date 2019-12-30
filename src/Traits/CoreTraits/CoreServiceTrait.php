@@ -116,7 +116,7 @@ trait CoreServiceTrait
     {
         $indexClasses = singleton($index)->getClasses();
         foreach ($indexClasses as $class) {
-            $classes = array_merge($classes, FieldResolver::getHierarchy($class, true));
+            $classes = array_merge($classes, FieldResolver::getHierarchy($class));
         }
 
         return $classes;

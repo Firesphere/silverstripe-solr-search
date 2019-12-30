@@ -30,7 +30,8 @@ use SilverStripe\ORM\DataObject;
  * Fluent uses the old SearchVariant method, which is actually not that bad a concept. These "Variants", now called
  * "States" set the state of the site to a required setting for each available state.
  *
- * States SHOULD add their own states through an extension, otherwise it won't be called.
+ * States SHOULD add their own states through an extension of this class and implement {@link SiteStateInterface},
+ * otherwise it won't be called.
  * {@link FluentIndexExtension::onBeforeInit()}
  *
  * States, options, etc. are simplified for a more streamlined approach

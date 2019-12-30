@@ -12,11 +12,6 @@ class MockState extends SiteState implements TestOnly, SiteStateInterface
 {
     public $enabled = false;
 
-    public function appliesToEnvironment(): bool
-    {
-        return $this->enabled;
-    }
-
     /**
      * Reset the SiteState to it's default state
      *

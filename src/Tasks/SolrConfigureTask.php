@@ -19,7 +19,6 @@ use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
-use RuntimeException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
@@ -67,7 +66,7 @@ class SolrConfigureTask extends BuildTask
      * Implement this method in the task subclass to
      * execute via the TaskRunner
      *
-     * @param HTTPRequest $request
+     * @param HTTPRequest $request Current request
      * @return bool|Exception
      * @throws ReflectionException
      * @throws ValidationException
@@ -84,8 +83,9 @@ class SolrConfigureTask extends BuildTask
                 $this->configureIndex($index);
             } catch (Exception $error) {
                 // @codeCoverageIgnoreStart
+                $this->logException($index, $error);
                 $this->getLogger()->error(sprintf('Core loading failed for %s', $index));
-                $this->getLogger()->error($error); // in browser mode, it might not always show
+                $this->getLogger()->error($error->getMessage()); // in browser mode, it might not always show
                 // Continue to the next index
                 continue;
                 // @codeCoverageIgnoreEnd
@@ -104,7 +104,7 @@ class SolrConfigureTask extends BuildTask
     /**
      * Update the index on the given store
      *
-     * @param string $index
+     * @param string $index Core to index
      * @throws ValidationException
      * @throws GuzzleException
      */
@@ -119,26 +119,10 @@ class SolrConfigureTask extends BuildTask
         /** @var SolrCoreService $service */
         $service = Injector::inst()->get(SolrCoreService::class);
 
-        // Assuming a core that doesn't exist doesn't have uptime, as per Solr docs
-        // And it has a start time.
-        // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
-        $status = $service->coreStatus($index);
         $configStore = $this->createConfigForIndex($instance);
-        // Default to create
-        $method = 'coreCreate';
-        // Switch to reload if the core is loaded
-        if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
-            $method = 'coreReload';
-        }
-        try {
-            $service->$method($index, $configStore);
-            $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
-        } catch (Exception $error) {
-            // @codeCoverageIgnoreStart
-            $this->logException($index, $error);
-            throw new RuntimeException($error);
-            // @codeCoverageIgnoreEnd
-        }
+        $method = $this->getMethod($index, $service);
+        $service->$method($index, $configStore);
+        $this->getLogger()->info(sprintf('Core %s successfully loaded', $index));
     }
 
     /**
@@ -191,5 +175,26 @@ class SolrConfigureTask extends BuildTask
             $index
         );
         SolrLogger::logMessage('ERROR', $msg, $index);
+    }
+
+    /**
+     * @param $index
+     * @param SolrCoreService $service
+     * @return string
+     */
+    protected function getMethod($index, SolrCoreService $service): string
+    {
+        $status = $service->coreStatus($index);
+        // Default to create
+        $method = 'coreCreate';
+        // Switch to reload if the core is loaded
+        // Assuming a core that doesn't exist doesn't have uptime, as per Solr docs
+        // And it has a start time.
+        // You'd have to be pretty darn fast to hit 0 uptime and 0 starttime for an existing core!
+        if ($status && ($status->getUptime() && $status->getStartTime() !== null)) {
+            $method = 'coreReload';
+        }
+
+        return $method;
     }
 }
