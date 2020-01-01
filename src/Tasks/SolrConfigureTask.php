@@ -178,6 +178,8 @@ class SolrConfigureTask extends BuildTask
     }
 
     /**
+     * Figure out the method needed for the given core.
+     *
      * @param $index
      * @param SolrCoreService $service
      * @return string

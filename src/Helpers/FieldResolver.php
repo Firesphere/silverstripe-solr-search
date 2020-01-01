@@ -368,6 +368,8 @@ class FieldResolver
     }
 
     /**
+     * Find the origin of a field
+     *
      * @param $field
      * @param $fullfield
      * @param array $found
@@ -396,6 +398,8 @@ class FieldResolver
     }
 
     /**
+     * Extraction to find the origin for a specific type field
+     *
      * @param $field
      * @param $fullfield
      * @param array $found
