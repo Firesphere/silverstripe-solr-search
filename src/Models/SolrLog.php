@@ -52,6 +52,12 @@ class SolrLog extends DataObject implements PermissionProvider
         'Message'   => 'Text',
     ];
     /**
+     * @var array Core this log entry belongs too
+     */
+    private static $has_one = [
+        'SolrCore' => SolrCore::class
+    ];
+    /**
      * @var array Summary fields
      */
     private static $summary_fields = [
@@ -80,6 +86,14 @@ class SolrLog extends DataObject implements PermissionProvider
      * @var string Default sort
      */
     private static $default_sort = 'Timestamp DESC';
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->removeByName(['SolrCoreID', 'SolrCore']);
+
+        return $fields;
+    }
 
     /**
      * Convert the Timestamp to a DBDatetime for compatibility

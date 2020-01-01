@@ -46,6 +46,12 @@ class DirtyClass extends DataObject
         'IDs'   => 'Varchar(255)',
     ];
     /**
+     * @var array Core this dirty class is related to
+     */
+    private static $belongs_many_many = [
+        'SolrCore' => SolrCore::class
+    ];
+    /**
      * @var array Summary fields in CMS
      */
     private static $summary_fields = [
@@ -63,6 +69,7 @@ class DirtyClass extends DataObject
     {
         $fields = parent::getCMSFields();
         $fields->removeByName(['Class', 'IDs']);
+        $fields->removeByName(['SolrCoreID', 'SolrCore']);
 
         $class = singleton($this->Class)->plural_name();
 

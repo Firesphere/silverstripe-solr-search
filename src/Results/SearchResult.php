@@ -21,6 +21,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
+use SilverStripe\View\ViewableData;
 use Solarium\Component\Result\Facet\Field;
 use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Spellcheck\Collation;
@@ -37,7 +38,7 @@ use stdClass;
  *
  * @package Firesphere\SolrSearch\Results
  */
-class SearchResult
+class SearchResult extends ViewableData
 {
     use SearchResultGetTrait;
     use SearchResultSetTrait;
@@ -73,6 +74,7 @@ class SearchResult
      */
     public function __construct(Result $result, BaseQuery $query, BaseIndex $index)
     {
+        parent::__construct();
         $this->index = $index;
         $this->query = $query;
         $this->setMatches($result->getDocuments())

@@ -44,6 +44,12 @@ class SearchSynonym extends DataObject
         'Keyword' => 'Varchar(255)',
         'Synonym' => 'Text'
     ];
+    /**
+     * @var array Solr Core this synonym belongs to
+     */
+    private static $has_one = [
+        'SolrCore' => SolrCore::class
+    ];
 
     /**
      * @var array Summary fields
@@ -68,6 +74,8 @@ class SearchSynonym extends DataObject
                 'Create synonyms for a given keyword, add as many synonyms comma separated.'
             )
         );
+
+        $fields->removeByName(['SolrCoreID', 'SolrCore']);
 
         return $fields;
     }
