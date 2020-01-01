@@ -14,6 +14,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\SearchResultGetTrait;
 use Firesphere\SolrSearch\Traits\SearchResultSetTrait;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
@@ -21,6 +22,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
+use SilverStripe\View\ViewableData;
 use Solarium\Component\Result\Facet\Field;
 use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Spellcheck\Collation;
@@ -37,7 +39,7 @@ use stdClass;
  *
  * @package Firesphere\SolrSearch\Results
  */
-class SearchResult
+class SearchResult extends ViewableData
 {
     use SearchResultGetTrait;
     use SearchResultSetTrait;
@@ -73,6 +75,7 @@ class SearchResult
      */
     public function __construct(Result $result, BaseQuery $query, BaseIndex $index)
     {
+        parent::__construct();
         $this->index = $index;
         $this->query = $query;
         $this->setMatches($result->getDocuments())
@@ -207,8 +210,9 @@ class SearchResult
      * @param HTTPRequest $request
      * @return PaginatedList
      */
-    public function getPaginatedMatches(HTTPRequest $request): PaginatedList
+    public function getPaginatedMatches(): PaginatedList
     {
+        $request = Controller::curr()->getRequest();
         // Get all the items in the set and push them in to the list
         $items = $this->getMatches();
         /** @var PaginatedList $paginated */
