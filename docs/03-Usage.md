@@ -226,6 +226,13 @@ on the current `Controller` to be useable in the templates.
 ```php
 class SearchController extends PageController
 {
+    protected $ResultSet;
+    
+    public function setResultSet($set)
+    {
+        $this->ResultSet = $set;    
+    }
+
     /**
      * @param array $data Data from the submission
      * @param SearchForm $form Submitted search form
@@ -235,6 +242,7 @@ class SearchController extends PageController
     {
         $searchVars = $this->getRequest()->getVars();
         if (!empty($searchVars)) {
+            // Set the query, possibly to be used to display it back to the user
             $this->setQuery($searchVars);
             /** @var BaseIndex $index */
             $index = Injector::inst()->get(MyIndex::class);
@@ -266,16 +274,8 @@ class SearchController extends PageController
             // Execute the search
             $result = $index->doSearch($query);
     
-            // Set the query, possibly to be used to display it back to the user
-            $this->setQuery($searchVars);
-            // Set the total items found
-            $this->setTotal($result->Matches->totalItems);
-            // Set the results on the Controller
-            $this->setResults($result->Matches);
-            // If there is some spellchecking, set it to be used in the template
-            $this->setSpellcheck($result->Spellcheck);
-            // Set the list of facets
-            $this->setFacets($result->Facets);
+            // Assuming the controller has this method and variable
+            $this->setResultSet($result);
         }
     
         return $this;
@@ -283,9 +283,78 @@ class SearchController extends PageController
 }
 ```
 
+Now, in your template, you could do something like this, to display the results, based on Bootstrap:
+```html
+<% with $ResultSet %>
+    <% if $TotalItems %>
+        <div class="clearfix"></div>
+        <div class="col-xs-12"><br/>
+            <span class="pull-right">
+                Results: <span class="js-total-results">$TotalItems</span>
+            </span>
+        </div>
+    <% else %>
+        <h6 class="col-xs-12 col-md-6">No results found for your query "<i>$Up.Query.XML</i>"</h6>
+        <span class="hidden js-total-results">0</span>
+    <% end_if %>
+    <% if $Spellcheck.Count %>
+        <h6 class="col-xs-12 col-md-6">You might have a spelling error, try
+            <a href="{$Top.Link}search/?Query={$SpellcheckLink}">$SpellcheckTitle</a> instead?
+        </h6>
+    <% end_if %>
+    <div class="col-xs-12">
+        <% if $TotalItems %>
+            <p>&nbsp;</p>
+            <% loop $PaginatedMatches %>
+                <% include Match %>
+            <% end_loop %>
+        <% end_if %>
+        <% include Pagination %>
+        <p>&nbsp;</p>
+    </div>
+    <nav id="pageNav" role="navigation" class="page-sidebar-widget page-sidebar-nav">
+        <div class="row">
+            <% with $Facets %>
+                <!-- You can repeat the following for each of your Facet Titles -->
+                <div class="col-xs-6 col-md-12">
+                    <h3 class="h4 page-sidebar-header">YourFacetName</h3>
+                    <ul class="list-unstyled">
+                        <% loop $YourFacetName %>
+                            <li>
+                                <a href="$SearchLink" title="$Name $Topic.XML">
+                                    $Name ($FacetCount)
+                                </a>
+                            </li>
+                        <% end_loop %>
+                    </ul>
+                </div>
+            <% end_with %>
+        </div>
+    </nav>
+<% end_with %>
+```
+
+Example of a `$SearchLink` method, that'll return a link to the Faceted set:
+
+```php
+class FacetedObject
+{
+    public function getSearchLink()
+    {
+        $controller = Controller::curr();
+
+        $vars = $controller->getRequest()->getVars();
+
+        $vars['MyFacetObject[]'] = $this->ID;
+
+        return $controller->Link('search?' . http_build_query($vars));
+    }
+}
+```
+
 **NOTE**
 
-This is so called "pseudo code", it may not exactly work, but serves as example.
+The code in this documentation is called "pseudo code", it may not exactly work, but serves as example.
  
 ----------
 <sup>1</sup> Although not required, it's highly recomended
