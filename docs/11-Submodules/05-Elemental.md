@@ -1,4 +1,4 @@
-# Elemental indexes
+# [Elemental indexes](https://github.com/dnadesign/silverstripe-elemental)
 
 Indexing Elemental is quite tricky, as Elements are part of the content, but can also be standalone.
 

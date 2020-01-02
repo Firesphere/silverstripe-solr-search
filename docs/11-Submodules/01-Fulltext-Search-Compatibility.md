@@ -1,4 +1,4 @@
-# Fulltext Search\* Compatibility
+# [Fulltext Search\* Compatibility](https://github.com/Firesphere/silverstripe-solr-compatibility)
 
 To minimise the impact of migrating, there is a compatibility module available.
 [This module](https://github.com/Firesphere/silverstripe-solr-compatibility) will remove the need to completely update all your indexes.
