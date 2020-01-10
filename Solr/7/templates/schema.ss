@@ -71,7 +71,8 @@
 
         <!-- Filter/Facet fields -->
         <% loop $FilterFieldDefinitions %>
-            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued" docValues="true"/>
+            <%-- Exception for Text types, they need to be string for docValues --%>
+            <field name="$Field" type="<% if $Type == 'text' %>string<% else %>$Type<% end_if %>" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued" docValues="true"/>
         <% end_loop %>
         <!-- End Filter/Facet fields -->
     </fields>

@@ -79,7 +79,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension = new DataObjectExtension();
         $extension->setOwner($page);
         $service = new SolrCoreService();
-        $service->setInDebugMode(false);
+        $service->setDebug(false);
         $service->updateItems(ArrayList::create([$page]), SolrCoreService::CREATE_TYPE);
 
         $extension->onAfterDelete();

@@ -1,3 +1,6 @@
+---
+Name: SolrTypemap
+---
 Firesphere\SolrSearch\Helpers\Statics:
   typemap:
     "*": text
@@ -5,15 +8,15 @@ Firesphere\SolrSearch\Helpers\Statics:
     HTMLVarchar: htmltext
     "SilverStripe\\ORM\\FieldType\\DBHTMLVarchar": htmltext
     "DBHTMLVarchar": htmltext
-    Varchar: string
-    "SilverStripe\\ORM\\FieldType\\DBVarchar": string
-    "DBVarchar": string
-    Enum: string
-    "SilverStripe\\ORM\\FieldType\\DBEnum": string
-    "DBEnum": string
-    Text: string
-    "SilverStripe\\ORM\\FieldType\\DBText": string
-    "DBText": string
+    Varchar: text
+    "SilverStripe\\ORM\\FieldType\\DBVarchar": text
+    "DBVarchar": text
+    Enum: text
+    "SilverStripe\\ORM\\FieldType\\DBEnum": text
+    "DBEnum": text
+    Text: text
+    "SilverStripe\\ORM\\FieldType\\DBText": text
+    "DBText": text
     HTMLText: htmltext
     "SilverStripe\\ORM\\FieldType\\DBHTMLText": htmltext
     "DBHTMLText": htmltext
@@ -50,8 +53,8 @@ Firesphere\SolrSearch\Helpers\Statics:
     Currency: tfloat
     "SilverStripe\\ORM\\FieldType\\DBCurrency": tfloat
     "DBCurrency": tfloat
-    ClassName: string
-    "SilverStripe\\ORM\\FieldType\\DBClassName": string
-    DBClassName: string
+    ClassName: text
+    "SilverStripe\\ORM\\FieldType\\DBClassName": text
+    DBClassName: text
     "SilverStripe\\ORM\\FieldType\\HTMLFragment": htmltext
     HTMLFragment: htmltext

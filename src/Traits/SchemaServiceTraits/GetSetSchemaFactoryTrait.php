@@ -1,7 +1,7 @@
 <?php
 /**
- * Trait GetSetSchemaServiceTrait|Firesphere\SolrSearch\Traits\GetSetSchemaServiceTrait Getters and setters
- * for {@link \Firesphere\SolrSearch\Services\SchemaService}
+ * Trait GetSetSchemaFactoryTrait|Firesphere\SolrSearch\Traits\GetSetSchemaFactoryTrait Getters and setters
+ * for {@link \Firesphere\SolrSearch\Factories\SchemaFactory}
  *
  * @package Firesphere\SolrSearch\Traits
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
@@ -10,16 +10,16 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
+use Firesphere\SolrSearch\Factories\SchemaFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
-use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 
 /**
- * Trait GetSetSchemaServiceTrait
+ * Trait GetSetSchemaFactoryTrait
  *
  * @package Firesphere\SolrSearch\Traits
  */
-trait GetSetSchemaServiceTrait
+trait GetSetSchemaFactoryTrait
 {
     /**
      * ABSOLUTE Path to template
@@ -70,7 +70,7 @@ trait GetSetSchemaServiceTrait
      * Set the index that's being used and add the introspection for it
      *
      * @param BaseIndex $index
-     * @return SchemaService
+     * @return SchemaFactory
      */
     public function setIndex($index): self
     {
@@ -136,7 +136,7 @@ trait GetSetSchemaServiceTrait
      * Set custom types template
      *
      * @param string $typesTemplate
-     * @return SchemaService
+     * @return SchemaFactory
      */
     public function setTypesTemplate($typesTemplate): self
     {
@@ -159,7 +159,7 @@ trait GetSetSchemaServiceTrait
      * Set a custom template for schema xml
      *
      * @param string $template
-     * @return SchemaService
+     * @return SchemaFactory
      */
     public function setTemplate($template): self
     {

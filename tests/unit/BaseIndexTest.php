@@ -211,7 +211,7 @@ class BaseIndexTest extends SapphireTest
 
         $xml = file_get_contents(Director::baseFolder() . '/.solr/TestIndex/conf/schema.xml');
         $this->assertContains(
-            '<field name="SiteTree_Title" type="string" indexed="true" stored="true" multiValued="false"/>',
+            '<field name="SiteTree_Title" type="text" indexed="true" stored="true" multiValued="false"/>',
             $xml
         );
 

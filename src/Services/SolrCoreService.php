@@ -280,7 +280,7 @@ class SolrCoreService
         $factory = Injector::inst()->get(DocumentFactory::class);
         $factory->setItems($items);
         $factory->setClass($items->first()->ClassName);
-        $factory->setDebug($this->isInDebugMode());
+        $factory->setDebug($this->isDebug());
 
         return $factory;
     }
