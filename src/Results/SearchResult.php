@@ -49,14 +49,12 @@ class SearchResult extends ViewableData
      * @var BaseQuery
      */
     protected $query;
-
     /**
      * Index the query has run on
      *
      * @var BaseIndex
      */
     protected $index;
-
     /**
      * Resulting matches from the query on the index
      *
