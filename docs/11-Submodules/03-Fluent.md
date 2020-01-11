@@ -5,4 +5,5 @@ This means you don't have to worry about if the results have the right language 
 
 ## Known issues
 
-Global, non-language specific search is not functional yet.
+- Global, non-language specific search is not functional yet.
+- Indexes may index only one language, and override with the next one when misconfigured.
