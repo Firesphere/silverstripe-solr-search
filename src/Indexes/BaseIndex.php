@@ -11,13 +11,13 @@ namespace Firesphere\SolrSearch\Indexes;
 
 use Exception;
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
+use Firesphere\SolrSearch\Factories\SchemaFactory;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
-use Firesphere\SolrSearch\Services\SchemaService;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\BaseIndexTrait;
@@ -72,11 +72,11 @@ abstract class BaseIndex
         'StoredFields',
     ];
     /**
-     * {@link SchemaService}
+     * {@link SchemaFactory}
      *
-     * @var SchemaService
+     * @var SchemaFactory
      */
-    protected $schemaService;
+    protected $schemaFactory;
     /**
      * {@link QueryComponentFactory}
      *
@@ -108,10 +108,10 @@ abstract class BaseIndex
         $this->client->setAdapter(new Guzzle());
 
         // Set up the schema service, only used in the generation of the schema
-        $schemaService = Injector::inst()->get(SchemaService::class, false);
-        $schemaService->setIndex($this);
-        $schemaService->setStore(Director::isDev());
-        $this->schemaService = $schemaService;
+        $schemaFactory = Injector::inst()->get(SchemaFactory::class, false);
+        $schemaFactory->setIndex($this);
+        $schemaFactory->setStore(Director::isDev());
+        $this->schemaFactory = $schemaFactory;
         $this->queryFactory = Injector::inst()->get(QueryComponentFactory::class, false);
 
         $this->extend('onBeforeInit');
@@ -354,7 +354,7 @@ abstract class BaseIndex
         // @todo use types/schema/elevate rendering
         // Upload the config files for this index
         // Create a default schema which we can manage later
-        $schema = (string)$this->schemaService->generateSchema();
+        $schema = (string)$this->schemaFactory->generateSchema();
         $store->uploadString(
             $this->getIndexName(),
             'schema.xml',
@@ -364,7 +364,7 @@ abstract class BaseIndex
         $this->getSynonyms($store);
 
         // Upload additional files
-        foreach (glob($this->schemaService->getExtrasPath() . '/*') as $file) {
+        foreach (glob($this->schemaFactory->getExtrasPath() . '/*') as $file) {
             if (is_file($file)) {
                 $store->uploadFile($this->getIndexName(), $file);
             }

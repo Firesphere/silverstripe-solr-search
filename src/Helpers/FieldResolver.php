@@ -307,6 +307,36 @@ class FieldResolver
     }
 
     /**
+     * Find the origin of a field
+     *
+     * @param $field
+     * @param $fullfield
+     * @param array $found
+     * @param $class
+     * @param $fieldOptions
+     * @return array
+     * @throws ReflectionException
+     */
+    protected function findOrigin($field, $fullfield, array $found, $class, $fieldOptions): array
+    {
+        $class = $this->getSourceName($class);
+        $dataclasses = self::getHierarchy($class);
+
+        $fields = DataObject::getSchema()->databaseFields($class);
+        while ($dataclass = array_shift($dataclasses)) {
+            $type = $this->getType($fields, $field, $dataclass);
+
+            if ($type) {
+                // Don't search through child classes of a class we matched on.
+                $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
+                $found = $this->getOriginForType($field, $fullfield, $found, $fieldOptions, $dataclass, $type);
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Get the type of this field
      *
      * @param array $fields
@@ -330,6 +360,35 @@ class FieldResolver
         }
 
         return $type;
+    }
+
+    /**
+     * Extraction to find the origin for a specific type field
+     *
+     * @param $field
+     * @param $fullfield
+     * @param array $found
+     * @param $fieldOptions
+     * @param $dataclass
+     * @param string $type
+     * @return array
+     */
+    protected function getOriginForType(
+        $field,
+        $fullfield,
+        array $found,
+        $fieldOptions,
+        $dataclass,
+        string $type
+    ): array {
+        // Trim arguments off the type string
+        if (preg_match('/^(\w+)\(/', $type, $match)) {
+            $type = $match[1];
+        }
+
+        $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
+
+        return $found;
     }
 
     /**
@@ -363,65 +422,6 @@ class FieldResolver
             'type'         => $type,
             'multi_valued' => isset($fieldOptions['multi_valued']) ? true : false,
         ];
-
-        return $found;
-    }
-
-    /**
-     * Find the origin of a field
-     *
-     * @param $field
-     * @param $fullfield
-     * @param array $found
-     * @param $class
-     * @param $fieldOptions
-     * @return array
-     * @throws ReflectionException
-     */
-    protected function findOrigin($field, $fullfield, array $found, $class, $fieldOptions): array
-    {
-        $class = $this->getSourceName($class);
-        $dataclasses = self::getHierarchy($class);
-
-        $fields = DataObject::getSchema()->databaseFields($class);
-        while ($dataclass = array_shift($dataclasses)) {
-            $type = $this->getType($fields, $field, $dataclass);
-
-            if ($type) {
-                // Don't search through child classes of a class we matched on.
-                $dataclasses = array_diff($dataclasses, array_values(ClassInfo::subclassesFor($dataclass)));
-                $found = $this->getOriginForType($field, $fullfield, $found, $fieldOptions, $dataclass, $type);
-            }
-        }
-
-        return $found;
-    }
-
-    /**
-     * Extraction to find the origin for a specific type field
-     *
-     * @param $field
-     * @param $fullfield
-     * @param array $found
-     * @param $fieldOptions
-     * @param $dataclass
-     * @param string $type
-     * @return array
-     */
-    protected function getOriginForType(
-        $field,
-        $fullfield,
-        array $found,
-        $fieldOptions,
-        $dataclass,
-        string $type
-    ): array {
-        // Trim arguments off the type string
-        if (preg_match('/^(\w+)\(/', $type, $match)) {
-            $type = $match[1];
-        }
-
-        $found = $this->getFoundOriginData($field, $fullfield, $fieldOptions, $dataclass, $type, $found);
 
         return $found;
     }

@@ -157,6 +157,7 @@
     <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.SnowballPorterFilterFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.FlattenGraphFilterFactory"/> <!-- required on index analyzers after graph filters -->
     </analyzer>

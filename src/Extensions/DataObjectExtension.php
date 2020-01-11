@@ -102,7 +102,7 @@ class DataObjectExtension extends DataExtension
         $mode = Versioned::get_reading_mode();
         try {
             Versioned::set_reading_mode(Versioned::LIVE);
-            $service->setInDebugMode(false);
+            $service->setDebug(false);
             $type = SolrCoreService::UPDATE_TYPE;
             // If the object should not show in search, remove it
             if ($owner->ShowInSearch !== null && (bool)$owner->ShowInSearch === false) {

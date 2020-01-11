@@ -414,7 +414,7 @@ class SolrIndexTask extends BuildTask
         $index = $this->getIndex();
         $client = $index->getClient();
         $update = $client->createUpdate();
-        $this->service->setInDebugMode($this->debug);
+        $this->service->setDebug($this->debug);
         $this->service->updateIndex($index, $items, $update);
         $client->update($update);
     }

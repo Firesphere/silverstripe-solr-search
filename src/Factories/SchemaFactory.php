@@ -1,18 +1,19 @@
 <?php
 /**
- * class SchemaService|Firesphere\SolrSearch\Services\SchemaService Base service for generating a schema
+ * class SchemaFactory|Firesphere\SolrSearch\Services\SchemaFactory Base service for generating a schema
  *
- * @package Firesphere\SolrSearch\Services
+ * @package Firesphere\SolrSearch\Factories
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
 
-namespace Firesphere\SolrSearch\Services;
+namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
 use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Helpers\Statics;
-use Firesphere\SolrSearch\Traits\GetSetSchemaServiceTrait;
+use Firesphere\SolrSearch\Services\SolrCoreService;
+use Firesphere\SolrSearch\Traits\GetSetSchemaFactoryTrait;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
@@ -21,13 +22,13 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\ViewableData;
 
 /**
- * Class SchemaService
+ * Class SchemaFactory
  *
  * @package Firesphere\SolrSearch\Services
  */
-class SchemaService extends ViewableData
+class SchemaFactory extends ViewableData
 {
-    use GetSetSchemaServiceTrait;
+    use GetSetSchemaFactoryTrait;
 
     /**
      * The field resolver to find a field for a class
@@ -35,16 +36,19 @@ class SchemaService extends ViewableData
      * @var FieldResolver
      */
     protected $fieldResolver;
-
     /**
      * CoreService to use
      *
      * @var SolrCoreService
      */
     protected $coreService;
+    /**
+     * @var array Base paths to the template
+     */
+    protected $baseTemplatePath;
 
     /**
-     * SchemaService constructor.
+     * SchemaFactory constructor.
      */
     public function __construct()
     {
@@ -122,10 +126,9 @@ class SchemaService extends ViewableData
         foreach ($facetFields as $key => $facetField) {
             $facetArray[] = $key . '.' . $facetField['Field'];
         }
-        // Boosts, facets and obviously stored fields need to be stored
-        $storeFields = array_merge($storedFields, array_keys($boostedFields), $facetArray);
 
-        return $storeFields;
+        // Boosts, facets and obviously stored fields need to be stored
+        return array_merge($storedFields, array_keys($boostedFields), $facetArray);
     }
 
     /**
@@ -211,14 +214,63 @@ class SchemaService extends ViewableData
      */
     public function getTypes()
     {
-        if (!$this->typesTemplate) {
-            $solrVersion = $this->coreService->getSolrVersion();
-            $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
-            $template = sprintf('%s/Solr/%s/templates/types.ss', $dir, $solrVersion);
-            $this->setTypesTemplate($template);
-        }
+        $template = $this->getTemplatePathFor('schema');
+        $this->setTypesTemplate($template . '/types.ss');
 
         return $this->renderWith($this->getTypesTemplate());
+    }
+
+    /**
+     * Get the base path of the template given, e.g. the "schema" templates
+     * or the "extra" templates.
+     *
+     * @param string $type What type of templates do we need to get
+     * @return string
+     */
+    public function getTemplatePathFor($type): string
+    {
+        $template = $this->getBaseTemplatePath($type);
+
+        // If the template is set, return early
+        // Explicitly check for boolean. If it's a boolean,
+        // the template needs to be resolved
+        if (!is_bool($template)) {
+            return $template;
+        }
+        $templatePath = SolrCoreService::config()->get('paths');
+        $customPath = $templatePath['base_path'] ?? false;
+        $path = ModuleLoader::getModule('firesphere/solr-search')->getPath();
+
+        if ($customPath) {
+            $path = sprintf($customPath, Director::baseFolder());
+        }
+
+        $solrVersion = $this->coreService->getSolrVersion();
+        $template = sprintf($templatePath[$solrVersion][$type], $path);
+        $this->setBaseTemplatePath($template, $type);
+
+        return $template;
+    }
+
+    /**
+     * @param $type
+     * @return string|bool
+     */
+    public function getBaseTemplatePath($type)
+    {
+        return $this->baseTemplatePath[$type] ?? false;
+    }
+
+    /**
+     * @param string $baseTemplatePath
+     * @param string $type
+     * @return SchemaFactory
+     */
+    public function setBaseTemplatePath(string $baseTemplatePath, string $type): SchemaFactory
+    {
+        $this->baseTemplatePath[$type] = $baseTemplatePath;
+
+        return $this;
     }
 
     /**
@@ -228,29 +280,19 @@ class SchemaService extends ViewableData
      */
     public function generateSchema()
     {
-        if (!$this->template) {
-            $solrVersion = $this->coreService->getSolrVersion();
-            $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
-            $template = sprintf('%s/Solr/%s/templates/schema.ss', $dir, $solrVersion);
-            $this->setTemplate($template);
-        }
+        $template = $this->getTemplatePathFor('schema');
+        $this->setTemplate($template . '/schema.ss');
 
         return $this->renderWith($this->getTemplate());
     }
 
     /**
-     * Get any extras that need loading in to Solr
+     * Get any the template path for anything that needs loading in to Solr
      *
      * @return string
      */
     public function getExtrasPath()
     {
-        // @todo configurable but with default to the current absolute path
-        $dir = ModuleLoader::getModule('firesphere/solr-search')->getPath();
-
-        $confDirs = SolrCoreService::config()->get('paths');
-        $solrVersion = $this->coreService->getSolrVersion();
-
-        return sprintf($confDirs[$solrVersion]['extras'], $dir);
+        return $this->getTemplatePathFor('extras');
     }
 }

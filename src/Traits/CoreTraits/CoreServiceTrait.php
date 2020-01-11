@@ -29,7 +29,7 @@ trait CoreServiceTrait
      *
      * @var bool
      */
-    protected $inDebugMode = false;
+    protected $debug = false;
     /**
      * @var Client The current client
      */
@@ -44,20 +44,20 @@ trait CoreServiceTrait
      *
      * @return bool
      */
-    public function isInDebugMode(): bool
+    public function isDebug(): bool
     {
-        return $this->inDebugMode;
+        return $this->debug;
     }
 
     /**
      * Set the debug mode
      *
-     * @param bool $inDebugMode
+     * @param bool $debug
      * @return self
      */
-    public function setInDebugMode(bool $inDebugMode): self
+    public function setDebug(bool $debug): self
     {
-        $this->inDebugMode = $inDebugMode;
+        $this->debug = $debug;
 
         return $this;
     }
