@@ -77,3 +77,6 @@ be the case.
 If you have a custom path, all files from the Solr version you choose, _need_ to exist in this folder!
 
 This includes the `extras` folder, in it's entirety.
+
+It is suggested to copy the entire `Solr` folder to your own application and alter what you need in there, leaving
+everything else untouched. This will save you the hassle of making sure everything is in place.
