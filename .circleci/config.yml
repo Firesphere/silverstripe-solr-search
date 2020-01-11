@@ -120,9 +120,6 @@ jobs:
             echo "CodeClimate:"
             echo "---"
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
-      - run:
-          name: Code Sniffer
-          command: vendor/bin/phpcs --standard=phpcs.xml.dist src
       - store_test_results:
           path: /var/www/html/coverage
       - store_artifacts:
