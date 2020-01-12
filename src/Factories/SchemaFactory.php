@@ -24,7 +24,7 @@ use SilverStripe\View\ViewableData;
 /**
  * Class SchemaFactory
  *
- * @package Firesphere\SolrSearch\Services
+ * @package Firesphere\SolrSearch\Factories
  */
 class SchemaFactory extends ViewableData
 {
