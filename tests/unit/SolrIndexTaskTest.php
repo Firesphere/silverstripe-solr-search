@@ -94,29 +94,6 @@ class SolrIndexTaskTest extends SapphireTest
         $this->assertEquals(0, $result);
     }
 
-    /**
-     * This test is specifically to test that the task will run fine with PCNTL.
-     * In the index task, there's a check if the 'unittest' flag is set, to throw an exception.
-     * It's a workaround for `exit()` which kills the entire PHPUnit process, no matter the PCNTL state.
-     *
-     * @expectedException \Exception
-     */
-    public function testRunPCNTL()
-    {
-        $this->markTestSkipped('PCNTL Is not available on CircleCI yet');
-        $getVars = [
-            'group'    => 0,
-            'index'    => 'CircleCITestIndex',
-            'unittest' => 'pcntl'
-        ];
-        $request = new HTTPRequest('GET', 'dev/tasks/SolrIndexTask', $getVars);
-
-        /** @var SolrIndexTask $task */
-        $task = Injector::inst()->get(SolrIndexTask::class, true);
-
-        $task->run($request);
-    }
-
     public function testGetLogger()
     {
         $task = new SolrIndexTask();
