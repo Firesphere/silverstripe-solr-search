@@ -253,6 +253,8 @@ class SchemaFactory extends ViewableData
     }
 
     /**
+     * Retrieve the base template path for a type (extra or schema)
+     *
      * @param $type
      * @return string|bool
      */
@@ -262,6 +264,8 @@ class SchemaFactory extends ViewableData
     }
 
     /**
+     * Set the base template path for a type (extra or schema)
+     *
      * @param string $baseTemplatePath
      * @param string $type
      * @return SchemaFactory
