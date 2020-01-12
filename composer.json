@@ -13,11 +13,14 @@
   "authors": [
     {
       "name": "Simon `Firesphere` Erkelens",
-      "email": "simonerkelens@silverstripe.com"
+      "email": "simonerkelens@silverstripe.com",
+      "homepage": "https://casa-laguna.net",
+      "role": "Lead developer"
     },
     {
       "name": "Marco `Sheepy` Hermo",
-      "email": "marco@silverstripe.com"
+      "email": "marco@silverstripe.com",
+      "role": "Lead developer"
     }
   ],
   "require": {
@@ -54,8 +57,11 @@
     }
   },
   "support": {
+    "email": "solr@casa-laguna.net",
     "issues": "https://github.com/firesphere/silverstripe-solr-search/issues",
-    "source": "https://github.com/firesphere/silverstripe-solr-search"
+    "source": "https://github.com/firesphere/silverstripe-solr-search",
+    "docs": "https://firesphere.github.io/solr-docs",
+    "chat": "https://silverstripe-users.slack.com/archives/C9KB3U0P8"
   },
   "suggest": {
     "ext-pcntl": "Support for multi-core indexing",
