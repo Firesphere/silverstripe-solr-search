@@ -119,8 +119,8 @@ abstract class SiteState
      * Does this class, it's parent (or optionally one of it's children) have the passed extension attached?
      *
      * @static
-     * @param $class
-     * @param $extension
+     * @param string $class
+     * @param string $extension
      * @return bool
      * @throws ReflectionException
      */

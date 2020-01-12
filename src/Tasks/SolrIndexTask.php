@@ -217,7 +217,7 @@ class SolrIndexTask extends BuildTask
                 if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
                     $group = $this->spawnChildren($class, $group, $groups);
-                    // @codeCoverageIgnoreEnd
+                // @codeCoverageIgnoreEnd
                 } else {
                     $this->doReindex($group, $class);
                 }
