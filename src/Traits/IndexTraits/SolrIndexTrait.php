@@ -46,7 +46,7 @@ trait SolrIndexTrait
      *
      * @var int
      */
-    protected $batchLength = 1;
+    protected $batchLength = 500;
 
     /**
      * Set the {@link SolrCoreService}
@@ -62,13 +62,29 @@ trait SolrIndexTrait
     }
 
     /**
+     * Is this Index in debug mode
+     *
+     * @return bool
+     */
+    public function isDebug(): bool
+    {
+        return $this->debug;
+    }
+
+    /**
      * Set the debug mode
      *
-     * @param bool $debug
+     * @param bool $debug Set the task in debug mode
+     * @param bool $force Force a task in debug mode, despite e.g. being Live and not CLI
      * @return self
      */
-    public function setDebug(bool $debug): self
+    public function setDebug(bool $debug, bool $force = false): self
     {
+        // Make the debug a configurable, forcing it to always be false from config
+        if (!$force && SolrCoreService::config()->get('debug') === false) {
+            $debug = false;
+        }
+
         $this->debug = $debug;
 
         return $this;

@@ -32,6 +32,7 @@ use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Deprecation;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\View\ArrayData;
 use Solarium\Core\Client\Adapter\Guzzle;
@@ -381,9 +382,10 @@ abstract class BaseIndex
     public function getSynonyms($store = null, $defaults = true)
     {
         $synonyms = Synonyms::getSynonymsAsString($defaults);
+        /** @var DataList|SearchSynonym[] $syn */
         $syn = SearchSynonym::get();
         foreach ($syn as $synonym) {
-            $synonyms .= $synonym->Keyword . ',' . $synonym->Synonym . PHP_EOL;
+            $synonyms .= $synonym->getCombinedSynonym();
         }
 
         // Upload synonyms

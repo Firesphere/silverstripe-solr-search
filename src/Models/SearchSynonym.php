@@ -71,4 +71,14 @@ class SearchSynonym extends DataObject
 
         return $fields;
     }
+
+    /**
+     * Combine this synonym in to a string for the Solr synonyms.txt file
+     *
+     * @return string
+     */
+    public function getCombinedSynonym()
+    {
+        return sprintf("\n%s,%s", $this->Keyword, $this->Synonym);
+    }
 }

@@ -10,8 +10,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-use ReflectionException;
-
 /**
  * Trait BaseQueryTrait Extraction from the BaseQuery class to keep things readable.
  *
@@ -124,20 +122,6 @@ trait BaseQueryTrait
 
         return $this;
     }
-
-    /**
-     * @param string $class
-     * @throws ReflectionException
-     *
-     * public function excludeSubclasses($class)
-     * {
-     * $criteria = Criteria::where('ClassName')
-     * ->is($class)
-     * ->not()
-     * ->in(ClassInfo::subclassesFor($class));
-     * // This is WIP. Needs to work with the actual Query
-     * }
-     * /**/
 
     /**
      * Add faceting

@@ -70,18 +70,21 @@ class DocumentFactory
      * Note, it can only take one type of class at a time!
      * So make sure you properly loop and set $class
      *
-     * @param array $fields
-     * @param BaseIndex $index
-     * @param Query $update
-     * @return array
+     * @param array $fields Fields to index
+     * @param BaseIndex $index Index to push the documents to
+     * @param Query $update Update Query object
+     * @return array Documents to be pushed
      * @throws Exception
      */
     public function buildItems($fields, $index, $update): array
     {
-        $class = $this->getClass();
         $this->getFieldResolver()->setIndex($index);
         $boostFields = $index->getBoostedFields();
         $docs = [];
+        if ($this->debug) {
+            $this->indexGroupMessage($index);
+        }
+
         foreach ($this->getItems() as $item) {
             // Don't index items that should not show in search explicitly.
             // Just a "not" is insufficient, as it could be null or false (both meaning, not set)
@@ -98,25 +101,31 @@ class DocumentFactory
             $docs[] = $doc;
         }
 
-        if ($this->debug) {
-            $debugString = sprintf(
-                'Indexing %s on %s (%s items)%s',
-                $class,
-                $index->getIndexName(),
-                $this->getItems()->count(),
-                PHP_EOL
-            );
-            $this->getLogger()->info($debugString);
-        }
-
         return $docs;
+    }
+
+    /**
+     * Show the message about what is being indexed
+     *
+     * @param BaseIndex $index
+     */
+    protected function indexGroupMessage(BaseIndex $index): void
+    {
+        $debugString = sprintf(
+            'Indexing %s on %s (%s items)%s',
+            $this->getClass(),
+            $index->getIndexName(),
+            $this->getItems()->count(),
+            PHP_EOL
+        );
+        $this->getLogger()->info($debugString);
     }
 
     /**
      * Add fields that should always be included
      *
-     * @param Document $doc
-     * @param DataObject|DataObjectExtension $item
+     * @param Document $doc Solr Document
+     * @param DataObject|DataObjectExtension $item Item to get the data from
      */
     protected function addDefaultFields(Document $doc, DataObject $item)
     {
@@ -131,10 +140,10 @@ class DocumentFactory
     /**
      * Create the required record for a field
      *
-     * @param $fields
-     * @param Document $doc
-     * @param DataObject $item
-     * @param array $boostFields
+     * @param array $fields Fields to build a record for
+     * @param Document $doc Document for Solr
+     * @param DataObject $item Object to get the data for
+     * @param array $boostFields Custom set of index-time-boosted fields
      * @throws Exception
      */
     protected function buildFields($fields, Document $doc, DataObject $item, array $boostFields): void
@@ -151,9 +160,9 @@ class DocumentFactory
     /**
      * Add a single field to the Solr index
      *
-     * @param Document $doc
-     * @param DataObject $object
-     * @param array $options
+     * @param Document $doc Solr Document
+     * @param DataObject $object Object whose field is to be added
+     * @param array $options Additional options
      */
     protected function addField($doc, $object, $options): void
     {
@@ -180,7 +189,7 @@ class DocumentFactory
     /**
      * Determine if the given object is one of the given type
      *
-     * @param string|DataObject $class
+     * @param string|DataObject $class Class to compare
      * @param array|string $base Class or list of base classes
      * @return bool
      * @todo remove in favour of the inheritance check from PHP
@@ -201,8 +210,8 @@ class DocumentFactory
     /**
      * Check if a base class is an instance of the expected base group
      *
-     * @param string|DataObject $class
-     * @param string $base
+     * @param string|DataObject $class Class to compare
+     * @param string $base Base class
      * @return bool
      */
     protected function classEquals($class, $base): bool
@@ -214,8 +223,8 @@ class DocumentFactory
      * Use the DataResolver to find the value(s) for a field.
      * Returns an array of values, and if it's multiple, it becomes a long array
      *
-     * @param $object
-     * @param $options
+     * @param DataObject $object Object to resolve
+     * @param array $options Customised options
      * @return array
      */
     protected function getValuesForField($object, $options): array
@@ -234,10 +243,10 @@ class DocumentFactory
     /**
      * Push field to a document
      *
-     * @param Document $doc
-     * @param array $options
-     * @param string $type
-     * @param DBField|string $value
+     * @param Document $doc Solr document
+     * @param array $options Custom options
+     * @param string $type Type of Solr field
+     * @param DBField|string $value Value(s) of the field
      */
     protected function addToDoc($doc, $options, $type, $value): void
     {
