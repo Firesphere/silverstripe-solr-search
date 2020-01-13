@@ -53,6 +53,12 @@ I would like an issue to be created
 Especially when using facets, you should not redeclare fields to be filterable as well. If you run in to an error 
 saying you have duplicate fields, check your configuration that e.g. FilterFields does not have an overlap with FacetFields, etc.
 
+# @package tag
+
+The package tag is to help the API documentation to stay up to date.
+
+We are aware it's a bit overkill and redundant, but it does not have any impact on the actual code.
+
 # GitStore
 
 As you may know, Open Source Software is written by volunteers. We volunteer our time, to work
