@@ -41,7 +41,7 @@ Firesphere\SolrSearch\Services\SolrCoreService:
     mode: 'file'
     path: '.solr'
   cpucores: 2
-
+  debug: false
 ```
 
 Note, if you are using defaults (localhost), it is not necessary to add this to your configuration.
@@ -57,6 +57,11 @@ store:
   path: '/my_post_endpoint'
   uri: 'https://mydomain.com'
 ```
+
+### Debug
+
+You can force the debugging to false, by setting the debug flag. If you omit this tag, CLI and Dev mode
+will have debugging enabled.
 
 #### ShowInSearch
 

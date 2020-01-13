@@ -78,8 +78,8 @@ class SolrIndexTask extends BuildTask
         parent::__construct();
         // Only index live items.
         // The old FTS module also indexed Draft items. This is unnecessary
-        Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
         // If versioned is needed, a separate Versioned Search module is required
+        Versioned::set_reading_mode(Versioned::DEFAULT_MODE);
         $this->setService(Injector::inst()->get(SolrCoreService::class));
         $this->setLogger(Injector::inst()->get(LoggerInterface::class));
         $this->setDebug(Director::isDev() || Director::is_cli());
@@ -138,7 +138,9 @@ class SolrIndexTask extends BuildTask
     protected function taskSetup($request): array
     {
         $vars = $request->getVars();
-        $this->debug = $this->debug || isset($vars['debug']);
+        $debug = $this->isDebug() || isset($vars['debug']);
+        // Forcefully set the debugging to whatever the outcome of the above is
+        $this->setDebug($debug, true);
         $group = $vars['group'] ?? 0;
         $start = $vars['start'] ?? 0;
         $group = ($start > $group) ? $start : $group;
@@ -217,7 +219,7 @@ class SolrIndexTask extends BuildTask
                 if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
                     $group = $this->spawnChildren($class, $group, $groups);
-                // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
                 } else {
                     $this->doReindex($group, $class);
                 }
@@ -286,11 +288,13 @@ class SolrIndexTask extends BuildTask
         for ($i = 0; $i < $cores; $i++) {
             $start = $group + $i;
             if ($start < $groups) {
-                $this->runForkedChild($class, $pids, $i, $start);
+                $this->runForkedChild($class, $pids, $start);
             }
         }
         // Wait for each child to finish
-        foreach ($pids as $key => $pid) {
+        // It needs to wait for them independently,
+        // or it runs out of memory for some reason
+        foreach ($pids as $pid) {
             pcntl_waitpid($pid, $status);
         }
         $commit = $this->index->getClient()->createUpdate();
@@ -307,17 +311,16 @@ class SolrIndexTask extends BuildTask
      * @codeCoverageIgnore Can't be tested because PCNTL is not available
      * @param string $class Class to index
      * @param array $pids Array of all the child Process IDs
-     * @param int $coreNumber Core number
      * @param int $start Start point for the objects
      * @return void
      * @throws GuzzleException
      * @throws ValidationException
      */
-    private function runForkedChild($class, array &$pids, int $coreNumber, int $start): void
+    private function runForkedChild($class, array &$pids, int $start): void
     {
         $pid = pcntl_fork();
         // PID needs to be pushed before anything else, for some reason
-        $pids[$coreNumber] = $pid;
+        $pids[] = $pid;
         $config = DB::getConfig();
         DB::connect($config);
         $this->runChild($class, $pid, $start);
@@ -336,18 +339,16 @@ class SolrIndexTask extends BuildTask
      */
     private function runChild($class, int $pid, int $start): void
     {
-        if (!$pid) {
-            try {
-                $this->doReindex($start, $class, $pid);
-            } catch (Exception $error) {
-                SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
-                $msg = sprintf(
-                    'Something went wrong while indexing %s on %s, see the logs for details',
-                    $start,
-                    $this->index->getIndexName()
-                );
-                throw new Exception($msg);
-            }
+        try {
+            $this->doReindex($start, $class, $pid);
+        } catch (Exception $error) {
+            SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
+            $msg = sprintf(
+                'Something went wrong while indexing %s on %s, see the logs for details',
+                $start,
+                $this->index->getIndexName()
+            );
+            throw new Exception($msg);
         }
     }
 
@@ -372,9 +373,7 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Indexed group %s', $group));
 
         // @codeCoverageIgnoreStart
-        if (Controller::curr()->getRequest()->getVar('unittest') === 'pcntl') {
-            throw new Exception('Catch exception for unittests');
-        } elseif ($pcntl !== false) {
+        if ($pcntl !== false) {
             exit(0);
         }
         // @codeCoverageIgnoreEnd

@@ -10,6 +10,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\DataObject;
@@ -117,5 +118,26 @@ class SolrIndexTaskTest extends SapphireTest
         $this->assertContains($expected, ob_get_clean());
 
         ob_end_clean();
+    }
+
+    public function testSetDebug()
+    {
+        Config::modify()->set(SolrCoreService::class, 'debug', false);
+
+        $task = new SolrIndexTask();
+
+        $task->setDebug(true);
+
+        $this->assertFalse($task->isDebug());
+
+        $task->setDebug(true, true);
+
+        $this->assertTrue($task->isDebug());
+
+        Config::modify()->set(SolrCoreService::class, 'debug', null);
+
+        $task->setDebug(true);
+
+        $this->assertTrue($task->isDebug());
     }
 }
