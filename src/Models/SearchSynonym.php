@@ -25,7 +25,7 @@ class SearchSynonym extends DataObject
     /**
      * @var string Table name
      */
-    private static $table_name = 'SearchSynonym';
+    private static $table_name = 'Solr_SearchSynonym';
 
     /**
      * @var string Singular name

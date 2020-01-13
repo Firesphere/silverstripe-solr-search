@@ -28,7 +28,7 @@ class DirtyClass extends DataObject
     /**
      * @var string Table name
      */
-    private static $table_name = 'DirtyClass';
+    private static $table_name = 'Solr_DirtyClass';
     /**
      * @var string Singular name
      */

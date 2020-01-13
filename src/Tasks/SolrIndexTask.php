@@ -292,9 +292,6 @@ class SolrIndexTask extends BuildTask
         // Wait for each child to finish
         foreach ($pids as $key => $pid) {
             pcntl_waitpid($pid, $status);
-            if ($status === 0) {
-                unset($pids[$key]);
-            }
         }
         $commit = $this->index->getClient()->createUpdate();
         $commit->addCommit();

@@ -40,7 +40,7 @@ class SolrLog extends DataObject implements PermissionProvider
     /**
      * @var string Database table name
      */
-    private static $table_name = 'SolrLog';
+    private static $table_name = 'Solr_SolrLog';
     /**
      * @var array Database columns
      */
