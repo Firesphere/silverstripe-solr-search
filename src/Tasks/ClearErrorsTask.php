@@ -47,6 +47,6 @@ class ClearErrorsTask extends BuildTask
             __class__ . ".CLEARLOG",
             "Emptying logs for table SolrLog." . PHP_EOL . "WARNING: Any logs that are not inspected will be gone soon."
         ));
-        DB::query('TRUNCATE TABLE `SolrLog`');
+        DB::query('TRUNCATE TABLE `Solr_SolrLog`');
     }
 }
