@@ -359,10 +359,10 @@ class SolrIndexTask extends BuildTask
      *
      * @param int $group Group to index
      * @param string $class Class to index
-     * @param bool|int $pcntl Are we a child process or not
+     * @param bool|int $pid Are we a child process or not
      * @throws Exception
      */
-    private function doReindex($group, $class, $pcntl = false)
+    private function doReindex($group, $class, $pid = false)
     {
         foreach (SiteState::getStates() as $state) {
             if ($state !== 'default' && !empty($state)) {
@@ -375,7 +375,7 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Indexed group %s', $group));
 
         // @codeCoverageIgnoreStart
-        if ($pcntl !== false) {
+        if ($pid !== false) {
             exit(0);
         }
         // @codeCoverageIgnoreEnd
