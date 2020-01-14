@@ -123,8 +123,9 @@ class SolrIndexTask extends BuildTask
             $groups = $this->indexClassForIndex($classes, $isGroup, $group);
         }
 
-        $this->getLogger()->info(date('Y-m-d H:i:s'));
-        $this->getLogger()->info(sprintf('Time taken: %s minutes', (time() - $start) / 60));
+        $this->getLogger()->info(gmdate('Y-m-d H:i:s'));
+        $time = gmdate('H:i:s', (time() - $start));
+        $this->getLogger()->info(sprintf('Time taken: %s', $time));
 
         return $groups;
     }
@@ -364,6 +365,7 @@ class SolrIndexTask extends BuildTask
      */
     private function doReindex($group, $class, $pid = false)
     {
+        $start = time();
         foreach (SiteState::getStates() as $state) {
             if ($state !== 'default' && !empty($state)) {
                 SiteState::withState($state);
@@ -372,7 +374,8 @@ class SolrIndexTask extends BuildTask
         }
 
         SiteState::withState(SiteState::DEFAULT_STATE);
-        $this->getLogger()->info(sprintf('Indexed group %s', $group));
+        $end = gmdate('i:s', time() - $start);
+        $this->getLogger()->info(sprintf('Indexed group %s in %s', $group, $end));
 
         // @codeCoverageIgnoreStart
         if ($pid !== false) {
