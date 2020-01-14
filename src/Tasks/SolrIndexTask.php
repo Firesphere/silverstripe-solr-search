@@ -339,16 +339,18 @@ class SolrIndexTask extends BuildTask
      */
     private function runChild($class, int $pid, int $start): void
     {
-        try {
-            $this->doReindex($start, $class, $pid);
-        } catch (Exception $error) {
-            SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
-            $msg = sprintf(
-                'Something went wrong while indexing %s on %s, see the logs for details',
-                $start,
-                $this->index->getIndexName()
-            );
-            throw new Exception($msg);
+        if ($pid === 0) {
+            try {
+                $this->doReindex($start, $class, $pid);
+            } catch (Exception $error) {
+                SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
+                $msg = sprintf(
+                    'Something went wrong while indexing %s on %s, see the logs for details',
+                    $start,
+                    $this->index->getIndexName()
+                );
+                throw new Exception($msg);
+            }
         }
     }
 

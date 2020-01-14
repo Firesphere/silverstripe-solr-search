@@ -175,7 +175,8 @@ abstract class SiteState
     }
 
     /**
-     * Is this extension applied and instantiable
+     * Is this extension applied and instantiable, and should it be applied to
+     * the current state of the site
      *
      * @static
      * @param $variantClass
@@ -261,7 +262,7 @@ abstract class SiteState
          * @var string $variant
          * @var SiteStateInterface $instance
          */
-        foreach (self::variants(true) as $variant => $instance) {
+        foreach (self::variants() as $variant => $instance) {
             $instance->updateQuery($query);
         }
     }
