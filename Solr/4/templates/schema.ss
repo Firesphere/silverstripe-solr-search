@@ -48,39 +48,39 @@
 
 <schema name="$IndexName" version="1.5">
 
-	<types>
-		$Types
-	</types>
+    <types>
+        $Types
+    </types>
 
-	<fields>
-		<%-- Default fields, needed for all items --%>
-		<field name="$IDField" type="string" indexed="true" stored="true" required="true"/>
-		<field name="$ClassID" type="tint" indexed="true" stored="true" required="true"/>
-		<field name="ClassName" type="string" indexed="true" stored="true" required="true"/>
-		<field name="ClassHierarchy" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
-		<field name="ViewStatus" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
-		<field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
-		<% loop $CopyFields %>
-			<field name="$Field" type="htmltext" indexed="true" stored="true" multiValued="true"/>
-		<% end_loop %>
-		<% loop $FulltextFieldDefinitions %>
-			<field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
-		<% end_loop %>
+    <fields>
+        <%-- Default fields, needed for all items --%>
+        <field name="$IDField" type="string" indexed="true" stored="true" required="true"/>
+        <field name="$ClassID" type="tint" indexed="true" stored="true" required="true"/>
+        <field name="ClassName" type="string" indexed="true" stored="true" required="true"/>
+        <field name="ClassHierarchy" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="ViewStatus" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+        <% loop $CopyFields %>
+            <field name="$Field" type="htmltext" indexed="true" stored="true" multiValued="true"/>
+        <% end_loop %>
+        <% loop $FulltextFieldDefinitions %>
+            <field name="$Field" type="$Type" indexed="true" stored="$Stored" multiValued="$MultiValued"/>
+        <% end_loop %>
 
-		<% loop $FilterFieldDefinitions %>
-			<field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
-		<% end_loop %>
-	</fields>
+        <% loop $FilterFieldDefinitions %>
+            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
+        <% end_loop %>
+    </fields>
 
-	<% loop $CopyFieldDefinitions %>
-		<copyField source="$Field" dest="$Destination"/>
-	<% end_loop %>
+    <% loop $CopyFieldDefinitions %>
+        <copyField source="$Field" dest="$Destination"/>
+    <% end_loop %>
 
 
-	<uniqueKey>$IDField</uniqueKey>
+    <uniqueKey>$IDField</uniqueKey>
 
-	<defaultSearchField>$DefaultField</defaultSearchField>
+    <defaultSearchField>$DefaultField</defaultSearchField>
 
-	<solrQueryParser defaultOperator="OR"/>
+    <solrQueryParser defaultOperator="OR"/>
 
 </schema>

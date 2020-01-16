@@ -65,7 +65,7 @@
         <!-- End Copyfields -->
         <!-- Fulltext fields -->
         <% loop $FulltextFieldDefinitions %>
-            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
+            <field name="$Field" type="$Type" indexed="true" stored="$Stored" multiValued="$MultiValued"/>
         <% end_loop %>
         <!-- End Fulltext fields -->
 

@@ -65,14 +65,15 @@
         <!-- End Copyfields -->
         <!-- Fulltext fields -->
         <% loop $FulltextFieldDefinitions %>
-            <field name="$Field" type="$Type" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued"/>
+            <field name="$Field" type="$Type" indexed="true" stored="$Stored" multiValued="$MultiValued"/>
         <% end_loop %>
         <!-- End Fulltext fields -->
 
         <!-- Filter/Facet fields -->
         <% loop $FilterFieldDefinitions %>
             <%-- Exception for Text types, they need to be string for docValues --%>
-            <field name="$Field" type="<% if $Type == 'text' %>string<% else %>$Type<% end_if %>" indexed="$Indexed" stored="$Stored" multiValued="$MultiValued" docValues="true"/>
+            <field name="$Field" type="<% if $Type == 'text' %>string<% else %>$Type<% end_if %>" indexed="$Indexed"
+                   stored="$Stored" multiValued="$MultiValued" docValues="true"/>
         <% end_loop %>
         <!-- End Filter/Facet fields -->
     </fields>
