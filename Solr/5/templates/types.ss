@@ -367,7 +367,7 @@
 <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
     <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
-        <filter class="solr.`LowerCase`FilterFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.SnowballPorterFilterFactory"/>
     </analyzer>
 </fieldType>
