@@ -40,6 +40,8 @@ Firesphere\SolrSearch\Helpers\Statics:
     "DBVarchar": htmltext
 ```
 
+Note that you need to set all three options, because of the classmapping SilverStripe does.
+
 ## Custom `types.ss` and `schema.ss`
 
 You need to place your custom `.ss` types/schema files in your custom application folder in the following path:
@@ -47,7 +49,7 @@ You need to place your custom `.ss` types/schema files in your custom applicatio
 - for template files: `app/Solr/{SolrVersion}/templates`
 - for extras files: `app/Solr/{SolrVersion}/extras`
 
-## Set the custom paths to your templates and extras
+### Set the custom paths to your templates and extras
 
 Set the path to your custom template like so:
 ```yaml
@@ -61,8 +63,22 @@ When a base path is set, the template will automatically be selected based on yo
 Where you should select the correct `SolrVersion` from versions 4, 5 or 7, depending on the Solr version
 you are using
 - 4: Only Solr 4
-- 5: Solr version >5.0 and <7.0
-- 7: Solr7 or higher
+- 5: Solr version >=5.0 and <7.0
+- 7: Solr7 and up
+
+#### Available field maps for YML
+
+| FieldType | Indexed | Returnable | Case-sensitive |
+| - | - | - | - |
+| string | Yes | Yes | Yes |
+| tint | Yes | No | N/A |
+| htmltext | Yes | Yes | No |
+| text | Yes | Yes | No |
+| boolean | Yes | Configurable | N/A |
+| tdate | Yes | Configurable | N/A |
+| tfloat | Yes | Configurable | N/A |
+| tdouble | Yes | Configurable | N/A |
+ 
 
 ### Usage of %s
 
