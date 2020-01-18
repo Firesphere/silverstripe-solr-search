@@ -170,6 +170,28 @@ The [compatibility module](11-Submodules/01-Fulltext-Search-Compatibility.md) ha
 
 Note, grouped indexing is `0` based. Thus, if there are 150 groups to index, the final group to index will be 149 instead of 150.
 
+## Method output casting
+
+To get the correct Solr field type in the Solr Configuration, each method you want to add, e.g.
+
+```php
+public function getContent()
+{
+    return $renderedContent;
+}
+```
+
+You will need to add a casting, so the field type is correct in Solr, like so:
+
+```php
+private static $casting = [
+    'getContent' => 'HTMLText',
+    'Content'    => 'HTMLText'
+];
+```
+
+Depending on your field definition, you either need to have the full method name, or the short method name.
+
 ## Another way to set the config in PHP
 
 You could also use PHP, just like it was, to set the config. For readability however, it's better to use variables for Facets:
