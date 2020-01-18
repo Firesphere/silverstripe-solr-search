@@ -219,12 +219,20 @@ The Title is used to group all facets by their Title, in the template, this is a
 ### Important notice
 
 Note, that Facets are relational. For faceting on a relation, omit the origin class (e.g. `SiteTree`), but supply the full relational
-path to the facet. e.g. if you want to have facets on `RelationObject->RelationThing()->Relation()->ID`, the Facet declaration should be
-`RelationObject.RelationThing.RelationID`. It should always end with an ID that is a `has_one` relation.
+path to the facet. e.g. if you want to have facets on `RelationObject->ManyRelation()->OneRelation()->ID`, the Facet declaration should be
+`ManyRelationObject.OneRelationID`, assuming it's a `has_one` relation.
 
-Although it can be a `has_many` just as well, and it would be `Relation.ID`, it is not advised, as it creates a lot of overhead.
+If you have many relations, through either `many_many` or `has_many`, your definition should 
+use `ManyRelationObjectName.Relation.ID` instead of `RelationID`. It works and resolves the same.
 
-It would and should work though. If you want to do it that way, there's no stopping you, it's just not advised. 
+It is strongly advised, to use relations for faceting, as Solr tends to think of textual relations in a different way.
+For example, a relation on `MyObject.TextField`, might come up with the following relations:
+
+#### Example
+
+Assuming your text field on the object, might contain "Content Name One" and "Content Name Two". Faceting would be
+done in such a way, that "Content", "Name" and "One" are three different facet results, despite you would
+like it to be "Content Name One".
 
 ## Accessing Solr
 
