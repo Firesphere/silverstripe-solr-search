@@ -8,6 +8,7 @@
  *
  * @param string $name
  * @return string mixed
+ * @package \
  */
 function getShortFieldName($name)
 {
