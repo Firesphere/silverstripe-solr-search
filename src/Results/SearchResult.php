@@ -44,21 +44,15 @@ class SearchResult extends ViewableData
     use SearchResultGetTrait;
     use SearchResultSetTrait;
     /**
-     * Query that has been executed
-     *
-     * @var BaseQuery
+     * @var BaseQuery Query that has been executed
      */
     protected $query;
     /**
-     * Index the query has run on
-     *
-     * @var BaseIndex
+     * @var BaseIndex Index the query has run on
      */
     protected $index;
     /**
-     * Resulting matches from the query on the index
-     *
-     * @var stdClass|ArrayList|DataList|DataObject
+     * @var stdClass|ArrayList|DataList|DataObject Resulting matches from the query on the index
      */
     protected $matches;
 

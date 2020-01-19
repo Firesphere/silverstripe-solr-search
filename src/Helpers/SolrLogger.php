@@ -32,9 +32,7 @@ use SilverStripe\ORM\ValidationException;
 class SolrLogger
 {
     /**
-     * Guzzle base client to communicate with Solr
-     *
-     * @var Client
+     * @var Client Guzzle base client to communicate with Solr
      */
     protected $client;
 

@@ -42,7 +42,6 @@ class SolrIndexJob extends AbstractQueuedJob
      * @var array
      */
     protected $classToIndex = [];
-
     /**
      * The indexes that need to run.
      *

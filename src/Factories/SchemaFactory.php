@@ -31,15 +31,11 @@ class SchemaFactory extends ViewableData
     use GetSetSchemaFactoryTrait;
 
     /**
-     * The field resolver to find a field for a class
-     *
-     * @var FieldResolver
+     * @var FieldResolver The field resolver to find a field for a class
      */
     protected $fieldResolver;
     /**
-     * CoreService to use
-     *
-     * @var SolrCoreService
+     * @var SolrCoreService CoreService to use
      */
     protected $coreService;
     /**

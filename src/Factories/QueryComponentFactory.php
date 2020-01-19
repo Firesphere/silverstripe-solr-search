@@ -43,9 +43,7 @@ class QueryComponentFactory
     ];
 
     /**
-     * Build methods to run
-     *
-     * @var array
+     * @var array Build methods to run
      */
     protected static $builds = [
         'Terms',
@@ -58,27 +56,19 @@ class QueryComponentFactory
         'Spellcheck',
     ];
     /**
-     * BaseQuery that needs to be executed
-     *
-     * @var BaseQuery
+     * @var BaseQuery BaseQuery that needs to be executed
      */
     protected $query;
     /**
-     * Helper to escape the query terms properly
-     *
-     * @var Helper
+     * @var Helper Helper to escape the query terms properly
      */
     protected $helper;
     /**
-     * Resulting querie parts as an array
-     *
-     * @var array
+     * @var array Resulting query parts as an array
      */
     protected $queryArray = [];
     /**
-     * Index to query
-     *
-     * @var BaseIndex
+     * @var BaseIndex Index to query
      */
     protected $index;
 

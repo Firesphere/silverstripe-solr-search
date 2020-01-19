@@ -28,9 +28,7 @@ use SilverStripe\Security\PermissionProvider;
 class SolrLog extends DataObject implements PermissionProvider
 {
     /**
-     * Used to give the Gridfield rows a corresponding colour
-     *
-     * @var array
+     * @var array Used to give the Gridfield rows a corresponding colour
      */
     protected static $row_color = [
         'ERROR' => 'alert alert-danger',

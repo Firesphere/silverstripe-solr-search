@@ -25,9 +25,7 @@ use SilverStripe\View\Requirements;
 class SearchAdmin extends ModelAdmin
 {
     /**
-     * Models managed by this admin
-     *
-     * @var array
+     * @var array Models managed by this admin
      */
     private static $managed_models = [
         SearchSynonym::class,
@@ -36,23 +34,17 @@ class SearchAdmin extends ModelAdmin
     ];
 
     /**
-     * Add a pretty magnifying glass to the sidebar menu
-     *
-     * @var string
+     * @var string Add a pretty magnifying glass to the sidebar menu
      */
     private static $menu_icon_class = 'font-icon-search';
 
     /**
-     * Where to find me
-     *
-     * @var string
+     * @var string Where to find me
      */
     private static $url_segment = 'searchadmin';
 
     /**
-     * My name
-     *
-     * @var string
+     * @var string My name
      */
     private static $menu_title = 'Search';
 

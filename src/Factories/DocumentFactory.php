@@ -42,9 +42,7 @@ class DocumentFactory
     use LoggerTrait;
 
     /**
-     * Numeral types in Solr
-     *
-     * @var array
+     * @var array Numeral types in Solr
      */
     protected static $numerals = [
         'tint',
@@ -52,9 +50,7 @@ class DocumentFactory
         'tdouble',
     ];
     /**
-     * Debug this build
-     *
-     * @var bool
+     * @var bool Debug this build
      */
     protected $debug = false;
 

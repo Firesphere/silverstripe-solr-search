@@ -75,25 +75,21 @@ abstract class BaseIndex
     /**
      * {@link SchemaFactory}
      *
-     * @var SchemaFactory
+     * @var SchemaFactory Schema factory for generating the schema
      */
     protected $schemaFactory;
     /**
      * {@link QueryComponentFactory}
      *
-     * @var QueryComponentFactory
+     * @var QueryComponentFactory Generator for all components
      */
     protected $queryFactory;
     /**
-     * The query terms as an array
-     *
-     * @var array
+     * @var array The query terms as an array
      */
     protected $queryTerms = [];
     /**
-     * Should a retry occur if nothing was found and there are suggestions to follow
-     *
-     * @var bool
+     * @var bool Signify if a retry should occur if nothing was found and there are suggestions to follow
      */
     private $retry = false;
 
