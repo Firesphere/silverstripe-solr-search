@@ -12,8 +12,6 @@ Bugfixes:
 
 ## 1.0 beta
 
-## Boxing day is a great day to share something cheap.
-
 During the beta period, the following issues have been resolved and needed features fixed. 
 During the Release Candidate period, no new features will be accepted in to the main branch, only bugfixes.
 
