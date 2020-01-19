@@ -26,57 +26,39 @@ class BaseQuery
     use BaseQueryTrait;
     use Injectable;
     /**
-     * Pagination start
-     *
-     * @var int
+     * @var int Pagination start
      */
     protected $start = 0;
     /**
-     * Total rows to display
-     *
-     * @var int
+     * @var int Total rows to display
      */
     protected $rows = 10;
     /**
-     * Always get the ID. If you don't, you need to implement your own solution
-     *
-     * @var array
+     * @var array Always get the ID. If you don't, you need to implement your own solution
      */
     protected $fields = [];
     /**
-     * Sorting
-     *
-     * @var array
+     * @var array Sorting settings
      */
     protected $sort = [];
     /**
-     * Enable spellchecking?
-     *
-     * @var bool
+     * @var bool Enable spellchecking?
      */
     protected $spellcheck = true;
     /**
-     * Follow spellchecking if there are no results
-     *
-     * @var bool
+     * @var bool Follow spellchecking if there are no results
      */
     protected $followSpellcheck = false;
     /**
-     * Minimum results a facet query has to have
-     *
-     * @var int
+     * @var int Minimum results a facet query has to have
      */
     protected $facetsMinCount = 0;
     /**
-     * Search terms
-     *
-     * @var array
+     * @var array Search terms
      */
     protected $terms = [];
     /**
-     * Highlighted items
-     *
-     * @var array
+     * @var array Highlighted items
      */
     protected $highlight = [];
 
