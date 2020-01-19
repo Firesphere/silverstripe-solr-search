@@ -9,6 +9,9 @@ Bugfixes:
 - Make types and schema more easily overridable
 - Prefix tables to prevent database clashes
 - Updated documentation further
+- Allow forcing to turn off debugging through config
+- Extracted logging
+- Added docblock for `_config.php`
 
 ## 1.0 beta
 
