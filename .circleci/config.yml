@@ -276,7 +276,7 @@ jobs:
       - run:
           name: PHP API Docs
           command: |
-            php phpdoc.phar -d "Compatibility/src","Core/src","Fluent/src","Subsites/src","Member-Permissions/src", "Core/_config.php" -t solr-api
+            php phpdoc.phar -d "Compatibility/src","Core/src","Fluent/src","Subsites/src","Member-Permissions/src","Core/_config.php" -t solr-api
       - run:
           name: Generate statistic docs
           command: |
