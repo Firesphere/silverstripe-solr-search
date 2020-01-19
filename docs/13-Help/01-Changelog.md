@@ -2,7 +2,13 @@
 
 ## 1.0 Release Candidate
 
-- No notable changes as not tagged yet. `beta 5` is the latest
+Bugfixes:
+- Fix case sensitivity
+- Fix Fluent submodule bugs
+- Fix Subsite submodule bugs
+- Make types and schema more easily overridable
+- Prefix tables to prevent database clashes
+- Updated documentation further
 
 ## 1.0 beta
 
