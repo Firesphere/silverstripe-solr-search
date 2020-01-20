@@ -3,41 +3,15 @@
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
 version: 2
-setup: &setup
-  - run: apt-get update;apt-get install wget default-jre apt-transport-https lsb-release netcat software-properties-common -y
-  # redundant, just to be sure
-  - run: cd /var/www/html
-  - checkout
-  - run:
-      name: Error log setup
-      command: |
-        echo ' ' > error.log
-        chmod 777 error.log
-  - run: echo '{}' > composer.lock
-  - restore_cache:
-      keys:
-        - silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
-        - silverstripe-search-cache-v4-
-  - run:
-      name: Composer requirements
-      command: |
-        composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
-        composer update --no-progress
-        composer vendor-expose
-  - save_cache:
-      key: silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
-      paths:
-        - vendor
-        - app
-        - public
-        - resources
-        - _resources
-  - run:
-      name: Setup Integration Pre-requisites
-      command: |
-        cp .circleci/.env.test ./.env
-        cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
-        cp .circleci/TestIndexTwo.yml app/_config/search.yml
+environment: &environment
+  - SS_DATABASE_SERVER=127.0.0.1
+  - SS_DATABASE_USERNAME=root
+  - SS_DATABASE_PASSWORD=ubuntu
+  - SS_DATABASE_NAME=circle_test
+  - SS_ENVIRONMENT_TYPE=test
+  - SS_DEFAULT_ADMIN_USERNAME=admin
+  - SS_DEFAULT_ADMIN_PASSWORD=password
+  - DEBUGBAR_DISABLE=true
 
 jobs:
   solr8:
@@ -45,15 +19,7 @@ jobs:
       CC_TEST_REPORTER_ID: 586f7041e9f71c44946cdfe8bce27d66c6271d173ec291c2a9aa7e1b56667873
     docker:
       - image: ssmarco/php-solr:latest
-        environment:
-          - SS_DATABASE_SERVER=127.0.0.1
-          - SS_DATABASE_USERNAME=root
-          - SS_DATABASE_PASSWORD=ubuntu
-          - SS_DATABASE_NAME=circle_test
-          - SS_ENVIRONMENT_TYPE=test
-          - SS_DEFAULT_ADMIN_USERNAME=admin
-          - SS_DEFAULT_ADMIN_PASSWORD=password
-          - DEBUGBAR_DISABLE=true
+        environment: *environment
       - image: circleci/mysql:5.7
         environment:
           - MYSQL_USER=root
@@ -64,7 +30,39 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      - run: *setup
+      # redundant, just to be sure
+      - run: cd /var/www/html
+      - checkout
+      - run:
+          name: Error log setup
+          command: |
+            echo ' ' > error.log
+            chmod 777 error.log
+      - run: echo '{}' > composer.lock
+      - restore_cache:
+          keys:
+            - silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
+            - silverstripe-search-cache-v8-
+      - run:
+          name: Composer requirements
+          command: |
+            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
+            composer update --no-progress
+            composer vendor-expose
+      - save_cache:
+          key: silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+            - app
+            - public
+            - resources
+            - _resources
+      - run:
+          name: Setup Integration Pre-requisites
+          command: |
+            cp .circleci/.env.test ./.env
+            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
+            cp .circleci/TestIndexTwo.yml app/_config/search.yml
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Permission changes
@@ -133,6 +131,14 @@ jobs:
     docker:
       - image: brettt89/silverstripe-web:7.1-platform
         environment:
+          - SS_DATABASE_SERVER=127.0.0.1
+          - SS_DATABASE_USERNAME=root
+          - SS_DATABASE_PASSWORD=ubuntu
+          - SS_DATABASE_NAME=circle_test
+          - SS_ENVIRONMENT_TYPE=test
+          - SS_DEFAULT_ADMIN_USERNAME=admin
+          - SS_DEFAULT_ADMIN_PASSWORD=password
+          - DEBUGBAR_DISABLE=true
       - image: circleci/mysql:5.7
         environment:
           - MYSQL_USER=root
@@ -143,7 +149,40 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      - run: *setup
+      - run: apt-get update;apt-get install wget default-jre apt-transport-https lsb-release netcat software-properties-common -y
+      # redundant, just to be sure
+      - run: cd /var/www/html
+      - checkout
+      - run:
+          name: Error log setup
+          command: |
+            echo ' ' > error.log
+            chmod 777 error.log
+      - run: echo '{}' > composer.lock
+      - restore_cache:
+          keys:
+            - silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
+            - silverstripe-search-cache-v4-
+      - run:
+          name: Composer requirements
+          command: |
+            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
+            composer update --no-progress
+            composer vendor-expose
+      - save_cache:
+          key: silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+            - app
+            - public
+            - resources
+            - _resources
+      - run:
+          name: Setup Integration Pre-requisites
+          command: |
+            cp .circleci/.env.test ./.env
+            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
+            cp .circleci/TestIndexTwo.yml app/_config/search.yml
       - run: git clone git@github.com:silverstripe-archive/silverstripe-fulltextsearch-localsolr.git localsolr
       - run:
           name: Start a solr4 instance
@@ -197,7 +236,7 @@ jobs:
             touch ~/.ssh/known_hosts
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - run:
-          name: Fetch repositories
+          name: Install repositories
           command: |
             git clone git@github.com:Firesphere/Firesphere.github.io.git . -q
             git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git Compatibility -q
