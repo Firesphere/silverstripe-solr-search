@@ -67,7 +67,7 @@ trait BaseQueryTrait
      * @param bool|float $fuzzy True or a value to the maximum amount of iterations
      * @return $this
      */
-    public function addTerm($term, $fields = [], $boost = 0, $fuzzy = null): self
+    public function addTerm(string $term, array $fields = [], int $boost = 0, $fuzzy = null): self
     {
         $this->terms[] = [
             'text'   => $term,
@@ -82,8 +82,8 @@ trait BaseQueryTrait
     /**
      * Adds filters to filter on by value
      *
-     * @param string $field
-     * @param string|array $value
+     * @param string $field Field to filter on
+     * @param string|array $value Value for this field
      * @return $this
      */
     public function addFilter($field, $value): self
@@ -126,8 +126,8 @@ trait BaseQueryTrait
     /**
      * Add faceting
      *
-     * @param string $field
-     * @param string|array $value
+     * @param string $field Field to facet
+     * @param string|array $value Value to facet
      * @return $this
      */
     public function addFacetFilter($field, $value): self
