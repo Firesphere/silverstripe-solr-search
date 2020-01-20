@@ -353,7 +353,7 @@ class SolrIndexTask extends BuildTask
                 if ($pid !== false) {
                     exit(0);
                 }
-                 throw new Exception($msg);
+                throw new Exception($msg);
             }
         }
     }
