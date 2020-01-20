@@ -40,8 +40,8 @@ composer: &composerRequirements
     composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
     composer update --no-progress
     composer vendor-expose
-
-
+db_build: &dev_build
+  vendor/bin/sake dev/build flush=all skipannotation=true
 jobs:
   solr8:
     environment:
@@ -72,7 +72,7 @@ jobs:
             - resources
             - _resources
       - run: *CircleCITestIndexReqs
-      - run: vendor/bin/sake dev/build flush=all skipannotation=true
+      - run: *dev_build
       - run:
           name: Permission changes
           command: |
@@ -165,10 +165,7 @@ jobs:
           command: |
             cd localsolr/server;java -jar start.jar
           background: true
-      - run:
-          name: PHP Unit tests
-          command: |
-            vendor/bin/sake dev/build flush=all skipannotation=true
+      - run: *dev_build
       - run:
           name: Run Solr Configure
           command: |
