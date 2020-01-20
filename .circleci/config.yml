@@ -12,6 +12,12 @@ environment: &environment
   - SS_DEFAULT_ADMIN_USERNAME=admin
   - SS_DEFAULT_ADMIN_PASSWORD=password
   - DEBUGBAR_DISABLE=true
+mysql: &mysql
+  - MYSQL_USER=root
+  - MYSQL_ROOT_PASSWORD=ubuntu
+  - MYSQL_DATABASE=circle_test
+  - MYSQL_HOST=127.0.0.1
+
 
 jobs:
   solr8:
@@ -21,11 +27,7 @@ jobs:
       - image: ssmarco/php-solr:latest
         environment: *environment
       - image: circleci/mysql:5.7
-        environment:
-          - MYSQL_USER=root
-          - MYSQL_ROOT_PASSWORD=ubuntu
-          - MYSQL_DATABASE=circle_test
-          - MYSQL_HOST=127.0.0.1
+        environment: *mysql
 
     working_directory: /var/www/html
 
@@ -130,21 +132,9 @@ jobs:
   solr4:
     docker:
       - image: brettt89/silverstripe-web:7.1-platform
-        environment:
-          - SS_DATABASE_SERVER=127.0.0.1
-          - SS_DATABASE_USERNAME=root
-          - SS_DATABASE_PASSWORD=ubuntu
-          - SS_DATABASE_NAME=circle_test
-          - SS_ENVIRONMENT_TYPE=test
-          - SS_DEFAULT_ADMIN_USERNAME=admin
-          - SS_DEFAULT_ADMIN_PASSWORD=password
-          - DEBUGBAR_DISABLE=true
+        environment: *environment
       - image: circleci/mysql:5.7
-        environment:
-          - MYSQL_USER=root
-          - MYSQL_ROOT_PASSWORD=ubuntu
-          - MYSQL_DATABASE=circle_test
-          - MYSQL_HOST=127.0.0.1
+        environment: *mysql
 
     working_directory: /var/www/html
 
