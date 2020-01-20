@@ -220,7 +220,7 @@ class SolrIndexTask extends BuildTask
                 if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
                     $group = $this->spawnChildren($class, $group, $groups);
-                // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
                 } else {
                     $this->doReindex($group, $class);
                 }
@@ -315,7 +315,6 @@ class SolrIndexTask extends BuildTask
      * @param int $start Start point for the objects
      * @return void
      * @throws GuzzleException
-     * @throws ValidationException
      */
     private function runForkedChild($class, array &$pids, int $start): void
     {
@@ -324,10 +323,12 @@ class SolrIndexTask extends BuildTask
         $pids[] = $pid;
         $config = DB::getConfig();
         DB::connect($config);
-        try {
-            $this->runChild($class, $pid, $start);
-        } catch (Exception $e) {
-            exit(0);
+        if ($pid === 0) {
+            try {
+                $this->runChild($class, $pid, $start);
+            } catch (Exception $e) {
+                exit(0);
+            }
         }
     }
 
@@ -344,18 +345,16 @@ class SolrIndexTask extends BuildTask
      */
     private function runChild($class, int $pid, int $start): void
     {
-        if ($pid === 0) {
-            try {
-                $this->doReindex($start, $class, $pid);
-            } catch (Exception $error) {
-                SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
-                $msg = sprintf(
-                    'Something went wrong while indexing %s on %s, see the logs for details',
-                    $start,
-                    $this->index->getIndexName()
-                );
-                throw new Exception($msg);
-            }
+        try {
+            $this->doReindex($start, $class, $pid);
+        } catch (Exception $error) {
+            SolrLogger::logMessage('ERROR', $error->getMessage(), $this->index->getIndexName());
+            $msg = sprintf(
+                'Something went wrong while indexing %s on %s, see the logs for details',
+                $start,
+                $this->index->getIndexName()
+            );
+            throw new Exception($msg);
         }
     }
 
