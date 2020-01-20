@@ -402,9 +402,7 @@ class SolrIndexTask extends BuildTask
         $items = DataObject::get($baseClass)
             ->sort('ID ASC')
             ->limit($this->getBatchLength(), ($group * $this->getBatchLength()));
-        if ($items->count()) {
-            $this->updateIndex($items);
-        }
+        $this->updateIndex($items);
     }
 
     /**
