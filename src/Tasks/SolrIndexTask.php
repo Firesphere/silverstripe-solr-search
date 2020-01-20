@@ -344,9 +344,6 @@ class SolrIndexTask extends BuildTask
             try {
                 $this->doReindex($start, $class, $pid);
             } catch (Exception $error) {
-                if ($pid !== false) {
-                    exit(0);
-                }
                 SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
                 $msg = sprintf(
                     'Something went wrong while indexing %s on %s, see the logs for details',
@@ -373,7 +370,7 @@ class SolrIndexTask extends BuildTask
             if ($state !== 'default' && !empty($state)) {
                 SiteState::withState($state);
             }
-            $this->indexItems($group, $class);
+            $this->stateReindex($group, $class);
         }
 
         SiteState::withState(SiteState::DEFAULT_STATE);
@@ -394,16 +391,17 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @throws Exception
      */
-    private function indexItems($group, $class): void
+    private function stateReindex($group, $class): void
     {
         // Generate filtered list of local records
-        // @todo is the baseDataClass search needed
         $baseClass = DataObject::getSchema()->baseDataClass($class);
         /** @var DataList|DataObject[] $items */
         $items = DataObject::get($baseClass)
             ->sort('ID ASC')
             ->limit($this->getBatchLength(), ($group * $this->getBatchLength()));
-        $this->updateIndex($items);
+        if ($items->count()) {
+            $this->updateIndex($items);
+        }
     }
 
     /**
