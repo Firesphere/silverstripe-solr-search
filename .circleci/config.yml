@@ -38,6 +38,7 @@ setup: &setup
         cp .circleci/.env.test ./.env
         cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
         cp .circleci/TestIndexTwo.yml app/_config/search.yml
+
 jobs:
   solr8:
     environment:
@@ -63,7 +64,7 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      - *setup
+      - run: *setup
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Permission changes
@@ -132,14 +133,6 @@ jobs:
     docker:
       - image: brettt89/silverstripe-web:7.1-platform
         environment:
-          - SS_DATABASE_SERVER=127.0.0.1
-          - SS_DATABASE_USERNAME=root
-          - SS_DATABASE_PASSWORD=ubuntu
-          - SS_DATABASE_NAME=circle_test
-          - SS_ENVIRONMENT_TYPE=test
-          - SS_DEFAULT_ADMIN_USERNAME=admin
-          - SS_DEFAULT_ADMIN_PASSWORD=password
-          - DEBUGBAR_DISABLE=true
       - image: circleci/mysql:5.7
         environment:
           - MYSQL_USER=root
@@ -150,7 +143,7 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      - *setup
+      - run: *setup
       - run: git clone git@github.com:silverstripe-archive/silverstripe-fulltextsearch-localsolr.git localsolr
       - run:
           name: Start a solr4 instance
