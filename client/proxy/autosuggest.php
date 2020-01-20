@@ -5,7 +5,7 @@
  *
  * It is required to update the request values to your own Solr location and core, before using this example.
  *
- * @package \
+ * @package Default
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */

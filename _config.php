@@ -11,7 +11,7 @@
  *
  * @param string $name Name to be shortened
  * @return string Short name
- * @package \
+ * @package Default
  */
 function getShortFieldName($name)
 {
