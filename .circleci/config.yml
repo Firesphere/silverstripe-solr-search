@@ -41,10 +41,7 @@ composer: &composerRequirements
     composer update --no-progress
     composer vendor-expose
 db_build: &dev_build
-  name: Build the database
-  command: |
-    vendor/bin/sake dev/build flush=all skipannotation=true
-
+  vendor/bin/sake dev/build flush=all skipannotation=true
 jobs:
   solr8:
     environment:
