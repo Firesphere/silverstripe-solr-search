@@ -22,20 +22,24 @@ errorlog: &errorlog
   command: |
     echo ' ' > error.log
     chmod 777 error.log
-create_index: &CircleCITestIndexReqs
+create_index_requirements: &CircleCITestIndexReqs
   name: Setup Integration Pre-requisites
   command: |
     cp .circleci/.env.test ./.env
     cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
     cp .circleci/TestIndexTwo.yml app/_config/search.yml
-configure_solr: &SolrConfigure
-  name: Run Solr Configure
+core_check: &CheckSolrCore
+  name: Check Solr Core - CircleCITestIndex is successfully created
   command: |
-    service apache2 restart
-    service solr restart
-    mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
-    chown -R solr:solr /var/www/html/.solr
-    su solr vendor/bin/sake dev/tasks/SolrConfigureTask
+    RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
+    if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
+    echo "CircleCITestIndex is successfully created"
+composer: &composerRequirements
+  name: Composer requirements
+  command: |
+    composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
+    composer update --no-progress
+    composer vendor-expose
 
 
 jobs:
@@ -58,12 +62,7 @@ jobs:
           keys:
             - silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
             - silverstripe-search-cache-v8-
-      - run:
-          name: Composer requirements
-          command: |
-            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
-            composer update --no-progress
-            composer vendor-expose
+      - run: *composerRequirements
       - save_cache:
           key: silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
           paths:
@@ -83,13 +82,15 @@ jobs:
             groups www-data
             chown -R solr:www-data /var/www/html
             chmod -R u+rwxs,g+rwxs /var/www/html
-      - run: *SolrConfigure
       - run:
-          name: Check Solr Core - CircleCITestIndex is successfully created
+          name: Run Solr Configure
           command: |
-            RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
-            if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
-            echo "CircleCITestIndex is successfully created"
+            service apache2 restart
+            service solr restart
+            mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
+            chown -R solr:solr /var/www/html/.solr
+            su solr vendor/bin/sake dev/tasks/SolrConfigureTask
+      - run: *CheckSolrCore
       - run: su solr vendor/bin/sake dev/tasks/SolrIndexTask unittest=true
       - run:
           name: Check Solr has successfully indexed the default 3 pages
@@ -148,12 +149,7 @@ jobs:
           keys:
             - silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
             - silverstripe-search-cache-v4-
-      - run:
-          name: Composer requirements
-          command: |
-            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
-            composer update --no-progress
-            composer vendor-expose
+      - run: *composerRequirements
       - save_cache:
           key: silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
           paths:
@@ -170,16 +166,16 @@ jobs:
             cd localsolr/server;java -jar start.jar
           background: true
       - run:
-          name: PHP Unit tests
+          name: Build the database
           command: |
             vendor/bin/sake dev/build flush=all skipannotation=true
-      - run: *SolrConfigure
       - run:
-          name: Check Solr Core - CircleCITestIndex is successfully created
+          name: Run Solr Configure
           command: |
-            RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping?wt=json | head -n1 ) | grep -o '200 OK')
-            if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
-            echo "CircleCITestIndex is successfully created"
+            service apache2 restart
+            mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
+            vendor/bin/sake dev/tasks/SolrConfigureTask
+      - run: *CheckSolrCore
       - run: vendor/bin/sake dev/tasks/SolrIndexTask unittest=true
       - run:
           name: Run tests
