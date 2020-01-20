@@ -217,14 +217,7 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest
             try {
-                if ($this->hasPCNTL()) {
-                    // @codeCoverageIgnoreStart
-                    $group = $this->spawnChildren($class, $group, $groups);
-                    // @codeCoverageIgnoreEnd
-                } else {
-                    $this->doReindex($group, $class);
-                }
-                $group++;
+                $group = $this->triggerIndexing($class, $group, $groups);
             } catch (Exception $error) {
                 // @codeCoverageIgnoreStart
                 $this->logException($this->index->getIndexName(), $group, $error);
@@ -442,5 +435,29 @@ class SolrIndexTask extends BuildTask
             $group
         );
         SolrLogger::logMessage('ERROR', $msg, $index);
+    }
+
+    /**
+     * Do a reindex, as a child or not
+     *
+     * @param string $class Class to index
+     * @param int $group Group to index
+     * @param int $groups Total amount of groups
+     * @return int
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    private function triggerIndexing($class, int $group, $groups): int
+    {
+        if ($this->hasPCNTL()) {
+            // @codeCoverageIgnoreStart
+            $group = $this->spawnChildren($class, $group, $groups);
+            // @codeCoverageIgnoreEnd
+        } else {
+            $this->doReindex($group, $class);
+        }
+        $group++;
+
+        return $group;
     }
 }
