@@ -217,7 +217,7 @@ class SolrIndexTask extends BuildTask
         $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
         do { // Run from oldest to newest
             try {
-                if ($this->usePCNTL()) {
+                if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
                     $group = $this->spawnChildren($class, $group, $groups);
                 // @codeCoverageIgnoreEnd
@@ -239,7 +239,6 @@ class SolrIndexTask extends BuildTask
 
     /**
      * Check the amount of groups and the total against the isGroup check.
-     * @todo clean up this method, it shouldn't be needed
      *
      * @param bool $isGroup Is it a specific group
      * @param string $class Class to check
@@ -256,10 +255,12 @@ class SolrIndexTask extends BuildTask
 
     /**
      * Check if PCNTL is available and/or useable.
+     * The unittest param is from phpunit.xml.dist, meant to bypass the exit(0) call
+     * The pcntl parameter check is for unit tests, but PHPUnit does not support PCNTL (yet)
      *
      * @return bool
      */
-    private function usePCNTL()
+    private function hasPCNTL()
     {
         return Director::is_cli() &&
             function_exists('pcntl_fork') &&
@@ -331,19 +332,18 @@ class SolrIndexTask extends BuildTask
      *
      * @codeCoverageIgnore Can't be tested because PCNTL is not available
      * @param string $class Class to index
-     * @param int|bool $pid PID of the child
+     * @param int $pid PID of the child
      * @param int $start Position to start
      * @throws GuzzleException
      * @throws ValidationException
      * @throws Exception
      */
-    private function runChild($class, $pid, int $start): void
+    private function runChild($class, int $pid, int $start): void
     {
         if ($pid === 0) {
             try {
                 $this->doReindex($start, $class, $pid);
             } catch (Exception $error) {
-                // If we're a child, we need to exit the child
                 if ($pid !== false) {
                     exit(0);
                 }
