@@ -350,7 +350,10 @@ class SolrIndexTask extends BuildTask
                     $start,
                     $this->index->getIndexName()
                 );
-                throw new Exception($msg);
+                if ($pid !== false) {
+                    exit(0);
+                }
+                 throw new Exception($msg);
             }
         }
     }
@@ -370,7 +373,7 @@ class SolrIndexTask extends BuildTask
             if ($state !== 'default' && !empty($state)) {
                 SiteState::withState($state);
             }
-            $this->stateReindex($group, $class);
+            $this->indexStateClass($group, $class);
         }
 
         SiteState::withState(SiteState::DEFAULT_STATE);
@@ -391,7 +394,7 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @throws Exception
      */
-    private function stateReindex($group, $class): void
+    private function indexStateClass($group, $class): void
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);
