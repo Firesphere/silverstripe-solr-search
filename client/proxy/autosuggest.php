@@ -1,4 +1,12 @@
 <?php
+/**
+ * Example autosuggest code.
+ * This code serves as an example on how to enable suggested queries.
+ *
+ * @package \
+ * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
+ * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
+ */
 
 use GuzzleHttp\Client;
 
