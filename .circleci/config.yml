@@ -17,6 +17,25 @@ mysql: &mysql
   - MYSQL_ROOT_PASSWORD=ubuntu
   - MYSQL_DATABASE=circle_test
   - MYSQL_HOST=127.0.0.1
+errorlog: &errorlog
+  name: Error log setup
+  command: |
+    echo ' ' > error.log
+    chmod 777 error.log
+create_index: &CircleCITestIndexReqs
+  name: Setup Integration Pre-requisites
+  command: |
+    cp .circleci/.env.test ./.env
+    cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
+    cp .circleci/TestIndexTwo.yml app/_config/search.yml
+configure_solr: &SolrConfigure
+  name: Run Solr Configure
+  command: |
+    service apache2 restart
+    service solr restart
+    mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
+    chown -R solr:solr /var/www/html/.solr
+    su solr vendor/bin/sake dev/tasks/SolrConfigureTask
 
 
 jobs:
@@ -32,14 +51,8 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      # redundant, just to be sure
-      - run: cd /var/www/html
       - checkout
-      - run:
-          name: Error log setup
-          command: |
-            echo ' ' > error.log
-            chmod 777 error.log
+      - run: *errorlog
       - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
@@ -59,12 +72,7 @@ jobs:
             - public
             - resources
             - _resources
-      - run:
-          name: Setup Integration Pre-requisites
-          command: |
-            cp .circleci/.env.test ./.env
-            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
-            cp .circleci/TestIndexTwo.yml app/_config/search.yml
+      - run: *CircleCITestIndexReqs
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Permission changes
@@ -75,14 +83,7 @@ jobs:
             groups www-data
             chown -R solr:www-data /var/www/html
             chmod -R u+rwxs,g+rwxs /var/www/html
-      - run:
-          name: Run Solr Configure
-          command: |
-            service apache2 restart
-            service solr restart
-            mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
-            chown -R solr:solr /var/www/html/.solr
-            su solr vendor/bin/sake dev/tasks/SolrConfigureTask
+      - run: *SolrConfigure
       - run:
           name: Check Solr Core - CircleCITestIndex is successfully created
           command: |
@@ -140,14 +141,8 @@ jobs:
 
     steps:
       - run: apt-get update;apt-get install wget default-jre apt-transport-https lsb-release netcat software-properties-common -y
-      # redundant, just to be sure
-      - run: cd /var/www/html
       - checkout
-      - run:
-          name: Error log setup
-          command: |
-            echo ' ' > error.log
-            chmod 777 error.log
+      - run: *errorlog
       - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
@@ -167,12 +162,7 @@ jobs:
             - public
             - resources
             - _resources
-      - run:
-          name: Setup Integration Pre-requisites
-          command: |
-            cp .circleci/.env.test ./.env
-            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
-            cp .circleci/TestIndexTwo.yml app/_config/search.yml
+      - run: *CircleCITestIndexReqs
       - run: git clone git@github.com:silverstripe-archive/silverstripe-fulltextsearch-localsolr.git localsolr
       - run:
           name: Start a solr4 instance
@@ -183,12 +173,7 @@ jobs:
           name: PHP Unit tests
           command: |
             vendor/bin/sake dev/build flush=all skipannotation=true
-      - run:
-          name: Run Solr Configure
-          command: |
-            service apache2 restart
-            mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
-            vendor/bin/sake dev/tasks/SolrConfigureTask
+      - run: *SolrConfigure
       - run:
           name: Check Solr Core - CircleCITestIndex is successfully created
           command: |
