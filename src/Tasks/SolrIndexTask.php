@@ -324,7 +324,11 @@ class SolrIndexTask extends BuildTask
         $pids[] = $pid;
         $config = DB::getConfig();
         DB::connect($config);
-        $this->runChild($class, $pid, $start);
+        try {
+            $this->runChild($class, $pid, $start);
+        } catch (Exception $e) {
+            exit(0);
+        }
     }
 
     /**
@@ -350,9 +354,6 @@ class SolrIndexTask extends BuildTask
                     $start,
                     $this->index->getIndexName()
                 );
-                if ($pid !== false) {
-                    exit(0);
-                }
                 throw new Exception($msg);
             }
         }
