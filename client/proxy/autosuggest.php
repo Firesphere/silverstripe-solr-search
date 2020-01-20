@@ -1,13 +1,14 @@
 <?php
 /**
- * Example autosuggest code.
- * This code serves as an example on how to enable suggested queries.
+ * Example autosuggest code. This code serves as an example on how to enable suggested queries.
+ * There is no guarantee it will actually fully work.
+ *
+ * It is required to update the request values to your own Solr location and core, before using this example.
  *
  * @package \
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
-
 use GuzzleHttp\Client;
 
 if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php')) {
