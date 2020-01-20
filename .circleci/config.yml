@@ -40,6 +40,15 @@ composer: &composerRequirements
     composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
     composer update --no-progress
     composer vendor-expose
+db_build: &dev_build
+  name: Build the database
+  command: |
+    vendor/bin/sake dev/build flush=all skipannotation=true
+tests: &tests
+  name: Run tests
+  command: |
+    set +e
+    vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
 
 
 jobs:
@@ -72,7 +81,7 @@ jobs:
             - resources
             - _resources
       - run: *CircleCITestIndexReqs
-      - run: vendor/bin/sake dev/build flush=all skipannotation=true
+      - run: *dev_build
       - run:
           name: Permission changes
           command: |
@@ -106,11 +115,7 @@ jobs:
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
             wget https://scrutinizer-ci.com/ocular.phar
-      - run:
-          name: Run tests
-          command: |
-            set +e
-            su solr -s $SHELL -c 'vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit'
+      - run: *tests
       - run:
           name: Code coverage reports
           command: |
@@ -165,10 +170,7 @@ jobs:
           command: |
             cd localsolr/server;java -jar start.jar
           background: true
-      - run:
-          name: Build the database
-          command: |
-            vendor/bin/sake dev/build flush=all skipannotation=true
+      - run: *dev_build
       - run:
           name: Run Solr Configure
           command: |
@@ -177,11 +179,7 @@ jobs:
             vendor/bin/sake dev/tasks/SolrConfigureTask
       - run: *CheckSolrCore
       - run: vendor/bin/sake dev/tasks/SolrIndexTask unittest=true
-      - run:
-          name: Run tests
-          command: |
-            set +e
-            vendor/bin/phpunit --coverage-clover=clover.xml --log-junit ./coverage/junit.xml -d memory_limit=512M tests/unit
+      - run: *tests
       - store_test_results:
           path: /var/www/html/coverage
       - store_artifacts:
