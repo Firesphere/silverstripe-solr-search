@@ -3,6 +3,41 @@
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
 version: 2
+setup: &setup
+  - run: apt-get update;apt-get install wget default-jre apt-transport-https lsb-release netcat software-properties-common -y
+  # redundant, just to be sure
+  - run: cd /var/www/html
+  - checkout
+  - run:
+      name: Error log setup
+      command: |
+        echo ' ' > error.log
+        chmod 777 error.log
+  - run: echo '{}' > composer.lock
+  - restore_cache:
+      keys:
+        - silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
+        - silverstripe-search-cache-v4-
+  - run:
+      name: Composer requirements
+      command: |
+        composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
+        composer update --no-progress
+        composer vendor-expose
+  - save_cache:
+      key: silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
+      paths:
+        - vendor
+        - app
+        - public
+        - resources
+        - _resources
+  - run:
+      name: Setup Integration Pre-requisites
+      command: |
+        cp .circleci/.env.test ./.env
+        cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
+        cp .circleci/TestIndexTwo.yml app/_config/search.yml
 jobs:
   solr8:
     environment:
@@ -28,39 +63,7 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      # redundant, just to be sure
-      - run: cd /var/www/html
-      - checkout
-      - run:
-          name: Error log setup
-          command: |
-            echo ' ' > error.log
-            chmod 777 error.log
-      - run: echo '{}' > composer.lock
-      - restore_cache:
-          keys:
-            - silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
-            - silverstripe-search-cache-v8-
-      - run:
-          name: Composer requirements
-          command: |
-            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
-            composer update --no-progress
-            composer vendor-expose
-      - save_cache:
-          key: silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
-          paths:
-            - vendor
-            - app
-            - public
-            - resources
-            - _resources
-      - run:
-          name: Setup Integration Pre-requisites
-          command: |
-            cp .circleci/.env.test ./.env
-            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
-            cp .circleci/TestIndexTwo.yml app/_config/search.yml
+      - *setup
       - run: vendor/bin/sake dev/build flush=all skipannotation=true
       - run:
           name: Permission changes
@@ -147,40 +150,7 @@ jobs:
     working_directory: /var/www/html
 
     steps:
-      - run: apt-get update;apt-get install wget default-jre apt-transport-https lsb-release netcat software-properties-common -y
-      # redundant, just to be sure
-      - run: cd /var/www/html
-      - checkout
-      - run:
-          name: Error log setup
-          command: |
-            echo ' ' > error.log
-            chmod 777 error.log
-      - run: echo '{}' > composer.lock
-      - restore_cache:
-          keys:
-            - silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
-            - silverstripe-search-cache-v4-
-      - run:
-          name: Composer requirements
-          command: |
-            composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
-            composer update --no-progress
-            composer vendor-expose
-      - save_cache:
-          key: silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
-          paths:
-            - vendor
-            - app
-            - public
-            - resources
-            - _resources
-      - run:
-          name: Setup Integration Pre-requisites
-          command: |
-            cp .circleci/.env.test ./.env
-            cp .circleci/CircleCITestIndex.phpsrc app/src/CircleCITestIndex.php
-            cp .circleci/TestIndexTwo.yml app/_config/search.yml
+      - *setup
       - run: git clone git@github.com:silverstripe-archive/silverstripe-fulltextsearch-localsolr.git localsolr
       - run:
           name: Start a solr4 instance
@@ -234,7 +204,7 @@ jobs:
             touch ~/.ssh/known_hosts
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - run:
-          name: Install repositories
+          name: Fetch repositories
           command: |
             git clone git@github.com:Firesphere/Firesphere.github.io.git . -q
             git clone git@github.com:Firesphere/silverstripe-solr-compatibility.git Compatibility -q
