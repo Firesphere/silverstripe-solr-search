@@ -72,6 +72,19 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Reindex this owner object in Solr
+     * This is a simple stub for the push method, for semantic reasons
+     *
+     * @throws GuzzleException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function doReindex()
+    {
+        $this->pushToSolr($this->owner);
+    }
+
+    /**
      * Should this write be pushed to Solr
      * @return bool
      */
@@ -96,7 +109,7 @@ class DataObjectExtension extends DataExtension
             return;
         }
         /** @var DataObject $owner */
-        $record = $this->getDirtyClass($owner, SolrCoreService::UPDATE_TYPE);
+        $record = $this->getDirtyClass(SolrCoreService::UPDATE_TYPE);
 
         $ids = json_decode($record->IDs, 1) ?: [];
         $mode = Versioned::get_reading_mode();
@@ -124,19 +137,18 @@ class DataObjectExtension extends DataExtension
     /**
      * Find or create a new DirtyClass for recording dirty IDs
      *
-     * @param DataObject $owner
      * @param string $type
      * @return DirtyClass
      * @throws ValidationException
      */
-    protected function getDirtyClass(DataObject $owner, $type)
+    protected function getDirtyClass($type)
     {
         // Get the DirtyClass object for this item
         /** @var null|DirtyClass $record */
-        $record = DirtyClass::get()->filter(['Class' => $owner->ClassName, 'Type' => $type])->first();
+        $record = DirtyClass::get()->filter(['Class' => $this->owner->ClassName, 'Type' => $type])->first();
         if (!$record || !$record->exists()) {
             $record = DirtyClass::create([
-                'Class' => $owner->ClassName,
+                'Class' => $this->owner->ClassName,
                 'Type'  => $type,
             ]);
             $record->write();
