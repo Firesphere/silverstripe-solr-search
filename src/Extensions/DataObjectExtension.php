@@ -233,7 +233,7 @@ class DataObjectExtension extends DataExtension
         /** @var DataObject $owner */
         $owner = $this->owner;
         /** @var DirtyClass $record */
-        $record = $this->getDirtyClass($owner, SolrCoreService::DELETE_TYPE);
+        $record = $this->getDirtyClass(SolrCoreService::DELETE_TYPE);
 
         $ids = json_decode($record->IDs, 1) ?: [];
 
