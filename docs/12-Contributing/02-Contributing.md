@@ -77,7 +77,7 @@ Here's a handy checklist for making sure your PR will be accepted as quickly as 
  - [ ] Do you have a use case and, ideally, an example program using the feature?
  - [ ] Do you have tests covering 90%+ of the feature code (and, of course passing)
  - [ ] Have you written complete and accurate doc comments?
- - [ ] Have you updated the README and its table of contents?
+ - [ ] Have you updated the README and the documentation?
  - [ ] You rock. Thanks a lot.
 
 # After submitting your PR
