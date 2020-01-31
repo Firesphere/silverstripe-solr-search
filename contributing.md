@@ -94,7 +94,7 @@ If so, fix them! But if you can foresee a question from a code reviewer, comment
 
 If you've completed all these steps, we _will_ invest significant time and energy in giving your PR a detailed code review. 
 This is a powerful and beneficial process which can not only improve the code, but can also help you learn to be a better 
-engineer and a better Go programmer—and the same goes for us!
+software engineer—and the same goes for us!
 
 ## Expect to be taken seriously
 
