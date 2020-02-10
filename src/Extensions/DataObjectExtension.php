@@ -90,6 +90,9 @@ class DataObjectExtension extends DataExtension
      */
     protected function shouldPush()
     {
+        if (!Controller::has_curr()) {
+            return false;
+        }
         return !(Controller::curr()->getRequest()->getURL() &&
             strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false);
     }
