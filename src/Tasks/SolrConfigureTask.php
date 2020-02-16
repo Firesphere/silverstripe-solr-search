@@ -18,6 +18,8 @@ use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
@@ -71,9 +73,13 @@ class SolrConfigureTask extends BuildTask
      * @throws ReflectionException
      * @throws ValidationException
      * @throws GuzzleException
+     * @throws InvalidArgumentException
      */
     public function run($request)
     {
+        /** @var CacheInterface $cache */
+        $cache = Injector::inst()->get(CacheInterface::class . '.SolrCache');
+        $cache->delete('ValidClasses');
         $this->extend('onBeforeSolrConfigureTask', $request);
 
         $indexes = (new SolrCoreService())->getValidIndexes();
@@ -105,8 +111,6 @@ class SolrConfigureTask extends BuildTask
      * Update the index on the given store
      *
      * @param string $index Core to index
-     * @throws ValidationException
-     * @throws GuzzleException
      */
     protected function configureIndex($index): void
     {

@@ -17,6 +17,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tests\DataObjectExtensionTest;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
@@ -48,10 +49,6 @@ class DataObjectExtension extends DataExtension
      * @var SiteConfig Current siteconfig
      */
     protected static $siteConfig;
-    /**
-     * @var ArrayList|Member[] List of all the members in the system
-     */
-    protected static $memberList;
 
     /**
      * Push the item to solr if it is not versioned
@@ -60,6 +57,7 @@ class DataObjectExtension extends DataExtension
      * @throws ValidationException
      * @throws GuzzleException
      * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function onAfterWrite()
     {
@@ -74,10 +72,13 @@ class DataObjectExtension extends DataExtension
     /**
      * Reindex this owner object in Solr
      * This is a simple stub for the push method, for semantic reasons
+     * It should never be called on Objects that are not a valid class for any Index
+     * It does not check if the class is valid to be pushed to Solr
      *
      * @throws GuzzleException
      * @throws ReflectionException
      * @throws ValidationException
+     * @throws InvalidArgumentException
      */
     public function doReindex()
     {
@@ -93,8 +94,10 @@ class DataObjectExtension extends DataExtension
         if (!Controller::has_curr()) {
             return false;
         }
-        return !(Controller::curr()->getRequest()->getURL() &&
-            strpos('dev/build', Controller::curr()->getRequest()->getURL()) !== false);
+        $request = Controller::curr()->getRequest();
+
+        return (!($request->getURL() &&
+            strpos('dev/build', $request->getURL()) !== false));
     }
 
     /**
@@ -104,6 +107,7 @@ class DataObjectExtension extends DataExtension
      * @throws ValidationException
      * @throws GuzzleException
      * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     protected function pushToSolr(DataObject $owner)
     {
@@ -111,6 +115,7 @@ class DataObjectExtension extends DataExtension
         if (!$service->isValidClass($owner->ClassName)) {
             return;
         }
+
         /** @var DataObject $owner */
         $record = $this->getDirtyClass(SolrCoreService::UPDATE_TYPE);
 
@@ -215,6 +220,7 @@ class DataObjectExtension extends DataExtension
      * @throws ValidationException
      * @throws GuzzleException
      * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function onAfterPublish()
     {
