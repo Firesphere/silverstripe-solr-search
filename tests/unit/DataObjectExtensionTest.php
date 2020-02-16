@@ -11,8 +11,10 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Page;
 use Psr\Log\NullLogger;
+use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\NullHTTPRequest;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
@@ -126,8 +128,10 @@ class DataObjectExtensionTest extends SapphireTest
     {
         $url = Controller::curr()->getRequest()->getURL();
         Controller::curr()->getRequest()->setUrl('dev/build');
-        $this->assertNull((new DataObjectExtension())->onAfterWrite());
-        $this->assertNull((new DataObjectExtension())->onAfterPublish());
+        $extension = new DataObjectExtension();
+        $extension->setOwner(new DataObject());
+        $this->assertNull($extension->onAfterWrite());
+        $this->assertNull($extension->onAfterPublish());
         Controller::curr()->getRequest()->setUrl($url);
     }
 
@@ -157,6 +161,9 @@ class DataObjectExtensionTest extends SapphireTest
 
     protected function setUp()
     {
+        /** @var CacheInterface $cache */
+        $cache = Injector::inst()->get(CacheInterface::class . '.SolrCache');
+        $cache->delete('ValidClasses');
         $task = new SolrConfigureTask();
         $task->setLogger(new NullLogger());
         $task->run(new NullHTTPRequest());

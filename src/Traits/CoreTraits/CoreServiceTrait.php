@@ -11,7 +11,10 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Firesphere\SolrSearch\Helpers\FieldResolver;
+use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
+use SilverStripe\Core\Injector\Injector;
 use Solarium\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 
@@ -69,6 +72,7 @@ trait CoreServiceTrait
      * @param string $class
      * @return bool
      * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function isValidClass($class): bool
     {
@@ -85,14 +89,24 @@ trait CoreServiceTrait
      *
      * @return array
      * @throws ReflectionException
+     * @throws InvalidArgumentException
      */
     public function getValidClasses(): array
     {
+        /** @var CacheInterface $cache */
+        $cache = Injector::inst()->get(CacheInterface::class . '.SolrCache');
+
+        if ($cache->has('ValidClasses')) {
+            return $cache->get('ValidClasses');
+        }
+
         $indexes = $this->getValidIndexes();
         $classes = [];
         foreach ($indexes as $index) {
             $classes = $this->getClassesInHierarchy($index, $classes);
         }
+
+        $cache->set('ValidClasses', array_unique($classes));
 
         return array_unique($classes);
     }

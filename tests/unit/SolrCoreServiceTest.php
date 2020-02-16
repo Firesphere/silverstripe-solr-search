@@ -13,6 +13,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Page;
+use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Model\RedirectorPage;
 use SilverStripe\CMS\Model\SiteTree;
@@ -175,6 +176,11 @@ class SolrCoreServiceTest extends SapphireTest
             VirtualPage::class,
         ];
         $this->assertEquals($expected, $this->service->getValidClasses());
+
+        /** @var CacheInterface $cache */
+        $cache = Injector::inst()->get(CacheInterface::class . '.SolrCache');
+        $this->assertEquals($expected, $cache->get('ValidClasses'));
+
     }
 
     public function testGetSetAdmin()
