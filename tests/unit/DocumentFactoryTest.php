@@ -216,4 +216,41 @@ class DocumentFactoryTest extends SapphireTest
         $this->assertFalse($factory->isDebug());
         $this->assertTrue($factory->setDebug(true)->isDebug());
     }
+
+    public function testUnsetValues()
+    {
+        $page = Page::create(['Title' => 'A Test Page', 'Content' => 'Some Test Content']);
+        $page->write();
+
+        $factory = new DocumentFactory();
+        $index = new TestIndex();
+        $fields = $index->getFieldsForIndexing();
+        $client = new Client([]);
+        $update = $client->createUpdate();
+        $factory->setClass(SiteTree::class);
+        $factory->setItems(Page::get()->filter(['ID' => $page->ID]));
+        $docs = $factory->buildItems($fields, $index, $update);
+
+        // Check the text content is being indexed
+        $this->assertCount(1, $docs);
+        /** @var Document $doc */
+        $doc = $docs[0];
+        $fields = $doc->getFields();
+        $this->assertArrayHasKey('SiteTree_Content', $fields);
+        $this->assertEquals('Some Test Content', $fields['SiteTree_Content']);
+
+        // Remove the content
+        $page->Content = null;
+        $page->write();
+
+        // Check the content is going to be removed from the index
+        $fields = $index->getFieldsForIndexing();
+        $docs = $factory->buildItems($fields, $index, $update);
+        $this->assertCount(1, $docs);
+        /** @var Document $doc */
+        $doc = $docs[0];
+        $fields = $doc->getFields();
+        $this->assertArrayHasKey('SiteTree_Content', $fields);
+        $this->assertNull($fields['SiteTree_Content']);
+    }
 }
