@@ -174,9 +174,6 @@ class DocumentFactory
         $type = $typeMap[$options['type']] ?? $typeMap['*'];
 
         foreach ($valuesForField as $value) {
-            if ($value === null) {
-                continue;
-            }
             $this->extend('onBeforeAddDoc', $options, $value);
             $this->addToDoc($doc, $options, $type, $value);
         }
@@ -242,12 +239,12 @@ class DocumentFactory
      * @param Document $doc Solr document
      * @param array $options Custom options
      * @param string $type Type of Solr field
-     * @param DBField|string $value Value(s) of the field
+     * @param DBField|string|null $value Value(s) of the field
      */
     protected function addToDoc($doc, $options, $type, $value): void
     {
         /* Solr requires dates in the form 1995-12-31T23:59:59Z, so we need to normalize to GMT */
-        if ($type === 'tdate' || $value instanceof DBDate) {
+        if (($value && $type === 'tdate') || $value instanceof DBDate) {
             $value = gmdate('Y-m-d\TH:i:s\Z', strtotime($value));
         }
 
