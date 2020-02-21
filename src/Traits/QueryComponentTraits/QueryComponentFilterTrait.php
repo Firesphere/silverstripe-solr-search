@@ -34,14 +34,31 @@ trait QueryComponentFilterTrait
     protected $clientQuery;
 
     /**
+     * Convert a field/value filter pair to a Criteria object that can build part of a Solr query.
+     * If a Criteria object is passed as the value, it will be returned unmodified.
+     *
+     * @param string $field
+     * @param mixed $value
+     * @return Criteria
+     */
+    protected function buildCriteriaFilter(string $field, $value): Criteria
+    {
+        if ($value instanceof Criteria) {
+            return $value;
+        }
+
+        $value = (array)$value;
+        return Criteria::where($field)->in($value);
+    }
+
+    /**
      * Create filter queries
      */
     protected function buildFilters(): void
     {
         $filters = $this->query->getFilter();
         foreach ($filters as $field => $value) {
-            $value = is_array($value) ? $value : [$value];
-            $criteria = Criteria::where($field)->in($value);
+            $criteria = $this->buildCriteriaFilter($field, $value);
             $this->clientQuery->createFilterQuery('filter-' . $field)
                 ->setQuery($criteria->getQuery());
         }
@@ -93,10 +110,8 @@ trait QueryComponentFilterTrait
     {
         $filters = $this->query->getExclude();
         foreach ($filters as $field => $value) {
-            $value = is_array($value) ? $value : [$value];
-            $criteria = Criteria::where($field)
-                ->in($value)
-                ->not();
+            $criteria = $this->buildCriteriaFilter($field, $value);
+            $criteria = $criteria->not(); // Negate the filter as we're excluding
             $this->clientQuery->createFilterQuery('exclude-' . $field)
                 ->setQuery($criteria->getQuery());
         }

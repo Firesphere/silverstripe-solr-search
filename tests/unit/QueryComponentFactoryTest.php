@@ -8,15 +8,20 @@ use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Queries\BaseQuery;
+use Minimalcode\Search\Criteria;
 use Page;
+use ReflectionMethod;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use Solarium\Core\Query\Helper;
+use Solarium\QueryType\Select\Query\FilterQuery;
+use Solarium\QueryType\Select\Query\Query;
 
 class QueryComponentFactoryTest extends SapphireTest
 {
     protected static $fixture_file = '../fixtures/DataResolver.yml';
+
     protected static $extra_dataobjects = [
         TestObject::class,
         TestPage::class,
@@ -27,6 +32,17 @@ class QueryComponentFactoryTest extends SapphireTest
      * @var QueryComponentFactory
      */
     protected $factory;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        Injector::inst()->get(Page::class)->requireDefaultRecords();
+        foreach (self::$extra_dataobjects as $className) {
+            Config::modify()->merge($className, 'extensions', [DataObjectExtension::class]);
+        }
+        $this->factory = new QueryComponentFactory();
+        $this->factory->setIndex(Injector::inst()->get(CircleCITestIndex::class));
+    }
 
     public function testBuildQuery()
     {
@@ -61,7 +77,6 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->assertInternalType('array', $this->factory->getBoostTerms());
     }
 
-
     public function testEscapeTerms()
     {
         $term = '"test me" help';
@@ -72,19 +87,104 @@ class QueryComponentFactoryTest extends SapphireTest
         $this->assertEquals('"test me" help', $escaped);
 
         $term = 'help me';
-
         $this->assertEquals('help me', $this->factory->escapeSearch($term));
     }
 
-
-    protected function setUp()
+    public function testBuildCriteriaFilter()
     {
-        parent::setUp();
-        Injector::inst()->get(Page::class)->requireDefaultRecords();
-        foreach (self::$extra_dataobjects as $className) {
-            Config::modify()->merge($className, 'extensions', [DataObjectExtension::class]);
-        }
-        $this->factory = new QueryComponentFactory();
-        $this->factory->setIndex(Injector::inst()->get(CircleCITestIndex::class));
+        $reflectionMethod = new ReflectionMethod(QueryComponentFactory::class, 'buildCriteriaFilter');
+        $reflectionMethod->setAccessible(true);
+
+        /** @var Criteria $criteria */
+        $criteria = $reflectionMethod->invoke(new QueryComponentFactory(), 'TestField', 'TestValue');
+        $this->assertInstanceOf(Criteria::class, $criteria);
+        $this->assertEquals('TestField:TestValue', $criteria->getQuery());
+
+        $criteria = $reflectionMethod->invoke(new QueryComponentFactory(), 'TestField', ['Arr1', 'Arr2']);
+        $this->assertInstanceOf(Criteria::class, $criteria);
+        $this->assertEquals('TestField:(Arr1 Arr2)', $criteria->getQuery());
+
+        $criteriaValue = Criteria::where('TestField')->is('TestValue');
+        $criteria = $reflectionMethod->invoke(new QueryComponentFactory(), 'TestField', $criteriaValue);
+        $this->assertInstanceOf(Criteria::class, $criteria);
+        $this->assertSame($criteriaValue, $criteria);
+    }
+
+    public function testFilterAndExcludeStrings()
+    {
+        $mockFilterQuery = $this->createMock(FilterQuery::class);
+        $mockFilterQuery->expects($this->once())
+            ->method('setQuery')
+            ->with($this->equalTo('TestFilterField:TestFilterValue'));
+        $mockExcludeQuery = $this->createMock(FilterQuery::class);
+        $mockExcludeQuery->expects($this->once())
+            ->method('setQuery')
+            ->with($this->equalTo('-TestExcludeField:TestExcludeValue'));
+
+        $mockClientQuery = new class extends Query {
+            public $mockFilterQuery;
+            public $mockExcludeQuery;
+            public function createFilterQuery($options = null): FilterQuery
+            {
+                if ($options === 'filter-TestFilterField') {
+                    return $this->mockFilterQuery;
+                } elseif ($options === 'exclude-TestExcludeField') {
+                    return $this->mockExcludeQuery;
+                }
+
+                return parent::createFilterQuery($options);
+            }
+        };
+        $mockClientQuery->mockFilterQuery = $mockFilterQuery;
+        $mockClientQuery->mockExcludeQuery = $mockExcludeQuery;
+
+        $baseQuery = new BaseQuery();
+        $baseQuery->addFilter('TestFilterField', 'TestFilterValue');
+        $baseQuery->addExclude('TestExcludeField', 'TestExcludeValue');
+
+        $factory = new QueryComponentFactory();
+        $factory->setIndex(Injector::inst()->get(CircleCITestIndex::class));
+        $factory->setQuery($baseQuery);
+        $factory->setClientQuery($mockClientQuery);
+        $factory->buildQuery();
+    }
+
+    public function testFilterAndExcludeCriteria()
+    {
+        $mockFilterQuery = $this->createMock(FilterQuery::class);
+        $mockFilterQuery->expects($this->once())
+            ->method('setQuery')
+            ->with($this->equalTo('TestFilterField:TestFilterValue'));
+        $mockExcludeQuery = $this->createMock(FilterQuery::class);
+        $mockExcludeQuery->expects($this->once())
+            ->method('setQuery')
+            ->with($this->equalTo('-TestExcludeField:TestExcludeValue'));
+
+        $mockClientQuery = new class extends Query {
+            public $mockFilterQuery;
+            public $mockExcludeQuery;
+            public function createFilterQuery($options = null): FilterQuery
+            {
+                if ($options === 'filter-TestFilterField') {
+                    return $this->mockFilterQuery;
+                } elseif ($options === 'exclude-TestExcludeField') {
+                    return $this->mockExcludeQuery;
+                }
+
+                return parent::createFilterQuery($options);
+            }
+        };
+        $mockClientQuery->mockFilterQuery = $mockFilterQuery;
+        $mockClientQuery->mockExcludeQuery = $mockExcludeQuery;
+
+        $baseQuery = new BaseQuery();
+        $baseQuery->addFilter('TestFilterField', Criteria::where('TestFilterField')->is('TestFilterValue'));
+        $baseQuery->addExclude('TestExcludeField', Criteria::where('TestExcludeField')->is('TestExcludeValue'));
+
+        $factory = new QueryComponentFactory();
+        $factory->setIndex(Injector::inst()->get(CircleCITestIndex::class));
+        $factory->setQuery($baseQuery);
+        $factory->setClientQuery($mockClientQuery);
+        $factory->buildQuery();
     }
 }
