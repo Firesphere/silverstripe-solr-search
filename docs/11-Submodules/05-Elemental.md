@@ -28,4 +28,4 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
       - forTemplate
 ```
 
-This will index Elements with their title and rendered content. 
+This will index Elements with their Title and rendered content.
