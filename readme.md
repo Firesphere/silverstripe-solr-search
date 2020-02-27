@@ -6,6 +6,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/55c8967ef25e37182e3d/test_coverage)](https://codeclimate.com/github/Firesphere/silverstripe-solr-search/test_coverage)
 [![Build Status](https://scrutinizer-ci.com/g/Firesphere/silverstripe-solr-search/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Firesphere/silverstripe-solr-search/build-status/master)
 [![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B11GKLY) 
 
 # Modern SilverStripe Solr Search
 

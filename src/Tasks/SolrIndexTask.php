@@ -370,7 +370,7 @@ class SolrIndexTask extends BuildTask
     {
         $start = time();
         foreach (SiteState::getStates() as $state) {
-            if ($state !== 'default' && !empty($state)) {
+            if ($state !== SiteState::DEFAULT_STATE && !empty($state)) {
                 SiteState::withState($state);
             }
             $this->indexStateClass($group, $class);
