@@ -11,6 +11,7 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
     01. [Facets](04-Advanced-Options/01-Faceting.md)
     02. [Boosting](04-Advanced-Options/02-Boosting.md)
     03. [Fuzzy search](04-Advanced-Options/03-Fuzzy-search.md)
+    04. [Elevation [WIP]](04-Advanced-Options/04-Elevation.md)
 05. [Customisation](05-Customisation.md)
 06. [CMS Usage](06-CMS-Usage.md)
 07. [Debugging](07-Debugging.md)
@@ -21,7 +22,7 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
     01. [Fulltext Search compatibility](11-Submodules/01-Fulltext-Search-Compatibility.md)
     02. [Subsites](11-Submodules/02-Subsites.md)
     03. [Fluent](11-Submodules/03-Fluent.md)
-    04. [Member based permissions](11-Submodules/04-Member-based-permissions.md)
+    04. [Member-based permissions](11-Submodules/04-Member-based-permissions.md)
     05. [Elemental](11-Submodules/05-Elemental.md)
 12. Contributing
     01. [Code of Conduct](12-Contributing/01-Code-of-Conduct.md)
