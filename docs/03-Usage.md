@@ -14,8 +14,8 @@ to implement your own method.
 
 **IMPORTANT**
 
-The usage of `YML` as a replacement for the core configuration is _not_ a replacement
-for creating your own Index extending either of the Base Indexes; it is a complement to it.
+The usage of `YML` for the core configuration is _not_ a replacement for creating your own Index
+extending either of the Base Indexes; it is a complement to it.
 
 `YML` is purely used for the configuration of the index Classes.
 
@@ -103,8 +103,8 @@ you will have to define the amount of cores available manually.
 Given the current situation in server-land, the default amount of cores is 2. This should work fine for
 most situations, even if you only have one core available. If you have more cores, you can make this
 amount larger, of course.
-Using all cores your system has, will make your website pretty slow during indexing! It is advised to keep
-at least one core free for handling page visits while you're running an index.
+Using all of the cores your system has will make your website pretty slow during indexing!
+It is advised to keep at least one core free for handling page visits while you're running an index.
 
 ### Using init()
 

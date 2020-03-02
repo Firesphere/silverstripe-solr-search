@@ -1,6 +1,6 @@
 # Installing Solr
 
-It is advised is to use the latest Solr version. At the time of writing, this is version 8.3.0.
+It is advised to use the latest Solr version. At the time of writing, this is version 8.3.0.
 
 In this guide, it's assumed you are running on a Linux-based host.
 

@@ -92,8 +92,8 @@ likely to be able to resolve the problem
 
 Yes, a head-scratcher! Re-run that specific group `SolrIndexTask group={Group Number}` and all should be fine.
 
-Sometimes, for unknown reason, the `POST` or `GET` part of the request string is included in the XML that is
-sent to Solr. We've not yet found a reason for how/why this is happening.
+Sometimes, for an unknown reason, the `POST` or `GET` part of the request string is included in the XML that is
+sent to Solr.
 
 ### To no avail, no solution worked
 
