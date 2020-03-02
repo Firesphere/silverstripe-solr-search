@@ -20,7 +20,7 @@ $query->addTerm('My search terms', ['Fields', 'To', 'Boost', 'On'], $value);
 ```
 
 Where the array of fields should not be empty. `$value` is the amount of boosting that should be applied
-to the fields in the array.
+to the fields in the array, for example `$value = 2` will mean that results are treated as twice as relevant.
 
 This executes a global search for the term, followed by a boosting for each field in the
 field array with a boost status of `$value`.

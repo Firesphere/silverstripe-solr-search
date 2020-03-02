@@ -32,14 +32,9 @@ It is strongly advised to only clear out the logs if they have all been reviewed
 
 ## x:Unknown indexes
 
-Up until Solr 5, the actual core that threw the error wasn't included in the error message. Logging will say
-`x:Unknown` in this circumstance. This does not mean the log is not there, it means the core that
+Up until Solr 5, the information about which core threw the error wasn't passed back to the webserver.
+Log messages will contain `x:Unknown` in this circumstance. This means the log _is_ there, just that the core that
 threw the error isn't known by the server.
-
-## Sorting
-
-By default, SilverStripe sorts by ID, causing the oldest errors to show first - sorting by Timestamp is the simplest
-way to fix this before looking at the actual error.
 
 ## Colour codes
 

@@ -10,7 +10,7 @@ Note that the proxy can not read from the Silverstripe config, which is why we n
 
 Once that's in place, you can use Javascript to get Solr's suggestions by querying the `autosuggest.php` file directly.
 Doing so will prevent a full execution of the whole Silverstripe application stack,
-which is too slow for useful auto-suggesting.
+which is too slow for real-time auto-suggesting.
 Also, make sure the file is accessible by the web user.
 
 The output of the file is a JSON object, looking something like this:

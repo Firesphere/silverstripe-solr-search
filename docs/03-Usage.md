@@ -2,7 +2,8 @@
 
 ## Getting started
 
-The first thing you have to do is to create an index extending the
+In order to return search results, Solr requires an Index that holds the searchable data.
+So the first thing you _need_ to do is to create an index extending the
 `Firesphere\SolrSearch\Indexes\BaseIndex` class, or if you are using the compatibility
 module, the `SilverStripe\FullTextSearch\Solr\SolrIndex` class.
 
@@ -167,7 +168,8 @@ The [compatibility module](11-Submodules/01-Fulltext-Search-Compatibility.md) ha
 
 ## Grouped indexing
 
-Grouped indexing is `0` based. Thus, if there are 150 groups to index, the final group to index will be 149 instead of 150.
+Be aware that Grouped indexing is `0`-based. Thus, if there are 150 groups to index,
+the final group to index will be 149 instead of 150.
 
 ## Method output casting
 
