@@ -1,16 +1,17 @@
 # Viewing permissions
 
-View permissions are indexed group based and setting based.
+View permissions are indexed group-based and settings-based.
 
-On page level, this means if it's public, the view will be indexed as `'null'`, meaning anyone can see.
-Inheritance is calculated, and if it is logged in only, then only logged in members will be able to see it.
+At page-level, this means if it's a public page, the view will be indexed as `'null'`, meaning anyone can see it.
+Inheritance is then calculated, and if it is logged-in only, then only logged-in members will be able to see it.
 
-If it's specific groups, then these groups are indexed.
+If it's specific groups, then these groups are indexed accordingly.
 
 ## More granular approaches
 
-In case you have custom `canView()` implementations, we strongly suggest using `InheritedPermissionsExtension` and proper
-permission implementations instead.
+If you have custom `canView()` implementations, we strongly suggest using `InheritedPermissionsExtension` and
+proper permission implementations instead.
 
-The reason for not using custom `Member` based permission checks, is because when a site has a lot of members, indexing
-and the granular approach would become incredibly complex and long. Possibly causing errors during indexing.
+The reason for not using custom `Member`-based permission checks is that when a site has a lot of members, indexing
+and the more granular approach would become incredibly complex and slow - increasing the possibility of
+errors during indexing.

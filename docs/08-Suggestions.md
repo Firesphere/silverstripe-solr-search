@@ -1,17 +1,17 @@
 # Solr Suggest
 
-If you are using Solr5 or above, you can use the Solr Suggest option. This is enabled by default.
+If you are using Solr 5 or above, you can use the Solr Suggest option. This is enabled by default.
 
 To set this up, have a look at [autosuggest proxy](https://github.com/Firesphere/silverstripe-solr-search/blob/master/client/proxy/autosuggest.php)
 
 Copy this file to a convenient location, e.g. your `docroot/public` folder and edit the contents of your copy, to match your Solr core and location of the Solr instance.
 
-Note that the proxy can not read from the Silverstripe config, thus it needs to be edited manually.
+Note that the proxy can not read from the Silverstripe config, which is why we need to edit it manually.
 
-Once that's in place, you can use javascript to get Solr's suggestions, by querying the autosuggest.php file directly.
-
-You need to query the file directly, to prevent a full execution of the whole Silverstripe stack, which is too slow for proper auto suggesting.
-Also, make sure the file is accessible.
+Once that's in place, you can use Javascript to get Solr's suggestions by querying the `autosuggest.php` file directly.
+Doing so will prevent a full execution of the whole Silverstripe application stack,
+which is too slow for useful auto-suggesting.
+Also, make sure the file is accessible by the web user.
 
 The output of the file is a JSON object, looking something like this:
 ```json
@@ -83,8 +83,8 @@ The output of the file is a JSON object, looking something like this:
 }
 ```
 
-Which you can then use in your javascript to populate a dropdown.
+You can then use this data in your Javascript to populate a dropdown.
 
 ## Security note
 
-As the query is passed straight in to Solr, there is no option of database SQL injection.
+As the query is passed straight in to Solr, there is no possibility of database SQL injection.
