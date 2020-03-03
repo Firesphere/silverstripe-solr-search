@@ -6,8 +6,8 @@ Best practice is to use composer:
 ## Manual setup
 
 - Create a clean installation of SilverStripe 4 (`composer create-project`)
-- Clone this repo in to the folder of your likings
-- Check which modules you need to add to your base composer.json
+- Clone this repo in to the folder of your liking
+- Check which modules you need to add to your base `composer.json`
 - Run a composer update
 - Create a base index:
 ```php
@@ -35,4 +35,4 @@ class MyIndex extends BaseIndex
 - Run `vendor/bin/sake dev/tasks/SolrConfigureTask` to configure the core
 - Run `vendor/bin/sake dev/tasks/SolrIndexTask` to add documents to your index
 
-Happy searching after that... once this is done
+Once these tasks have completed - happy searching!

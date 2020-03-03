@@ -14,13 +14,15 @@ It is highly recommended to sign commits with your PGP key to ensure integrity.
 
 # Notes
 
-Parts of this contributing guidelines are taken from 
+Parts of these contributing guidelines are taken from
 https://github.com/bitfield/script/blob/master/CONTRIBUTING.md#Documentation
 
 ## Documentation
 
-It doesn't matter if you write the greatest piece of code in the history of the world, 
-if no one knows it exists, or how to use it. Write doc comments
+It doesn't matter if you write the greatest piece of code in the history of the world
+if no-one knows it exists, or how to use it.
+
+## Write doc comments
 
 Any functions or methods you write should have useful documentation comments in the 
 standard PHP Docblock format. Specifically, they should say what inputs the function takes, 
@@ -47,12 +49,12 @@ to start with a real-world use case, and try to implement it using the feature y
 No issues or PRs will be accepted into script without an accompanying use case (See the project board). 
 And we hold ourselves to that rule just as much as anybody else.
 
-What do we mean by "use case"? we mean a real problem that you or someone else actually has, that could be solved using the feature. 
+What do we mean by "use case"? We mean a real problem that you or someone else actually has that could be solved using the feature.
 For example, you might think it's a very cool idea to add a `Frobnicate()` method to this module. 
 Maybe it is, but what's it for? Where would this be used in the real world? Can you give an example of a 
 problem that could be solved by a program using `Frobnicate()`? If so, what would the program look like?
 
-The reason for insisting on this up front is that it's much easier to design a feature the right way if you start 
+The reason for insisting upon this up front is that it's much easier to design a feature the right way if you start
 with its usage in mind. It's all too easy to design something in the abstract, and then find later that when you 
 try to use it in a program, the API is completely unsuitable.
 
@@ -75,7 +77,7 @@ Here's a handy checklist for making sure your PR will be accepted as quickly as 
 
  - [ ] Have you opened an issue to discuss the feature and agree its general design?
  - [ ] Do you have a use case and, ideally, an example program using the feature?
- - [ ] Do you have tests covering 90%+ of the feature code (and, of course passing)
+ - [ ] Do you have **passing** tests covering 90%+ of the feature code?
  - [ ] Have you written complete and accurate doc comments?
  - [ ] Have you updated the README and the documentation?
  - [ ] You rock. Thanks a lot.
@@ -103,9 +105,8 @@ Instead, think of it as a discussion where both sides can ask questions, make su
 catch mistakes, and add improvements.
 
 You shouldn't be disappointed if you don't get a simple 'LGTM' and an instant merge. 
-If this is what you're used to, then your team isn't really doing code review to its full potential. 
-Instead, the more comments you get, the more seriously it means I'm taking your work. Where appropriate, 
-I'll say what we liked as well as what I'd like to see improved.
+Instead, the more comments you get, the more seriously it means we are taking your work. Where appropriate,
+I'll say what we liked as well as what we'd like to see improved.
 
 ## Dealing with comments
 
@@ -129,7 +130,7 @@ Be considerate, and be willing to listen and make changes.
 
 ## This may take a while
 
-Don't be impatient. We've all had the experience of sending in our beautifully-crafted PR and then waiting, waiting, waiting. 
+Try to be patient. We've all had the experience of sending in our beautifully-crafted PR and then waiting, waiting, waiting.
 Why won't those idiots just merge it? How come other issues and PRs are getting dealt with ahead of mine? Am I invisible?
 
 In fact, doing a _proper_ and serious code review is a time-consuming business. It's not just a case of skim-reading the diffs. 
@@ -139,7 +140,7 @@ make suggestions, test alternatives. It's almost as much work as writing the PR 
 Open source maintainers are just regular folk with jobs, kids, and zero free time or energy. 
 They may not be able to drop everything and put in several hours on your PR. 
 The task may have to wait a week or two until they can get sufficient time and peace and quiet to work on it. 
-Don't pester them. It's fine to add a comment on the PR if you haven't heard anything for a while, 
+It's fine to add a comment on the PR if you haven't heard anything for a while,
 asking if the reviewer's been able to look at it and whether there's anything you can do to help speed things up. 
 Comments like 'Y U NO MERGE' are unlikely to elicit a positive response.
 

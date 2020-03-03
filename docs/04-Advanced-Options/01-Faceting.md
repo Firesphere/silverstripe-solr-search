@@ -1,17 +1,17 @@
 # Faceting
 
-## What are facets
+## What are facets?
 
-Facets are related topics, e.g. when you have categories in your blogposts, faceting allows
-you to show the categories that are in your search results.
+Facets are related topics, e.g. if you have blog posts that are in categories, faceting allows
+you to show data about the categories of the blog posts returned in your search results.
 
-For example, if you have 10 posts in "Example category" and 20 posts in "Example category 2",
-and the search returns 15 posts, 8 of those are in the "Example category" and 12 of those are (also)
-in the "Example category 2", you can show a list like so:
-- Example category (8)
-- Example category 2 (12)
+For example, say you have 10 posts in "Rants" and 20 posts in "Recipes". If you perform a search where
+there are 15 results, 8 of which are in the "Rants" category and 12 of which are in the "Recipes"
+category, you can show a list like so:
+- Rants (8)
+- Recipes (12)
 
-This helps your visitors to narrow their search, for only a specific category.
+This helps your visitors to narrow their search by filtering for a specific category.
 
 ## Applying facets
 
@@ -33,8 +33,8 @@ To use them, this example should get you started:
     }
 ```
 
-This will add filters, so only applicable categories are searched through.
+This will add filters so that only applicable categories are searched through.
 
 Make sure your Facet Fields are set correctly, as per the documentation.
 
-Any variable from your request, that is not a valid Facet will be ignored.
+Any variable from your request that is _not_ a valid Facet will be ignored.

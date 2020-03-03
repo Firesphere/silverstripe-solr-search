@@ -204,6 +204,7 @@ jobs:
       - run:
           name: Setup SSH access to github
           command: |
+            mkdir -p ~/.ssh
             touch ~/.ssh/known_hosts
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - run:

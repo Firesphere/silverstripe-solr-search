@@ -2,7 +2,9 @@
 
 ## Getting started
 
-You first _need_ to create an index extending the `Firesphere\SolrSearch\Indexes\BaseIndex` class, or if you are using the compatibility
+In order to return search results, Solr requires an Index that holds the searchable data.
+So the first thing you _need_ to do is to create an index extending the
+`Firesphere\SolrSearch\Indexes\BaseIndex` class, or if you are using the compatibility
 module, the `SilverStripe\FullTextSearch\Solr\SolrIndex` class.
 
 If you are extending the base Index, it will require a `getIndexName` method
@@ -13,8 +15,8 @@ to implement your own method.
 
 **IMPORTANT**
 
-The usage of `YML` as a replacement for the core configuration, it  is not a replacement 
-for creating your own Index extending either of the Base Indexes, it is a compliment to it.
+The usage of `YML` for the core configuration is _not_ a replacement for creating your own Index
+extending either of the Base Indexes; it is a complement to it.
 
 `YML` is purely used for the configuration of the index Classes.
 
@@ -44,13 +46,14 @@ Firesphere\SolrSearch\Services\SolrCoreService:
   debug: false
 ```
 
-Note, if you are using defaults (localhost), it is not necessary to add this to your configuration.
+#### Note
+If you are using defaults (localhost), it is not necessary to add this to your configuration.
 
 The config is used to connect to Solr. This will tell the module where the Solr instance for this index lives and how to connect.
 
 The store is to select the way to configure the solr configuration storage. Options are `file` and a required path, or `post` and a required endpoint to post to.
 
-Post config:
+Example POST config:
 ```yml
 store:
   mode: 'post'
@@ -66,10 +69,10 @@ will have debugging enabled.
 #### ShowInSearch
 
 `ShowInSearch` is handled by the module itself, so there is no need to configure it within your YML/PHP index definition. 
-When a content author sets this field to 0 via the CMS, then the related Page or File object is actually _removed_ from the applicable Solr 
+When a content author sets this field to `0` via the CMS, then the related Page or File object is actually _removed_ from the applicable Solr 
 core immediately through the `onAfterPublish` or `onAfterWrite` method, or during the next run of the `SolrIndexJob`.
 
-Therefore, custom addition of `ShowInSearch` as a filterable or indexable field in YML for example, 
+Therefore, custom addition of `ShowInSearch` as a filterable or indexable field in YML
 is likely to cause unexpected behaviour.
 
 The reason for removing `ShowInSearch = false|0` from the indexing process, 
@@ -81,19 +84,19 @@ be displayed.
 
 If a change fails to update, a `DirtyClass` is created, recording the need for updating
 said object. It is recommended to automatically run the `ClearDirtyClasses` task every few hours
-depending on the expected amount of changes daily and the importance of changes.
+depending on the expected amount of changes daily and the importance of those changes.
 
-Given the expected time of the dirty classes to be cleaned out is quite low, it's suggested to run
-this task every 5 or 10 minutes.
+The expected time to run the task is quite low, so we recommend running this task reasonably
+ often (every 5 or 10 minutes).
 
 #### Defining the amount of CPU cores
 
 If your server has multiple CPU cores available, you can define the amount of cores in the config.
-During indexing, this means that each core gets to do an indexing of a group.
-The advantage is that it takes all cores available, speeding up the indexing process by the amount of cores available.
+During indexing, this means that each core is allocated an indexing of a group.
+The advantage is that it utilises all the cores available, speeding up the indexing process.
 
-Because the amount of cores can not be determined programmatically, due to access control, you will have to define 
-the amount of cores available manually.
+The amount of cores can not be determined programmatically (due to access control), so
+you will have to define the amount of cores available manually.
 
 
 **NOTE**
@@ -101,11 +104,8 @@ the amount of cores available manually.
 Given the current situation in server-land, the default amount of cores is 2. This should work fine for
 most situations, even if you only have one core available. If you have more cores, you can make this
 amount larger, of course.
-
-**NOTE**
-
-Using all cores your system has, will make your website pretty slow during indexing! It is adviced to keep
-at least one core free for handling page visits, while you're running an index.
+Using all of the cores your system has will make your website pretty slow during indexing!
+It is advised to keep at least one core free for handling page visits while you're running an index.
 
 ### Using init()
 
@@ -114,7 +114,7 @@ Similar to the FulltextSearch module, using init supports all basic methods to a
 Available methods are:
 
 | Method | Purpose | Required | Usage |
-|-|-|-|-|
+| ------ | ------- | -------- | ----- |
 | addClass | Add classes to index | Yes | `$this->addClass(SiteTree::class);` |
 | addFulltextField | Add fields to index | No<sup>1</sup> | `$this->addFulltextField('Content');` |
 | addAllFulltextField | Add all text fields to index | No | `$this->addAllFulltextFields();` |
@@ -168,11 +168,13 @@ The [compatibility module](11-Submodules/01-Fulltext-Search-Compatibility.md) ha
 
 ## Grouped indexing
 
-Note, grouped indexing is `0` based. Thus, if there are 150 groups to index, the final group to index will be 149 instead of 150.
+Be aware that Grouped indexing is `0`-based. Thus, if there are 150 groups to index,
+the final group to index will be 149 instead of 150.
 
 ## Method output casting
 
-To get the correct Solr field type in the Solr Configuration, each method you want to add, e.g.
+To get the correct Solr field type in the Solr Configuration, you will need to add a
+casting for each method you want to add. So for the `Content` field, the method below:
 
 ```php
 public function getContent()
@@ -181,7 +183,7 @@ public function getContent()
 }
 ```
 
-You will need to add a casting, so the field type is correct in Solr, like so:
+Could have a casting like the below to ensure it renders as HTML:
 
 ```php
 private static $casting = [
@@ -194,7 +196,7 @@ Depending on your field definition, you either need to have the full method name
 
 ## Another way to set the config in PHP
 
-You could also use PHP, just like it was, to set the config. For readability however, it's better to use variables for Facets:
+You could also use PHP to set the config. For readability however, it's better to use variables for Facets:
 ```php
     protected $facetFields = [
         RelatedObject::class   => [
@@ -218,21 +220,20 @@ The Title is used to group all facets by their Title, in the template, this is a
 
 ### Important notice
 
-Note, that Facets are relational. For faceting on a relation, omit the origin class (e.g. `SiteTree`), but supply the full relational
+Facets are relational. For faceting on a relation, omit the origin class (e.g. `SiteTree`), but supply the full relational
 path to the facet. e.g. if you want to have facets on `RelationObject->ManyRelation()->OneRelation()->ID`, the Facet declaration should be
 `ManyRelationObject.OneRelationID`, assuming it's a `has_one` relation.
 
 If you have many relations, through either `many_many` or `has_many`, your definition should 
 use `ManyRelationObjectName.Relation.ID` instead of `RelationID`. It works and resolves the same.
 
-It is strongly advised, to use relations for faceting, as Solr tends to think of textual relations in a different way.
-For example, a relation on `MyObject.TextField`, might come up with the following relations:
+It is strongly advised to use relations for faceting, as Solr tends to think of textual relations in a different way.
 
 #### Example
 
-Assuming your text field on the object, might contain "Content Name One" and "Content Name Two". Faceting would be
-done in such a way, that "Content", "Name" and "One" are three different facet results, despite you would
-like it to be "Content Name One".
+If you set relations on `MyObject.TextField`, and the text field contains "Content Name
+One" and "Content Name Two", faceting would be done in such a way that "Content", "Name"
+and "One" would be three different facet results, rather than "Content Name One".
 
 ## Accessing Solr
 
@@ -255,8 +256,8 @@ Looking at the `tests` folder, there is a `TestIndexFour`. This index is not loa
 
 # Executing a search
 
-To search, here's an example using all the features, and set the resulting outcome from the search
-on the current `Controller` to be useable in the templates.
+To search, here's an example using all the features, and setting the resulting outcome from the search
+onto the current `Controller` to be useable in templates.
 
 ```php
 class SearchController extends PageController
@@ -389,9 +390,9 @@ class FacetedObject
 
 **NOTE**
 
-The code in this documentation is called "pseudo code", it may not exactly work, but serves as example.
+The code in this documentation is "pseudo-code"; it may not exactly work, but serves as example.
  
 ----------
-<sup>1</sup> Although not required, it's highly recomended
+<sup>1</sup> Although not required, it's highly recommended
 
 <sup>2</sup> The second option of an array can be omitted and directly given the boost value

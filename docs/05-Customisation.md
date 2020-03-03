@@ -4,15 +4,15 @@
 
 All steps of the process, from index to searching, have extension points.
 
-These extension points can be used to alter or update the respective steps
+These extension points can be used to alter or update the respective steps.
 
 Available extension points:
 
 | Method | Used for | Available on |
-|-|-|-|
-| `onBeforeSolrConfigureTask` | Alter the Configuration before uploading the configuration | `SolrConfigureTask` |
+| ------ | -------- | ------------ |
+| `onBeforeSolrConfigureTask` | Alter the Configuration before running the configure task | `SolrConfigureTask` |
 | `onConfigureIndex` | Operates after an index is added | `SolrConfigureTask` |
-| `onAfterSolrConfigureTask` | Executes after Solr is configured. Can be used to check if the configuration is added for example | `SolrConfigureTask` |
+| `onAfterSolrConfigureTask` | Executes after Solr is configured via task. Can be used to check if the configuration is added for example | `SolrConfigureTask` |
 | `onBeforeConfig` | Operates before a configuration is uploaded | `SolrConfigureTask` |
 | `onBeforeInit` | Update initialisation features | `BaseIndex` |
 | `onAfterInit` | Update initialisation features | `BaseIndex` |
@@ -40,7 +40,7 @@ Firesphere\SolrSearch\Helpers\Statics:
     "DBVarchar": htmltext
 ```
 
-Note that you need to set all three options, because of the classmapping SilverStripe does.
+Note that you need to set all three options, because of the classmapping that SilverStripe does.
 
 ## Custom `types.ss` and `schema.ss`
 
@@ -69,7 +69,7 @@ you are using
 #### Available field maps for YML
 
 | FieldType | Indexed | Returnable | Case-sensitive |
-| - | - | - | - |
+| --------- | ------- | ---------- | -------------- |
 | string | Yes | Yes | Yes |
 | tint | Yes | No | N/A |
 | htmltext | Yes | Yes | No |
@@ -80,19 +80,19 @@ you are using
 | tdouble | Yes | Configurable | N/A |
  
 
-### Usage of %s
+#### Usage of %s
 
-Because all paths are determined based on the `Director::baseFolder()` method, the `%s` is needed
-so the actual full path to the templates etc. is resolved correctly to the base folder.
+All paths are determined based on the `Director::baseFolder()` method. We use `%s`
+so that the actual full path to the templates is resolved correctly to the base folder.
 
-This is to avoid complexity around installation location, as hardcoding `/var/www/mywebsite` may not always
-be the case.
+This is to avoid complexity around installation location, as hard-coding `/var/www/mywebsite` may not always
+be correct.
 
 ### IMPORTANT
 
 If you have a custom path, all files from the Solr version you choose, _need_ to exist in this folder!
 
-This includes the `extras` folder, in it's entirety.
+This includes the `extras` folder in its entirety.
 
-It is suggested to copy the entire `Solr` folder to your own application and alter what you need in there, leaving
-everything else untouched. This will save you the hassle of making sure everything is in place.
+It is easiest to copy the entire `Solr` folder to your own application and alter what you need in there, leaving
+everything else untouched. This will ensure that everything is in place.

@@ -8,4 +8,12 @@ To use fuzzyness, here's an example:
 $query->addTerm('SearchTerm', [], [], 5);
 ```
 
-This example would add a fuzzyness of 5 to the query.
+This example would add a fuzzyness of 5 to the query. "Fuzzyness" refers to the number of edits
+required to get from one search term to the next. As an example, 'SearchTerm' with fuzzyness 5 will
+return the following:
+
+- Search (four deletes)
+- Starch (four deletes, one substitution)
+- archers (four deletes, one insert)
+
+And other combinations of five actions (insert, delete, substitute)

@@ -9,7 +9,7 @@ Bugfixes:
 - Make types and schema more easily overridable
 - Prefix tables to prevent database clashes
 - Updated documentation further
-- Allow forcing to turn off debugging through config
+- Add config option to force debugging to be off
 - Extracted logging
 - Added docblock for `_config.php`
 
@@ -30,9 +30,9 @@ During the Release Candidate period, no new features will be accepted in to the 
 - Removed history, moving to a later phase to include in a sub-module.
 - Fix issues encountered for Dirty classes and Indexing
 - Improved `PCNTL` detection for the CMS run of the Indexing job
-- Added member level module for per-member permission checks
+- Added member-level module for per-member permission checks
 - Fixed up multiple issues around the indexing on `ShowInSearch`
-    - Update to the docs to clarify the use of `ShowInSearch`
+- Update to the docs to clarify the use of `ShowInSearch`
 - Updated submodule documentation
 - Improved debugging documentation
 - Improved Linux based hosts Solr/Apache permission documentation
