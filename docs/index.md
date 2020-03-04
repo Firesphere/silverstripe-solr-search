@@ -43,7 +43,7 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
     
 # Sponsors
 
-- None so far 😿
+- [XD Designers (Netherlands)](https://www.xd.nl)
     
 # [GitStore](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
 
