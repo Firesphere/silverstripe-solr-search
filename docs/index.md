@@ -12,6 +12,7 @@ Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
     02. [Boosting](04-Advanced-Options/02-Boosting.md)
     03. [Fuzzy search](04-Advanced-Options/03-Fuzzy-search.md)
     04. [Elevation [WIP]](04-Advanced-Options/04-Elevation.md)
+    05. [Advanced filters & excludes](04-Advanced-Options/05-Filters-excludes.md)
 05. [Customisation](05-Customisation.md)
 06. [CMS Usage](06-CMS-Usage.md)
 07. [Debugging](07-Debugging.md)
