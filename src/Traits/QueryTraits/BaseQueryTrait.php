@@ -10,6 +10,8 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
+use Minimalcode\Search\Criteria;
+
 /**
  * Trait BaseQueryTrait Extraction from the BaseQuery class to keep things readable.
  *
@@ -83,7 +85,7 @@ trait BaseQueryTrait
      * Adds filters to filter on by value
      *
      * @param string $field Field to filter on
-     * @param string|array $value Value for this field
+     * @param string|array|Criteria $value Value for this field
      * @return $this
      */
     public function addFilter($field, $value): self
@@ -112,7 +114,7 @@ trait BaseQueryTrait
      * Exclude fields from the search action
      *
      * @param string $field
-     * @param string|array $value
+     * @param string|array|Criteria $value
      * @return $this
      */
     public function addExclude($field, $value): self
