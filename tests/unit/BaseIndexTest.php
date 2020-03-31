@@ -322,6 +322,7 @@ class BaseIndexTest extends SapphireTest
         $query->addSort('SiteTree_Title', 'asc');
         $index->doSearch($query);
 
+        $this->assertEquals(['test'], $index->getQueryTerms());
         $this->assertArrayHasKey('SiteTree_Title', $index->getClientQuery()->getSorts());
     }
 
