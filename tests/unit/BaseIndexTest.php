@@ -308,6 +308,21 @@ class BaseIndexTest extends SapphireTest
         $this->assertInstanceOf(ArrayList::class, $result->getSpellcheck());
         $this->assertGreaterThan(0, $result->getSpellcheck()->count());
         $this->assertNotEmpty($result->getCollatedSpellcheck());
+
+        $index = new CircleCITestIndex();
+        $query = new BaseQuery();
+        $query->addTerm('');
+        $index->doSearch($query);
+
+        $this->assertEquals(['*:*'], $index->getQueryTerms());
+
+        $index = new CircleCITestIndex();
+        $query = new BaseQuery();
+        $query->addTerm('test');
+        $query->addSort('SiteTree_Title', 'asc');
+        $index->doSearch($query);
+
+        $this->assertArrayHasKey('SiteTree_Title', $index->getClientQuery()->getSorts());
     }
 
     public function testDoRetry()

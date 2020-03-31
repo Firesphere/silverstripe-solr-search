@@ -52,6 +52,11 @@ trait BaseQueryTrait
     protected $exclude = [];
 
     /**
+     * @var array Sorting order
+     */
+    protected $sort = [];
+
+    /**
      * Each boosted query needs a separate addition!
      * e.g. $this->addTerm('test', ['MyField', 'MyOtherField'], 3)
      * followed by
@@ -135,6 +140,20 @@ trait BaseQueryTrait
     public function addFacetFilter($field, $value): self
     {
         $this->facetFilter[$field][] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Add a field to sort on
+     *
+     * @param string $field
+     * @param string $direction
+     * @return $this
+     */
+    public function addSort($field, $direction): self
+    {
+        $this->sort[$field] = $direction;
 
         return $this;
     }

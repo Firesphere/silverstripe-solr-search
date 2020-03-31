@@ -89,6 +89,10 @@ abstract class BaseIndex
      */
     protected $queryTerms = [];
     /**
+     * @var Query Query that will hit the client
+     */
+    protected $clientQuery;
+    /**
      * @var bool Signify if a retry should occur if nothing was found and there are suggestions to follow
      */
     private $retry = false;
@@ -199,12 +203,14 @@ abstract class BaseIndex
     {
         SiteState::alterQuery($query);
         // Build the actual query parameters
-        $clientQuery = $this->buildSolrQuery($query);
+        $this->clientQuery = $this->buildSolrQuery($query);
+        // Set the sorting
+        $this->clientQuery->addSorts($query->getSort());
 
-        $this->extend('onBeforeSearch', $query, $clientQuery);
+        $this->extend('onBeforeSearch', $query, $this->clientQuery);
 
         try {
-            $result = $this->client->select($clientQuery);
+            $result = $this->client->select($this->clientQuery);
         } catch (Exception $error) {
             // @codeCoverageIgnoreStart
             $logger = new SolrLogger();
@@ -414,5 +420,13 @@ abstract class BaseIndex
     public function getQueryFactory(): QueryComponentFactory
     {
         return $this->queryFactory;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getClientQuery(): Query
+    {
+        return $this->clientQuery;
     }
 }

@@ -307,8 +307,11 @@ class SearchController extends PageController
             $sort = isset($data['Order']) ? strtolower($data['Order']) : 'asc';
     
             // Set the sorting. This can be an array of multiple sorts
-            $params['sort'] = MySortableClass::class . '_Created ' . $sort;
-            $query->setSort($params);
+            $params['sort'] = [MySortableClass::class . '_Created ' => $sort];
+            $query->setSort($params['sort']);
+            // Alternative:
+            $query->addSort(MySortableClass::class . '_Created', $sort);
+
     
             // Execute the search
             $result = $index->doSearch($query);
