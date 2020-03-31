@@ -226,12 +226,10 @@ class QueryComponentFactory
     protected function buildTerms(): void
     {
         $terms = $this->query->getTerms();
-
         $boostTerms = $this->getBoostTerms();
 
         foreach ($terms as $search) {
-            $term = $search['text'];
-            $term = $this->escapeSearch($term);
+            $term = $this->getBuildTerm($search);
             $postfix = $this->isFuzzy($search);
             // We can add the same term multiple times with different boosts
             // Not ideal, but it might happen, so let's add the term itself only once
@@ -307,5 +305,22 @@ class QueryComponentFactory
         $spellcheck->setCollate(true);
         $spellcheck->setExtendedResults(true);
         $spellcheck->setCollateExtendedResults(true);
+    }
+
+    /**
+     * Get the escaped search string, or, if empty, a global search
+     *
+     * @param array $search
+     * @return string
+     */
+    protected function getBuildTerm($search)
+    {
+        $term = $search['text'];
+        $term = $this->escapeSearch($term);
+        if ($term === '') {
+            $term = '*:*';
+        }
+
+        return $term;
     }
 }
