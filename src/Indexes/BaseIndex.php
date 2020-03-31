@@ -423,6 +423,8 @@ abstract class BaseIndex
     }
 
     /**
+     * Retrieve the Solarium client Query object for this index operation
+     *
      * @return Query
      */
     public function getClientQuery(): Query
