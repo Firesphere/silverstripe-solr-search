@@ -52,7 +52,7 @@ class QueryComponentFactory
         'Filters',
         'Excludes',
         'Facets',
-        'FacetQuery',
+        'AndFacetQuery',
         'Spellcheck',
     ];
     /**

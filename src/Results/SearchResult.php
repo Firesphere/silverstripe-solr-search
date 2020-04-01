@@ -199,7 +199,6 @@ class SearchResult extends ViewableData
     /**
      * Get the matches as a Paginated List
      *
-     * @param HTTPRequest $request
      * @return PaginatedList
      */
     public function getPaginatedMatches(): PaginatedList
