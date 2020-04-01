@@ -152,10 +152,10 @@ class BaseIndexTest extends SapphireTest
         /** @var ArrayList $parents */
         $query->addFacetFilter('Parent', $id);
         $result = $index->buildSolrQuery($query);
-        $filterQuery = $result->getFilterQuery('facet-Parent');
+        $filterQuery = $result->getFilterQuery('facets');
         $this->assertEquals('SiteTree_ParentID:' . $id, $filterQuery->getQuery());
         $query->addFacetFilter('Parent', 5);
-        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('facet-Parent');
+        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('facets');
         $this->assertContains('SiteTree_ParentID:5 AND SiteTree_ParentID:' . $id, $filterQuery->getQuery());
         $query->setHighlight(['Test']);
         $result = $index->doSearch($query);

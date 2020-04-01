@@ -13,6 +13,9 @@ category, you can show a list like so:
 
 This helps your visitors to narrow their search by filtering for a specific category.
 
+Facets are applied as a combined `AND` query. For example, facet filtering by UserID 1,2 plus Parent 5 
+will result in `UserID:1 AND UserID:2 AND Parent:5`
+
 ## Applying facets
 
 To configure Facets, have a look at the [usage](../03-Usage.md) documentation.
