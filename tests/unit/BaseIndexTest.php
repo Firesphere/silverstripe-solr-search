@@ -154,6 +154,9 @@ class BaseIndexTest extends SapphireTest
         $result = $index->buildSolrQuery($query);
         $filterQuery = $result->getFilterQuery('facet-Parent');
         $this->assertEquals('SiteTree_ParentID:' . $id, $filterQuery->getQuery());
+        $query->addFacetFilter('Parent', 5);
+        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('facet-Parent');
+        $this->assertContains('SiteTree_ParentID:5 AND SiteTree_ParentID:' . $id, $filterQuery->getQuery());
         $query->setHighlight(['Test']);
         $result = $index->doSearch($query);
         $this->assertInstanceOf(Highlighting::class, $result->getHighlight());

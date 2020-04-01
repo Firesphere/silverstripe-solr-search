@@ -69,7 +69,10 @@ trait QueryComponentFacetTrait
                 // Fields are "short named" for convenience
                 $shortClass = getShortFieldName($config['BaseClass']);
                 $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
-                $criteria = Criteria::where($field)->in($filter);
+                $criteria = Criteria::where($field)->is(array_pop($filter));
+                foreach ($filter as $filterValue) {
+                    $criteria->andWhere($field)->is($filterValue);
+                }
                 $this->clientQuery
                     ->createFilterQuery('facet-' . $config['Title'])
                     ->setQuery($criteria->getQuery());
