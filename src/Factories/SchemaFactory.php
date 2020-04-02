@@ -44,6 +44,11 @@ class SchemaFactory extends ViewableData
     protected $baseTemplatePath;
 
     /**
+     * @var array Fields that always need to be stored, by Index name
+     */
+    protected static $storeFields = [];
+
+    /**
      * SchemaFactory constructor.
      */
     public function __construct()
@@ -90,10 +95,10 @@ class SchemaFactory extends ViewableData
         $storeFields = $this->getStoreFields();
         $item = [];
         foreach ($field as $name => $options) {
-            // Temporary short-name solution until the Introspection is properly solved
+            // @todo Not-so temporary short-name solution until the Introspection is properly solved
             $name = getShortFieldName($name);
             // Boosted fields are always stored
-            $store = ($this->store || array_key_exists($options['name'], $storeFields)) ? 'true' : 'false';
+            $store = ($this->store || in_array($name, $storeFields) ? 'true' : 'false');
             $item = [
                 'Field'       => $name,
                 'Type'        => $typeMap[$options['type']],
@@ -115,16 +120,28 @@ class SchemaFactory extends ViewableData
      */
     protected function getStoreFields(): array
     {
+        if (isset(static::$storeFields[$this->index->getIndexName()])) {
+            return static::$storeFields[$this->index->getIndexName()];
+        }
+
         $boostedFields = $this->index->getBoostedFields();
         $storedFields = $this->index->getStoredFields();
         $facetFields = $this->index->getFacetFields();
         $facetArray = [];
-        foreach ($facetFields as $key => $facetField) {
-            $facetArray[] = $key . '.' . $facetField['Field'];
+        foreach ($facetFields as $facetField) {
+            $facetArray[] = $facetField['BaseClass'] . '.' . $facetField['Field'];
         }
 
         // Boosts, facets and obviously stored fields need to be stored
-        return array_merge($storedFields, array_keys($boostedFields), $facetArray);
+        $storeFields = array_merge($storedFields, array_keys($boostedFields), $facetArray);
+
+        foreach ($storeFields as &$field) {
+            $field = getShortFieldName(str_replace('.', '_', $field));
+        }
+
+        static::$storeFields[$this->index->getIndexName()] = $storeFields;
+
+        return $storeFields;
     }
 
     /**
