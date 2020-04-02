@@ -51,8 +51,9 @@ class QueryComponentFactory
         'ClassFilter',
         'Filters',
         'Excludes',
-        'Facets',
-        'AndFacetQuery',
+        'QueryFacets',
+        'AndFacetFilterQuery',
+        'OrFacetFilterQuery',
         'Spellcheck',
     ];
     /**
@@ -246,6 +247,23 @@ class QueryComponentFactory
     }
 
     /**
+     * Get the escaped search string, or, if empty, a global search
+     *
+     * @param array $search
+     * @return string
+     */
+    protected function getBuildTerm($search)
+    {
+        $term = $search['text'];
+        $term = $this->escapeSearch($term);
+        if ($term === '') {
+            $term = '*:*';
+        }
+
+        return $term;
+    }
+
+    /**
      * Escape the search query
      *
      * @param string $searchTerm
@@ -305,22 +323,5 @@ class QueryComponentFactory
         $spellcheck->setCollate(true);
         $spellcheck->setExtendedResults(true);
         $spellcheck->setCollateExtendedResults(true);
-    }
-
-    /**
-     * Get the escaped search string, or, if empty, a global search
-     *
-     * @param array $search
-     * @return string
-     */
-    protected function getBuildTerm($search)
-    {
-        $term = $search['text'];
-        $term = $this->escapeSearch($term);
-        if ($term === '') {
-            $term = '*:*';
-        }
-
-        return $term;
     }
 }

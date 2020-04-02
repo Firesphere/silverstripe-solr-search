@@ -128,10 +128,12 @@ class SolrLogger
     {
         // Not covered in tests. It's only here to make sure the connection isn't closed by a child process
         $conn = DB::is_active();
+        // @codeCoverageIgnoreStart
         if (!$conn) {
             $config = DB::getConfig();
             DB::connect($config);
         }
+        // @codeCoverageIgnoreEnd
         if (!SolrLog::get()->filter($filter)->exists()) {
             $logData = [
                 'Message' => $error['message'],

@@ -37,14 +37,26 @@ trait BaseQueryTrait
     protected $fields = [];
 
     /**
-     * Key => value pairs of facets to apply
+     * Key => value pairs of facets to apply in AND fashion
      * [
-     *     'FacetTitle' => [1, 2, 3]
+     *     'FacetTitle' => [1, 2, 3],
+     *     'FacetTitle2' => [1, 2, 3]
      * ]
      *
      * @var array
      */
-    protected $facetFilter = [];
+    protected $andFacetFilter = [];
+
+    /**
+     * Key => value pairs of facets to apply in OR fashion
+     * [
+     *     'FacetTitle' => [1, 2, 3],
+     *     'FacetTitle2' => [1, 2, 3]
+     * ]
+     *
+     * @var array
+     */
+    protected $orFacetFilter = [];
 
     /**
      * @var array Fields to exclude
@@ -131,7 +143,7 @@ trait BaseQueryTrait
     }
 
     /**
-     * Add faceting
+     * Add faceting fields that need to be faceted in an AND format
      *
      * @param string $field Field to facet
      * @param string|array $value Value to facet
@@ -139,7 +151,39 @@ trait BaseQueryTrait
      */
     public function addFacetFilter($field, $value): self
     {
-        $this->facetFilter[$field][] = $value;
+        $value = is_array($value) ? $value : [$value];
+        foreach ($value as $item) {
+            $this->andFacetFilter[$field][] = $item;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Stub for addFacetFilter to add an AND filter
+     *
+     * @param string $field
+     * @param string|array $value
+     * @return $this
+     */
+    public function addAndFacetFilter($field, $value): self
+    {
+        return $this->addFacetFilter($field, $value);
+    }
+
+    /**
+     * Add faceting that need to be faceted in an OR formats
+     *
+     * @param string $field Field to facet
+     * @param string|array $value Value to facet
+     * @return $this
+     */
+    public function addOrFacetFilter($field, $value): self
+    {
+        $value = is_array($value) ? $value : [$value];
+        foreach ($value as $item) {
+            $this->orFacetFilter[$field][] = $item;
+        }
 
         return $this;
     }

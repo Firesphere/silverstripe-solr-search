@@ -44,6 +44,7 @@ class SolrConfigureJob extends AbstractQueuedJob
      * @throws ReflectionException
      * @throws GuzzleException
      * @throws ValidationException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function process()
     {

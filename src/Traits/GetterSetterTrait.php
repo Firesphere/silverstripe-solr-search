@@ -43,10 +43,20 @@ trait GetterSetterTrait
      *      'Field' => 'ChannelID',
      *      'Title' => 'Channel'
      * ],
+     * Object::class   => [
+     *      'BaseClass' => Object::class,
+     *      'Field' => 'Relation.ID',
+     *      'Title' => 'Relation'
+     * ],
+     *
+     * The facets will be applied as a single "AND" query.
+     * e.g. SiteTree_ChannelID:1 with Object_Relation_ID:5 will not be found,
+     * if the facet filter requires the SiteTree_ChannelID to be 1 AND Object_Relation_ID to be 3 or 6
      *
      * @var array
      */
     protected $facetFields = [];
+
 
     /**
      * Set the classes
@@ -62,24 +72,6 @@ trait GetterSetterTrait
     }
 
     /**
-     * Add a class to index or query
-     * $options is not used anymore, added for backward compatibility
-     *
-     * @param $class
-     * @param array $options unused
-     * @return $this
-     */
-    public function addClass($class, $options = []): self
-    {
-        if (count($options)) {
-            Deprecation::notice('5.0', 'Options are not used anymore');
-        }
-        $this->class[] = $class;
-
-        return $this;
-    }
-
-    /**
      * Get classes
      *
      * @return array
@@ -90,7 +82,25 @@ trait GetterSetterTrait
     }
 
     /**
+     * Add a class to index or query
+     * $options is not used anymore, added for backward compatibility
+     *
+     * @param $class
+     * @param array $options unused
+     * @return $this
+     */
+    public function addClass($class, $options = []): self
+    {
+        $this->class[] = $class;
+
+        return $this;
+    }
+
+    /**
      * Add a boosted field to be boosted at query time
+     *
+     * This method is out of place in a way, but it's a shared method
+     * between Index and Query, thus needs to be here.
      *
      * @param string $field
      * @param array|int $options

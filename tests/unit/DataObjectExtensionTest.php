@@ -157,6 +157,14 @@ class DataObjectExtensionTest extends SapphireTest
         $counted2 = $count->getMatches()->count();
 
         $this->assertNotEquals($counted, $counted2);
+        $page->ShowInSearch = true;
+        $page->doReindex();
+
+        $count = (new TestIndex())->doSearch($query);
+
+        $counted2 = $count->getMatches()->count();
+
+        $this->assertEquals($counted, $counted2);
     }
 
     protected function setUp()

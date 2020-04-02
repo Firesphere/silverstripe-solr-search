@@ -6,6 +6,7 @@ Firesphere\SolrSearch\Indexes\BaseIndex:
       - Content
       - TestObject.Title
       - TestObject.TestRelation.Title
+      - RelationObject.Title
     SortFields: []
     FilterFields:
       - Title

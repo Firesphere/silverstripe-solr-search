@@ -25,6 +25,10 @@ class TestPage extends Page implements TestOnly
     private static $has_many = [
     ];
 
+    private static $many_many = [
+        'RelationObject' => TestRelationObject::class,
+    ];
+
     /**
      * @return string
      */

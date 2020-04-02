@@ -16,6 +16,10 @@ class TestRelationObject extends DataObject implements TestOnly
         'TestObject' => TestObject::class,
     ];
 
+    private static $belongs_many_many = [
+        'TestPages' => TestPage::class,
+    ];
+
     public function canView($member = null)
     {
         return true;
