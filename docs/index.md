@@ -2,6 +2,10 @@
 
 Advanced searching for SilverStripe with Solr. Versions 4-8+ are supported.
 
+**NOTE**
+
+The code in this documentation is "pseudo-code"; it may not exactly work, but serves as example.
+
 ## Table of Contents
 
 01. [Installation](01-Installation.md)

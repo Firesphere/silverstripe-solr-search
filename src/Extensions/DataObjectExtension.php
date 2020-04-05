@@ -27,7 +27,6 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\InheritedPermissionsExtension;
-use SilverStripe\Security\Member;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\Versioned;
 
@@ -67,22 +66,6 @@ class DataObjectExtension extends DataExtension
         if ($this->shouldPush() && !$owner->hasExtension(Versioned::class)) {
             $this->pushToSolr($owner);
         }
-    }
-
-    /**
-     * Reindex this owner object in Solr
-     * This is a simple stub for the push method, for semantic reasons
-     * It should never be called on Objects that are not a valid class for any Index
-     * It does not check if the class is valid to be pushed to Solr
-     *
-     * @throws GuzzleException
-     * @throws ReflectionException
-     * @throws ValidationException
-     * @throws InvalidArgumentException
-     */
-    public function doReindex()
-    {
-        $this->pushToSolr($this->owner);
     }
 
     /**
@@ -133,12 +116,12 @@ class DataObjectExtension extends DataExtension
             // If we don't get an exception, mark the item as clean
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
-        } catch (Exception $error) {
             // @codeCoverageIgnoreStart
+        } catch (Exception $error) {
             Versioned::set_reading_mode($mode);
             $this->registerException($ids, $record, $error);
-            // @codeCoverageIgnoreEnd
         }
+        // @codeCoverageIgnoreEnd
         Versioned::set_reading_mode($mode);
     }
 
@@ -215,6 +198,22 @@ class DataObjectExtension extends DataExtension
     }
 
     /**
+     * Reindex this owner object in Solr
+     * This is a simple stub for the push method, for semantic reasons
+     * It should never be called on Objects that are not a valid class for any Index
+     * It does not check if the class is valid to be pushed to Solr
+     *
+     * @throws GuzzleException
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws InvalidArgumentException
+     */
+    public function doReindex()
+    {
+        $this->pushToSolr($this->owner);
+    }
+
+    /**
      * Push the item to Solr after publishing
      *
      * @throws ValidationException
@@ -252,11 +251,11 @@ class DataObjectExtension extends DataExtension
             // If successful, remove it from the array
             // Added bonus, array_flip removes duplicates
             $this->clearIDs($owner, $ids, $record);
-        } catch (Exception $error) {
             // @codeCoverageIgnoreStart
+        } catch (Exception $error) {
             $this->registerException($ids, $record, $error);
-            // @codeCoverageIgnoreEnd
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**

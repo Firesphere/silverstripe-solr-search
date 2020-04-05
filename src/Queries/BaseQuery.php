@@ -329,24 +329,68 @@ class BaseQuery
     }
 
     /**
-     * Get the facet filtering
+     * Get the AND facet filtering
      *
      * @return array
      */
     public function getFacetFilter(): array
     {
-        return $this->facetFilter;
+        return $this->andFacetFilter;
     }
 
     /**
-     * Set the facet filtering
+     * Set the AND based facet filtering
      *
      * @param array $facetFilter
      * @return BaseQuery
      */
     public function setFacetFilter(array $facetFilter): self
     {
-        $this->facetFilter = $facetFilter;
+        $this->andFacetFilter = $facetFilter;
+
+        return $this;
+    }
+
+    /**
+     * Stub for AND facets to be get
+     *
+     * @return array
+     */
+    public function getAndFacetFilter(): array
+    {
+        return $this->getFacetFilter();
+    }
+
+    /**
+     * Stub for AND facets to be set
+     *
+     * @param array $facetFilter
+     * @return BaseQuery
+     */
+    public function setAndFacetFilter(array $facetFilter): self
+    {
+        return $this->setFacetFilter($facetFilter);
+    }
+
+    /**
+     * Get the OR based facet filtering
+     *
+     * @return array
+     */
+    public function getOrFacetFilter(): array
+    {
+        return $this->orFacetFilter;
+    }
+
+    /**
+     * Set the OR based facet filtering
+     *
+     * @param array $facetFilter
+     * @return BaseQuery
+     */
+    public function setOrFacetFilter(array $facetFilter): self
+    {
+        $this->orFacetFilter = $facetFilter;
 
         return $this;
     }

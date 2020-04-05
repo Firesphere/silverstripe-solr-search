@@ -39,13 +39,15 @@ trait QueryComponentFacetTrait
     protected $clientQuery;
 
     /**
-     * Add facets from the index
+     * Add facets from the index, to make sure Solr returns
+     * the expected facets and their respective count on the
+     * correct fields
      */
-    protected function buildFacets(): void
+    protected function buildQueryFacets(): void
     {
         $facets = $this->clientQuery->getFacetSet();
         // Facets should be set from the index configuration
-        foreach ($this->index->getFacetFields() as $class => $config) {
+        foreach ($this->index->getFacetFields() as $config) {
             $shortClass = getShortFieldName($config['BaseClass']);
             $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
             /** @var Field $facet */
@@ -59,12 +61,12 @@ trait QueryComponentFacetTrait
     /**
      * Add AND facet filters based on the current request
      */
-    protected function buildAndFacetQuery()
+    protected function buildAndFacetFilterQuery()
     {
-        $filterFacets = $this->query->getFacetFilter();
+        $filterFacets = $this->query->getAndFacetFilter();
         /** @var null|Criteria $criteria */
         $criteria = null;
-        foreach ($this->index->getFacetFields() as $class => $config) {
+        foreach ($this->index->getFacetFields() as $config) {
             if (isset($filterFacets[$config['Title']])) {
                 // For the API generator, this needs to be old style list();
                 list($filter, $field) = $this->getFieldFacets($filterFacets, $config);
@@ -73,25 +75,29 @@ trait QueryComponentFacetTrait
         }
         if ($criteria) {
             $this->clientQuery
-                ->createFilterQuery('facets')
+                ->createFilterQuery('andFacets')
                 ->setQuery($criteria->getQuery());
         }
     }
 
     /**
-     * Combine all facets as AND facet filters for the results
-     *
-     * @param null|Criteria $criteria
-     * @param string $field
-     * @param array $filter
+     * Add OR facet filters based on the current request
      */
-    protected function createFacetCriteria(&$criteria, string $field, array $filter)
+    protected function buildOrFacetFilterQuery()
     {
-        if (!$criteria) {
-            $criteria = Criteria::where($field)->is(array_pop($filter));
-        }
-        foreach ($filter as $filterValue) {
-            $criteria->andWhere($field)->is($filterValue);
+        $filterFacets = $this->query->getOrFacetFilter();
+        $i = 0;
+        /** @var null|Criteria $criteria */
+        foreach ($this->index->getFacetFields() as $config) {
+            $criteria = null;
+            if (isset($filterFacets[$config['Title']])) {
+                // For the API generator, this needs to be old style list();
+                list($filter, $field) = $this->getFieldFacets($filterFacets, $config);
+                $this->createFacetCriteria($criteria, $field, $filter);
+                $this->clientQuery
+                    ->createFilterQuery('orFacet-' . $i++)
+                    ->setQuery($criteria->getQuery());
+            }
         }
     }
 
@@ -111,5 +117,24 @@ trait QueryComponentFacetTrait
         $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
 
         return [$filter, $field];
+    }
+
+    /**
+     * Combine all facets as AND facet filters for the results
+     *
+     * @param null|Criteria $criteria
+     * @param string $field
+     * @param array $filter
+     */
+    protected function createFacetCriteria(&$criteria, string $field, array $filter)
+    {
+        // If the criteria is empty, create a new one with a value from the filter array
+        if (!$criteria) {
+            $criteria = Criteria::where($field)->is(array_pop($filter));
+        }
+        // Add the other items in the filter array, as an AND
+        foreach ($filter as $filterValue) {
+            $criteria->andWhere($field)->is($filterValue);
+        }
     }
 }

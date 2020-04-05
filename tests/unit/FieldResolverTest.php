@@ -93,6 +93,21 @@ class FieldResolverTest extends SapphireTest
         ];
 
         $this->assertEquals($expected, $factory->resolveField('TestObject.TestRelation.Title'));
+
+        $expected = [
+            SiteTree::class . '_RelationObject_Title' =>
+                [
+                    'name'         => SiteTree::class . '_RelationObject_Title',
+                    'field'        => 'Title',
+                    'fullfield'    => 'RelationObject_Title',
+                    'origin'       => SiteTree::class,
+                    'class'        => TestRelationObject::class,
+                    'type'         => 'Varchar',
+                    'multi_valued' => true,
+                ],
+        ];
+
+        $this->assertEquals($expected, $factory->resolveField('RelationObject.Title'));
     }
 
     protected function setUp()

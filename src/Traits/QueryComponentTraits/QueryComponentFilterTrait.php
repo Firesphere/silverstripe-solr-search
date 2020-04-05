@@ -34,6 +34,19 @@ trait QueryComponentFilterTrait
     protected $clientQuery;
 
     /**
+     * Create filter queries
+     */
+    protected function buildFilters(): void
+    {
+        $filters = $this->query->getFilter();
+        foreach ($filters as $field => $value) {
+            $criteria = $this->buildCriteriaFilter($field, $value);
+            $this->clientQuery->createFilterQuery('filter-' . $field)
+                ->setQuery($criteria->getQuery());
+        }
+    }
+
+    /**
      * Convert a field/value filter pair to a Criteria object that can build part of a Solr query.
      * If a Criteria object is passed as the value, it will be returned unmodified.
      *
@@ -48,20 +61,8 @@ trait QueryComponentFilterTrait
         }
 
         $value = (array)$value;
-        return Criteria::where($field)->in($value);
-    }
 
-    /**
-     * Create filter queries
-     */
-    protected function buildFilters(): void
-    {
-        $filters = $this->query->getFilter();
-        foreach ($filters as $field => $value) {
-            $criteria = $this->buildCriteriaFilter($field, $value);
-            $this->clientQuery->createFilterQuery('filter-' . $field)
-                ->setQuery($criteria->getQuery());
-        }
+        return Criteria::where($field)->in($value);
     }
 
     /**

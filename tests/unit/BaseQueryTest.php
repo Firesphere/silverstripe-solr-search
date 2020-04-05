@@ -76,8 +76,30 @@ class BaseQueryTest extends SapphireTest
         $this->assertTrue($this->query->shouldFollowSpellcheck());
         $this->query->addFacetFilter('Test', 'test');
         $this->assertEquals(['Test' => ['test']], $this->query->getFacetFilter());
+        $this->assertEquals(['Test' => ['test']], $this->query->getAndFacetFilter());
         $this->query->setFacetFilter(['Testing' => [1, 2]]);
         $this->assertEquals(['Testing' => [1, 2]], $this->query->getFacetFilter());
+        $this->assertEquals(['Testing' => [1, 2]], $this->query->getAndFacetFilter());
+        $this->query->setOrFacetFilter(['Testing' => [1, 2]]);
+        $this->query->setAndFacetFilter(['Test' => [1, 2]]);
+        $this->assertEquals(['Test' => [1, 2]], $this->query->getFacetFilter());
+        $this->assertEquals(['Test' => [1, 2]], $this->query->getAndFacetFilter());
+        $this->assertNotEquals(['Testing' => [1, 2]], $this->query->getFacetFilter());
+        $this->assertEquals(['Testing' => [1, 2]], $this->query->getOrFacetFilter());
+        $this->query->addAndFacetFilter('Test2', [3, 4]);
+        $this->assertEquals($this->query->getAndFacetFilter(), $this->query->getFacetFilter());
+        $expected = [
+            'Test' => [1, 2],
+            'Test2' => [3, 4]
+        ];
+        $this->assertEquals($expected, $this->query->getAndFacetFilter());
+        $this->query->addOrFacetFilter('Test', [2, 3]);
+        $this->assertNotEquals($this->query->getAndFacetFilter(), $this->query->getOrFacetFilter());
+        $expected = [
+            'Testing' => [1, 2],
+            'Test' => [2, 3]
+        ];
+        $this->assertEquals($expected, $this->query->getOrFacetFilter());
     }
 
     protected function setUp()

@@ -180,7 +180,6 @@ class SolrCoreServiceTest extends SapphireTest
         /** @var CacheInterface $cache */
         $cache = Injector::inst()->get(CacheInterface::class . '.SolrCache');
         $this->assertEquals($expected, $cache->get('ValidClasses'));
-
     }
 
     public function testGetSetAdmin()

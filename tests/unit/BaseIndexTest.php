@@ -83,7 +83,7 @@ class BaseIndexTest extends SapphireTest
 
         $index = new TestIndexTwo();
 
-        $this->assertCount(3, $index->getFulltextFields());
+        $this->assertCount(4, $index->getFulltextFields());
         $this->assertCount(1, $index->getFacetFields());
     }
 
@@ -152,14 +152,38 @@ class BaseIndexTest extends SapphireTest
         /** @var ArrayList $parents */
         $query->addFacetFilter('Parent', $id);
         $result = $index->buildSolrQuery($query);
-        $filterQuery = $result->getFilterQuery('facets');
+        $filterQuery = $result->getFilterQuery('andFacets');
         $this->assertEquals('SiteTree_ParentID:' . $id, $filterQuery->getQuery());
         $query->addFacetFilter('Parent', 5);
-        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('facets');
+        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('andFacets');
         $this->assertContains('SiteTree_ParentID:5 AND SiteTree_ParentID:' . $id, $filterQuery->getQuery());
+        $index->addFacetField(Page::class, ['BaseClass' => SiteTree::class, 'Field' => 'ParentID', 'Title' => 'Child']);
+        $query->addOrFacetFilter('Parent', 3);
+        $query->addOrFacetFilter('Child', 5);
+        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('orFacet-0');
+        $this->assertNotContains('SiteTree_ParentID:3 AND SiteTree_ParentID:5', $filterQuery->getQuery());
+        $this->assertEquals('SiteTree_ParentID:3', $filterQuery->getQuery());
+        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('orFacet-1');
+        $this->assertEquals('SiteTree_ParentID:5', $filterQuery->getQuery());
         $query->setHighlight(['Test']);
         $result = $index->doSearch($query);
         $this->assertInstanceOf(Highlighting::class, $result->getHighlight());
+
+        $testFacets = [
+            SiteTree::class => [
+                'BaseClass' => SiteTree::class,
+                'Title'     => 'Child',
+                'Field'     => 'Children.ID'
+            ]
+        ];
+
+        $originalFacets = $index->getFacetFields();
+
+        $index->setFacetFields($testFacets);
+
+        $this->assertEquals($testFacets, $index->getFacetFields());
+
+        $index->setFacetFields($originalFacets);
     }
 
     public function testStoredFields()

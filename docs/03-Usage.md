@@ -164,7 +164,9 @@ to create in the first step of this document.
 
 #### Moving from init to YML
 
-The [compatibility module](11-Submodules/01-Fulltext-Search-Compatibility.md) has an optional extension method that allows you to build your index and then generate the YML content for you. See the compatibility module for more details.
+The [compatibility module](11-Submodules/01-Fulltext-Search-Compatibility.md) has an optional extension 
+method that allows you to build your index and then generate the YML content for you. 
+See the compatibility module for more details.
 
 ## Grouped indexing
 
@@ -393,10 +395,6 @@ class FacetedObject
     }
 }
 ```
-
-**NOTE**
-
-The code in this documentation is "pseudo-code"; it may not exactly work, but serves as example.
  
 ----------
 <sup>1</sup> Although not required, it's highly recommended
