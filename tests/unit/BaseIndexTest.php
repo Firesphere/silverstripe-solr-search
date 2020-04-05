@@ -162,6 +162,9 @@ class BaseIndexTest extends SapphireTest
         $query->addOrFacetFilter('Child', 5);
         $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('orFacet-0');
         $this->assertNotContains('SiteTree_ParentID:3 AND SiteTree_ParentID:5', $filterQuery->getQuery());
+        $this->assertEquals('SiteTree_ParentID:3', $filterQuery->getQuery());
+        $filterQuery = $index->buildSolrQuery($query)->getFilterQuery('orFacet-1');
+        $this->assertEquals('SiteTree_ParentID:5', $filterQuery->getQuery());
         $query->setHighlight(['Test']);
         $result = $index->doSearch($query);
         $this->assertInstanceOf(Highlighting::class, $result->getHighlight());
