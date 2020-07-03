@@ -13,7 +13,6 @@ use Countable;
 use Firesphere\SolrSearch\Models\SolrLog;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
@@ -21,6 +20,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\ValidationException;
+use Solarium\Exception\HttpException;
 
 /**
  * Class SolrLogger
@@ -62,7 +62,7 @@ class SolrLogger
      * @param string $type
      * @param string $message
      * @param string $index
-     * @throws GuzzleException
+     * @throws HttpException
      * @throws ValidationException
      */
     public static function logMessage($type, $message, $index): void
@@ -92,7 +92,7 @@ class SolrLogger
      * Save the latest Solr errors to the log
      *
      * @param string $type
-     * @throws GuzzleException
+     * @throws HttpException
      * @throws ValidationException
      */
     public function saveSolrLog($type = 'Query'): void

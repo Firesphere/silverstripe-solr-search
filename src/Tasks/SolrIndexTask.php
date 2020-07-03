@@ -17,7 +17,6 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use Firesphere\SolrSearch\Traits\SolrIndexTrait;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
 use SilverStripe\Control\Controller;
@@ -32,6 +31,7 @@ use SilverStripe\ORM\DB;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
+use Solarium\Exception\HttpException;
 
 /**
  * Class SolrIndexTask
@@ -43,6 +43,7 @@ class SolrIndexTask extends BuildTask
 {
     use LoggerTrait;
     use SolrIndexTrait;
+
     /**
      * URLSegment of this task
      *
@@ -97,7 +98,7 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request Current request
      * @return int|bool
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HttpException
      */
     public function run($request)
     {
@@ -188,7 +189,7 @@ class SolrIndexTask extends BuildTask
      * @param int $group Group to index
      * @return int
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HttpException
      */
     protected function indexClassForIndex($classes, $isGroup, $group): int
     {
@@ -207,7 +208,7 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @param int $group Group to index
      * @return int
-     * @throws GuzzleException
+     * @throws HttpException
      * @throws ValidationException
      */
     private function indexClass($isGroup, $class, int $group): int
@@ -220,7 +221,7 @@ class SolrIndexTask extends BuildTask
                 if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
                     $group = $this->spawnChildren($class, $group, $groups);
-                // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
                 } else {
                     $this->doReindex($group, $class);
                 }
@@ -278,7 +279,7 @@ class SolrIndexTask extends BuildTask
      * @param int $groups Total amount of groups
      * @return int Last group indexed
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HttpException
      */
     private function spawnChildren($class, int $group, int $groups): int
     {
@@ -314,7 +315,7 @@ class SolrIndexTask extends BuildTask
      * @param array $pids Array of all the child Process IDs
      * @param int $start Start point for the objects
      * @return void
-     * @throws GuzzleException
+     * @throws \HttpException
      * @throws ValidationException
      */
     private function runForkedChild($class, array &$pids, int $start): void
@@ -334,7 +335,7 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @param int $pid PID of the child
      * @param int $start Position to start
-     * @throws GuzzleException
+     * @throws HttpException
      * @throws ValidationException
      * @throws Exception
      */
@@ -431,7 +432,7 @@ class SolrIndexTask extends BuildTask
      * @param string $index Index that is currently running
      * @param int $group Group currently attempted to index
      * @param Exception $exception Exception that's been thrown
-     * @throws GuzzleException
+     * @throws HttpException
      * @throws ValidationException
      */
     private function logException($index, int $group, Exception $exception): void

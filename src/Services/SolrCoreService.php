@@ -28,7 +28,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 use Solarium\Client;
-use Solarium\Core\Client\Adapter\Guzzle;
+use Solarium\Core\Client\Adapter\Psr18Adapter;
 use Solarium\Core\Client\Client as CoreClient;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
@@ -47,6 +47,7 @@ class SolrCoreService
     use Configurable;
     use CoreServiceTrait;
     use CoreAdminTrait;
+
     /**
      * Unique ID in Solr
      */
@@ -94,7 +95,7 @@ class SolrCoreService
     {
         $config = static::config()->get('config');
         $this->client = new Client($config);
-        $this->client->setAdapter(new Guzzle());
+        $this->client->setAdapter(new Psr18Adapter());
         $this->admin = $this->client->createCoreAdmin();
         $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
         $this->filterIndexes();

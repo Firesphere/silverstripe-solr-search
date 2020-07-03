@@ -25,6 +25,7 @@ class BaseQuery
     use GetterSetterTrait;
     use BaseQueryTrait;
     use Injectable;
+
     /**
      * @var int Pagination start
      */
@@ -329,6 +330,16 @@ class BaseQuery
     }
 
     /**
+     * Stub for AND facets to be get
+     *
+     * @return array
+     */
+    public function getAndFacetFilter(): array
+    {
+        return $this->getFacetFilter();
+    }
+
+    /**
      * Get the AND facet filtering
      *
      * @return array
@@ -336,6 +347,17 @@ class BaseQuery
     public function getFacetFilter(): array
     {
         return $this->andFacetFilter;
+    }
+
+    /**
+     * Stub for AND facets to be set
+     *
+     * @param array $facetFilter
+     * @return BaseQuery
+     */
+    public function setAndFacetFilter(array $facetFilter): self
+    {
+        return $this->setFacetFilter($facetFilter);
     }
 
     /**
@@ -349,27 +371,6 @@ class BaseQuery
         $this->andFacetFilter = $facetFilter;
 
         return $this;
-    }
-
-    /**
-     * Stub for AND facets to be get
-     *
-     * @return array
-     */
-    public function getAndFacetFilter(): array
-    {
-        return $this->getFacetFilter();
-    }
-
-    /**
-     * Stub for AND facets to be set
-     *
-     * @param array $facetFilter
-     * @return BaseQuery
-     */
-    public function setAndFacetFilter(array $facetFilter): self
-    {
-        return $this->setFacetFilter($facetFilter);
     }
 
     /**

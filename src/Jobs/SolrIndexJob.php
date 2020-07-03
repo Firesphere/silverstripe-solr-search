@@ -12,11 +12,11 @@ namespace Firesphere\SolrSearch\Jobs;
 use Exception;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
-use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use Solarium\Exception\HttpException;
 use stdClass;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
@@ -64,7 +64,7 @@ class SolrIndexJob extends AbstractQueuedJob
      *
      * @return self
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     public function process()
     {

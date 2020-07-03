@@ -18,13 +18,13 @@ use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
-use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ValidationException;
+use Solarium\Exception\HttpException;
 
 /**
  * Class ClearDirtyClasses Clear out classes that were not succesfully updated or deleted in Solr.
@@ -37,6 +37,7 @@ use SilverStripe\ORM\ValidationException;
 class ClearDirtyClassesTask extends BuildTask
 {
     use LoggerTrait;
+
     /**
      * @var string URLSegment
      */
@@ -58,7 +59,7 @@ class ClearDirtyClassesTask extends BuildTask
      *
      * @param HTTPRequest $request
      * @return void
-     * @throws GuzzleException
+     * @throws HttpException
      * @throws ReflectionException
      * @throws ValidationException
      */

@@ -25,6 +25,7 @@ use SilverStripe\ORM\DataObjectSchema;
 class FieldResolver
 {
     use GetSetSearchResolverTrait;
+
     /**
      * @var array Class Ancestry
      */

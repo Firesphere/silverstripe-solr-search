@@ -14,8 +14,8 @@ namespace Firesphere\SolrSearch\Traits;
 use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
-use GuzzleHttp\Exception\GuzzleException;
 use Solarium\Client;
+use Solarium\Exception\HttpException;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 
@@ -43,7 +43,7 @@ trait CoreAdminTrait
      * @param ConfigStore $configStore
      * @return bool
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     public function coreCreate($core, $configStore): bool
     {

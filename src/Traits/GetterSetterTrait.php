@@ -10,8 +10,6 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-use SilverStripe\Dev\Deprecation;
-
 /**
  * Trait GetterSetterTrait for getting and setting data
  *
