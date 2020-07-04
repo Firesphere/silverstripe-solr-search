@@ -103,7 +103,6 @@ class SolrCoreService
         $eventDispatcher = new EventDispatcher();
         $adapter = new Psr18Adapter($httpClient, $requestFactory, $streamFactory);
         $this->client = new Client($adapter, $eventDispatcher, $config);
-//        $this->client->setAdapter($adapter);
         $this->admin = $this->client->createCoreAdmin();
         $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
         $this->filterIndexes();
