@@ -3,6 +3,12 @@
 Best practice is to use composer:
 `composer require firesphere/solr-search`
 
+## Versions
+
+Version `^1.0` is compatible with PHP 7.x
+
+Version `^2.0` is compatible only with PHP >= 7.2
+
 ## Manual setup
 
 - Create a clean installation of SilverStripe 4 (`composer create-project`)

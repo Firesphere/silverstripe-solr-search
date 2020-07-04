@@ -36,6 +36,11 @@ Solr8
 
 `composer require firesphere/solr-search`
 
+
+Version `^1.0` is compatible with PHP 7.x
+
+Version `^2.0` is compatible only with PHP >= 7.2
+
 More details can be found in the [docs](https://firesphere.github.io/solr-docs/01-Installation.html).
 
 # Cow?
