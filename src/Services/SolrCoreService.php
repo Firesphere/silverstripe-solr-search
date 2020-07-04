@@ -17,7 +17,14 @@ use Firesphere\SolrSearch\Traits\CoreAdminTrait;
 use Firesphere\SolrSearch\Traits\CoreServiceTrait;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
+use Http\Client\Common\FlexibleHttpClient;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Factory\Guzzle\StreamFactory;
 use LogicException;
+use Psr\Http\Client\ClientInterface;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\ClassInfo;
@@ -95,7 +102,11 @@ class SolrCoreService
     {
         $config = static::config()->get('config');
         $this->client = new Client($config);
-        $this->client->setAdapter(new Psr18Adapter());
+        $httpClient = HTTPClientDiscovery::find();
+        $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
+        $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
+        $adapter = new Psr18Adapter($httpClient, $requestFactory, $streamFactory);
+        $this->client->setAdapter($adapter);
         $this->admin = $this->client->createCoreAdmin();
         $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
         $this->filterIndexes();
