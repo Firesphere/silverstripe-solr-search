@@ -108,12 +108,8 @@ abstract class BaseIndex
         // Set up the client
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
-        $httpClient = HTTPClientDiscovery::find();
-        $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
-        $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
-        $eventDispatcher = new EventDispatcher();
-        $adapter = new Psr18Adapter($httpClient, $requestFactory, $streamFactory);
-        $this->client = new SolariumClient($adapter, $eventDispatcher, $config);
+        $this->client = (new SolrCoreService())->getClient();
+        $this->client->setOptions($config);
 
         // Set up the schema service, only used in the generation of the schema
         $schemaFactory = Injector::inst()->get(SchemaFactory::class, false);
