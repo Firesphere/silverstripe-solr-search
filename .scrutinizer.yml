@@ -2,6 +2,8 @@ checks:
   php: true
 
 build:
+  environment:
+    php: 7.2.13
   nodes:
     analysis:
       tests:
