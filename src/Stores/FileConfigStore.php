@@ -16,7 +16,6 @@ use Solarium\Exception\RuntimeException;
 /**
  * Class FileConfigStore
  * Store the config in a file storage on the local file system.
- * Store the config in a file storage on the local file system, usually in project/.solr/indexname
  *
  * @package Firesphere\SolrSearch\Stores
  */
@@ -57,7 +56,8 @@ class FileConfigStore implements ConfigStore
     public function uploadFile($index, $file)
     {
         $targetDir = $this->getTargetDir($index);
-        copy($file, $targetDir . '/' . basename($file));
+        $target = sprintf('%s/%s', $targetDir, basename($file));
+        copy($file, $target);
     }
 
     /**
@@ -104,7 +104,8 @@ class FileConfigStore implements ConfigStore
     public function uploadString($index, $filename, $string)
     {
         $targetDir = $this->getTargetDir($index);
-        file_put_contents(sprintf('%s/%s', $targetDir, $filename), $string);
+        $target = sprintf('%s/%s', $targetDir, $filename);
+        file_put_contents($target, $string);
     }
 
     /**
