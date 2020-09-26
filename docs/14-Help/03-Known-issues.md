@@ -38,10 +38,23 @@ These errors are _not_ related to this module, but on how Vagrant is set up on L
 The name of your web user could be different, so make sure you get it right.
 After updating the group permissions, be sure to log out and back in again.
 
-## Solr and Vagrant issues
+## Solr and permission issues
 
-It's also known that Solr won't properly reload cores on Vagrant VM's. This is outside
+It's also known that Solr won't properly reload cores when the permissions are wrong. This is outside
 of control for this module, it is advised to restart Solr before and after a config change.
+
+The best way to set the permissions, is to execute the following commands on the Solr target folder (Default /var/solr).
+
+```shell script
+usermod -a -G www-data solr
+groups solr
+usermod -a -G solr www-data
+groups www-data
+chown -R solr:www-data /var/solr
+chmod -R u+rwxs,g+rwxs /var/solr
+```
+
+Replace `www-data` with your own web user.
 
 ## Solr is running as the wrong user
 

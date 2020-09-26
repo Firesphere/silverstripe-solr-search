@@ -17,6 +17,8 @@ use Solarium\Component\Result\Highlighting\Highlighting;
 /**
  * Trait SearchResultGetTrait
  *
+ * Getters for search results to keep the {@link SearchResult} class clean.
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait SearchResultGetTrait

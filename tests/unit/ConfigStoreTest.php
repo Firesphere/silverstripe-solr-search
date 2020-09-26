@@ -19,11 +19,9 @@ class ConfigStoreTest extends SapphireTest
         TestRelationObject::class,
     ];
 
-    /**
-     * @expectedException \Solarium\Exception\RuntimeException
-     */
     public function testFileConstruct()
     {
+        $this->expectException(\Solarium\Exception\RuntimeException::class);
         new FileConfigStore([]);
     }
 
@@ -41,22 +39,18 @@ class ConfigStoreTest extends SapphireTest
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testFileConfigPath()
     {
+        $this->expectException(\RuntimeException::class);
         $config = ['path' => '/sys'];
         $store = new FileConfigStore($config);
 
         $store->getTargetDir('CircleCITestIndex');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testPostConstruct()
     {
+        $this->expectException(\RuntimeException::class);
         new PostConfigStore([]);
     }
 
@@ -76,11 +70,9 @@ class ConfigStoreTest extends SapphireTest
         $this->assertEquals('/', $store->getPath());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testPostConstructNoURI()
     {
+        $this->expectException(\LogicException::class);
         new PostConfigStore(['test' => 'this']);
     }
 

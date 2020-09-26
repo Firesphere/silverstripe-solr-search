@@ -94,6 +94,7 @@ class DataObjectExtensionTest extends SapphireTest
 
     public function testGetExtraClass()
     {
+        /** @var DataObject $cleanDO */
         $cleanDO = DataObject::create();
 
         $extension = new GridFieldExtension();
@@ -102,6 +103,7 @@ class DataObjectExtensionTest extends SapphireTest
         $extension->updateNewRowClasses($emptyClasses, 1, '', $cleanDO);
         $this->assertNotContains('alert alert-warning', $emptyClasses);
 
+        /** @var DataObject|SolrLog $logItem */
         $logItem = SolrLog::create();
         $logItem->Level = 'WARN';
         $emptyClasses = [];

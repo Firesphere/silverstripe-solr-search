@@ -47,6 +47,7 @@ class SolrCoreService
     use Configurable;
     use CoreServiceTrait;
     use CoreAdminTrait;
+
     /**
      * Unique ID in Solr
      */
@@ -303,21 +304,46 @@ class SolrCoreService
             $clientConfig['handler'] = $handler;
         }
 
+        $clientOptions = $this->getSolrAuthentication($firstEndpoint);
+
         $client = new GuzzleClient($clientConfig);
 
-        $result = $client->get('solr/admin/info/system?wt=json');
+        $result = $client->get('solr/admin/info/system?wt=json', $clientOptions);
         $result = json_decode($result->getBody(), 1);
 
-        $return = 7;
-        // Older than 5, newer than 7, a few new features added, only check if the version is still 7
+        $version = 7;
+        // Newer than 4, older than 7, a few new features added
         if (version_compare('6.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $return = 5;
+            $version = 5;
         }
         // Old version 4
         if (version_compare('4.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $return = 4;
+            $version = 4;
         }
 
-        return $return;
+        return $version;
+    }
+
+    /**
+     * This will add the authentication headers to the request.
+     * It's intended to become a helper in the end.
+     *
+     * @param array $firstEndpoint
+     * @return array|array[]
+     */
+    private function getSolrAuthentication($firstEndpoint): array
+    {
+        $clientOptions = [];
+
+        if (isset($firstEndpoint['username']) && isset($firstEndpoint['password'])) {
+            $clientOptions = [
+                'auth' => [
+                    $firstEndpoint['username'],
+                    $firstEndpoint['password']
+                ]
+            ];
+        }
+
+        return $clientOptions;
     }
 }

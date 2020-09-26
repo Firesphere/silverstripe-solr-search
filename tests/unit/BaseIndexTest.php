@@ -15,6 +15,7 @@ use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
 use Page;
+use PHPUnit_Framework_Error;
 use Psr\Log\NullLogger;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
@@ -420,28 +421,22 @@ class BaseIndexTest extends SapphireTest
         $this->assertContains('TestField', $this->index->getSortFields());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testInitException()
     {
+        $this->expectException(\LogicException::class);
         new TestIndexFour();
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testInitExceptionNoKey()
     {
+        $this->expectException(\LogicException::class);
         Config::modify()->set(SolrCoreService::class, 'TestIndexFour', []);
         new TestIndexFour();
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
     public function testNotices()
     {
+        $this->expectException(PHPUnit_Framework_Error::class);
         $this->markTestSkipped('Deprecation does not properly reset, causing issues for other tests');
         Deprecation::set_enabled(true);
         $settings = Deprecation::dump_settings();

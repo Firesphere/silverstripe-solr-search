@@ -37,6 +37,11 @@ class SolrLogger
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $options = [];
+
+    /**
      * SolrLogger constructor.
      *
      * @param null|Countable $handler
@@ -52,6 +57,16 @@ class SolrLogger
             $guzzleConfig['handler'] = $handler;
         }
 
+        if (isset($hostConfig['username']) && isset($hostConfig['password'])) {
+            $this->options = [
+                'auth' => [
+                    $hostConfig['username'],
+                    $hostConfig['password']
+                ]
+            ];
+        }
+
+
         $this->client = new Client($guzzleConfig);
     }
 
@@ -61,22 +76,15 @@ class SolrLogger
      *
      * @param string $type
      * @param string $message
-     * @param string $index
      * @throws GuzzleException
      * @throws ValidationException
      */
-    public static function logMessage($type, $message, $index): void
+    public static function logMessage($type, $message): void
     {
         $solrLogger = new self();
         $solrLogger->saveSolrLog($type);
         /** @var SolrLog $lastError */
-        $lastError = SolrLog::get()
-            ->filter([
-                'Index' => 'x:' . $index,
-                'Level' => $type,
-            ])
-            ->sort('Timestamp DESC')
-            ->first();
+        $lastError = SolrLog::get()->last();
 
         $err = ($lastError === null) ? 'Unknown' : $lastError->getLastErrorLine();
         $message .= 'Last known error:' . PHP_EOL . $err;
@@ -97,12 +105,13 @@ class SolrLogger
      */
     public function saveSolrLog($type = 'Query'): void
     {
-        $response = $this->client->request('GET', 'solr/admin/info/logging', [
+        $options = array_merge($this->options, [
             'query' => [
                 'since' => 0,
                 'wt'    => 'json',
             ],
         ]);
+        $response = $this->client->get('solr/admin/info/logging', $options);
 
         $arrayResponse = json_decode($response->getBody(), true);
 
@@ -170,5 +179,25 @@ class SolrLogger
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * Get the options for Guzzle
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * Set custom options for Guzzle
+     *
+     * @param array $options
+     */
+    public function setOptions(array $options): void
+    {
+        $this->options = $options;
     }
 }

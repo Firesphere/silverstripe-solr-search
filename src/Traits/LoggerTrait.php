@@ -15,6 +15,8 @@ use SilverStripe\Core\Injector\Injector;
 /**
  * Trait LoggerTrait
  *
+ * Trait for getting and setting the logger.
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait LoggerTrait

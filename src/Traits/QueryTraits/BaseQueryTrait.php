@@ -143,6 +143,18 @@ trait BaseQueryTrait
     }
 
     /**
+     * Stub for addFacetFilter to add an AND filter
+     *
+     * @param string $field
+     * @param string|array $value
+     * @return $this
+     */
+    public function addAndFacetFilter($field, $value): self
+    {
+        return $this->addFacetFilter($field, $value);
+    }
+
+    /**
      * Add faceting fields that need to be faceted in an AND format
      *
      * @param string $field Field to facet
@@ -157,18 +169,6 @@ trait BaseQueryTrait
         }
 
         return $this;
-    }
-
-    /**
-     * Stub for addFacetFilter to add an AND filter
-     *
-     * @param string $field
-     * @param string|array $value
-     * @return $this
-     */
-    public function addAndFacetFilter($field, $value): self
-    {
-        return $this->addFacetFilter($field, $value);
     }
 
     /**

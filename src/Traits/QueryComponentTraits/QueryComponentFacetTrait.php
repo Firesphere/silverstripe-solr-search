@@ -81,27 +81,6 @@ trait QueryComponentFacetTrait
     }
 
     /**
-     * Add OR facet filters based on the current request
-     */
-    protected function buildOrFacetFilterQuery()
-    {
-        $filterFacets = $this->query->getOrFacetFilter();
-        $i = 0;
-        /** @var null|Criteria $criteria */
-        foreach ($this->index->getFacetFields() as $config) {
-            $criteria = null;
-            if (isset($filterFacets[$config['Title']])) {
-                // For the API generator, this needs to be old style list();
-                list($filter, $field) = $this->getFieldFacets($filterFacets, $config);
-                $this->createFacetCriteria($criteria, $field, $filter);
-                $this->clientQuery
-                    ->createFilterQuery('orFacet-' . $i++)
-                    ->setQuery($criteria->getQuery());
-            }
-        }
-    }
-
-    /**
      * Get the field and it's respected values to filter on to generate Criteria from
      *
      * @param array $filterFacets
@@ -135,6 +114,27 @@ trait QueryComponentFacetTrait
         // Add the other items in the filter array, as an AND
         foreach ($filter as $filterValue) {
             $criteria->andWhere($field)->is($filterValue);
+        }
+    }
+
+    /**
+     * Add OR facet filters based on the current request
+     */
+    protected function buildOrFacetFilterQuery()
+    {
+        $filterFacets = $this->query->getOrFacetFilter();
+        $index = 0;
+        /** @var null|Criteria $criteria */
+        foreach ($this->index->getFacetFields() as $config) {
+            $criteria = null;
+            if (isset($filterFacets[$config['Title']])) {
+                // For the API generator, this needs to be old style list();
+                list($filter, $field) = $this->getFieldFacets($filterFacets, $config);
+                $this->createFacetCriteria($criteria, $field, $filter);
+                $this->clientQuery
+                    ->createFilterQuery('orFacet-' . $index++)
+                    ->setQuery($criteria->getQuery());
+            }
         }
     }
 }

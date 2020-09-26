@@ -15,7 +15,6 @@ use Solarium\Exception\RuntimeException;
 
 /**
  * Class FileConfigStore
- * Store the config in a file storage on the local file system.
  * Store the config in a file storage on the local file system, usually in project/.solr/indexname
  *
  * @package Firesphere\SolrSearch\Stores

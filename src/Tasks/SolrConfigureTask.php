@@ -201,6 +201,6 @@ class SolrConfigureTask extends BuildTask
             'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL,
             $index
         );
-        SolrLogger::logMessage('ERROR', $msg, $index);
+        SolrLogger::logMessage('ERROR', $msg);
     }
 }

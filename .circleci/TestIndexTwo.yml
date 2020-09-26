@@ -28,3 +28,8 @@ Firesphere\SolrSearch\Services\SolrCoreService:
     - Firesphere\SolrSearch\Tests\TestIndex
     - Firesphere\SolrSearch\Tests\TestIndexTwo
     - Firesphere\SolrSearch\Tests\TestIndexThree
+  config:
+    endpoint:
+      localhost:
+        username: solr
+        password: SolrRocks

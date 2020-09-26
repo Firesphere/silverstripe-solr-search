@@ -19,6 +19,8 @@ use Solarium\Exception\RuntimeException;
 /**
  * Class PostConfigStore
  *
+ * Store configurations for Solr through a POST to a remote system.
+ *
  * @package Firesphere\SolrSearch\Stores
  */
 class PostConfigStore implements ConfigStore
