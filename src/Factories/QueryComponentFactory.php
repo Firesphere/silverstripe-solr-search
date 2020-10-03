@@ -275,6 +275,7 @@ class QueryComponentFactory
         // Escape special characters where needed. Except for quoted parts, those should be phrased
         preg_match_all('/"[^"]*"|\S+/', $searchTerm, $parts);
         foreach ($parts[0] as $part) {
+            $escaped = $this->helper->escapeTerm($part);
             // As we split the parts, everything with two quotes is a phrase
             // We need however, to strip out double quoting
             if (substr_count($part, '"') === 2) {
@@ -282,10 +283,9 @@ class QueryComponentFactory
                 // @todo make this less clunky
                 // @todo add useful tests for this
                 $part = str_replace('"', '', $part);
-                $term[] = $this->helper->escapePhrase($part);
-            } else {
-                $term[] = $this->helper->escapeTerm($part);
+                $escaped = $this->helper->escapePhrase($part);
             }
+            $term[] = $escaped;
         }
 
         return implode(' ', $term);

@@ -132,7 +132,7 @@ class DataObjectExtension extends DataExtension
      * @return DirtyClass
      * @throws ValidationException
      */
-    protected function getDirtyClass($type)
+    protected function getDirtyClass(string $type)
     {
         // Get the DirtyClass object for this item
         /** @var null|DirtyClass $record */
@@ -175,7 +175,7 @@ class DataObjectExtension extends DataExtension
      * @throws ValidationException
      * @throws GuzzleException
      */
-    protected function registerException(array $ids, $record, Exception $error): void
+    protected function registerException(array $ids, DirtyClass $record, Exception $error): void
     {
         /** @var DataObject $owner */
         $owner = $this->owner;

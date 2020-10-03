@@ -31,6 +31,24 @@ class SolrLoggerTest extends SapphireTest
         $this->assertEquals($client, $logger->getClient());
     }
 
+    public function testGetSetOptions()
+    {
+        $logger = new SolrLogger();
+
+        $this->assertEquals([
+            'auth' => [
+                'solr',
+                'SolrRocks'
+            ]
+        ], $logger->getOptions());
+
+        $logger->setOptions(['test' => 'things']);
+
+        $this->assertEquals(['test' => 'things'], $logger->getOptions());
+
+        $logger->setOptions([]);
+    }
+
     public function testSaveSolrLog()
     {
         $body = file_get_contents(__DIR__ . '/../fixtures/solrResponse.json');
@@ -56,7 +74,7 @@ class SolrLoggerTest extends SapphireTest
     public function testLogMessage()
     {
         ob_start();
-        SolrLogger::logMessage('Query', 'AwesomeTest', 'CircleCITestIndex');
+        SolrLogger::logMessage('Query', 'AwesomeTest');
         $output = ob_get_contents();
         $this->assertContains(
             'AwesomeTest',

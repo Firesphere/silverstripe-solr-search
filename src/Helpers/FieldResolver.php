@@ -25,6 +25,7 @@ use SilverStripe\ORM\DataObjectSchema;
 class FieldResolver
 {
     use GetSetSearchResolverTrait;
+
     /**
      * @var array Class Ancestry
      */
@@ -139,20 +140,7 @@ class FieldResolver
         $source = $this->getSourceName($source);
 
         foreach (self::getHierarchy($source) as $dataClass) {
-            $schema = DataObject::getSchema();
-            $options['multi_valued'] = false;
-
-            $class = $this->getRelationData($lookup, $schema, $dataClass, $options);
-
-            if (is_string($class) && $class) {
-                if (!isset($options['origin'])) {
-                    $options['origin'] = $source;
-                }
-
-                // we add suffix here to prevent the relation to be overwritten by other instances
-                // all sources lookups must clean the source name before reading it via getSourceName()
-                $next[$class . '|xkcd|' . $dataClass] = $options;
-            }
+            list($options, $next) = $this->resolveNext($options, $lookup, $dataClass, $source, $next);
         }
 
         return $next;
@@ -424,5 +412,34 @@ class FieldResolver
         ];
 
         return $found;
+    }
+
+    /**
+     * @param array $options
+     * @param $lookup
+     * @param $dataClass
+     * @param string $source
+     * @param array $next
+     * @return array[]
+     * @throws Exception
+     */
+    protected function resolveNext(array $options, $lookup, $dataClass, string $source, array $next): array
+    {
+        $schema = DataObject::getSchema();
+        $options['multi_valued'] = false;
+
+        $class = $this->getRelationData($lookup, $schema, $dataClass, $options);
+
+        if (is_string($class) && $class) {
+            if (!isset($options['origin'])) {
+                $options['origin'] = $source;
+            }
+
+            // we add suffix here to prevent the relation to be overwritten by other instances
+            // all sources lookups must clean the source name before reading it via getSourceName()
+            $next[$class . '|xkcd|' . $dataClass] = $options;
+        }
+
+        return [$options, $next];
     }
 }

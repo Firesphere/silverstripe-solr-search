@@ -79,14 +79,22 @@ class SolrCoreServiceTest extends SapphireTest
         $this->assertEquals(0, $index->doSearch($query)->getTotalItems());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testWrongUpdateItems()
     {
+        $this->expectException(\LogicException::class);
         $items = SiteTree::get();
 
         $this->service->updateItems($items, SolrCoreService::UPDATE_TYPE, 'NonExisting');
+    }
+
+    public function testAuth()
+    {
+        $client = $this->service->getClient();
+
+        $options = $client->getOptions();
+
+        $this->assertNotEmpty($options['endpoint']['localhost']['username']);
+        $this->assertNotEmpty($options['endpoint']['localhost']['password']);
     }
 
     public function testCoreStatus()

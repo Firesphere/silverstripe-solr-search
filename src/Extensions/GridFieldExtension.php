@@ -29,10 +29,10 @@ class GridFieldExtension extends Extension
      *
      * @param array $classes
      * @param int $total
-     * @param int $index
+     * @param string $index
      * @param DataObject $record
      */
-    public function updateNewRowClasses(&$classes, $total, $index, $record)
+    public function updateNewRowClasses(array &$classes, int $total, string $index, DataObject $record)
     {
         if ($record instanceof SolrLog) {
             $classes[] = $record->getExtraClass();

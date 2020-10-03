@@ -52,12 +52,10 @@ class DataResolverTest extends SapphireTest
         }
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Class: stdClass is not supported.
-     */
     public function testUnsupportedObjectException()
     {
+        $this->expectExceptionMessage("Class: stdClass is not supported.");
+        $this->expectException(\Exception::class);
         $obj = new stdClass();
         $obj->Created = '2019-07-04 22:01:00';
         $obj->Title = 'Hello generic class';
@@ -69,43 +67,35 @@ class DataResolverTest extends SapphireTest
         Debug::dump(func_get_args());
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Cannot identify, "UnknownColumn" from class "TestPage"
-     */
     public function testCannotIdentifyExceptionForDataObject()
     {
+        $this->expectExceptionMessage("Cannot identify, \"UnknownColumn\" from class \"TestPage\"");
+        $this->expectException(\Exception::class);
         $pageOne = $this->objFromFixture(TestPage::class, 'pageOne');
         DataResolver::identify($pageOne, 'UnknownColumn');
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Cannot identify, "UnknownColumn" from class "ArrayData"
-     */
     public function testCannotIdentifyExceptionForArrayData()
     {
+        $this->expectExceptionMessage("Cannot identify, \"UnknownColumn\" from class \"ArrayData\"");
+        $this->expectException(\Exception::class);
         $pageOne = $this->objFromFixture(TestPage::class, 'pageOne');
         $arrayOne = new ArrayData($pageOne->toMap());
         DataResolver::identify($arrayOne, 'UnknownColumn');
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Method, "SuperNice" not found on "DBDatetime"
-     */
     public function testMethodNotFoundFromDBField()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage("Method, \"SuperNice\" not found on \"DBDatetime\"");
         $pageOne = $this->objFromFixture(TestPage::class, 'pageOne');
         DataResolver::identify($pageOne, 'Created.SuperNice');
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Cannot identify, "Timestamp" from class "DBDatetime"
-     */
     public function testCannotIdentifyExceptionForDBField()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Cannot identify, \"Timestamp\" from class \"DBDatetime\"");
         $pageOne = $this->objFromFixture(TestPage::class, 'pageOne');
         DataResolver::identify($pageOne, 'Created.Nice.Timestamp');
     }

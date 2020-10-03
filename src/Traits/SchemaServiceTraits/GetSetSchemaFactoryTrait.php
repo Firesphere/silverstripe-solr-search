@@ -17,6 +17,8 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 /**
  * Trait GetSetSchemaFactoryTrait
  *
+ * Getters and setters for the schema factory
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait GetSetSchemaFactoryTrait

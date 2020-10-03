@@ -25,7 +25,7 @@ During the Release Candidate period, no new features will be accepted in to the 
 - Fix stemming issues not properly stemming.
 - Fix test errors.
 - Fix `schema.xml` construction.
-- [Change of Permission indexing from User based to Group based](../09-View-Permissions.md).
+- [Change of Permission indexing from User based to Group based](../10-View-Permissions.md).
 - Improved documentation.
 - Removed history, moving to a later phase to include in a sub-module.
 - Fix issues encountered for Dirty classes and Indexing

@@ -31,6 +31,10 @@ class SchemaFactory extends ViewableData
     use GetSetSchemaFactoryTrait;
 
     /**
+     * @var array Fields that always need to be stored, by Index name
+     */
+    protected static $storeFields = [];
+    /**
      * @var FieldResolver The field resolver to find a field for a class
      */
     protected $fieldResolver;
@@ -42,11 +46,6 @@ class SchemaFactory extends ViewableData
      * @var array Base paths to the template
      */
     protected $baseTemplatePath;
-
-    /**
-     * @var array Fields that always need to be stored, by Index name
-     */
-    protected static $storeFields = [];
 
     /**
      * SchemaFactory constructor.

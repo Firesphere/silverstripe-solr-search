@@ -20,6 +20,8 @@ use Solarium\QueryType\Select\Query\Query;
 /**
  * Trait QueryComponentFilterTrait
  *
+ * Methods for creating the filters on query time.
+ *
  * @package Firesphere\SolrSearch\Traits
  */
 trait QueryComponentFilterTrait

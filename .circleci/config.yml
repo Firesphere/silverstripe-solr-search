@@ -31,7 +31,7 @@ create_index_requirements: &CircleCITestIndexReqs
 core_check: &CheckSolrCore
   name: Check Solr Core - CircleCITestIndex is successfully created
   command: |
-    RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
+    RESPONSE=$(echo $(curl -u solr:SolrRocks -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
     if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
     echo "CircleCITestIndex is successfully created"
 composer: &composerRequirements
@@ -89,9 +89,10 @@ jobs:
           name: Run Solr Configure
           command: |
             service apache2 restart
-            service solr restart
-            mkdir -p /var/www/html/.solr && chmod -R 777 /var/www/html/.solr
+            mkdir -p /var/www/html/.solr/data && chmod -R 777 /var/www/html/.solr
+            cp .circleci/security.json /var/www/html/.solr/data/security.json
             chown -R solr:solr /var/www/html/.solr
+            service solr restart
             su solr vendor/bin/sake dev/tasks/SolrConfigureTask
       - run: *CheckSolrCore
       - run: su solr vendor/bin/sake dev/tasks/SolrIndexTask unittest=true
@@ -99,7 +100,7 @@ jobs:
           name: Check Solr has successfully indexed the default 3 pages
           command: |
             wget http://localhost:8983/solr/CircleCITestIndex/update?commit=true
-            RESPONSE=$(echo $(curl http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":3')
+            RESPONSE=$(echo $(curl -u solr:SolrRocks http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":3')
             if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
             echo "Solr has successfully indexed documents"
       - run:
@@ -239,9 +240,7 @@ jobs:
       - run:
           name: Clear out old docs
           command: |
-            rm -rf solr
-            rm -rf solr-api
-            rm -rf solr-docs
+            rm -rf solr*
       - run:
           name: PHP API Docs
           command: |
@@ -274,7 +273,6 @@ jobs:
           name: Markdown to HTML
           command: |
             yarn docs
-            rm -rf docs
             mv _docs solr-docs
       - run:
           name: Commit and upload if it's master

@@ -37,6 +37,7 @@ use SilverStripe\ORM\ValidationException;
 class ClearDirtyClassesTask extends BuildTask
 {
     use LoggerTrait;
+
     /**
      * @var string URLSegment
      */

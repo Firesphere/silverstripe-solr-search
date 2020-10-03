@@ -39,6 +39,7 @@ use Solarium\Core\Client\Adapter\Guzzle;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Base for creating a new Solr core.
@@ -105,8 +106,9 @@ abstract class BaseIndex
         // Set up the client
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
-        $this->client = new Client($config);
-        $this->client->setAdapter(new Guzzle());
+        $adapter = new Guzzle();
+        $dispatcher = new EventDispatcher();
+        $this->client = new Client($adapter, $dispatcher, $config);
 
         // Set up the schema service, only used in the generation of the schema
         $schemaFactory = Injector::inst()->get(SchemaFactory::class, false);

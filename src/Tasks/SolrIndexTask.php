@@ -43,6 +43,7 @@ class SolrIndexTask extends BuildTask
 {
     use LoggerTrait;
     use SolrIndexTrait;
+
     /**
      * URLSegment of this task
      *
@@ -220,7 +221,7 @@ class SolrIndexTask extends BuildTask
                 if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
                     $group = $this->spawnChildren($class, $group, $groups);
-                // @codeCoverageIgnoreEnd
+                    // @codeCoverageIgnoreEnd
                 } else {
                     $this->doReindex($group, $class);
                 }
@@ -338,23 +339,24 @@ class SolrIndexTask extends BuildTask
      * @throws ValidationException
      * @throws Exception
      */
-    private function runChild($class, int $pid, int $start): void
+    private function runChild(string $class, int $pid, int $start): void
     {
-        if ($pid === 0) {
-            try {
-                $this->doReindex($start, $class, $pid);
-            } catch (Exception $error) {
-                SolrLogger::logMessage('ERROR', $error, $this->index->getIndexName());
-                $msg = sprintf(
-                    'Something went wrong while indexing %s on %s, see the logs for details',
-                    $start,
-                    $this->index->getIndexName()
-                );
-                if ($pid !== false) {
-                    exit(0);
-                }
-                throw new Exception($msg);
+        if ($pid !== 0) {
+            return;
+        }
+        try {
+            $this->doReindex($start, $class, $pid);
+        } catch (Exception $error) {
+            SolrLogger::logMessage('ERROR', $error);
+            $msg = sprintf(
+                'Something went wrong while indexing %s on %s, see the logs for details',
+                $start,
+                $this->index->getIndexName()
+            );
+            if ($pid !== false) {
+                exit(0);
             }
+            throw new Exception($msg);
         }
     }
 
@@ -443,6 +445,6 @@ class SolrIndexTask extends BuildTask
             $index,
             $group
         );
-        SolrLogger::logMessage('ERROR', $msg, $index);
+        SolrLogger::logMessage('ERROR', $msg);
     }
 }

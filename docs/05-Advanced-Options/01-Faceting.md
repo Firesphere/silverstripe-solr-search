@@ -34,7 +34,7 @@ it would lead to the following query:
 
 ## Applying facets
 
-To configure Facets, have a look at the [usage](../03-Usage.md) documentation.
+To configure Facets, have a look at the [usage](../03-Set-up-and-Configuration.md) documentation.
 
 Make sure your Facet Fields are set correctly, as per the documentation.
 

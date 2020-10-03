@@ -42,6 +42,7 @@ class SearchResult extends ViewableData
 {
     use SearchResultGetTrait;
     use SearchResultSetTrait;
+
     /**
      * @var BaseQuery Query that has been executed
      */
