@@ -37,7 +37,7 @@ class SolrLogger
     protected $client;
 
     /**
-     * @var array
+     * @var array Default options
      */
     protected $options = [];
 

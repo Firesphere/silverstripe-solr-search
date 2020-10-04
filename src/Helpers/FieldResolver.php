@@ -415,6 +415,8 @@ class FieldResolver
     }
 
     /**
+     * Resolve the next item in line to be indexed
+     *
      * @param array $options
      * @param $lookup
      * @param $dataClass
