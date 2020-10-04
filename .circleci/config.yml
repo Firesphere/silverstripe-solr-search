@@ -274,7 +274,7 @@ jobs:
           command: |
             yarn docs
             mv _docs solr-docs
-            rm -rf docs
+            rm -rf docs Subsites Fluent Core Compatibility Member-Permissions
       - run:
           name: Commit and upload if it's Primary
           command: |
