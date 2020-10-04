@@ -39,7 +39,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.0.x-dev",
+      "dev-primary": "1.0.x-dev",
       "1.0": "1.0.x-dev"
     },
     "expose": [

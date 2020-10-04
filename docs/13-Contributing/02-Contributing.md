@@ -15,7 +15,7 @@ It is highly recommended to sign commits with your PGP key to ensure integrity.
 # Notes
 
 Parts of these contributing guidelines are taken from
-https://github.com/bitfield/script/blob/master/CONTRIBUTING.md#Documentation
+https://github.com/bitfield/script/blob/primary/CONTRIBUTING.md#Documentation
 
 ## Documentation
 

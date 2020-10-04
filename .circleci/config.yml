@@ -275,12 +275,12 @@ jobs:
             yarn docs
             mv _docs solr-docs
       - run:
-          name: Commit and upload if it's master
+          name: Commit and upload if it's primary
           command: |
-            case $CIRCLE_BRANCH in "master") git add solr-api ;; esac
-            case $CIRCLE_BRANCH in "master") git add solr-docs ;; esac
-            case $CIRCLE_BRANCH in "master") git commit -m "API doc update for Solr from CircleCI update" ;; esac
-            case $CIRCLE_BRANCH in "master") git push ;; esac
+            case $CIRCLE_BRANCH in "primary") git add solr-api ;; esac
+            case $CIRCLE_BRANCH in "primary") git add solr-docs ;; esac
+            case $CIRCLE_BRANCH in "primary") git commit -m "API doc update for Solr from CircleCI update" ;; esac
+            case $CIRCLE_BRANCH in "primary") git push ;; esac
       - run:
           name: Check the CS status of all modules
           command: |

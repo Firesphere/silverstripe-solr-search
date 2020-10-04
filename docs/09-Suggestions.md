@@ -2,7 +2,7 @@
 
 If you are using Solr 5 or above, you can use the Solr Suggest option. This is enabled by default.
 
-To set this up, have a look at [autosuggest proxy](https://github.com/Firesphere/silverstripe-solr-search/blob/master/client/proxy/autosuggest.php)
+To set this up, have a look at [autosuggest proxy](https://github.com/Firesphere/silverstripe-solr-search/blob/primary/client/proxy/autosuggest.php)
 
 Copy this file to a convenient location, e.g. your `docroot/public` folder and edit the contents of your copy, to match your Solr core and location of the Solr instance.
 
