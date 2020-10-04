@@ -1,6 +1,6 @@
 # Installing Solr
 
-It is advised to use the latest Solr version. At the time of writing, this is version 8.3.0.
+It is advised to use the [latest Solr version](https://downloads.apache.org/lucene/solr/). At the time of writing, this is version 8.3.0.
 
 In this guide, it's assumed you are running on a Linux-based host.
 
@@ -28,14 +28,16 @@ If you run in to trouble updating, add the following to `/etc/apt/apt.conf`:
 
 Taken from https://lucene.apache.org/solr/guide/7_7/taking-solr-to-production.html
 
-Update to match the required version. You can find the latest version here: https://www-us.apache.org/dist/lucene/solr/
+Update to match the required version. [You can find the latest version here](https://www-us.apache.org/dist/lucene/solr/)
 ```bash
 wget http://www.apache.org/dyn/closer.lua/lucene/solr/8.3.1/solr-8.3.1.tgz # find your local URL manually
 tar xvf solr-8.3.1.tgz solr-8.3.1/bin/install_solr_service.sh --strip-components=2
 sudo bash ./install_solr_service.sh solr-8.3.1.tgz
 ```
 
-This will install Solr 8.x as a service on your (virtual) machine
+Be sure to download the tgz, not the src.tgz file.
+
+This will install Solr 8.x as a service on your host machine
 
 ## Vagrant machines
 
