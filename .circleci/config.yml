@@ -277,7 +277,6 @@ jobs:
       - run:
           name: Commit and upload if it's Primary
           command: |
-            rm -rf docs Subsites Fluent Core Compatibility Member-Permissions
             case $CIRCLE_BRANCH in "primary") git add . ;; esac
             case $CIRCLE_BRANCH in "primary") git commit -m "API and Doc update for Solr from CircleCI update" ;; esac
             case $CIRCLE_BRANCH in "primary") git push ;; esac
