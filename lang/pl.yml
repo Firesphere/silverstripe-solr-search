@@ -1,0 +1,35 @@
+pl:
+  Firesphere\SolrSearch\Admins\SearchAdmin:
+    MENUTITLE: Szukaj
+  Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob:
+    CLEARSOLRDIRTY: 'Usuń brudne przedmioty w Solr'
+  Firesphere\SolrSearch\Jobs\SolrConfigureJob:
+    TITLE: 'Skonfiguruj nowe lub ponownie skonfiguruj istniejące rdzenie Solr'
+  Firesphere\SolrSearch\Models\DirtyClass:
+    DIRTYIDS: 'Brudne identyfikatory'
+    PLURALNAME: 'Brudne klasy'
+    PLURALS:
+      one: 'Brudna klasa'
+      other: '{count} brudne klasy'
+    SINGULARNAME: 'Brudna klasa'
+  Firesphere\SolrSearch\Models\SearchSynonym:
+    PLURALNAME: 'Synonimy wyszukiwania'
+    PLURALS:
+      one: 'Synonim wyszukiwania'
+      other: '{count} synonimy wyszukiwania'
+    SINGULARNAME: 'Synonim wyszukiwania'
+    SYNONYM: 'Utwórz synonimy dla danego słowa kluczowego, dodaj jak najwięcej synonimów oddzielonych przecinkami.'
+  Firesphere\SolrSearch\Models\SolrLog:
+    PERMISSION_DELETE_DESCRIPTION: 'Usuń logi Solr'
+    PERMISSION_DELETE_HELP: 'Wymagane uprawnienie do usuwania istniejących logów Solr.'
+    PERMISSION_VIEW_DESCRIPTION: 'Zobacz logi Solr'
+    PERMISSION_VIEW_HELP: 'Wymagane uprawnienia do przeglądania istniejących logów Solr.'
+    PLURALNAME: 'Logi Solr'
+    PLURALS:
+      one: 'Log Solr'
+      other: '{count} logów Solr'
+    SINGULARNAME: 'Log Solr'
+  Firesphere\SolrSearch\Tasks\ClearErrorsTask:
+    CLEARLOG: 'Opróżnianie logów dla tabeli SolrLog UWAGA: Wszelkie logi, które nie zostaną sprawdzone, wkrótce znikną.'
+  Permissions:
+    LOGS_CATEGORIES: 'Uprawnienia logów Solr'
