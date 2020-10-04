@@ -274,6 +274,7 @@ jobs:
           command: |
             yarn docs
             mv _docs solr-docs
+            rm -rf docs
       - run:
           name: Commit and upload if it's Primary
           command: |
