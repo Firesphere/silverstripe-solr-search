@@ -275,7 +275,7 @@ jobs:
             yarn docs
             mv _docs solr-docs
       - run:
-          name: Commit and upload if it's master
+          name: Commit and upload if it's Primary
           command: |
             case $CIRCLE_BRANCH in "primary") git add solr-api ;; esac
             case $CIRCLE_BRANCH in "primary") git add solr-docs ;; esac
