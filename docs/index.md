@@ -10,7 +10,7 @@ The code in this documentation is "pseudo-code"; it may not exactly work, but se
 
 01. [Installation](01-Installation.md)
 02. [Solr](02-Solr.md)
-03. [Usage](03-Usage.md)
+03. [Usage](03-Set-up-and-Configuration.md)
 04. [Searching](04-Searching.md)
 05. Advanced search options
     01. [Facets](05-Advanced-Options/01-Faceting.md)
