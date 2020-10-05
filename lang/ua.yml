@@ -1,0 +1,35 @@
+ua:
+  Firesphere\SolrSearch\Admins\SearchAdmin:
+    MENUTITLE: Пошук
+  Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob:
+    CLEARSOLRDIRTY: 'Видаліть брудні предмети в Solr'
+  Firesphere\SolrSearch\Jobs\SolrConfigureJob:
+    TITLE: 'Налаштуйте нові або переконфігуруйте існуючі ядра Solr'
+  Firesphere\SolrSearch\Models\DirtyClass:
+    DIRTYIDS: 'Брудні ідентифікатори'
+    PLURALNAME: 'Брудні класи'
+    PLURALS:
+      one: 'Брудний клас'
+      other: '{count} Брудні класи'
+    SINGULARNAME: 'Брудний клас'
+  Firesphere\SolrSearch\Models\SearchSynonym:
+    PLURALNAME: 'Шукати синоніми'
+    PLURALS:
+      one: 'Пошуковий синонім'
+      other: '{count} Шукати синоніми'
+    SINGULARNAME: 'Шукати синонім'
+    SYNONYM: 'Створіть синоніми для даного ключового слова, додайте якомога більше синонімів, розділених комами.'
+  Firesphere\SolrSearch\Models\SolrLog:
+    PERMISSION_DELETE_DESCRIPTION: 'Видалити журнали Solr'
+    PERMISSION_DELETE_HELP: 'Потрібен дозвіл на видалення існуючих журналів Solr.'
+    PERMISSION_VIEW_DESCRIPTION: 'Переглянути журнали Solr'
+    PERMISSION_VIEW_HELP: 'Для перегляду існуючих журналів Solr потрібен дозвіл.'
+    PLURALNAME: 'Журнали Solr'
+    PLURALS:
+      one: 'Журнал Solr'
+      other: '{count} Журнали Solr'
+    SINGULARNAME: 'Журнал Solr'
+  Firesphere\SolrSearch\Tasks\ClearErrorsTask:
+    CLEARLOG: 'Спорожнення журналів для таблиці SolrLog.ПОПЕРЕДЖЕННЯ: Усі журнали, які не перевіряються, незабаром зникнуть.'
+  Permissions:
+    LOGS_CATEGORIES: 'Дозволи журналів Solr'
