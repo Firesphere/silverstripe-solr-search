@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Add authentication
+
 ## 1.0 Release Candidate
 
 Bugfixes:

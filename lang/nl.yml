@@ -1,0 +1,35 @@
+nl:
+  Firesphere\SolrSearch\Admins\SearchAdmin:
+    MENUTITLE: Zoeken
+  Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob:
+    CLEARSOLRDIRTY: 'Schoon vuile objecten op'
+  Firesphere\SolrSearch\Jobs\SolrConfigureJob:
+    TITLE: 'Configureer nieuwe of her-configureer bestaande Solr cores'
+  Firesphere\SolrSearch\Models\DirtyClass:
+    DIRTYIDS: 'Vuile IDs'
+    PLURALNAME: 'Vuile classes'
+    PLURALS:
+      one: 'Vuile class'
+      other: '{count} Vuile classen'
+    SINGULARNAME: 'Vuile class'
+  Firesphere\SolrSearch\Models\SearchSynonym:
+    PLURALNAME: 'Zoek synoniemen'
+    PLURALS:
+      one: 'Zoek synonim'
+      other: '{count} Zoek synoniemen'
+    SINGULARNAME: 'Zoek synoniem'
+    SYNONYM: 'Maak nieuwe synoniemen voor een term. Zoveel als nodig, gescheiden door een komma.'
+  Firesphere\SolrSearch\Models\SolrLog:
+    PERMISSION_DELETE_DESCRIPTION: 'Verwijder Solr logs'
+    PERMISSION_DELETE_HELP: 'Permissie nodig om de Solr logs te verwijderen.'
+    PERMISSION_VIEW_DESCRIPTION: 'Bekijk Solr logs'
+    PERMISSION_VIEW_HELP: 'Permissie nodig om bestaande Solr logs te bekijken.'
+    PLURALNAME: 'Solr Logs'
+    PLURALS:
+      one: 'Solr Log'
+      other: '{count} Solr Logs'
+    SINGULARNAME: 'Solr Log'
+  Firesphere\SolrSearch\Tasks\ClearErrorsTask:
+    CLEARLOG: 'Verwijdering van alle Solr Logs. WAARSCHUWING: Logs die nog niet zijn bekeken, worden ook verwijderd!.'
+  Permissions:
+    LOGS_CATEGORIES: 'Solr logs permissies'
