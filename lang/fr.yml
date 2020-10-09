@@ -1,0 +1,35 @@
+en:
+  Firesphere\SolrSearch\Admins\SearchAdmin:
+    MENUTITLE: Recherche
+  Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob:
+    CLEARSOLRDIRTY: "Vider les objets modifiés dans Solr"
+  Firesphere\SolrSearch\Jobs\SolrConfigureJob:
+    TITLE: "Configurer de nouveaux noyaux Solr ou reconfigurer des noyaux Solr existants"
+  Firesphere\SolrSearch\Models\DirtyClass:
+    DIRTYIDS: "ID modifié"
+    PLURALNAME: "Classes modifiée"
+    PLURALS:
+      one: "Une classe modifiée"
+      other: "{count} classes modifiées"
+    SINGULARNAME: "Classe modifiée"
+  Firesphere\SolrSearch\Models\SearchSynonym:
+    PLURALNAME: "Recherche de synonyme"
+    PLURALS:
+      one: "Un synonyme de recherche"
+      other: "{count} synonymes de recherche"
+    SINGULARNAME: "Recherche de synonyme"
+    SYNONYM: "Créez des synonymes pour un mot-clé donné, ajoutez autant de synonymes séparés par des virgules."
+  Firesphere\SolrSearch\Models\SolrLog:
+    PERMISSION_DELETE_DESCRIPTION: "Supprimer les logs Solr"
+    PERMISSION_DELETE_HELP: "Besoin de permission pour effacer les logs Solr existants."
+    PERMISSION_VIEW_DESCRIPTION: "Voir les logs Solr"
+    PERMISSION_VIEW_HELP: "Besoin de permission pour voir les logs Solr existants."
+    PLURALNAME: "Logs Solr"
+    PLURALS:
+      one: "Un Log Solr"
+      other: "{count} Logs Solr"
+    SINGULARNAME: "Log Solr"
+  Firesphere\SolrSearch\Tasks\ClearErrorsTask:
+    CLEARLOG: "Aucun logs dans la table SolrLog.Attention: Tous les logs qui ne sont pas inspectés disparaîtront bientôt."
+  Permissions:
+    LOGS_CATEGORIES: "Permissions de logs Solr"
