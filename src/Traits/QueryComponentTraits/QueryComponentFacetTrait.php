@@ -49,7 +49,8 @@ trait QueryComponentFacetTrait
         // Facets should be set from the index configuration
         foreach ($this->index->getFacetFields() as $config) {
             $shortClass = getShortFieldName($config['BaseClass']);
-            $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
+            $underscoredField = str_replace('.', '_', $config['Field']);
+            $field = sprintf('%s_%s', $shortClass, $underscoredField);
             /** @var Field $facet */
             $facet = $facets->createFacetField('facet-' . $config['Title']);
             $facet->setField($field);
@@ -93,7 +94,8 @@ trait QueryComponentFacetTrait
         $filter = is_array($filter) ? $filter : [$filter];
         // Fields are "short named" for convenience
         $shortClass = getShortFieldName($config['BaseClass']);
-        $field = $shortClass . '_' . str_replace('.', '_', $config['Field']);
+        $underscoredField = str_replace('.', '_', $config['Field']);
+        $field = sprintf('%s_%s', $shortClass, $underscoredField);
 
         return [$filter, $field];
     }
