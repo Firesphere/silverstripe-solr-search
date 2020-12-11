@@ -220,7 +220,7 @@ jobs:
       - run:
           name: Composer
           command: |
-            composer require phploc/phploc:^5 squizlabs/php_codesniffer
+            composer require phploc/phploc squizlabs/php_codesniffer
       - run:
           name: Yarn
           command: |
