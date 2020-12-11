@@ -219,7 +219,8 @@ jobs:
             git clone git@github.com:Firesphere/silverstripe-solr-member-permissions.git Member-Permissions -q
       - restore_cache:
           keys:
-            silverstripe-search-yarn-{{ checksum "yarn.lock" }}
+            - silverstripe-search-yarn-{{ checksum "yarn.lock" }}
+            - silverstripe-search-yarn-
       - run:
           name: Composer
           command: |
