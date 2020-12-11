@@ -3,7 +3,7 @@
  * Trait BaseQueryTrait|Firesphere\SolrSearch\Traits\BaseQueryTrait Trait to clean up the
  * {@link \Firesphere\SolrSearch\Queries\BaseQuery}
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -17,7 +17,7 @@ use Minimalcode\Search\Criteria;
  *
  * This trait adds the support for adding the basic field/filter/term/facet options
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait BaseQueryTrait
 {

@@ -2,7 +2,7 @@
 /**
  * class SearchAdmin|Firesphere\SolrSearch\Admins\SearchAdmin Base admin for Synonyms, logs and dirty classes
  *
- * @package Firesphere\SolrSearch\Admins
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -20,7 +20,7 @@ use SilverStripe\View\Requirements;
  * Manage or see the Solr configuration. Default implementation of SilverStripe ModelAdmin
  * Nothing to see here
  *
- * @package Firesphere\SolrSearch\Admins
+ * @package Firesphere\SolrSearch
  */
 class SearchAdmin extends ModelAdmin
 {

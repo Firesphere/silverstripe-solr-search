@@ -6,7 +6,7 @@
  * Any classes that failed to index properly or be removed properly need to be cleaned out regularly
  * This task takes care of doing this. It can be run directly via /dev/tasks, or via a queued job
  *
- * @package Firesphere\SolrSearch\Tasks
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -32,7 +32,7 @@ use SilverStripe\ORM\ValidationException;
  * Any classes that failed to index properly or be removed properly need to be cleaned out regularly
  * This task takes care of doing this. It can be run directly via /dev/tasks, or via a queued job
  *
- * @package Firesphere\SolrSearch\Tasks
+ * @package Firesphere\SolrSearch
  */
 class ClearDirtyClassesTask extends BuildTask
 {

@@ -2,7 +2,7 @@
 /**
  * class PostConfigStore|Firesphere\SolrSearch\Stores\PostConfigStore Post storage configuration for a core
  *
- * @package Firesphere\SolrSearch\Stores
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -21,7 +21,7 @@ use Solarium\Exception\RuntimeException;
  *
  * Store configurations for Solr through a POST to a remote system.
  *
- * @package Firesphere\SolrSearch\Stores
+ * @package Firesphere\SolrSearch
  */
 class PostConfigStore implements ConfigStore
 {

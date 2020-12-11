@@ -3,7 +3,7 @@
  * Trait SearchResultGetTrait|Firesphere\SolrSearch\Traits\SearchResultGetTrait Getters for
  * {@link \Firesphere\SolrSearch\Results\SearchResult}
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -19,7 +19,7 @@ use Solarium\Component\Result\Highlighting\Highlighting;
  *
  * Getters for search results to keep the {@link SearchResult} class clean.
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait SearchResultGetTrait
 {

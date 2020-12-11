@@ -2,7 +2,7 @@
 /**
  * class BaseQuery|Firesphere\SolrSearch\Queries\BaseQuery Base of a Solr Query
  *
- * @package Firesphere\SolrSearch\Queries
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -18,7 +18,7 @@ use SilverStripe\Core\Injector\Injectable;
  *
  * Build a query to execute agains Solr. Uses as simle as possible an interface.
  *
- * @package Firesphere\SolrSearch\Queries
+ * @package Firesphere\SolrSearch
  */
 class BaseQuery
 {

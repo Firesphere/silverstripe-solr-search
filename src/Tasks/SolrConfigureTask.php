@@ -2,7 +2,7 @@
 /**
  * Class SolrConfigureTask|Firesphere\SolrSearch\Tasks\SolrConfigureTask Configure Solr cores
  *
- * @package Firesphere\SolrSearch\Tasks
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -29,7 +29,7 @@ use SilverStripe\ORM\ValidationException;
 /**
  * Class SolrConfigureTask
  *
- * @package Firesphere\SolrSearch\Tasks
+ * @package Firesphere\SolrSearch
  */
 class SolrConfigureTask extends BuildTask
 {

@@ -2,7 +2,7 @@
 /**
  * class BaseIndex|Firesphere\SolrSearch\Indexes\BaseIndex is the base for indexing items
  *
- * @package Firesphere\SolrSearch\Indexes
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -47,7 +47,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * Base index settings and methods. Should be extended with at least a name for the index.
  * This is an abstract class that can not be instantiated on it's own
  *
- * @package Firesphere\SolrSearch\Indexes
+ * @package Firesphere\SolrSearch
  */
 abstract class BaseIndex
 {

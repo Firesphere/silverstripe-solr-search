@@ -3,7 +3,7 @@
  * Trait GetSetSchemaFactoryTrait|Firesphere\SolrSearch\Traits\GetSetSchemaFactoryTrait Getters and setters
  * for {@link \Firesphere\SolrSearch\Factories\SchemaFactory}
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -19,7 +19,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
  *
  * Getters and setters for the schema factory
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait GetSetSchemaFactoryTrait
 {

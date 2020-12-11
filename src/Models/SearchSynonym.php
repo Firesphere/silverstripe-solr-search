@@ -2,7 +2,7 @@
 /**
  * class SearchSynonym|Firesphere\SolrSearch\Models\SearchSynonym Object for handling synonyms from the CMS
  *
- * @package Firesphere\SolrSearch\Models
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -16,7 +16,7 @@ use SilverStripe\ORM\DataObject;
  * Class \Firesphere\SolrSearch\Models\SearchSynonym
  * Manageable synonyms in the CMS
  *
- * @package Firesphere\SolrSearch\Models
+ * @package Firesphere\SolrSearch
  * @property string $Keyword
  * @property string $Synonym
  */

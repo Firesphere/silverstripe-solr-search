@@ -2,7 +2,7 @@
 /**
  * class SearchForm|Firesphere\SolrSearch\Forms basic search form
  *
- * @package Firesphere\SolrSearch\Factories
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -18,7 +18,7 @@ use SilverStripe\Forms\Validator;
  * Class SolrSearchForm
  * Basic form to start searching
  *
- * @package Firesphere\SolrSearch\Forms
+ * @package Firesphere\SolrSearch
  */
 class SearchForm extends Form
 {

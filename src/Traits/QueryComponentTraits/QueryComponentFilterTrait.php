@@ -3,7 +3,7 @@
  * Trait QueryComponentFilterTrait|Firesphere\SolrSearch\Traits\QueryComponentFilterTrait Trait to set Filtering on
  * fields for the {@link \Firesphere\SolrSearch\Factories\QueryComponentFactory}
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -22,7 +22,7 @@ use Solarium\QueryType\Select\Query\Query;
  *
  * Methods for creating the filters on query time.
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait QueryComponentFilterTrait
 {

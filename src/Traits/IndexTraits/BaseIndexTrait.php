@@ -3,7 +3,7 @@
  * Trait BaseIndexTrait|Firesphere\SolrSearch\Traits\BaseIndexTrait Used to extract methods from the
  * {@link \Firesphere\SolrSearch\Indexes\BaseIndex} to make the code more readable
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -27,7 +27,7 @@ use Solarium\Core\Client\Client;
  *
  * This is slightly cheating, but it works and also makes things more readable.
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait BaseIndexTrait
 {

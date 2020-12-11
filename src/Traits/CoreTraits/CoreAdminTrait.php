@@ -3,7 +3,7 @@
  * Trait CoreAdminTrait|Firesphere\SolrSearch\Traits\CoreAdminTrait is the trait that helps with Admin operations.
  * Core operations, such as reload, load, create, unload etc. are supplied by this trait.
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -23,7 +23,7 @@ use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
  * Trait CoreAdminTrait is the trait that helps with Admin operations.
  * Core operations, such as reload, load, create, unload etc. are supplied by this trait.
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait CoreAdminTrait
 {

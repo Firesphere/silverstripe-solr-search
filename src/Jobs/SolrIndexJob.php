@@ -2,7 +2,7 @@
 /**
  * class SolrIndexJob|Firesphere\SolrSearch\Jobs\SolrIndexJob Index items from the CMS through a QueuedJob
  *
- * @package Firesphere\SolrSearch\Jobs
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -26,7 +26,7 @@ use Symbiote\QueuedJobs\Services\QueuedJobService;
  *
  * It always runs on all indexes, to make sure all indexes are up to date.
  *
- * @package Firesphere\SolrSearch\Jobs
+ * @package Firesphere\SolrSearch
  */
 class SolrIndexJob extends AbstractQueuedJob
 {

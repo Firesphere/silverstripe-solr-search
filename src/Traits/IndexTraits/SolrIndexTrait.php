@@ -3,7 +3,7 @@
  * Trait SolrIndexTrait|Firesphere\SolrSearch\Traits\SolrIndexTrait Used to extract methods from the
  * {@link \Firesphere\SolrSearch\Tasks\SolrIndexTask} to make the code more readable
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -17,7 +17,7 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
  * Trait SolrIndexTrait
  * Getters and Setters for the SolrIndexTask
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait SolrIndexTrait
 {

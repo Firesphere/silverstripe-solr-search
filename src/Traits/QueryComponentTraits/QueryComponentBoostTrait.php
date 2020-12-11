@@ -3,7 +3,7 @@
  * Trait QueryComponentBoostTrait|Firesphere\SolrSearch\Traits\QueryComponentBoostTrait Trait to set boosting on fields
  * for the {@link \Firesphere\SolrSearch\Factories\QueryComponentFactory}
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -17,7 +17,7 @@ use Minimalcode\Search\Criteria;
 /**
  * Trait QueryComponentBoostTrait adds support for boosting to a QueryComponent
  *
- * @package Firesphere\SolrSearch\Traits
+ * @package Firesphere\SolrSearch
  */
 trait QueryComponentBoostTrait
 {

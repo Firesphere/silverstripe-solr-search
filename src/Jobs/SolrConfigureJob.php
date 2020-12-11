@@ -2,7 +2,7 @@
 /**
  * class SolrConfigureJob|Firesphere\SolrSearch\Jobs\SolrConfigureJob Configure cores from the CMS
  *
- * @package Firesphere\SolrSearch\Jobs
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -22,7 +22,7 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  *
  * Generate, upload and activate a Solr Core through {@link SolrConfigureTask}
  *
- * @package Firesphere\SolrSearch\Jobs
+ * @package Firesphere\SolrSearch
  */
 class SolrConfigureJob extends AbstractQueuedJob
 {

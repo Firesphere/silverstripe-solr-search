@@ -3,7 +3,7 @@
  * class SiteState|Firesphere\SolrSearch\States\SiteState Base implementation of SiteState to be used by e.g.
  * the Fluent extension
  *
- * @package Firesphere\SolrSearch\States
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -36,7 +36,7 @@ use SilverStripe\ORM\DataObject;
  *
  * States, options, etc. are simplified for a more streamlined approach
  *
- * @package Firesphere\SolrSearch\States
+ * @package Firesphere\SolrSearch
  */
 abstract class SiteState
 {

@@ -2,7 +2,7 @@
 /**
  * class QueryComponentFactory|Firesphere\SolrSearch\Factories\QueryComponentFactory Build a Query component
  *
- * @package Firesphere\SolrSearch\Factories
+ * @package Firesphere\SolrSearch
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -23,7 +23,7 @@ use Solarium\QueryType\Select\Query\Query;
  *
  * Build a query component for each available build part
  *
- * @package Firesphere\SolrSearch\Factories
+ * @package Firesphere\SolrSearch
  */
 class QueryComponentFactory
 {
