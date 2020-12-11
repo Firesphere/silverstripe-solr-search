@@ -217,6 +217,9 @@ jobs:
             git clone git@github.com:Firesphere/silverstripe-fluent-solr.git Fluent -q
             git clone git@github.com:Firesphere/silverstripe-subsite-solr.git Subsites -q
             git clone git@github.com:Firesphere/silverstripe-solr-member-permissions.git Member-Permissions -q
+      - restore_cache:
+          keys:
+            silverstripe-search-yarn-{{ checksum "yarn.lock" }}
       - run:
           name: Composer
           command: |
