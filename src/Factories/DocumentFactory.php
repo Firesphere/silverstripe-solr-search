@@ -185,7 +185,6 @@ class DocumentFactory
      * @param string|DataObject $class Class to compare
      * @param array|string $base Class or list of base classes
      * @return bool
-     * @todo remove in favour of the inheritance check from PHP
      */
     protected function classIs($class, $base): bool
     {

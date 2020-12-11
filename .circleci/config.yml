@@ -201,7 +201,7 @@ jobs:
           command: |
             curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
             echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-            sudo apt update && sudo apt install graphviz yarn -y
+            sudo apt update && sudo apt install graphviz yarn wget -y
       - run:
           name: Setup SSH access to github
           command: |
@@ -244,6 +244,9 @@ jobs:
       - run:
           name: PHP API Docs
           command: |
+            rm phpdoc.phar
+            wget https://phpdoc.org/phpDocumentor.phar
+            mv phpDocumentor.phar phpdoc.phar
             php phpdoc.phar -t solr-api
       - run:
           name: Generate statistic docs
