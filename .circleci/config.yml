@@ -247,9 +247,6 @@ jobs:
       - run:
           name: PHP API Docs
           command: |
-            rm phpdoc.phar
-            wget https://phpdoc.org/phpDocumentor.phar
-            mv phpDocumentor.phar phpdoc.phar
             php phpdoc.phar -t solr-api --ignore "*/tests/"
       - run:
           name: Generate statistic docs
@@ -280,7 +277,7 @@ jobs:
           command: |
             yarn docs
             mv _docs solr-docs
-            rm -rf docs
+            rm -rf docs solr
       - run:
           name: Commit and upload if it's Primary
           command: |
