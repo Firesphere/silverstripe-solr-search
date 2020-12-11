@@ -2,7 +2,7 @@
 /**
  * class FileConfigStore|Firesphere\SolrSearch\Stores\FileConfigStore File storage configuration for a core
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -17,7 +17,7 @@ use Solarium\Exception\RuntimeException;
  * Class FileConfigStore
  * Store the config in a file storage on the local file system, usually in project/.solr/indexname
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class FileConfigStore implements ConfigStore
 {

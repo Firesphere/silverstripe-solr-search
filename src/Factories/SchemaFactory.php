@@ -2,7 +2,7 @@
 /**
  * class SchemaFactory|Firesphere\SolrSearch\Services\SchemaFactory Base service for generating a schema
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -24,7 +24,7 @@ use SilverStripe\View\ViewableData;
 /**
  * Class SchemaFactory
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class SchemaFactory extends ViewableData
 {

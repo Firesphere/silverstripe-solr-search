@@ -2,7 +2,7 @@
 /**
  * Class SolrIndexTask|Firesphere\SolrSearch\Tasks\SolrIndexTask Index Solr cores
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -37,7 +37,7 @@ use SilverStripe\Versioned\Versioned;
  * Class SolrIndexTask
  *
  * @description Index items to Solr through a tasks
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class SolrIndexTask extends BuildTask
 {

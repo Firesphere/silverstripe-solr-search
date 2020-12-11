@@ -2,7 +2,7 @@
 /**
  * Trait LoggerTrait|Firesphere\SolrSearch\Traits\LoggerTrait Trait to help getting and setting the logger
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -17,7 +17,7 @@ use SilverStripe\Core\Injector\Injector;
  *
  * Trait for getting and setting the logger.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait LoggerTrait
 {

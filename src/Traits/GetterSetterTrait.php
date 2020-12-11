@@ -3,7 +3,7 @@
  * Trait GetterSetterTrait|Firesphere\SolrSearch\Traits\GetterSetterTrait Getters and setters that are duplicate among
  * classes like {@link \Firesphere\SolrSearch\Indexes\BaseIndex} and {@link \Firesphere\SolrSearch\Queries\BaseQuery}
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -15,7 +15,7 @@ namespace Firesphere\SolrSearch\Traits;
  *
  * Getters and setters shared between the Index and Query
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait GetterSetterTrait
 {

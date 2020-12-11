@@ -3,7 +3,7 @@
  * class ClearDirtyClassesJob|Firesphere\SolrSearch\Jobs\ClearDirtyClassesJob Clear out the dirty classes by pushing
  * them again to solr
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -22,7 +22,7 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  *
  * Clean up any dirty classes in Solr due to objects not being updated properly
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class ClearDirtyClassesJob extends AbstractQueuedJob
 {

@@ -3,7 +3,7 @@
  * Trait DocumentFactoryTrait|Firesphere\SolrSearch\Traits\DocumentFactoryTrait A set of getters and setters to clean up
  * the actual {@link \Firesphere\SolrSearch\Factories\DocumentFactory} from clutter
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -20,7 +20,7 @@ use SilverStripe\ORM\DataList;
  *
  * Getter and setter helpers
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait DocumentFactoryTrait
 {

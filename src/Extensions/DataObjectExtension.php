@@ -3,7 +3,7 @@
  * class DataObjectExtension|Firesphere\SolrSearch\Extensions\DataObjectExtension Adds checking if changes should be
  * pushed to Solr
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -35,7 +35,7 @@ use SilverStripe\Versioned\Versioned;
  *
  * Extend every DataObject with the option to update the index.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @property DataObject|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension

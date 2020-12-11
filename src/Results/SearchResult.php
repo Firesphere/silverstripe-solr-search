@@ -2,7 +2,7 @@
 /**
  * class SearchResult|Firesphere\SolrSearch\Results\SearchResult Result of a query
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -36,7 +36,7 @@ use stdClass;
  * Each of the requested features of a BaseQuery are generated to be easily accessible in the controller.
  * In the controller, each required item can be accessed through the resulting method in this class.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class SearchResult extends ViewableData
 {

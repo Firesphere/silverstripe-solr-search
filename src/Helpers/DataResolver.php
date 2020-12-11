@@ -2,7 +2,7 @@
 /**
  * class DataResolver|Firesphere\SolrSearch\Helpers\DataResolver Identify content or relational content of a DataObject
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -21,7 +21,7 @@ use SilverStripe\View\ArrayData;
 /**
  * Class DataResolver
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class DataResolver
 {

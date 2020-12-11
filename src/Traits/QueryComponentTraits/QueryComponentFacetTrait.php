@@ -3,7 +3,7 @@
  * Trait QueryComponentFacetTrait|Firesphere\SolrSearch\Traits\QueryComponentFacetTrait Trait to set Faceting on fields
  * for the {@link \Firesphere\SolrSearch\Factories\QueryComponentFactory}
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -21,7 +21,7 @@ use Solarium\QueryType\Select\Query\Query;
  *
  * Faceting for any given query or index.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait QueryComponentFacetTrait
 {

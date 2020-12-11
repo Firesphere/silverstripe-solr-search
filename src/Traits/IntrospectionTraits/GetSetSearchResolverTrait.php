@@ -3,7 +3,7 @@
  * Trait GetSetSearchResolverTrait|Firesphere\SolrSearch\Traits\GetSetSearchResolverTrait Used to extract methods from
  * the {@link \Firesphere\SolrSearch\Helpers\FieldResolver} to make the code more readable
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -18,7 +18,7 @@ use Firesphere\SolrSearch\Indexes\BaseIndex;
  * Setters and getters to help with introspection/resolving, it's fairly simple, but extracted
  * so it's cleaner to read the code
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait GetSetSearchResolverTrait
 {

@@ -3,7 +3,7 @@
  * Trait CoreServiceTrait|Firesphere\SolrSearch\Traits\CoreServiceTraits to have simple methods that don't really
  * need to be in core.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -23,7 +23,7 @@ use Solarium\QueryType\Server\CoreAdmin\Query\Query;
  *
  * Trait to support basic settings for the Solr Core Service
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait CoreServiceTrait
 {

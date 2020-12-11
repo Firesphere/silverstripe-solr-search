@@ -3,7 +3,7 @@
  * Class ClearErrorsTask|Firesphere\SolrSearch\Tasks\ClearErrorsTask Clear out errors from the database to
  * declutter the CMS.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -20,7 +20,7 @@ use SilverStripe\ORM\DB;
  *
  * Clear out errors from the database to declutter the CMS.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class ClearErrorsTask extends BuildTask
 {

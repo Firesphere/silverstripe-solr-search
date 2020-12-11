@@ -3,7 +3,7 @@
  * Trait DataResolveTrait|Firesphere\SolrSearch\Traits\DataResolveTrait Used to extract methods from
  * the {@link \Firesphere\SolrSearch\Helpers\DataResolver} to make the code more readable
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -20,7 +20,7 @@ use SilverStripe\View\ArrayData;
 /**
  * Trait ResolveTrait All resolver methods for the DataResolver
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 trait DataResolveTrait
 {

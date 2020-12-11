@@ -2,7 +2,7 @@
 /**
  * class FieldResolver|Firesphere\SolrSearch\Helpers\FieldResolver Identify fields or relations in a DataObject
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -20,7 +20,7 @@ use SilverStripe\ORM\DataObjectSchema;
  * Class FieldResolver
  * Some additional introspection tools that are used often by the fulltext search code
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class FieldResolver
 {

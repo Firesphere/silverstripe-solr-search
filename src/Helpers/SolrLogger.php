@@ -2,7 +2,7 @@
 /**
  * class SolrLogger|Firesphere\SolrSearch\Helpers\SolrLogger Log errors to the Database
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -27,7 +27,7 @@ use SilverStripe\ORM\ValidationException;
  *
  * Log information from Solr to the CMS for reference
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class SolrLogger
 {

@@ -3,7 +3,7 @@
  * class ConfigStore|Firesphere\SolrSearch\Interfaces\ConfigStore Interface for managing the
  * store configuration of a core
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Interface ConfigStore
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 interface ConfigStore
 {

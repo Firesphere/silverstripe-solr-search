@@ -8,7 +8,7 @@ use SilverStripe\Dev\TestOnly;
 
 /**
  * Class TestPage
- * @package Firesphere\SolrSearch\Tests
+ * @package Firesphere\Solr\Search
  */
 class TestPage extends Page implements TestOnly
 {

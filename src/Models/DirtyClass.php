@@ -2,7 +2,7 @@
 /**
  * class DirtyClass|Firesphere\SolrSearch\Models\DirtyClass Store Dirty classes for re-indexing
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -18,7 +18,7 @@ use SilverStripe\Security\Member;
  * Class \Firesphere\SolrSearch\Models\DirtyClass
  * Keeping track of Dirty classes in Solr
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @property string $Type
  * @property string $Class
  * @property string $IDs

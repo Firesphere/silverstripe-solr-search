@@ -2,7 +2,7 @@
 /**
  * class DocumentFactory|Firesphere\SolrSearch\Factories\DocumentFactory Build a Solarium document to push
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -32,7 +32,7 @@ use Solarium\QueryType\Update\Query\Query;
  * Class DocumentFactory
  * Factory to create documents to be pushed to Solr
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class DocumentFactory
 {

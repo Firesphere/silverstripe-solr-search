@@ -3,7 +3,7 @@
  * class SiteStateInterface|Firesphere\SolrSearch\Interfaces\SiteStateInterface Interface for managing the
  * state of a site
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -17,7 +17,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
  *
  * These methods must exist in the SiteStates that are available
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 interface SiteStateInterface
 {

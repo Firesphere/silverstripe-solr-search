@@ -2,7 +2,7 @@
 /**
  * class SolrLog|Firesphere\SolrSearch\Models\SolrLog Solr logging to be read from the CMS
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -18,7 +18,7 @@ use SilverStripe\Security\PermissionProvider;
 /**
  * Class \Firesphere\SolrSearch\Models\SolrError
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @property string $Timestamp
  * @property string $Index
  * @property string $Type

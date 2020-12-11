@@ -2,7 +2,7 @@
 /**
  * class SolrCoreService|Firesphere\SolrSearch\Services\SolrCoreService Base service for communicating with the core
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  * @author Simon `Firesphere` Erkelens; Marco `Sheepy` Hermo
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
@@ -39,7 +39,7 @@ use Solarium\QueryType\Update\Result;
  * Default service to connect to Solr and handle all base requirements to support Solr.
  * Default constants are available to support any set up.
  *
- * @package Firesphere\SolrSearch
+ * @package Firesphere\Solr\Search
  */
 class SolrCoreService
 {
