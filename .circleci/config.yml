@@ -191,7 +191,7 @@ jobs:
 
   docs:
     docker:
-      - image: circleci/php:latest
+      - image: circleci/php:7.4
     steps:
       - add_ssh_keys:
           fingerprints:
