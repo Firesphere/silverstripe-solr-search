@@ -140,7 +140,7 @@ class FieldResolver
         $source = $this->getSourceName($source);
 
         foreach (self::getHierarchy($source) as $dataClass) {
-            list($options, $next) = $this->resolveNext($options, $lookup, $dataClass, $source, $next);
+            [$options, $next] = $this->resolveNext($options, $lookup, $dataClass, $source, $next);
         }
 
         return $next;

@@ -69,8 +69,7 @@ trait QueryComponentFacetTrait
         $criteria = null;
         foreach ($this->index->getFacetFields() as $config) {
             if (isset($filterFacets[$config['Title']])) {
-                // For the API generator, this needs to be old style list();
-                list($filter, $field) = $this->getFieldFacets($filterFacets, $config);
+                [$filter, $field] = $this->getFieldFacets($filterFacets, $config);
                 $this->createFacetCriteria($criteria, $field, $filter);
             }
         }
@@ -130,8 +129,7 @@ trait QueryComponentFacetTrait
         foreach ($this->index->getFacetFields() as $config) {
             $criteria = null;
             if (isset($filterFacets[$config['Title']])) {
-                // For the API generator, this needs to be old style list();
-                list($filter, $field) = $this->getFieldFacets($filterFacets, $config);
+                [$filter, $field] = $this->getFieldFacets($filterFacets, $config);
                 $this->createFacetCriteria($criteria, $field, $filter);
                 $this->clientQuery
                     ->createFilterQuery('orFacet-' . $index++)

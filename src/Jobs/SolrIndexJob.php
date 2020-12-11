@@ -124,7 +124,7 @@ class SolrIndexJob extends AbstractQueuedJob
      */
     public function afterComplete()
     {
-        list($currentStep, $totalSteps) = $this->getNextSteps();
+        [$currentStep, $totalSteps] = $this->getNextSteps();
         // If there are no indexes left to run, let's call it a day
         if (count($this->indexes)) {
             $nextJob = new self();

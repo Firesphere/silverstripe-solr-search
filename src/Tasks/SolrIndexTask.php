@@ -104,7 +104,7 @@ class SolrIndexTask extends BuildTask
     {
         $start = time();
         $this->getLogger()->info(date('Y-m-d H:i:s'));
-        list($vars, $group, $isGroup) = $this->taskSetup($request);
+        [$vars, $group, $isGroup] = $this->taskSetup($request);
         $groups = 0;
         $indexes = $this->service->getValidIndexes($request->getVar('index'));
 
@@ -214,9 +214,9 @@ class SolrIndexTask extends BuildTask
     private function indexClass($isGroup, $class, int $group): int
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $this->getIndex()->getIndexName()));
-        list($totalGroups, $groups) = $this->getGroupSettings($isGroup, $class, $group);
+        [$totalGroups, $groups] = $this->getGroupSettings($isGroup, $class, $group);
         $this->getLogger()->info(sprintf('Total groups %s', $totalGroups));
-        do { // Run from oldest to newest
+        do {
             try {
                 if ($this->hasPCNTL()) {
                     // @codeCoverageIgnoreStart
@@ -229,7 +229,6 @@ class SolrIndexTask extends BuildTask
             } catch (Exception $error) {
                 // @codeCoverageIgnoreStart
                 $this->logException($this->index->getIndexName(), $group, $error);
-                $group++;
                 continue;
                 // @codeCoverageIgnoreEnd
             }
