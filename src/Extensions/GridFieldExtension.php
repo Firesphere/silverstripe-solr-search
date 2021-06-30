@@ -13,6 +13,7 @@ use Firesphere\SolrSearch\Models\SolrLog;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\View\ViewableData;
 
 /**
  * Class GridFieldExtension
@@ -32,7 +33,7 @@ class GridFieldExtension extends Extension
      * @param string $index
      * @param DataObject $record
      */
-    public function updateNewRowClasses(array &$classes, int $total, string $index, DataObject $record)
+    public function updateNewRowClasses(array &$classes, int $total, string $index, ViewableData $record)
     {
         if ($record instanceof SolrLog) {
             $classes[] = $record->getExtraClass();
