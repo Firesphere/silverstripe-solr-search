@@ -13,7 +13,7 @@ environment: &environment
   - SS_DEFAULT_ADMIN_PASSWORD=password
   - DEBUGBAR_DISABLE=true
 mysql: &mysql
-  - MYSQL_USER=root
+  - MYSQL_USER=toor
   - MYSQL_ROOT_PASSWORD=ubuntu
   - MYSQL_DATABASE=circle_test
   - MYSQL_HOST=127.0.0.1
