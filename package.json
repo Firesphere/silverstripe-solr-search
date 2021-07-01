@@ -2,7 +2,6 @@
   "name": "solr-search",
   "description": "Searching done right",
   "version": "1.0",
-  "private": false,
   "license": "BSD-3-Clause",
   "devDependencies": {
     "laravel-mix": "^4.1.2",
