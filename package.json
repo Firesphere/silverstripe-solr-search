@@ -4,6 +4,7 @@
   "version": "1.0",
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "glob-parent": "^6",
     "laravel-mix": "^5",
     "markdown-folder-to-html": "^2",
     "resolve-url-loader": "^3",
