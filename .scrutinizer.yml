@@ -1,5 +1,7 @@
 checks:
   php: true
+  javascript: false
+  css: false
 
 build:
   nodes:
