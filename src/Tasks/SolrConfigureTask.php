@@ -152,8 +152,7 @@ class SolrConfigureTask extends BuildTask
      */
     protected function getStore($storeConfig): ConfigStore
     {
-        $store = static::$storeModes[$storeConfig['mode']];
-        $configStore = Injector::inst()->create($store, $storeConfig);
+        $configStore = Injector::inst()->create(ConfigStore::class, $storeConfig);
 
         // Allow changing the configStore if it needs to change to a different store
         $this->extend('onBeforeConfig', $configStore, $storeConfig);

@@ -23,26 +23,27 @@ You have a name yourself, don't you? It makes sense to name the index too.
 
 ### Only File storage?
 
-Hold your horses, this is a beta stage project, more storage options to come!
+Currently, this is indeed the only storage mode supported.
 
 ### My core.properties won't persist, what gives?
 
 Most likely, you're running a vagrant or docker machine? And even more likely
 running it on Linux.
 
-The solution is to create a symlink in `/var/solr/data/{your-policy-name}/` to `/var/www/{yoursite}/.solr/conf`, so the
+A solution is to create a symlink in `/var/solr/data/{your-policy-name}/` to `/var/www/{yoursite}/.solr/conf`, so the
 `conf` folder points to your locally-writable folder for Vagrant.
 
 In your search.yml, add the following as the location of your FileStore config:
 ```yaml
 Firesphere\SolrSearch\Services\SolrCoreService:
   store:
-    mode: 'file'
     path: '/var/solr/data'
 ```
 
 That way, Solr will write its own files to the correct core folder where it can write, but your config can still live
 inside your project.
+
+Or, a better way for production environments is described in [Known issues](03-Known-issues.md)
 
 ### I would like a feature to be added!
 

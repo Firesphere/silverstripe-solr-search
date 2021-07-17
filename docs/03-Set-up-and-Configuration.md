@@ -23,7 +23,7 @@ extending either of the Base Indexes; it is a complement to it.
 ## Configuration
 
 Configuring Solr is done via YML:
-```yml
+```yaml
 Firesphere\SolrSearch\Services\SolrCoreService:
   config:
     endpoint:
@@ -40,7 +40,6 @@ Firesphere\SolrSearch\Services\SolrCoreService:
         commit_within: 60
   # default path settings
   store:
-    mode: 'file'
     path: '.solr'
   cpucores: 2
   debug: false
@@ -51,14 +50,31 @@ If you are using defaults (localhost), it is not necessary to add this to your c
 
 The config is used to connect to Solr. This will tell the module where the Solr instance for this index lives and how to connect.
 
-The store is to select the way to configure the solr configuration storage. Options are `file` and a required path, or `post` and a required endpoint to post to.
+The store is to select the way to configure the solr configuration storage. Available stores are `FileConfigStore` which requires path, or `PostConfigStore` and a required endpoint to post to.
 
-Example POST config:
-```yml
-store:
-  mode: 'post'
-  path: '/my_post_endpoint'
-  uri: 'https://mydomain.com'
+Example POST Store config:
+```yaml
+---
+Name: 'MySearch'
+After:
+    - 'SolrSearch'
+---
+Firesphere\SolrSearch\Services\SolrCoreService:
+    store:
+      path: '/my_post_endpoint'
+      uri: 'https://mydomain.com'
+```
+
+And the Injector config to use the PostConfigStore:
+```yaml
+---
+Name: MySolrStore
+After:
+    - 'SolrStore'
+---
+SilverStripe\Core\Injector\Injector:
+  Firesphere\SolrSearch\Interfaces\ConfigStore:
+    class: Firesphere\SolrSearch\Stores\PostConfigStore
 ```
 
 ### Authentication
@@ -142,7 +158,7 @@ Available methods are:
 
 ### Using YML
 
-```yml
+```yaml
 Firesphere\SolrSearch\Indexes\BaseIndex:
   MySearchIndex:
     Classes:

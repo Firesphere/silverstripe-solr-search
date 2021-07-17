@@ -1,5 +1,7 @@
 ---
 Name: SolrSearch
+After:
+  - 'SolrStore'
 ---
 Firesphere\SolrSearch\Factories\DocumentFactory:
   batchLength: 500
@@ -30,5 +32,4 @@ Firesphere\SolrSearch\Services\SolrCoreService:
       schema: '%s/Solr/4/templates'
       extras: '%s/Solr/4/extras'
   store:
-    mode: 'file'
     path: '.solr'
