@@ -36,7 +36,7 @@ use SilverStripe\Versioned\Versioned;
  * Extend every DataObject with the option to update the index.
  *
  * @package Firesphere\Solr\Search
- * @property Message|MessageGroup|Sticker|Subscription|SubscriptionOption|Tag|MessagePage|ProfilePage|StickerPage|CSPDomain|SRI|DirtyClass|SearchSynonym|SolrLog|File|Folder|Image|SiteConfig|ChangeSet|ChangeSetItem|HaveIBeenPwnedPage|SiteBanner|FileLink|Blog|BlogCategory|BlogTag|RedirectorPage|SiteTree|SiteTreeLink|VirtualPage|Group|LoginAttempt|Member|MemberPassword|PermissionRole|PermissionRoleCode|RememberLoginHash|RegisteredMethod|Subsite|SubsiteDomain|SubsitesVirtualPage|MemberProfileField|MemberProfileFieldsSection|MemberProfileSection|MemberProfilePage|QueuedJobDescriptor|QueuedJobRule|DataObjectExtension $owner
+ * @property DataObject|DataObjectExtension $owner
  */
 class DataObjectExtension extends DataExtension
 {

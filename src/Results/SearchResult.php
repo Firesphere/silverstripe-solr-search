@@ -74,7 +74,7 @@ class SearchResult extends ViewableData
             ->setFacets($result->getFacetSet())
             ->setHighlight($result->getHighlighting())
             ->setTotalItems($result->getNumFound());
-        if ($query->hasSpellcheck()) {
+        if ($query->hasSpellcheck() && !$index->isRetry()) {
             $this->setSpellcheck($result->getSpellcheck())
                 ->setCollatedSpellcheck($result->getSpellcheck());
         }
@@ -168,7 +168,7 @@ class SearchResult extends ViewableData
     public function setCollatedSpellcheck($collatedSpellcheck): self
     {
         /** @var Collation $collated */
-        if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
+        if (!$this->index->isRetry() && $collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
             $this->collatedSpellcheck = $collated[0]->getQuery();
         }
 

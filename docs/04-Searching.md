@@ -3,7 +3,7 @@
 To search, here's an example using all the features, and setting the resulting outcome from the search
 onto the current `Controller` to be useable in templates.
 
-More advanced filter options are available, see the [Advanced filters & excludes](05-Advanced-Options/05-Filters-excludes.md)
+More advanced filter options are available, see the [Advanced filters & excludes](06-Advanced-Options/05-Filters-excludes.md)
 page for more information.
 
 ```php

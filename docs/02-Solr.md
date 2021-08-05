@@ -41,4 +41,4 @@ This will install Solr 8.x as a service on your host machine
 
 ## Vagrant machines
 
-See [Known issues](14-Help/03-Known-issues.md) for known issues with permissions
+See [Known issues](15-Help/03-Known-issues.md) for known issues with permissions

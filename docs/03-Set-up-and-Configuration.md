@@ -194,7 +194,7 @@ to create in the first step of this document.
 
 #### Moving from init to YML
 
-The [compatibility module](12-Submodules/01-Fulltext-Search-Compatibility.md) has an optional extension 
+The [compatibility module](13-Submodules/01-Fulltext-Search-Compatibility.md) has an optional extension 
 method that allows you to build your index and then generate the YML content for you. 
 See the compatibility module for more details.
 
