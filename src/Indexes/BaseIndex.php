@@ -225,7 +225,12 @@ abstract class BaseIndex
         $this->extend('onAfterSearch', $result);
         $searchResult = new SearchResult($result, $query, $this);
         if ($this->doRetry($query, $result, $searchResult)) {
-            return $this->spellcheckRetry($query, $searchResult);
+            // We need to override the spellchecking with the previous spellcheck
+            // @todo refactor this to a cleaner way
+            $collation = $result->getSpellcheck();
+            $retryResults = $this->spellcheckRetry($query, $searchResult);
+            $this->retry = false;
+            return $retryResults->setCollatedSpellcheck($collation);
         }
 
         // And then handle the search results, which is a useable object for SilverStripe
@@ -432,5 +437,13 @@ abstract class BaseIndex
     public function getClientQuery(): Query
     {
         return $this->clientQuery;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRetry(): bool
+    {
+        return $this->retry;
     }
 }

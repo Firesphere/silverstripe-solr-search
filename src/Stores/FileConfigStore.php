@@ -39,7 +39,7 @@ class FileConfigStore implements ConfigStore
         }
         // A relative folder should be rewritten to a writeable folder for the system
         if (strpos($config['path'], '/') !== 0) {
-            $config['path'] = Director::baseFolder() . '/' . $config['path'];
+            $config['path'] = sprintf('%s/%s', Director::baseFolder(), $config['path']);
         }
 
 
@@ -56,18 +56,18 @@ class FileConfigStore implements ConfigStore
     public function uploadFile($index, $file)
     {
         $targetDir = $this->getTargetDir($index);
-        copy($file, $targetDir . '/' . basename($file));
+        copy($file, sprintf('%s/%s', $targetDir, basename($file)));
     }
 
     /**
-     * Get the target dir for the file saving
+     * Get the target dir for the file saving, create if it doesn't exist.
      *
      * @param $index
      * @return string
      */
     public function getTargetDir($index)
     {
-        $targetDir = "{$this->getPath()}/{$index}/conf";
+        $targetDir = sprintf('%s/conf', $this->instanceDir($index));
 
         if (!is_dir($targetDir)) {
             $worked = @mkdir($targetDir, 0770, true);
@@ -110,11 +110,11 @@ class FileConfigStore implements ConfigStore
      * Location of the instance
      *
      * @param string|null $index
-     * @return string|null
+     * @return string
      */
     public function instanceDir($index)
     {
-        return $this->getPath() . '/' . $index;
+        return sprintf('%s/%s', $this->getPath(), $index);
     }
 
     /**

@@ -25,7 +25,7 @@ interface SiteStateInterface
      * Is this state applicable to this extension
      * E.g. in case of Fluent, the state "SubsiteID1" does not make sense
      *
-     * @param string $state
+     * @param string|int $state
      * @return bool
      */
     public function stateIsApplicable($state): bool;
@@ -33,7 +33,7 @@ interface SiteStateInterface
     /**
      * Reset the SiteState to it's default state
      *
-     * @param string|null $state
+     * @param string|int|null $state
      * @return mixed
      */
     public function setDefaultState($state = null);
@@ -41,14 +41,14 @@ interface SiteStateInterface
     /**
      * Return the current state of the site
      *
-     * @return string|null
+     * @return string|int|null
      */
     public function currentState();
 
     /**
      * Activate a given state. This should only be done if the state is applicable
      *
-     * @param string $state
+     * @param string|int $state
      * @return mixed
      */
     public function activateState($state);

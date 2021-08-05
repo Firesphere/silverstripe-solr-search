@@ -224,7 +224,6 @@ class BaseIndexTest extends SapphireTest
     public function testUploadConfig()
     {
         $config = [
-            'mode' => 'file',
             'path' => '.solr',
         ];
 

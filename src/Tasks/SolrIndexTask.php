@@ -137,7 +137,7 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request Current request
      * @return array
      */
-    protected function taskSetup($request): array
+    protected function taskSetup(HTTPRequest $request): array
     {
         $vars = $request->getVars();
         $debug = $this->isDebug() || isset($vars['debug']);
@@ -158,7 +158,7 @@ class SolrIndexTask extends BuildTask
      * @param array $classes Classes to index
      * @return bool|array
      */
-    protected function getClasses($vars, array $classes): array
+    protected function getClasses(array $vars, array $classes): array
     {
         if (isset($vars['class'])) {
             return array_intersect($classes, [$vars['class']]);
@@ -173,7 +173,7 @@ class SolrIndexTask extends BuildTask
      * @param array $vars URL GET Parameters
      * @throws Exception
      */
-    public function clearIndex($vars)
+    public function clearIndex(array $vars)
     {
         if (!empty($vars['clear'])) {
             $this->getLogger()->info(sprintf('Clearing index %s', $this->index->getIndexName()));
@@ -187,11 +187,11 @@ class SolrIndexTask extends BuildTask
      * @param array $classes Classes that need indexing
      * @param bool $isGroup Indexing a specific group?
      * @param int $group Group to index
-     * @return int
+     * @return int|bool
      * @throws Exception
      * @throws GuzzleException
      */
-    protected function indexClassForIndex($classes, $isGroup, $group): int
+    protected function indexClassForIndex(array $classes, bool $isGroup, int $group)
     {
         $groups = 0;
         foreach ($classes as $class) {
@@ -207,11 +207,11 @@ class SolrIndexTask extends BuildTask
      * @param bool $isGroup Is a specific group indexed
      * @param string $class Class to index
      * @param int $group Group to index
-     * @return int
+     * @return int|bool
      * @throws GuzzleException
      * @throws ValidationException
      */
-    private function indexClass($isGroup, $class, int $group): int
+    private function indexClass(bool $isGroup, string $class, int $group)
     {
         $this->getLogger()->info(sprintf('Indexing %s for %s', $class, $this->getIndex()->getIndexName()));
         [$totalGroups, $groups] = $this->getGroupSettings($isGroup, $class, $group);
@@ -245,7 +245,7 @@ class SolrIndexTask extends BuildTask
      * @param int $group Current group to index
      * @return array
      */
-    private function getGroupSettings($isGroup, $class, int $group): array
+    private function getGroupSettings(bool $isGroup, string $class, int $group): array
     {
         $totalGroups = (int)ceil($class::get()->count() / $this->getBatchLength());
         $groups = $isGroup ? ($group + $this->getCores() - 1) : $totalGroups;
@@ -260,7 +260,7 @@ class SolrIndexTask extends BuildTask
      *
      * @return bool
      */
-    private function hasPCNTL()
+    private function hasPCNTL(): bool
     {
         return Director::is_cli() &&
             function_exists('pcntl_fork') &&
@@ -280,7 +280,7 @@ class SolrIndexTask extends BuildTask
      * @throws Exception
      * @throws GuzzleException
      */
-    private function spawnChildren($class, int $group, int $groups): int
+    private function spawnChildren(string $class, int $group, int $groups): int
     {
         $start = $group;
         $pids = [];
@@ -317,7 +317,7 @@ class SolrIndexTask extends BuildTask
      * @throws GuzzleException
      * @throws ValidationException
      */
-    private function runForkedChild($class, array &$pids, int $start): void
+    private function runForkedChild(string $class, array &$pids, int $start): void
     {
         $pid = pcntl_fork();
         // PID needs to be pushed before anything else, for some reason
@@ -352,9 +352,6 @@ class SolrIndexTask extends BuildTask
                 $start,
                 $this->index->getIndexName()
             );
-            if ($pid !== false) {
-                exit(0);
-            }
             throw new Exception($msg);
         }
     }
@@ -367,10 +364,11 @@ class SolrIndexTask extends BuildTask
      * @param bool|int $pid Are we a child process or not
      * @throws Exception
      */
-    private function doReindex($group, $class, $pid = false)
+    private function doReindex(int $group, string $class, $pid = false)
     {
         $start = time();
-        foreach (SiteState::getStates() as $state) {
+        $states = SiteState::getStates();
+        foreach ($states as $state) {
             if ($state !== SiteState::DEFAULT_STATE && !empty($state)) {
                 SiteState::withState($state);
             }
@@ -395,7 +393,7 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @throws Exception
      */
-    private function indexStateClass($group, $class): void
+    private function indexStateClass(string $group, string $class): void
     {
         // Generate filtered list of local records
         $baseClass = DataObject::getSchema()->baseDataClass($class);

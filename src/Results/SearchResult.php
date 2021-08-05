@@ -168,7 +168,7 @@ class SearchResult extends ViewableData
     public function setCollatedSpellcheck($collatedSpellcheck): self
     {
         /** @var Collation $collated */
-        if ($collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
+        if (!$this->index->isRetry() && $collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
             $this->collatedSpellcheck = $collated[0]->getQuery();
         }
 

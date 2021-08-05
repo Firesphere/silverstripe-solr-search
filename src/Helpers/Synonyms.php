@@ -37,8 +37,11 @@ class Synonyms
     public static function getSynonymsAsString($defaults = true)
     {
         $result = [];
-        foreach (static::getSynonyms($defaults) as $synonym) {
-            $result[] = implode(',', $synonym);
+        foreach (static::getSynonyms($defaults) as $word => $synonym) {
+            // Make all synonym strings
+            // @todo remove duplicates
+            $synonym = implode(',', (array)$synonym);
+            $result[] = sprintf('%s,%s', $word, $synonym);
         }
 
         return implode(PHP_EOL, $result) . PHP_EOL;

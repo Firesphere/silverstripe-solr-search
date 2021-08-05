@@ -87,7 +87,8 @@ class SolrLogger
         $lastError = SolrLog::get()->last();
 
         $err = ($lastError === null) ? 'Unknown' : $lastError->getLastErrorLine();
-        $message .= 'Last known error:' . PHP_EOL . $err;
+        $errTime = ($lastError === null) ? 'Unknown' : $lastError->Timestamp;
+        $message .= sprintf('%sLast known Solr error:%s%s: %s', PHP_EOL, PHP_EOL, $errTime, $err);
         /** @var LoggerInterface $logger */
         $logger = Injector::inst()->get(LoggerInterface::class);
         $logger->alert($message);

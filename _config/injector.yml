@@ -1,0 +1,6 @@
+---
+Name: SolrStore
+---
+SilverStripe\Core\Injector\Injector:
+  Firesphere\SolrSearch\Interfaces\ConfigStore:
+    class: Firesphere\SolrSearch\Stores\FileConfigStore
