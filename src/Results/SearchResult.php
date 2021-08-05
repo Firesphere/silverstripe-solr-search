@@ -74,7 +74,7 @@ class SearchResult extends ViewableData
             ->setFacets($result->getFacetSet())
             ->setHighlight($result->getHighlighting())
             ->setTotalItems($result->getNumFound());
-        if ($query->hasSpellcheck() && !$index->isRetry()) {
+        if ($query->hasSpellcheck()) {
             $this->setSpellcheck($result->getSpellcheck())
                 ->setCollatedSpellcheck($result->getSpellcheck());
         }
