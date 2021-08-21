@@ -70,10 +70,9 @@ class SolrConfigureTask extends BuildTask
      *
      * @param HTTPRequest $request Current request
      * @return bool|Exception
-     * @throws ReflectionException
-     * @throws ValidationException
      * @throws GuzzleException
      * @throws InvalidArgumentException
+     * @throws ValidationException
      */
     public function run($request)
     {
@@ -103,8 +102,6 @@ class SolrConfigureTask extends BuildTask
         // Grab the latest logs
         $solrLogger = new SolrLogger();
         $solrLogger->saveSolrLog('Config');
-
-        return true;
     }
 
     /**
@@ -187,7 +184,7 @@ class SolrConfigureTask extends BuildTask
      * Log an exception error
      *
      * @codeCoverageIgnore Can't be tested because of accessibility and the actual throw of exception
-     * @param $index
+     * @param string $index Name of the index
      * @param Exception $error
      * @throws GuzzleException
      * @throws ValidationException
@@ -196,9 +193,10 @@ class SolrConfigureTask extends BuildTask
     {
         $this->getLogger()->error($error);
         $msg = sprintf(
-            'Error loading core %s,' . PHP_EOL .
-            'Please log in to the CMS to find out more about Configuration errors' . PHP_EOL,
-            $index
+            'Error loading core %s%s, Please log in to the CMS to find out more about Configuration errors %s',
+            $index,
+            PHP_EOL,
+            PHP_EOL
         );
         SolrLogger::logMessage('ERROR', $msg);
     }
