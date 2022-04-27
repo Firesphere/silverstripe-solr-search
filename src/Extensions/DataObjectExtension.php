@@ -15,7 +15,6 @@ use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tests\DataObjectExtensionTest;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
@@ -29,6 +28,7 @@ use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\InheritedPermissionsExtension;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\Versioned;
+use Solarium\Exception\HttpException;
 
 /**
  * Class \Firesphere\SolrSearch\Compat\DataObjectExtension
@@ -54,7 +54,7 @@ class DataObjectExtension extends DataExtension
      * Update the index after write.
      *
      * @throws ValidationException
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ReflectionException
      * @throws InvalidArgumentException
      */
@@ -88,7 +88,7 @@ class DataObjectExtension extends DataExtension
      *
      * @param DataObject $owner
      * @throws ValidationException
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ReflectionException
      * @throws InvalidArgumentException
      */
@@ -173,7 +173,7 @@ class DataObjectExtension extends DataExtension
      * @param DirtyClass $record
      * @param Exception $error
      * @throws ValidationException
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     protected function registerException(array $ids, DirtyClass $record, Exception $error): void
     {
@@ -203,7 +203,7 @@ class DataObjectExtension extends DataExtension
      * It should never be called on Objects that are not a valid class for any Index
      * It does not check if the class is valid to be pushed to Solr
      *
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ReflectionException
      * @throws ValidationException
      * @throws InvalidArgumentException
@@ -217,7 +217,7 @@ class DataObjectExtension extends DataExtension
      * Push the item to Solr after publishing
      *
      * @throws ValidationException
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ReflectionException
      * @throws InvalidArgumentException
      */
@@ -234,7 +234,7 @@ class DataObjectExtension extends DataExtension
      * Attempt to remove the item from Solr
      *
      * @throws ValidationException
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     public function onAfterDelete(): void
     {

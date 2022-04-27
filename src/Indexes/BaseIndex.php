@@ -22,7 +22,8 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
-use GuzzleHttp\Exception\GuzzleException;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use LogicException;
 use ReflectionException;
 use SilverStripe\Control\Director;
@@ -35,8 +36,9 @@ use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\View\ArrayData;
-use Solarium\Core\Client\Adapter\Guzzle;
-use Solarium\Core\Client\Client;
+use Solarium\Client as SolariumClient;
+use Solarium\Core\Client\Adapter\Psr18Adapter;
+use Solarium\Exception\HttpException;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -106,9 +108,8 @@ abstract class BaseIndex
         // Set up the client
         $config = Config::inst()->get(SolrCoreService::class, 'config');
         $config['endpoint'] = $this->getConfig($config['endpoint']);
-        $adapter = new Guzzle();
-        $dispatcher = new EventDispatcher();
-        $this->client = new Client($adapter, $dispatcher, $config);
+        $this->client = (new SolrCoreService())->getClient();
+        $this->client->setOptions($config);
 
         // Set up the schema service, only used in the generation of the schema
         $schemaFactory = Injector::inst()->get(SchemaFactory::class, false);
@@ -196,7 +197,7 @@ abstract class BaseIndex
      *
      * @param BaseQuery $query
      * @return SearchResult|ArrayData|mixed
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      * @throws ReflectionException
      * @throws Exception
@@ -307,7 +308,7 @@ abstract class BaseIndex
      * @param BaseQuery $query
      * @param SearchResult $searchResult
      * @return SearchResult|mixed|ArrayData
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      * @throws ReflectionException
      */
