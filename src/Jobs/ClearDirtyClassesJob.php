@@ -11,10 +11,10 @@
 namespace Firesphere\SolrSearch\Jobs;
 
 use Firesphere\SolrSearch\Tasks\ClearDirtyClassesTask;
-use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\ORM\ValidationException;
+use Solarium\Exception\HttpException;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 /**
@@ -40,7 +40,7 @@ class ClearDirtyClassesJob extends AbstractQueuedJob
     /**
      * Run the dirty class cleanup task from Queued Jobs
      *
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      * @throws ReflectionException
      */

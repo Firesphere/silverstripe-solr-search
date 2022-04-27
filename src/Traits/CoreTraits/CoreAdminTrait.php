@@ -14,10 +14,10 @@ namespace Firesphere\SolrSearch\Traits;
 use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
-use GuzzleHttp\Exception\GuzzleException;
 use Solarium\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
+use Solarium\Exception\HttpException;
 
 /**
  * Trait CoreAdminTrait is the trait that helps with Admin operations.
@@ -43,7 +43,7 @@ trait CoreAdminTrait
      * @param ConfigStore $configStore
      * @return bool
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     public function coreCreate($core, $configStore): bool
     {

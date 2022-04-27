@@ -26,6 +26,9 @@ Firesphere\SolrSearch\Helpers\Statics:
     Date: tdate
     "SilverStripe\\ORM\\FieldType\\DBDate": tdate
     "DBDate": tdate
+    Time: tdate
+    "SilverStripe\\ORM\\FieldType\\DBTime": tdate
+    "DBTime": tdate
     Datetime: tdate
     "SilverStripe\\ORM\\FieldType\\DBDatetime": tdate
     "DBDatetime": tdate

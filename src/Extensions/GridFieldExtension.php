@@ -20,7 +20,7 @@ use SilverStripe\View\ViewableData;
  * Dirty hack to get the alert/warning/info classes in to the gridfield
  *
  * @package Firesphere\Solr\Search
- * @property BlogFilterGridField|GridField|GridFieldExtension $owner
+ * @property GridField|GridFieldExtension $owner
  */
 class GridFieldExtension extends Extension
 {

@@ -17,14 +17,13 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
-use ReflectionException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ValidationException;
+use Solarium\Exception\HttpException;
 
 /**
  * Class SolrConfigureTask
@@ -69,8 +68,8 @@ class SolrConfigureTask extends BuildTask
      * execute via the TaskRunner
      *
      * @param HTTPRequest $request Current request
-     * @return bool|Exception
-     * @throws GuzzleException
+     * @return void
+     * @throws HTTPException
      * @throws InvalidArgumentException
      * @throws ValidationException
      */
@@ -186,7 +185,7 @@ class SolrConfigureTask extends BuildTask
      * @codeCoverageIgnore Can't be tested because of accessibility and the actual throw of exception
      * @param string $index Name of the index
      * @param Exception $error
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      */
     private function logException($index, Exception $error): void

@@ -22,6 +22,9 @@ Firesphere\SolrSearch\Services\SolrCoreService:
         commit_within: 60
   # default path settings
   paths:
+    9:
+      schema: '%s/Solr/9/templates'
+      extras: '%s/Solr/9/extras'
     7:
       schema: '%s/Solr/7/templates'
       extras: '%s/Solr/7/extras'
