@@ -30,7 +30,8 @@
     "symbiote/silverstripe-queuedjobs": "^4",
     "solarium/solarium": "^6.0",
     "minimalcode/search": "^1.0",
-    "guzzlehttp/guzzle": "^6.3|^7"
+    "guzzlehttp/guzzle": "^6.3|^7",
+    "php-http/discovery": "^1.14"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7",
