@@ -37,6 +37,7 @@ core_check: &CheckSolrCore
 composer: &composerRequirements
   name: Composer requirements
   command: |
+    composer self-update --1
     composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
     composer update --no-progress
     composer vendor-expose
@@ -50,9 +51,9 @@ jobs:
     environment:
       CC_TEST_REPORTER_ID: 586f7041e9f71c44946cdfe8bce27d66c6271d173ec291c2a9aa7e1b56667873
     docker:
-      - image: ssmarco/php-solr:latest
+      - image: ssmarco/php-solr:7.4
         environment: *environment
-      - image: circleci/mysql:5.7
+      - image: cimg/mysql:5.7
         environment: *mysql
 
     working_directory: /var/www/html
@@ -63,11 +64,11 @@ jobs:
       - run: echo '{}' > composer.lock
       - restore_cache:
           keys:
-            - silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
-            - silverstripe-search-cache-v8-
+            - silverstripe-search-cache-v8testing1-{{ checksum "composer.lock" }}
+            - silverstripe-search-cache-v8testing1-
       - run: *composerRequirements
       - save_cache:
-          key: silverstripe-search-cache-v8-{{ checksum "composer.lock" }}
+          key: silverstripe-search-cache-v8testing1-{{ checksum "composer.lock" }}
           paths:
             - vendor
             - app
