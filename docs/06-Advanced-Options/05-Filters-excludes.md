@@ -21,7 +21,7 @@ $query = new BaseQuery();
 
 // Simple date filter - exclude any pages which have an embargo date in the future
 $criteria = Criteria::where('SiteTree_Embargo')
-    ->greaterThanEqual('NOW');
+    ->greaterThanEqual(new \DateTime('NOW'));
 $query->addExclude('embargo', $criteria);
 
 // Starts with/ends with filter
