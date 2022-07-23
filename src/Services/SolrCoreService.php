@@ -85,6 +85,15 @@ class SolrCoreService
      * @var array Valid indexes out of the base indexes
      */
     protected $validIndexes = [];
+    /**
+     * @var array Available config versions
+     */
+    protected static $solr_versions = [
+        "9.0.0",
+        "7.0.0",
+        "5.0.0",
+        "4.0.0",
+    ];
 
     /**
      * SolrCoreService constructor.
@@ -311,17 +320,16 @@ class SolrCoreService
         $result = $client->get('solr/admin/info/system?wt=json', $clientOptions);
         $result = json_decode($result->getBody(), 1);
 
-        $version = 7;
-        // Newer than 4, older than 7, a few new features added
-        if (version_compare('6.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $version = 5;
-        }
-        // Old version 4
-        if (version_compare('4.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $version = 4;
+        foreach (static::$solr_versions as $version) {
+            $compare = version_compare($version, $result['lucene']['solr-spec-version']);
+            if ($compare >= 0) {
+                list($v) = explode('.', $version);
+                return (int)$v;
+            }
         }
 
-        return $version;
+        // Default to the latest version
+        return 9;
     }
 
     /**
