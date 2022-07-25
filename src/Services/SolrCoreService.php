@@ -297,8 +297,19 @@ class SolrCoreService
 
     /**
      * Check the Solr version to use
+     * In version compare, we have the following results:
+     *       1 means "result version is higher"
+     *       0 means "result version is equal"
+     *      -1 means "result version is lower"
+     * We want to use the version "higher or equal to", because the
+     * configs are for version X-and-up.
+     * We loop through the versions available from high to low
+     * therefore, if the version is lower, we want to check the next config version
+     *
+     * If no valid version is found, throw an error
      *
      * @param HandlerStack|null $handler Used for testing the solr version
+     * @throws LogicException
      * @return int
      */
     public function getSolrVersion($handler = null): int
@@ -322,14 +333,13 @@ class SolrCoreService
 
         foreach (static::$solr_versions as $version) {
             $compare = version_compare($version, $result['lucene']['solr-spec-version']);
-            if ($compare >= 0) {
+            if ($compare !== -1) {
                 list($v) = explode('.', $version);
                 return (int)$v;
             }
         }
 
-        // Default to the latest version
-        return 9;
+        throw new LogicException('No valid version of Solr found!', 255);
     }
 
     /**
