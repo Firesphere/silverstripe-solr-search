@@ -20,7 +20,7 @@ use Firesphere\SolrSearch\Queries\BaseQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\States\SiteState;
-use Firesphere\SolrSearch\Traits\BaseIndexTrait;
+use Firesphere\SolrSearch\Traits\IndexTraits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\Psr17FactoryDiscovery;

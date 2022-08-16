@@ -9,7 +9,7 @@
  */
 
 
-namespace Firesphere\SolrSearch\Traits;
+namespace Firesphere\SolrSearch\Traits\IndexTraits;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use ReflectionClass;

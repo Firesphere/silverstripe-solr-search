@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
 
-namespace Firesphere\SolrSearch\Traits;
+namespace Firesphere\SolrSearch\Traits\IndexTraits;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
