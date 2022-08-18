@@ -88,6 +88,15 @@ class SolrCoreService
      * @var array Valid indexes out of the base indexes
      */
     protected $validIndexes = [];
+    /**
+     * @var array Available config versions
+     */
+    protected static $solr_versions = [
+        "9.0.0",
+        "7.0.0",
+        "5.0.0",
+        "4.0.0",
+    ];
 
     /**
      * SolrCoreService constructor.
@@ -295,8 +304,19 @@ class SolrCoreService
 
     /**
      * Check the Solr version to use
+     * In version compare, we have the following results:
+     *       1 means "result version is higher"
+     *       0 means "result version is equal"
+     *      -1 means "result version is lower"
+     * We want to use the version "higher or equal to", because the
+     * configs are for version X-and-up.
+     * We loop through the versions available from high to low
+     * therefore, if the version is lower, we want to check the next config version
+     *
+     * If no valid version is found, throw an error
      *
      * @param HandlerStack|null $handler Used for testing the solr version
+     * @throws LogicException
      * @return int
      */
     public function getSolrVersion($handler = null): int
@@ -318,21 +338,15 @@ class SolrCoreService
         $result = $client->get('solr/admin/info/system?wt=json', $clientOptions);
         $result = json_decode($result->getBody(), 1);
 
-        $version = 9;
-        // Newer than 6, older than 9, a few new features added
-        if (version_compare('8.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $version = 7;
-        }
-        // Newer than 4, older than 7
-        if (version_compare('6.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $version = 5;
-        }
-        // Old version 4
-        if (version_compare('4.9.9', $result['lucene']['solr-spec-version']) >= 0) {
-            $version = 4;
+        foreach (static::$solr_versions as $version) {
+            $compare = version_compare($version, $result['lucene']['solr-spec-version']);
+            if ($compare !== -1) {
+                list($v) = explode('.', $version);
+                return (int)$v;
+            }
         }
 
-        return $version;
+        throw new LogicException('No valid version of Solr found!', 255);
     }
 
     /**

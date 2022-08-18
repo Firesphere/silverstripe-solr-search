@@ -94,7 +94,6 @@ class SolrIndexJob extends AbstractQueuedJob
         // Thus, only set to true if the result isn't false :)
         $this->isComplete = true;
 
-        /** @var self $this */
         return $this;
     }
 
@@ -102,7 +101,6 @@ class SolrIndexJob extends AbstractQueuedJob
      * Configure the run for the valid indexes
      *
      * @param stdClass|null $data
-     * @throws ReflectionException
      */
     protected function configureRun($data)
     {

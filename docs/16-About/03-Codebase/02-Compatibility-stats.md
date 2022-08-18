@@ -5,6 +5,6 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/Firesphere/silverstripe-solr-compatibility/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Firesphere/silverstripe-solr-compatibility/?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/347f69eaa3082ba6f227/maintainability)](https://codeclimate.com/github/Firesphere/silverstripe-solr-compatibility/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/347f69eaa3082ba6f227/test_coverage)](https://codeclimate.com/github/Firesphere/silverstripe-solr-compatibility/test_coverage)
-[![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
+
 
 # Codebase statistics from PHP Lines of Code

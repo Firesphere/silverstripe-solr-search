@@ -14,11 +14,6 @@ If you have questions, or improvements, please raise an issue, and if you want, 
 
 - [XD Designers (Netherlands)](https://www.xd.nl)
 
-# Support us   
-[GitStore](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
-
-## Why/what is GitStore?
-[Please see the GitStore FAQ section](15-Help/02-FAQ.html#gitstore)
 
 **NOTE**
 
