@@ -31,13 +31,16 @@ create_index_requirements: &CircleCITestIndexReqs
 core_check: &CheckSolrCore
   name: Check Solr Core - CircleCITestIndex is successfully created
   command: |
-    RESPONSE=$(echo $(curl -u solr:SolrRocks -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
+    RESPONSE=$(echo $(curl -I http://localhost:8983/solr/CircleCITestIndex/admin/ping | head -n1 ) | grep -o '200 OK')
     if [[ $RESPONSE != '200 OK' ]]; then echo "Solr Core - CircleCITestIndex is not created"; exit 1; fi
     echo "CircleCITestIndex is successfully created"
 composer: &composerRequirements
   name: Composer requirements
   command: |
-    composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms --no-progress
+    composer config --no-interaction allow-plugins.composer/installers true
+    composer config --no-interaction allow-plugins.silverstripe/vendor-plugin true
+    composer config --no-interaction allow-plugins.silverstripe/recipe-plugin true
+    composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms:^4.10 --no-progress
     composer update --no-progress
     composer vendor-expose
 db_build: &dev_build
@@ -50,9 +53,9 @@ jobs:
     environment:
       CC_TEST_REPORTER_ID: 586f7041e9f71c44946cdfe8bce27d66c6271d173ec291c2a9aa7e1b56667873
     docker:
-      - image: ssmarco/php-solr:latest
+      - image: ssmarco/php-solr:7.4
         environment: *environment
-      - image: circleci/mysql:5.7
+      - image: cimg/mariadb:10.8
         environment: *mysql
 
     working_directory: /var/www/html
@@ -139,7 +142,7 @@ jobs:
     docker:
       - image: brettt89/silverstripe-web:7.1-platform
         environment: *environment
-      - image: circleci/mysql:5.7
+      - image: cimg/mariadb:10.8
         environment: *mysql
 
     working_directory: /var/www/html
@@ -149,6 +152,7 @@ jobs:
       - checkout
       - run: *errorlog
       - run: echo '{}' > composer.lock
+      - run: php -v
       - restore_cache:
           keys:
             - silverstripe-search-cache-v4-{{ checksum "composer.lock" }}
@@ -303,5 +307,5 @@ workflows:
   dobuild:
     jobs:
       - solr8
-      - solr4
+#      - solr4
       - docs

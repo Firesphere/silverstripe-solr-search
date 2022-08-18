@@ -17,7 +17,6 @@ use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\States\SiteState;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use Firesphere\SolrSearch\Traits\SolrIndexTrait;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
 use SilverStripe\Control\Controller;
@@ -32,6 +31,7 @@ use SilverStripe\ORM\DB;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Versioned\Versioned;
+use Solarium\Exception\HttpException;
 
 /**
  * Class SolrIndexTask
@@ -98,7 +98,7 @@ class SolrIndexTask extends BuildTask
      * @param HTTPRequest $request Current request
      * @return int|bool
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     public function run($request)
     {
@@ -189,7 +189,7 @@ class SolrIndexTask extends BuildTask
      * @param int $group Group to index
      * @return int|bool
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     protected function indexClassForIndex(array $classes, bool $isGroup, int $group)
     {
@@ -208,7 +208,7 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @param int $group Group to index
      * @return int|bool
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      */
     private function indexClass(bool $isGroup, string $class, int $group)
@@ -278,7 +278,7 @@ class SolrIndexTask extends BuildTask
      * @param int $groups Total amount of groups
      * @return int Last group indexed
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     private function spawnChildren(string $class, int $group, int $groups): int
     {
@@ -314,7 +314,7 @@ class SolrIndexTask extends BuildTask
      * @param array $pids Array of all the child Process IDs
      * @param int $start Start point for the objects
      * @return void
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      */
     private function runForkedChild(string $class, array &$pids, int $start): void
@@ -334,7 +334,7 @@ class SolrIndexTask extends BuildTask
      * @param string $class Class to index
      * @param int $pid PID of the child
      * @param int $start Position to start
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      * @throws Exception
      */
@@ -430,7 +430,7 @@ class SolrIndexTask extends BuildTask
      * @param string $index Index that is currently running
      * @param int $group Group currently attempted to index
      * @param Exception $exception Exception that's been thrown
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
      */
     private function logException($index, int $group, Exception $exception): void

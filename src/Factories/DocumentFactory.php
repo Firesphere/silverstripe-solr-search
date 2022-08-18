@@ -128,7 +128,12 @@ class DocumentFactory
         $doc->setKey(SolrCoreService::ID_FIELD, $item->ClassName . '-' . $item->ID);
         $doc->addField(SolrCoreService::CLASS_ID_FIELD, $item->ID);
         $doc->addField('ClassName', $item->ClassName);
-        $doc->addField('ClassHierarchy', ClassInfo::ancestry($item));
+        $hierarchy = ClassInfo::ancestry($item);
+        $classHierarchy = [];
+        foreach ($hierarchy as $lower => $camel) {
+            $classHierarchy[] = $camel;
+        }
+        $doc->addField('ClassHierarchy', $classHierarchy);
         $doc->addField('ViewStatus', $item->getViewStatus());
         $this->extend('updateDefaultFields', $doc, $item);
     }

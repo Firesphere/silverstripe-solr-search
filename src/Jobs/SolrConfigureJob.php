@@ -10,12 +10,13 @@
 namespace Firesphere\SolrSearch\Jobs;
 
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
-use GuzzleHttp\Exception\GuzzleException;
+use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ValidationException;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Solarium\Exception\HttpException;
 
 /**
  * Class SolrConfigureJob
@@ -41,10 +42,9 @@ class SolrConfigureJob extends AbstractQueuedJob
      * Process the queue for indexes that need to be indexed properly
      *
      * @return void
-     * @throws ReflectionException
-     * @throws GuzzleException
+     * @throws HTTPException
      * @throws ValidationException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function process()
     {

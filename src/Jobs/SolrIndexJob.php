@@ -12,7 +12,6 @@ namespace Firesphere\SolrSearch\Jobs;
 use Exception;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
-use GuzzleHttp\Exception\GuzzleException;
 use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
@@ -20,6 +19,7 @@ use SilverStripe\Core\Injector\Injector;
 use stdClass;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
+use Solarium\Exception\HttpException;
 
 /**
  * Class SolrIndexJob is a queued job to index all existing indexes and their classes.
@@ -64,7 +64,7 @@ class SolrIndexJob extends AbstractQueuedJob
      *
      * @return self
      * @throws Exception
-     * @throws GuzzleException
+     * @throws HTTPException
      */
     public function process()
     {

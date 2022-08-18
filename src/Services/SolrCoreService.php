@@ -17,6 +17,8 @@ use Firesphere\SolrSearch\Traits\CoreAdminTrait;
 use Firesphere\SolrSearch\Traits\CoreServiceTrait;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
@@ -28,10 +30,11 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 use Solarium\Client;
-use Solarium\Core\Client\Adapter\Guzzle;
+use Solarium\Core\Client\Adapter\Psr18Adapter;
 use Solarium\Core\Client\Client as CoreClient;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Class SolrCoreService provides the base connection to Solr.
@@ -103,8 +106,12 @@ class SolrCoreService
     public function __construct()
     {
         $config = static::config()->get('config');
-        $this->client = new Client($config);
-        $this->client->setAdapter(new Guzzle());
+        $httpClient = HTTPClientDiscovery::find();
+        $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
+        $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
+        $eventDispatcher = new EventDispatcher();
+        $adapter = new Psr18Adapter($httpClient, $requestFactory, $streamFactory);
+        $this->client = new Client($adapter, $eventDispatcher, $config);
         $this->admin = $this->client->createCoreAdmin();
         $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
         $this->filterIndexes();
