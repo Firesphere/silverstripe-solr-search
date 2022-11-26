@@ -32,7 +32,7 @@
     "solarium/solarium": "^6.0",
     "minimalcode/search": "^1.0",
     "guzzlehttp/guzzle": "^6.3|^7",
-    "php-http/guzzle6-adapter": "^2.0",
+    "php-http/guzzle7-adapter": "*",
     "http-interop/http-factory-guzzle": "^1",
     "symfony/event-dispatcher": "^5.4"
   },
@@ -43,8 +43,8 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.0.x-dev",
-      "1.0": "1.0.x-dev"
+      "dev-primary": "2.0.x-dev",
+      "2.0": "2.0.x-dev"
     },
     "expose": [
       "client/dist"
