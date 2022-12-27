@@ -32,6 +32,7 @@ use SilverStripe\ORM\SS_List;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Psr18Adapter;
 use Solarium\Core\Client\Client as CoreClient;
+use Solarium\Core\Client\Request;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -321,22 +322,12 @@ class SolrCoreService
      */
     public function getSolrVersion($handler = null): int
     {
-        $config = self::config()->get('config');
-        $firstEndpoint = array_shift($config['endpoint']);
-        $clientConfig = [
-            'base_uri' => 'http://' . $firstEndpoint['host'] . ':' . $firstEndpoint['port'],
-        ];
+        $query = $this->client->createApi([
+            'handler' => 'admin/info/system',
+            'version' => Request::API_V2,
+        ]);
 
-        if ($handler) {
-            $clientConfig['handler'] = $handler;
-        }
-
-        $clientOptions = $this->getSolrAuthentication($firstEndpoint);
-
-        $client = new GuzzleClient($clientConfig);
-
-        $result = $client->get('solr/admin/info/system?wt=json', $clientOptions);
-        $result = json_decode($result->getBody(), 1);
+        $result = $this->client->execute($query)->getData();
 
         foreach (static::$solr_versions as $version) {
             $compare = version_compare($version, $result['lucene']['solr-spec-version']);
