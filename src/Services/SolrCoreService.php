@@ -324,7 +324,7 @@ class SolrCoreService
     {
         $query = $this->client->createApi([
             'handler' => 'admin/info/system',
-            'version' => Request::API_V2,
+            'version' => Request::API_V1,
         ]);
 
         $result = $this->client->execute($query)->getData();
@@ -332,34 +332,11 @@ class SolrCoreService
         foreach (static::$solr_versions as $version) {
             $compare = version_compare($version, $result['lucene']['solr-spec-version']);
             if ($compare !== -1) {
-                list($v) = explode('.', $version);
+                [$v] = explode('.', $version);
                 return (int)$v;
             }
         }
 
         throw new LogicException('No valid version of Solr found!', 255);
-    }
-
-    /**
-     * This will add the authentication headers to the request.
-     * It's intended to become a helper in the end.
-     *
-     * @param array $firstEndpoint
-     * @return array|array[]
-     */
-    private function getSolrAuthentication($firstEndpoint): array
-    {
-        $clientOptions = [];
-
-        if (isset($firstEndpoint['username']) && isset($firstEndpoint['password'])) {
-            $clientOptions = [
-                'auth' => [
-                    $firstEndpoint['username'],
-                    $firstEndpoint['password']
-                ]
-            ];
-        }
-
-        return $clientOptions;
     }
 }

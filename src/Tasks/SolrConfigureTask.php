@@ -35,14 +35,6 @@ class SolrConfigureTask extends BuildTask
     use LoggerTrait;
 
     /**
-     * @var array Available stores
-     */
-    protected static $storeModes = [
-        'file' => FileConfigStore::class,
-        'post' => PostConfigStore::class,
-        //        'webdav' => WebdavConfigStore::class,
-    ];
-    /**
      * @var string URLSegment
      */
     private static $segment = 'SolrConfigureTask';
