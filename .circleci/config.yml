@@ -40,6 +40,7 @@ composer: &composerRequirements
     composer config --no-interaction allow-plugins.composer/installers true
     composer config --no-interaction allow-plugins.silverstripe/vendor-plugin true
     composer config --no-interaction allow-plugins.silverstripe/recipe-plugin true
+    composer config --no-interaction allow-plugins.php-http/discovery true
     composer require myclabs/deep-copy:1.9.1 silverstripe/recipe-cms:^4.10 --no-progress
     composer update --no-progress
     composer vendor-expose
