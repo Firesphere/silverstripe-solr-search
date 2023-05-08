@@ -50,7 +50,8 @@ trait CoreAdminTrait
         $action = $this->admin->createCreate();
 
         $action->setCore($core);
-        $action->setInstanceDir($configStore->instanceDir($core));
+        $path = SolrCoreService::config()->get('solr_path') ?? $configStore->instanceDir($core);
+        $action->setInstanceDir($path);
         $this->admin->setAction($action);
         try {
             $response = $this->client->coreAdmin($this->admin);
