@@ -222,10 +222,6 @@ jobs:
             git clone git@github.com:Firesphere/silverstripe-fluent-solr.git Fluent -q
             git clone git@github.com:Firesphere/silverstripe-subsite-solr.git Subsites -q
             git clone git@github.com:Firesphere/silverstripe-solr-member-permissions.git Member-Permissions -q
-      - restore_cache:
-          keys:
-            - silverstripe-search-yarn-{{ checksum "yarn.lock" }}
-            - silverstripe-search-yarn-
       - run:
           name: Composer
           command: |
@@ -235,11 +231,6 @@ jobs:
           command: |
             echo '{"scripts": {"docs": "markdown-folder-to-html"}}' > package.json
             yarn add markdown-folder-to-html
-      - save_cache:
-          key: silverstripe-search-yarn-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
-            - vendor
       - run:
           name: Setup git
           command: |
