@@ -14,6 +14,7 @@ namespace Firesphere\SolrSearch\Traits;
 use Exception;
 use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
+use Firesphere\SolrSearch\Services\SolrCoreService;
 use Solarium\Client;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
