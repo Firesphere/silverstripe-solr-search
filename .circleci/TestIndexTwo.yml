@@ -33,3 +33,6 @@ Firesphere\SolrSearch\Services\SolrCoreService:
       localhost:
         username: solr
         password: SolrRocks
+  store:
+    path: '/var/solr/data'
+
