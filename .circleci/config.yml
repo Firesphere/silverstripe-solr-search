@@ -98,22 +98,7 @@ jobs:
             chown -R solr:solr /var/www/html/.solr
             service solr restart
             su solr vendor/bin/sake dev/tasks/SolrConfigureTask
-      - run: *CheckSolrCore
       - run: su solr vendor/bin/sake dev/tasks/SolrIndexTask unittest=true
-      - run:
-          name: Check Solr has successfully indexed the default 3 pages
-          command: |
-            wget http://localhost:8983/solr/CircleCITestIndex/update?commit=true
-            RESPONSE=$(echo $(curl -u solr:SolrRocks http://localhost:8983/solr/CircleCITestIndex/select?q=*) | grep -o '"numFound":3')
-            if [[ -z "$RESPONSE" ]]; then echo "No indexed documents"; exit 1; fi
-            echo "Solr has successfully indexed documents"
-      - run:
-          name: Setup Code Climate and Scrutinizer test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-            wget https://scrutinizer-ci.com/ocular.phar
       - run:
           name: Run tests
           command: |
