@@ -25,6 +25,5 @@ class QueryBuilder implements QueryBuilderInterface
         $clientQuery->setQuery($queryData);
 
         return $clientQuery;
-
     }
 }

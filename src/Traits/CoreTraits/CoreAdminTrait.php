@@ -8,16 +8,15 @@
  * @copyright Copyright (c) 2018 - now() Firesphere & Sheepy
  */
 
-
 namespace Firesphere\SolrSearch\Traits;
 
 use Exception;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Solarium\Client;
+use Solarium\Exception\HttpException;
 use Solarium\QueryType\Server\CoreAdmin\Query\Query;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
-use Solarium\Exception\HttpException;
 
 /**
  * Trait CoreAdminTrait is the trait that helps with Admin operations.
@@ -59,7 +58,6 @@ trait CoreAdminTrait
             return $response->getWasSuccessful();
             // @codeCoverageIgnoreStart
         } catch (Exception $error) {
-
             throw new Exception($error);
         }
         // @codeCoverageIgnoreEnd

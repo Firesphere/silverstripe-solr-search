@@ -14,8 +14,8 @@ use Psr\SimpleCache\InvalidArgumentException;
 use SilverStripe\Control\NullHTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\ValidationException;
-use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Solarium\Exception\HttpException;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 /**
  * Class SolrConfigureJob
@@ -26,7 +26,6 @@ use Solarium\Exception\HttpException;
  */
 class SolrConfigureJob extends AbstractQueuedJob
 {
-
     /**
      * My name
      *

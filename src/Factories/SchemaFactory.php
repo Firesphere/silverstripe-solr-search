@@ -10,7 +10,6 @@
 namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
-
 use Firesphere\SearchBackend\Helpers\FieldResolver;
 use Firesphere\SearchBackend\Helpers\Statics;
 use Firesphere\SolrSearch\Services\SolrCoreService;
@@ -145,29 +144,6 @@ class SchemaFactory extends ViewableData
     }
 
     /**
-     * Get the fields that should be copied
-     *
-     * @return ArrayList
-     */
-    public function getCopyFields()
-    {
-        $fields = $this->index->getCopyFields();
-
-        $return = ArrayList::create();
-        foreach ($fields as $field => $copyFields) {
-            $item = [
-                'Field' => $field,
-            ];
-
-            $return->push($item);
-        }
-
-        $this->extend('onBeforeCopyFields', $return);
-
-        return $return;
-    }
-
-    /**
      * Get the definition of a copy field for determining what to load in to Solr
      *
      * @return ArrayList
@@ -189,6 +165,29 @@ class SchemaFactory extends ViewableData
                 $this->getFieldDefinition($copyField, $return, $field);
             }
         }
+
+        return $return;
+    }
+
+    /**
+     * Get the fields that should be copied
+     *
+     * @return ArrayList
+     */
+    public function getCopyFields()
+    {
+        $fields = $this->index->getCopyFields();
+
+        $return = ArrayList::create();
+        foreach ($fields as $field => $copyFields) {
+            $item = [
+                'Field' => $field,
+            ];
+
+            $return->push($item);
+        }
+
+        $this->extend('onBeforeCopyFields', $return);
 
         return $return;
     }

@@ -54,40 +54,31 @@ class SolrCoreService extends BaseService
     /**
      * Unique ID in Solr
      */
-    const ID_FIELD = 'id';
+    public const ID_FIELD = 'id';
     /**
      * SilverStripe ID of the object
      */
-    const CLASS_ID_FIELD = 'ObjectID';
+    public const CLASS_ID_FIELD = 'ObjectID';
     /**
      * Name of the field that can be used for queries
      */
-    const CLASSNAME = 'ClassName';
+    public const CLASSNAME = 'ClassName';
     /**
      * Solr update types
      */
-    const DELETE_TYPE_ALL = 'deleteall';
+    public const DELETE_TYPE_ALL = 'deleteall';
     /**
      * string
      */
-    const DELETE_TYPE = 'delete';
+    public const DELETE_TYPE = 'delete';
     /**
      * string
      */
-    const UPDATE_TYPE = 'update';
+    public const UPDATE_TYPE = 'update';
     /**
      * string
      */
-    const CREATE_TYPE = 'create';
-
-    /**
-     * @var array Base indexes that exist
-     */
-    protected $baseIndexes = [];
-    /**
-     * @var array Valid indexes out of the base indexes
-     */
-    protected $validIndexes = [];
+    public const CREATE_TYPE = 'create';
     /**
      * @var array Available config versions
      */
@@ -97,6 +88,14 @@ class SolrCoreService extends BaseService
         "5.0.0",
         "4.0.0",
     ];
+    /**
+     * @var array Base indexes that exist
+     */
+    protected $baseIndexes = [];
+    /**
+     * @var array Valid indexes out of the base indexes
+     */
+    protected $validIndexes = [];
 
     /**
      * SolrCoreService constructor.
@@ -114,42 +113,6 @@ class SolrCoreService extends BaseService
         $this->client = new Client($adapter, $eventDispatcher, $config);
         $this->admin = $this->client->createCoreAdmin();
         parent::__construct(BaseIndex::class);
-    }
-
-    /**
-     * Filter enabled indexes down to valid indexes that can be instantiated
-     * or are allowed from config
-     *
-     * @throws ReflectionException
-     */
-    protected function filterIndexes(): void
-    {
-        $enabledIndexes = static::config()->get('indexes');
-        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : $this->baseIndexes;
-        foreach ($this->baseIndexes as $subindex) {
-            // If the config of indexes is set, and the requested index isn't in it, skip addition
-            // Or, the index simply doesn't exist, also a valid option
-            if (!in_array($subindex, $enabledIndexes, true) ||
-                !$this->checkReflection($subindex)
-            ) {
-                continue;
-            }
-            $this->validIndexes[] = $subindex;
-        }
-    }
-
-    /**
-     * Check if the class is instantiable
-     *
-     * @param $subindex
-     * @return bool
-     * @throws ReflectionException
-     */
-    protected function checkReflection($subindex): bool
-    {
-        $reflectionClass = new ReflectionClass($subindex);
-
-        return $reflectionClass->isInstantiable();
     }
 
     /**
@@ -370,5 +333,41 @@ class SolrCoreService extends BaseService
         }
 
         return $clientOptions;
+    }
+
+    /**
+     * Filter enabled indexes down to valid indexes that can be instantiated
+     * or are allowed from config
+     *
+     * @throws ReflectionException
+     */
+    protected function filterIndexes(): void
+    {
+        $enabledIndexes = static::config()->get('indexes');
+        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : $this->baseIndexes;
+        foreach ($this->baseIndexes as $subindex) {
+            // If the config of indexes is set, and the requested index isn't in it, skip addition
+            // Or, the index simply doesn't exist, also a valid option
+            if (!in_array($subindex, $enabledIndexes, true) ||
+                !$this->checkReflection($subindex)
+            ) {
+                continue;
+            }
+            $this->validIndexes[] = $subindex;
+        }
+    }
+
+    /**
+     * Check if the class is instantiable
+     *
+     * @param $subindex
+     * @return bool
+     * @throws ReflectionException
+     */
+    protected function checkReflection($subindex): bool
+    {
+        $reflectionClass = new ReflectionClass($subindex);
+
+        return $reflectionClass->isInstantiable();
     }
 }

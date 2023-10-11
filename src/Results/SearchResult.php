@@ -96,6 +96,43 @@ class SearchResult extends ViewableData implements SearchResultInterface
     }
 
     /**
+     * Set the collated spellcheck string
+     *
+     * @param mixed $collatedSpellcheck
+     * @return $this
+     */
+    public function setCollatedSpellcheck($collatedSpellcheck): self
+    {
+        /** @var Collation $collated */
+        if (!$this->index->isRetry() && $collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
+            $this->collatedSpellcheck = $collated[0]->getQuery();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the spellcheck list as an ArrayList
+     *
+     * @param SpellcheckResult|null $spellcheck
+     * @return SearchResult
+     */
+    public function setSpellcheck($spellcheck): self
+    {
+        $spellcheckList = [];
+
+        if ($spellcheck && ($suggestions = $spellcheck->getSuggestion(0))) {
+            foreach ($suggestions->getWords() as $suggestion) {
+                $spellcheckList[] = ArrayData::create($suggestion);
+            }
+        }
+
+        $this->spellcheck = ArrayList::create($spellcheckList);
+
+        return $this;
+    }
+
+    /**
      * Create facets from each faceted class
      *
      * @param FacetSet $facets
@@ -138,43 +175,6 @@ class SearchResult extends ViewableData implements SearchResultInterface
         }
         // Sort the results by FacetCount
         $results = $results->sort(['FacetCount' => 'DESC', 'Title' => 'ASC',]);
-    }
-
-    /**
-     * Set the collated spellcheck string
-     *
-     * @param mixed $collatedSpellcheck
-     * @return $this
-     */
-    public function setCollatedSpellcheck($collatedSpellcheck): self
-    {
-        /** @var Collation $collated */
-        if (!$this->index->isRetry() && $collatedSpellcheck && ($collated = $collatedSpellcheck->getCollations())) {
-            $this->collatedSpellcheck = $collated[0]->getQuery();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set the spellcheck list as an ArrayList
-     *
-     * @param SpellcheckResult|null $spellcheck
-     * @return SearchResult
-     */
-    public function setSpellcheck($spellcheck): self
-    {
-        $spellcheckList = [];
-
-        if ($spellcheck && ($suggestions = $spellcheck->getSuggestion(0))) {
-            foreach ($suggestions->getWords() as $suggestion) {
-                $spellcheckList[] = ArrayData::create($suggestion);
-            }
-        }
-
-        $this->spellcheck = ArrayList::create($spellcheckList);
-
-        return $this;
     }
 
     /**

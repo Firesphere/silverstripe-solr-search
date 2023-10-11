@@ -11,7 +11,6 @@
 namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
-
 use Firesphere\SearchBackend\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tests\DataObjectExtensionTest;

@@ -36,7 +36,7 @@ class QueryComponentFactory
      *
      * @var array
      */
-    const DEFAULT_FIELDS = [
+    public const DEFAULT_FIELDS = [
         SolrCoreService::ID_FIELD,
         SolrCoreService::CLASS_ID_FIELD,
         SolrCoreService::CLASSNAME,

@@ -209,6 +209,7 @@ abstract class BaseIndex extends CoreIndex
             $collation = $result->getSpellcheck();
             $retryResults = $this->spellcheckRetry($query, $searchResult);
             $this->retry = false;
+
             return $retryResults->setCollatedSpellcheck($collation);
         }
 
@@ -216,37 +217,6 @@ abstract class BaseIndex extends CoreIndex
         $this->extend('updateSearchResults', $searchResult);
 
         return $searchResult;
-    }
-
-    public function getQueryTerms(): array
-    {
-        return $this->queryTerms;
-    }
-
-    public function setQueryTerms(array $queryTerms): void
-    {
-        $this->queryTerms = $queryTerms;
-    }
-
-    /**
-     * Build a factory to use in the SolrQuery building. {@link static::buildSolrQuery()}
-     *
-     * @param SolrQuery $query
-     * @param Query $clientQuery
-     * @return QueryComponentFactory|mixed
-     */
-    protected function buildFactory(BaseQuery $query, Query $clientQuery)
-    {
-        $factory = $this->queryFactory;
-
-        $helper = $clientQuery->getHelper();
-
-        $factory->setQuery($query);
-        $factory->setClientQuery($clientQuery);
-        $factory->setHelper($helper);
-        $factory->setIndex($this);
-
-        return $factory;
     }
 
     /**
@@ -291,6 +261,16 @@ abstract class BaseIndex extends CoreIndex
         $this->retry = true;
 
         return $this->doSearch($query);
+    }
+
+    public function getQueryTerms(): array
+    {
+        return $this->queryTerms;
+    }
+
+    public function setQueryTerms(array $queryTerms): void
+    {
+        $this->queryTerms = $queryTerms;
     }
 
     /**
@@ -404,5 +384,26 @@ abstract class BaseIndex extends CoreIndex
     public function isRetry(): bool
     {
         return $this->retry;
+    }
+
+    /**
+     * Build a factory to use in the SolrQuery building. {@link static::buildSolrQuery()}
+     *
+     * @param SolrQuery $query
+     * @param Query $clientQuery
+     * @return QueryComponentFactory|mixed
+     */
+    protected function buildFactory(BaseQuery $query, Query $clientQuery)
+    {
+        $factory = $this->queryFactory;
+
+        $helper = $clientQuery->getHelper();
+
+        $factory->setQuery($query);
+        $factory->setClientQuery($clientQuery);
+        $factory->setHelper($helper);
+        $factory->setIndex($this);
+
+        return $factory;
     }
 }
