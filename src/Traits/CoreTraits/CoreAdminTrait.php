@@ -12,7 +12,6 @@
 namespace Firesphere\SolrSearch\Traits;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Solarium\Client;
@@ -60,8 +59,6 @@ trait CoreAdminTrait
             return $response->getWasSuccessful();
             // @codeCoverageIgnoreStart
         } catch (Exception $error) {
-            $solrLogger = new SolrLogger();
-            $solrLogger->saveSolrLog('Config');
 
             throw new Exception($error);
         }

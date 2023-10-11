@@ -196,8 +196,6 @@ abstract class BaseIndex extends CoreIndex
             $result = $this->client->select($this->clientQuery);
         } catch (Exception $error) {
             // @codeCoverageIgnoreStart
-            $logger = new SolrLogger();
-            $logger->saveSolrLog('Query');
             throw $error;
             // @codeCoverageIgnoreEnd
         }

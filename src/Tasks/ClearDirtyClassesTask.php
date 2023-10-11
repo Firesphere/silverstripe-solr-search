@@ -14,8 +14,7 @@
 namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\SolrLogger;
-use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SearchBackend\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
 use ReflectionException;
@@ -23,6 +22,7 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use Solarium\Exception\HttpException;
 
@@ -81,9 +81,6 @@ class ClearDirtyClassesTask extends BuildTask
                 // @codeCoverageIgnoreEnd
             }
         }
-        /** @var SolrLogger $solrLogger */
-        $solrLogger = new SolrLogger();
-        $solrLogger->saveSolrLog('Index');
     }
 
     /**
@@ -99,7 +96,7 @@ class ClearDirtyClassesTask extends BuildTask
         $ids = json_decode($dirtyObject->IDs, true);
         $dirtyClasses = ArrayList::create();
         if ($dirtyObject->Type === SolrCoreService::UPDATE_TYPE && count($ids)) {
-            $dirtyClasses = $dirtyClass::get()->byIDs($ids);
+            $dirtyClasses = DataObject::get($dirtyClass, ['ID' => $ids]);
         }
         if ($dirtyObject->Type === SolrCoreService::DELETE_TYPE) {
             $this->createDeleteList($ids, $dirtyClass, $dirtyClasses);

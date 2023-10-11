@@ -10,13 +10,13 @@
 namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\SolrLogger;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
 use Firesphere\SolrSearch\Traits\LoggerTrait;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use SilverStripe\Control\HTTPRequest;
@@ -99,14 +99,13 @@ class SolrConfigureTask extends BuildTask
 
         $this->extend('onAfterSolrConfigureTask');
         // Grab the latest logs
-        $solrLogger = new SolrLogger();
-        $solrLogger->saveSolrLog('Config');
     }
 
     /**
      * Update the index on the given store
      *
      * @param string $index Core to index
+     * @throws NotFoundExceptionInterface
      */
     protected function configureIndex($index): void
     {
@@ -197,6 +196,5 @@ class SolrConfigureTask extends BuildTask
             PHP_EOL,
             PHP_EOL
         );
-        SolrLogger::logMessage('ERROR', $msg);
     }
 }
