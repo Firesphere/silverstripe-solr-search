@@ -21,7 +21,6 @@ use Solarium\Exception\RuntimeException;
  */
 class FileConfigStore implements ConfigStore
 {
-
     /**
      * @var array Configuration to use
      */
@@ -83,6 +82,17 @@ class FileConfigStore implements ConfigStore
     }
 
     /**
+     * Location of the instance
+     *
+     * @param string|null $index
+     * @return string
+     */
+    public function instanceDir($index)
+    {
+        return sprintf('%s/%s', $this->getPath(), $index);
+    }
+
+    /**
      * Path to the store location
      *
      * @return mixed|string
@@ -104,17 +114,6 @@ class FileConfigStore implements ConfigStore
     {
         $targetDir = $this->getTargetDir($index);
         file_put_contents(sprintf('%s/%s', $targetDir, $filename), $string);
-    }
-
-    /**
-     * Location of the instance
-     *
-     * @param string|null $index
-     * @return string
-     */
-    public function instanceDir($index)
-    {
-        return sprintf('%s/%s', $this->getPath(), $index);
     }
 
     /**

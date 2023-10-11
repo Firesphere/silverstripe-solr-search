@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Firesphere\SolrSearch\Tests;
 
 use SilverStripe\ORM\DataObject;
@@ -8,7 +7,6 @@ use SilverStripe\Security\Member;
 
 class CanViewObject extends DataObject
 {
-
     /**
      * @param null|Member $member
      * @param array $context

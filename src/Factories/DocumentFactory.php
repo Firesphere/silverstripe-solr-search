@@ -10,14 +10,16 @@
 namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
+use Firesphere\SearchBackend\Factories\DocumentCoreFactory;
+use Firesphere\SearchBackend\Helpers\DataResolver;
+use Firesphere\SearchBackend\Helpers\Statics;
+use Firesphere\SearchBackend\Queries\BaseQuery;
+use Firesphere\SearchBackend\Traits\LoggerTrait;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
-use Firesphere\SolrSearch\Helpers\DataResolver;
-use Firesphere\SolrSearch\Helpers\FieldResolver;
-use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\DocumentFactoryTrait;
-use Firesphere\SolrSearch\Traits\LoggerTrait;
+use Psr\Container\NotFoundExceptionInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
@@ -34,12 +36,10 @@ use Solarium\QueryType\Update\Query\Query;
  *
  * @package Firesphere\Solr\Search
  */
-class DocumentFactory
+class DocumentFactory extends DocumentCoreFactory
 {
     use Configurable;
     use Extensible;
-    use DocumentFactoryTrait;
-    use LoggerTrait;
 
     /**
      * @var array Numeral types in Solr
@@ -49,18 +49,6 @@ class DocumentFactory
         'tfloat',
         'tdouble',
     ];
-    /**
-     * @var bool Debug this build
-     */
-    protected $debug = false;
-
-    /**
-     * DocumentFactory constructor, sets up the field resolver
-     */
-    public function __construct()
-    {
-        $this->fieldResolver = Injector::inst()->get(FieldResolver::class);
-    }
 
     /**
      * Note, it can only take one type of class at a time!
@@ -72,7 +60,7 @@ class DocumentFactory
      * @return array Documents to be pushed
      * @throws Exception
      */
-    public function buildItems($fields, $index, $update): array
+    public function buildItems($fields, $index, $update = null): array
     {
         $this->getFieldResolver()->setIndex($index);
         $boostFields = $index->getBoostedFields();
@@ -101,29 +89,12 @@ class DocumentFactory
     }
 
     /**
-     * Show the message about what is being indexed
-     *
-     * @param BaseIndex $index
-     */
-    protected function indexGroupMessage(BaseIndex $index): void
-    {
-        $debugString = sprintf(
-            'Indexing %s on %s (%s items)%s',
-            $this->getClass(),
-            $index->getIndexName(),
-            $this->getItems()->count(),
-            PHP_EOL
-        );
-        $this->getLogger()->info($debugString);
-    }
-
-    /**
      * Add fields that should always be included
      *
      * @param Document $doc Solr Document
      * @param DataObject|DataObjectExtension $item Item to get the data from
      */
-    protected function addDefaultFields(Document $doc, DataObject $item)
+    protected function addDefaultFields($doc, $item)
     {
         $doc->setKey(SolrCoreService::ID_FIELD, $item->ClassName . '-' . $item->ID);
         $doc->addField(SolrCoreService::CLASS_ID_FIELD, $item->ID);
@@ -182,59 +153,6 @@ class DocumentFactory
             $this->extend('onBeforeAddDoc', $options, $value);
             $this->addToDoc($doc, $options, $type, $value);
         }
-    }
-
-    /**
-     * Determine if the given object is one of the given type
-     *
-     * @param string|DataObject $class Class to compare
-     * @param array|string $base Class or list of base classes
-     * @return bool
-     */
-    protected function classIs($class, $base): bool
-    {
-        $base = is_array($base) ? $base : [$base];
-
-        foreach ($base as $nextBase) {
-            if ($this->classEquals($class, $nextBase)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if a base class is an instance of the expected base group
-     *
-     * @param string|DataObject $class Class to compare
-     * @param string $base Base class
-     * @return bool
-     */
-    protected function classEquals($class, $base): bool
-    {
-        return $class === $base || ($class instanceof $base);
-    }
-
-    /**
-     * Use the DataResolver to find the value(s) for a field.
-     * Returns an array of values, and if it's multiple, it becomes a long array
-     *
-     * @param DataObject $object Object to resolve
-     * @param array $options Customised options
-     * @return array
-     */
-    protected function getValuesForField($object, $options): array
-    {
-        try {
-            $valuesForField = [DataResolver::identify($object, $options['fullfield'])];
-        } catch (Exception $error) {
-            // @codeCoverageIgnoreStart
-            $valuesForField = [];
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $valuesForField;
     }
 
     /**

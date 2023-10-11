@@ -10,7 +10,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Queries\SolrQuery;
 use Minimalcode\Search\Criteria;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Security\Group;
@@ -27,7 +27,7 @@ use Solarium\QueryType\Select\Query\Query;
 trait QueryComponentFilterTrait
 {
     /**
-     * @var BaseQuery Base query that's about to be executed
+     * @var SolrQuery Base query that's about to be executed
      */
     protected $query;
     /**

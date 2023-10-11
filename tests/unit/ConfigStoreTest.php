@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Firesphere\SolrSearch\Tests;
 
 use Firesphere\SolrSearch\Stores\FileConfigStore;

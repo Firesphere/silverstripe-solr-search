@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Firesphere\SolrSearch\Tests;
 
 use CircleCITestIndex;
@@ -121,7 +120,7 @@ class QueryComponentFactoryTest extends SapphireTest
             ->method('setQuery')
             ->with($this->equalTo('-TestExcludeField:TestExcludeValue'));
 
-        $mockClientQuery = new class extends Query {
+        $mockClientQuery = new class () extends Query {
             public $mockFilterQuery;
             public $mockExcludeQuery;
             public function createFilterQuery($options = null): FilterQuery
@@ -160,7 +159,7 @@ class QueryComponentFactoryTest extends SapphireTest
             ->method('setQuery')
             ->with($this->equalTo('-TestExcludeField:TestExcludeValue'));
 
-        $mockClientQuery = new class extends Query {
+        $mockClientQuery = new class () extends Query {
             public $mockFilterQuery;
             public $mockExcludeQuery;
             public function createFilterQuery($options = null): FilterQuery

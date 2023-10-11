@@ -26,7 +26,6 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  */
 class ClearDirtyClassesJob extends AbstractQueuedJob
 {
-
     /**
      * Give this puppy a name
      *

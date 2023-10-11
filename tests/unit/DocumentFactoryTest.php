@@ -1,11 +1,10 @@
 <?php
 
-
 namespace Firesphere\SolrSearch\Tests;
 
+use Firesphere\SearchBackend\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Page;
 use Psr\Log\LoggerInterface;

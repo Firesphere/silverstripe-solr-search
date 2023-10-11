@@ -9,6 +9,7 @@
 
 namespace Firesphere\SolrSearch\Queries;
 
+use Firesphere\SearchBackend\Queries\BaseQuery;
 use Firesphere\SolrSearch\Traits\BaseQueryTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
 use SilverStripe\Core\Injector\Injectable;
@@ -20,7 +21,7 @@ use SilverStripe\Core\Injector\Injectable;
  *
  * @package Firesphere\Solr\Search
  */
-class BaseQuery
+class SolrQuery extends BaseQuery
 {
     use GetterSetterTrait;
     use BaseQueryTrait;

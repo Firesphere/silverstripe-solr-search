@@ -11,8 +11,7 @@
 namespace Firesphere\SolrSearch\Extensions;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\SolrLogger;
-use Firesphere\SolrSearch\Models\DirtyClass;
+use Firesphere\SearchBackend\Models\DirtyClass;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tests\DataObjectExtensionTest;
 use Psr\Log\LoggerInterface;
@@ -191,8 +190,6 @@ class DataObjectExtension extends DataExtension
                 $owner->ID
             )
         );
-        $solrLogger = new SolrLogger();
-        $solrLogger->saveSolrLog('Index');
 
         $logger->error($error->getMessage());
     }

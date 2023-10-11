@@ -12,14 +12,13 @@ namespace Firesphere\SolrSearch\Jobs;
 use Exception;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
-use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
+use Solarium\Exception\HttpException;
 use stdClass;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
-use Solarium\Exception\HttpException;
 
 /**
  * Class SolrIndexJob is a queued job to index all existing indexes and their classes.
@@ -30,7 +29,6 @@ use Solarium\Exception\HttpException;
  */
 class SolrIndexJob extends AbstractQueuedJob
 {
-
     /**
      * The class that should be indexed.
      * If set, the task should run the given class with the given group

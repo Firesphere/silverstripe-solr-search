@@ -10,12 +10,12 @@
 namespace Firesphere\SolrSearch\Tasks;
 
 use Exception;
-use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\SolrLogger;
+use Firesphere\ElasticSearch\Factories\DocumentFactory;
+use Firesphere\SearchBackend\Helpers\SearchLogger;
+use Firesphere\SearchBackend\States\SiteState;
+use Firesphere\SearchBackend\Traits\LoggerTrait;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\States\SiteState;
-use Firesphere\SolrSearch\Traits\LoggerTrait;
 use Firesphere\SolrSearch\Traits\SolrIndexTrait;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -346,7 +346,7 @@ class SolrIndexTask extends BuildTask
         try {
             $this->doReindex($start, $class, $pid);
         } catch (Exception $error) {
-            SolrLogger::logMessage('ERROR', $error);
+//            Logg::logMessage('ERROR', $error);
             $msg = sprintf(
                 'Something went wrong while indexing %s on %s, see the logs for details',
                 $start,
@@ -442,6 +442,6 @@ class SolrIndexTask extends BuildTask
             $index,
             $group
         );
-        SolrLogger::logMessage('ERROR', $msg);
+        SearchLogger::logMessage('ERROR', $msg);
     }
 }

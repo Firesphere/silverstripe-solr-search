@@ -10,8 +10,9 @@
 namespace Firesphere\SolrSearch\Services;
 
 use Exception;
-use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\FieldResolver;
+use Firesphere\ElasticSearch\Factories\DocumentFactory;
+use Firesphere\SearchBackend\Helpers\FieldResolver;
+use Firesphere\SearchBackend\Services\BaseService;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Traits\CoreAdminTrait;
 use Firesphere\SolrSearch\Traits\CoreServiceTrait;
@@ -22,7 +23,6 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
@@ -44,7 +44,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  *
  * @package Firesphere\Solr\Search
  */
-class SolrCoreService
+class SolrCoreService extends BaseService
 {
     use Injectable;
     use Configurable;
@@ -54,40 +54,31 @@ class SolrCoreService
     /**
      * Unique ID in Solr
      */
-    const ID_FIELD = 'id';
+    public const ID_FIELD = 'id';
     /**
      * SilverStripe ID of the object
      */
-    const CLASS_ID_FIELD = 'ObjectID';
+    public const CLASS_ID_FIELD = 'ObjectID';
     /**
      * Name of the field that can be used for queries
      */
-    const CLASSNAME = 'ClassName';
+    public const CLASSNAME = 'ClassName';
     /**
      * Solr update types
      */
-    const DELETE_TYPE_ALL = 'deleteall';
+    public const DELETE_TYPE_ALL = 'deleteall';
     /**
      * string
      */
-    const DELETE_TYPE = 'delete';
+    public const DELETE_TYPE = 'delete';
     /**
      * string
      */
-    const UPDATE_TYPE = 'update';
+    public const UPDATE_TYPE = 'update';
     /**
      * string
      */
-    const CREATE_TYPE = 'create';
-
-    /**
-     * @var array Base indexes that exist
-     */
-    protected $baseIndexes = [];
-    /**
-     * @var array Valid indexes out of the base indexes
-     */
-    protected $validIndexes = [];
+    public const CREATE_TYPE = 'create';
     /**
      * @var array Available config versions
      */
@@ -97,6 +88,14 @@ class SolrCoreService
         "5.0.0",
         "4.0.0",
     ];
+    /**
+     * @var array Base indexes that exist
+     */
+    protected $baseIndexes = [];
+    /**
+     * @var array Valid indexes out of the base indexes
+     */
+    protected $validIndexes = [];
 
     /**
      * SolrCoreService constructor.
@@ -113,44 +112,7 @@ class SolrCoreService
         $adapter = new Psr18Adapter($httpClient, $requestFactory, $streamFactory);
         $this->client = new Client($adapter, $eventDispatcher, $config);
         $this->admin = $this->client->createCoreAdmin();
-        $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
-        $this->filterIndexes();
-    }
-
-    /**
-     * Filter enabled indexes down to valid indexes that can be instantiated
-     * or are allowed from config
-     *
-     * @throws ReflectionException
-     */
-    protected function filterIndexes(): void
-    {
-        $enabledIndexes = static::config()->get('indexes');
-        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : $this->baseIndexes;
-        foreach ($this->baseIndexes as $subindex) {
-            // If the config of indexes is set, and the requested index isn't in it, skip addition
-            // Or, the index simply doesn't exist, also a valid option
-            if (!in_array($subindex, $enabledIndexes, true) ||
-                !$this->checkReflection($subindex)
-            ) {
-                continue;
-            }
-            $this->validIndexes[] = $subindex;
-        }
-    }
-
-    /**
-     * Check if the class is instantiable
-     *
-     * @param $subindex
-     * @return bool
-     * @throws ReflectionException
-     */
-    protected function checkReflection($subindex): bool
-    {
-        $reflectionClass = new ReflectionClass($subindex);
-
-        return $reflectionClass->isInstantiable();
+        parent::__construct(BaseIndex::class);
     }
 
     /**
@@ -316,8 +278,8 @@ class SolrCoreService
      * If no valid version is found, throw an error
      *
      * @param HandlerStack|null $handler Used for testing the solr version
-     * @throws LogicException
      * @return int
+     * @throws LogicException
      */
     public function getSolrVersion($handler = null): int
     {
@@ -342,6 +304,7 @@ class SolrCoreService
             $compare = version_compare($version, $result['lucene']['solr-spec-version']);
             if ($compare !== -1) {
                 list($v) = explode('.', $version);
+
                 return (int)$v;
             }
         }
@@ -370,5 +333,41 @@ class SolrCoreService
         }
 
         return $clientOptions;
+    }
+
+    /**
+     * Filter enabled indexes down to valid indexes that can be instantiated
+     * or are allowed from config
+     *
+     * @throws ReflectionException
+     */
+    protected function filterIndexes(): void
+    {
+        $enabledIndexes = static::config()->get('indexes');
+        $enabledIndexes = is_array($enabledIndexes) ? $enabledIndexes : $this->baseIndexes;
+        foreach ($this->baseIndexes as $subindex) {
+            // If the config of indexes is set, and the requested index isn't in it, skip addition
+            // Or, the index simply doesn't exist, also a valid option
+            if (!in_array($subindex, $enabledIndexes, true) ||
+                !$this->checkReflection($subindex)
+            ) {
+                continue;
+            }
+            $this->validIndexes[] = $subindex;
+        }
+    }
+
+    /**
+     * Check if the class is instantiable
+     *
+     * @param $subindex
+     * @return bool
+     * @throws ReflectionException
+     */
+    protected function checkReflection($subindex): bool
+    {
+        $reflectionClass = new ReflectionClass($subindex);
+
+        return $reflectionClass->isInstantiable();
     }
 }
