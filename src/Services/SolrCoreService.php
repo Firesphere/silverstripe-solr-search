@@ -10,8 +10,9 @@
 namespace Firesphere\SolrSearch\Services;
 
 use Exception;
+use Firesphere\SearchBackend\Helpers\FieldResolver;
+use Firesphere\SearchBackend\Services\BaseService;
 use Firesphere\SolrSearch\Factories\DocumentFactory;
-use Firesphere\SolrSearch\Helpers\FieldResolver;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Traits\CoreAdminTrait;
 use Firesphere\SolrSearch\Traits\CoreServiceTrait;
@@ -22,7 +23,6 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use LogicException;
 use ReflectionClass;
 use ReflectionException;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
@@ -44,7 +44,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  *
  * @package Firesphere\Solr\Search
  */
-class SolrCoreService
+class SolrCoreService extends BaseService
 {
     use Injectable;
     use Configurable;
@@ -113,8 +113,7 @@ class SolrCoreService
         $adapter = new Psr18Adapter($httpClient, $requestFactory, $streamFactory);
         $this->client = new Client($adapter, $eventDispatcher, $config);
         $this->admin = $this->client->createCoreAdmin();
-        $this->baseIndexes = ClassInfo::subclassesFor(BaseIndex::class);
-        $this->filterIndexes();
+        parent::__construct(BaseIndex::class);
     }
 
     /**
@@ -316,8 +315,8 @@ class SolrCoreService
      * If no valid version is found, throw an error
      *
      * @param HandlerStack|null $handler Used for testing the solr version
-     * @throws LogicException
      * @return int
+     * @throws LogicException
      */
     public function getSolrVersion($handler = null): int
     {
@@ -342,6 +341,7 @@ class SolrCoreService
             $compare = version_compare($version, $result['lucene']['solr-spec-version']);
             if ($compare !== -1) {
                 list($v) = explode('.', $version);
+
                 return (int)$v;
             }
         }

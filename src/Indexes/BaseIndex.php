@@ -10,20 +10,18 @@
 namespace Firesphere\SolrSearch\Indexes;
 
 use Exception;
+use Firesphere\ElasticSearch\Traits\IndexTraits\BaseIndexTrait;
+use Firesphere\SearchBackend\Indexes\CoreIndex;
+use Firesphere\SearchBackend\Queries\BaseQuery;
+use Firesphere\SearchBackend\States\SiteState;
 use Firesphere\SolrSearch\Factories\QueryComponentFactory;
 use Firesphere\SolrSearch\Factories\SchemaFactory;
-use Firesphere\SolrSearch\Helpers\SolrLogger;
-use Firesphere\SolrSearch\Helpers\Synonyms;
 use Firesphere\SolrSearch\Interfaces\ConfigStore;
-use Firesphere\SolrSearch\Models\SearchSynonym;
-use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Queries\QueryBuilder;
+use Firesphere\SolrSearch\Queries\SolrQuery;
 use Firesphere\SolrSearch\Results\SearchResult;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\States\SiteState;
-use Firesphere\SolrSearch\Traits\BaseIndexTrait;
 use Firesphere\SolrSearch\Traits\GetterSetterTrait;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\Psr17FactoryDiscovery;
 use LogicException;
 use ReflectionException;
 use SilverStripe\Control\Director;
@@ -36,12 +34,9 @@ use SilverStripe\Dev\Deprecation;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\View\ArrayData;
-use Solarium\Client as SolariumClient;
-use Solarium\Core\Client\Adapter\Psr18Adapter;
 use Solarium\Exception\HttpException;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Base for creating a new Solr core.
@@ -51,7 +46,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  *
  * @package Firesphere\Solr\Search
  */
-abstract class BaseIndex
+abstract class BaseIndex extends CoreIndex
 {
     use Extensible;
     use Configurable;
@@ -59,22 +54,6 @@ abstract class BaseIndex
     use GetterSetterTrait;
     use BaseIndexTrait;
 
-    /**
-     * Field types that can be added
-     * Used in init to call build methods from configuration yml
-     *
-     * @array
-     */
-    private static $fieldTypes = [
-        'FulltextFields',
-        'SortFields',
-        'FilterFields',
-        'BoostedFields',
-        'CopyFields',
-        'DefaultField',
-        'FacetFields',
-        'StoredFields',
-    ];
     /**
      * {@link SchemaFactory}
      *
@@ -196,18 +175,18 @@ abstract class BaseIndex
     /**
      * Default returns a SearchResult. It can return an ArrayData if FTS Compat is enabled
      *
-     * @param BaseQuery $query
+     * @param SolrQuery $query
      * @return SearchResult|ArrayData|mixed
      * @throws HTTPException
      * @throws ValidationException
      * @throws ReflectionException
      * @throws Exception
      */
-    public function doSearch(BaseQuery $query)
+    public function doSearch(SolrQuery $query)
     {
         SiteState::alterQuery($query);
         // Build the actual query parameters
-        $this->clientQuery = $this->buildSolrQuery($query);
+        $this->clientQuery = QueryBuilder::buildQuery($query, $this);
         // Set the sorting
         $this->clientQuery->addSorts($query->getSort());
 
@@ -241,30 +220,20 @@ abstract class BaseIndex
         return $searchResult;
     }
 
-    /**
-     * From the given BaseQuery, generate a Solarium ClientQuery object
-     *
-     * @param BaseQuery $query
-     * @return Query
-     */
-    public function buildSolrQuery(BaseQuery $query): Query
+    public function getQueryTerms(): array
     {
-        $clientQuery = $this->client->createSelect();
-        $factory = $this->buildFactory($query, $clientQuery);
+        return $this->queryTerms;
+    }
 
-        $clientQuery = $factory->buildQuery();
-        $this->queryTerms = $factory->getQueryArray();
-
-        $queryData = implode(' ', $this->queryTerms);
-        $clientQuery->setQuery($queryData);
-
-        return $clientQuery;
+    public function setQueryTerms(array $queryTerms): void
+    {
+        $this->queryTerms = $queryTerms;
     }
 
     /**
      * Build a factory to use in the SolrQuery building. {@link static::buildSolrQuery()}
      *
-     * @param BaseQuery $query
+     * @param SolrQuery $query
      * @param Query $clientQuery
      * @return QueryComponentFactory|mixed
      */
@@ -409,16 +378,6 @@ abstract class BaseIndex
         }
 
         return $synonyms;
-    }
-
-    /**
-     * Get the final, generated terms
-     *
-     * @return array
-     */
-    public function getQueryTerms(): array
-    {
-        return $this->queryTerms;
     }
 
     /**

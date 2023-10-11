@@ -10,10 +10,9 @@
 namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
+use Firesphere\SearchBackend\Helpers\DataResolver;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
-use Firesphere\SolrSearch\Helpers\DataResolver;
 use Firesphere\SolrSearch\Helpers\FieldResolver;
-use Firesphere\SolrSearch\Helpers\Statics;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\DocumentFactoryTrait;

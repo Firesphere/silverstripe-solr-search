@@ -9,11 +9,13 @@
 
 namespace Firesphere\SolrSearch\Results;
 
+use Firesphere\SearchBackend\Interfaces\SearchResultInterface;
+use Firesphere\SearchBackend\Queries\BaseQuery;
+use Firesphere\SearchBackend\Traits\SearchResultGetTrait;
+use Firesphere\SearchBackend\Traits\SearchResultSetTrait;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
-use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Queries\SolrQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\Traits\SearchResultGetTrait;
-use Firesphere\SolrSearch\Traits\SearchResultSetTrait;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
@@ -22,7 +24,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\PaginatedList;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\ViewableData;
-use Solarium\Component\Result\Facet\Field;
+use Solarium\Component\Result\Analytics\Facet;
 use Solarium\Component\Result\FacetSet;
 use Solarium\Component\Result\Spellcheck\Collation;
 use Solarium\Component\Result\Spellcheck\Result as SpellcheckResult;
@@ -38,7 +40,7 @@ use stdClass;
  *
  * @package Firesphere\Solr\Search
  */
-class SearchResult extends ViewableData
+class SearchResult extends ViewableData implements SearchResultInterface
 {
     use SearchResultGetTrait;
     use SearchResultSetTrait;
@@ -62,7 +64,7 @@ class SearchResult extends ViewableData
      * See Solarium docs for this.
      *
      * @param Result $result
-     * @param BaseQuery $query
+     * @param SolrQuery $query
      * @param BaseIndex $index
      */
     public function __construct(Result $result, BaseQuery $query, BaseIndex $index)
@@ -94,27 +96,6 @@ class SearchResult extends ViewableData
     }
 
     /**
-     * Build the given list of key-value pairs in to a SilverStripe useable array
-     *
-     * @param FacetSet|null $facets
-     * @return ArrayData
-     */
-    protected function buildFacets($facets): ArrayData
-    {
-        $facetArray = [];
-        if ($facets) {
-            $facetTypes = $this->index->getFacetFields();
-            // Loop all available facet fields by type
-            foreach ($facetTypes as $class => $options) {
-                $facetArray = $this->createFacet($facets, $options, $class, $facetArray);
-            }
-        }
-
-        // Return an ArrayList of the results
-        return ArrayData::create($facetArray);
-    }
-
-    /**
      * Create facets from each faceted class
      *
      * @param FacetSet $facets
@@ -123,10 +104,10 @@ class SearchResult extends ViewableData
      * @param array $facetArray
      * @return array
      */
-    protected function createFacet($facets, $options, $class, array $facetArray): array
+    public function createFacet($facets, $options, $class, array $facetArray): array
     {
         // Get the facets by its title
-        /** @var Field $typeFacets */
+        /** @var Facet $typeFacets */
         $typeFacets = $facets->getFacet('facet-' . $options['Title']);
         $values = $typeFacets->getValues();
         $results = ArrayList::create();
@@ -305,15 +286,14 @@ class SearchResult extends ViewableData
     /**
      * Get the highlight for a specific document
      *
-     * @param $docID
+     * @param int $docId
      * @return string
      */
-    public function getHighlightByID($docID): string
+    public function getHighlightByID($docId): string
     {
         $highlights = [];
-        if ($this->highlight && $docID) {
-            $highlights = [];
-            foreach ($this->highlight->getResult($docID) as $field => $highlight) {
+        if ($this->highlight && $docId) {
+            foreach ($this->highlight->getResult($docId) as $field => $highlight) {
                 $highlights[] = implode(' (...) ', $highlight);
             }
         }

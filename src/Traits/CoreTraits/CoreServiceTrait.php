@@ -10,7 +10,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-use Firesphere\SolrSearch\Helpers\FieldResolver;
+use Firesphere\SearchBackend\Helpers\FieldResolver;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
