@@ -15,7 +15,7 @@ use Firesphere\SearchBackend\Helpers\SearchLogger;
 use Firesphere\SearchBackend\States\SiteState;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Services\SolrCoreService;
-use Firesphere\SolrSearch\Traits\LoggerTrait;
+use Firesphere\SearchBackend\Traits\LoggerTrait;
 use Firesphere\SolrSearch\Traits\SolrIndexTrait;
 use Psr\Log\LoggerInterface;
 use ReflectionException;

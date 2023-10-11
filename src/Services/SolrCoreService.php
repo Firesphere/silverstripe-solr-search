@@ -10,9 +10,9 @@
 namespace Firesphere\SolrSearch\Services;
 
 use Exception;
+use Firesphere\ElasticSearch\Factories\DocumentFactory;
 use Firesphere\SearchBackend\Helpers\FieldResolver;
 use Firesphere\SearchBackend\Services\BaseService;
-use Firesphere\SolrSearch\Factories\DocumentFactory;
 use Firesphere\SolrSearch\Indexes\BaseIndex;
 use Firesphere\SolrSearch\Traits\CoreAdminTrait;
 use Firesphere\SolrSearch\Traits\CoreServiceTrait;

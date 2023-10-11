@@ -10,8 +10,9 @@
 namespace Firesphere\SolrSearch\Factories;
 
 use Exception;
-use Firesphere\SolrSearch\Helpers\FieldResolver;
-use Firesphere\SolrSearch\Helpers\Statics;
+
+use Firesphere\SearchBackend\Helpers\FieldResolver;
+use Firesphere\SearchBackend\Helpers\Statics;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\GetSetSchemaFactoryTrait;
 use SilverStripe\Control\Director;

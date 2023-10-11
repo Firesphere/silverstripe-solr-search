@@ -12,7 +12,6 @@ namespace Firesphere\SolrSearch\Jobs;
 use Exception;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
-use ReflectionException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;

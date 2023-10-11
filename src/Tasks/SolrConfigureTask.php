@@ -15,7 +15,7 @@ use Firesphere\SolrSearch\Interfaces\ConfigStore;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Stores\FileConfigStore;
 use Firesphere\SolrSearch\Stores\PostConfigStore;
-use Firesphere\SolrSearch\Traits\LoggerTrait;
+use Firesphere\SearchBackend\Traits\LoggerTrait;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;

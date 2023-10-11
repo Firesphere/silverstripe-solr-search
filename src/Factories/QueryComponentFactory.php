@@ -10,7 +10,7 @@
 namespace Firesphere\SolrSearch\Factories;
 
 use Firesphere\SolrSearch\Indexes\BaseIndex;
-use Firesphere\SolrSearch\Queries\BaseQuery;
+use Firesphere\SolrSearch\Queries\SolrQuery;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Traits\QueryComponentBoostTrait;
 use Firesphere\SolrSearch\Traits\QueryComponentFacetTrait;
@@ -57,7 +57,7 @@ class QueryComponentFactory
         'Spellcheck',
     ];
     /**
-     * @var BaseQuery BaseQuery that needs to be executed
+     * @var SolrQuery SolrQuery that needs to be executed
      */
     protected $query;
     /**
@@ -107,9 +107,9 @@ class QueryComponentFactory
     /**
      * Get the base query
      *
-     * @return BaseQuery
+     * @return SolrQuery
      */
-    public function getQuery(): BaseQuery
+    public function getQuery(): SolrQuery
     {
         return $this->query;
     }
@@ -117,10 +117,10 @@ class QueryComponentFactory
     /**
      * Set the base query
      *
-     * @param BaseQuery $query
+     * @param SolrQuery $query
      * @return self
      */
-    public function setQuery(BaseQuery $query): self
+    public function setQuery(SolrQuery $query): self
     {
         $this->query = $query;
 
