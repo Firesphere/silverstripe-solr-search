@@ -1,14 +1,14 @@
-FROM brettt89/silverstripe-web:7.1-platform
+FROM brettt89/silverstripe-web:8.1-apache-bullseye
 
 LABEL maintainer="Marco Hermo"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Debian Jessie Archive sources
-RUN echo "deb http://deb.debian.org/debian/ jessie main contrib non-free" > /etc/apt/sources.list && \
-    echo "deb-src http://deb.debian.org/debian/ jessie main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb http://security.debian.org/ jessie/updates main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb-src http://security.debian.org/ jessie/updates main contrib non-free" >> /etc/apt/sources.list
+RUN echo "deb http://deb.debian.org/debian/ bullseye main contrib non-free" > /etc/apt/sources.list && \
+    echo "deb-src http://deb.debian.org/debian/ bullseye main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb http://security.debian.org/ jessbullseyeie/updates main contrib non-free" >> /etc/apt/sources.list && \
+    echo "deb-src http://security.debian.org/ bullseye/updates main contrib non-free" >> /etc/apt/sources.list
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
