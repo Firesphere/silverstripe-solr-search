@@ -1,6 +1,6 @@
 <?php
 
-namespace Firesphere\PartialUserforms\Tests;
+namespace Firesphere\SolrSearch\Tests;
 
 use ReflectionClass;
 use ReflectionException;

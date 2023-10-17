@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Exception;
-use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Tasks\SolrConfigureTask;
 use Psr\Log\LoggerInterface;
 use SilverStripe\Dev\SapphireTest;

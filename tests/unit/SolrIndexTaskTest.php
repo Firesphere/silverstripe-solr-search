@@ -4,7 +4,6 @@
 namespace Firesphere\SolrSearch\Tests;
 
 use Exception;
-use Firesphere\PartialUserforms\Tests\TestHelper;
 use Firesphere\SolrSearch\Extensions\DataObjectExtension;
 use Firesphere\SolrSearch\Services\SolrCoreService;
 use Firesphere\SolrSearch\Tasks\SolrIndexTask;
