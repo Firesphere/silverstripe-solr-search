@@ -7,6 +7,9 @@
 [![Build Status](https://scrutinizer-ci.com/g/Firesphere/silverstripe-solr-search/badges/build.png?b=primary)](https://scrutinizer-ci.com/g/Firesphere/silverstripe-solr-search/build-status/primary)
 [![Support us](https://enjoy.gitstore.app/repositories/badge-Firesphere/silverstripe-solr-search.svg)](https://enjoy.gitstore.app/repositories/Firesphere/silverstripe-solr-search)
 
+# License
+
+[LICENSE.md](GPL v3)
 
 # Master is no longer the main branch. If you are using dev-master, switch to dev-primary
 

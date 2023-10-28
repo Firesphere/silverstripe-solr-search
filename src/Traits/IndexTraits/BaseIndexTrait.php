@@ -11,7 +11,7 @@
 
 namespace Firesphere\SolrSearch\Traits;
 
-use Firesphere\SolrSearch\Indexes\BaseIndex;
+use Firesphere\SolrSearch\Indexes\BaseIndex as SolrIndex;
 use ReflectionClass;
 use ReflectionException;
 use SilverStripe\Core\Config\Config;
@@ -21,6 +21,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBString;
 use Solarium\Core\Client\Client;
+
 
 /**
  * This is slightly cheating, but it works and also makes things more readable.
@@ -380,7 +381,7 @@ trait BaseIndexTrait
      * @param string $field
      * @param null|string $forceType
      * @param array $extraOptions
-     * @return BaseIndex
+     * @return SolrIndex
      */
     public function addStoredField($field, $forceType = null, $extraOptions = []): self
     {
@@ -427,7 +428,7 @@ trait BaseIndexTrait
      * Set/override the stored field list
      *
      * @param array $storedFields
-     * @return BaseIndex
+     * @return SolrIndex
      */
     public function setStoredFields(array $storedFields): self
     {
