@@ -2,7 +2,7 @@
   "name": "firesphere/solr-search",
   "description": "Search a SilverStripe site with Solr",
   "type": "silverstripe-vendormodule",
-  "license": "BSD-3-Clause",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "silverstripe",
     "search",
