@@ -14,6 +14,11 @@ use Firesphere\SolrSearch\Models\SearchSynonym;
 use Firesphere\SolrSearch\Models\SolrLog;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\View\Requirements;
+use Firesphere\SolrSearch\Forms\GridFieldOrderableSearch;
+use Firesphere\SolrSearch\Models\SearchClass;
+use Firesphere\SolrSearch\Models\Elevation;
+use Firesphere\SolrSearch\Models\ElevatedItem;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
  * Class \Firesphere\SolrSearch\Admins\SearchAdmin
@@ -31,6 +36,8 @@ class SearchAdmin extends ModelAdmin
         SearchSynonym::class,
         SolrLog::class,
         DirtyClass::class,
+        Elevation::class,
+        ElevatedItem::class,
     ];
 
     /**
@@ -56,5 +63,24 @@ class SearchAdmin extends ModelAdmin
         parent::init();
 
         Requirements::css('firesphere/solr-search:client/dist/main.css');
+    }
+
+    public function getEditForm($id = null, $fields = null)
+    {
+        $oldImportFrom = $this->showImportForm;
+        $this->showImportForm = false;
+        /** @var GridField $gridField */
+        $form = parent::getEditForm($id, $fields);
+        $this->showImportForm = $oldImportFrom;
+
+        if ($this->modelClass === ElevatedItem::class) {
+            $gridField = $form->Fields()->dataFieldByName($this->sanitiseClassName($this->modelClass));
+
+            $gridField
+                ->getConfig()
+                ->addComponent(new GridFieldOrderableRows('Rank'));
+        }
+
+        return $form;
     }
 }

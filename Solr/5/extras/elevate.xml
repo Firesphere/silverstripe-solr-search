@@ -23,14 +23,14 @@
 
 <elevate>
     <query text="foo bar">
-        <doc id="1"/>
-        <doc id="2"/>
-        <doc id="3"/>
+        <doc id="Page-1"/>
+        <doc id="Page-2"/>
+        <doc id="Page-3"/>
     </query>
 
     <query text="ipod">
-        <doc id="MA147LL/A"/>  <!-- put the actual ipod at the top -->
-        <doc id="IW-02" exclude="true"/> <!-- exclude this cable -->
+        <doc id="Page-3"/>  <!-- put Page with ID = 3 at the top -->
+        <doc id="Page-2" exclude="true"/> <!-- exclude Page ID 2 -->
     </query>
 
 </elevate>
